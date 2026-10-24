@@ -1,0 +1,82 @@
+[package]
+name = "eh3d-drillpro-protocol"
+version = "0.0.1"
+edition = "2021"
+description = "Serial protocol library for the Bungard CCD control unit (no GUI, no file formats)"
+license = "GPL-3.0-or-later"
+
+[features]
+default = []
+serial = ["dep:serialport"]
+node = []
+
+[dependencies]
+serialport = { version = "4", default-features = false, optional = true }
+
+[[example]]
+name = "serial_monitor"
+required-features = ["serial"]
+
+[[example]]
+name = "handshake_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "drivers_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "latency_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "jog_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "limit_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "limit_seek"
+required-features = ["serial"]
+
+[[example]]
+name = "home_y_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "axis_travel"
+required-features = ["serial"]
+
+[[example]]
+name = "slot_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "rx_sniff"
+required-features = ["serial"]
+
+[[example]]
+name = "node_probe"
+required-features = ["node"]
+
+[[test]]
+name = "node"
+required-features = ["node"]
+
+[[example]]
+name = "home_all_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "raw_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "concurrency_probe"
+required-features = ["serial"]
+
+[[example]]
+name = "release_drivers"
+required-features = ["serial"]

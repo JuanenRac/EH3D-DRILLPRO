@@ -1,0 +1,66 @@
+              * DRILLPRO V. 4.6 Configuration
+              * (C) Copyright 1991-2003 Bungard Elektronik, D. Bungard
+              *
+              * Warning! Unqualified modifications to this file may cause 
+              * execution errors! Decimal seperator = .
+              *
+              * Warnung! Unqualifizierte énderungen an dieser Datei kînnen 
+              * AusfÅhrungsfehler hervorrufen! Dezimaltrenner = .
+              * 
+              *
+0000002       * Serial number
+TEST.000000B  * Software version
+              * Following line / nÑchste Zeile: Directory
+.\DEMO
+*.NCD         * Default extension (*.NCD, *.DRL)
+              * MAIN MENUE / HAUPTMENUE
+1.0000        * Scale X (0.0000 ... 10.000)
+1.0000        * Scale Y (0.0000 ... 10.000)
+00.00         * Offset X (abs. value <= 600.00 mm)
+00.00         * Offset Y (abs. value <= 500.00 mm)
+495.00        * Clipping X (max. course length, <= 495 mm)
+325.00        * Clipping Y (max. course length, <= 325 mm)
+1.50          * Board thickness / PlattenstÑrke (mm)
+6.00          * Base sheet th. / Unterlagenst.  (mm)
+              * MACHINE CONSTANTS / MASCHINENKONSTANTEN
+4000          * Max.  Speed XY Normal     (mm/min)
+1000          *             XY Reference
+1000          * Start Speed XY Ramp
+5000          * Max.  Speed  Z Normal
+1000          *              Z Reference
+1000          * Start Speed  Z Ramp
+10            * Acceleration coeff. XY
+20            * Acceleration coeff. Z
+0.9993        * Correction   coeff. X
+0.9990        * Correction   coeff. Y
+0.8988        * Correction   coeff. Z
+37.5          * Max. Z depth / Tiefe (mm)
+3.0           * Distance tool - board (mm)
+0.5           * Spindle start delay (s/(10000*1/min))
+              * Coordinates unit / Masseinheit:
+1             * 0: 1/10 mil, 1: 1 mil, 2: 0.025 mm, 3: 0.01 mm,
+              * Coordinates Sorting / Sortierung:
+3             * 0:No, 1:X first, 2:Y first, 3:Special
+0 0           * RESERVED, DO NOT CHANGE
+1             * Ser. Interface: 0=COM1:, 1=COM2:, 2=COM3:, 3=COM4:, 4=NUL:
+2             * Speed RS232: 0:9600 baud via DOS, 1:19200 bd, 2:38400 bd
+              * Reserved
+1             * Tool change / Werkzeugwechsel 1=Auto, 0=Man.
+              * Tool positions (Pos. No., X-, Y-, Z-coordinates, mm)
+00 540.0 020.0 37.4  * Test pin / PrÅfstift
+01 530.0 040.0 37.4
+02 540.0 060.0 37.4
+03 530.0 080.0 37.4
+04 540.0 100.0 37.4
+05 530.0 120.0 37.4
+06 540.0 140.0 37.4
+07 530.0 160.0 37.4
+08 540.0 180.0 37.4
+09 530.0 200.0 37.4
+10 540.0 220.0 37.4
+11 530.0 240.0 37.4
+12 540.0 260.0 37.4
+13 530.0 280.0 37.4
+14 540.0 300.0 37.4
+15 530.3 000.3 17.1 * Drill break detector / Bohrerbruchsensor
+              * End of configuration file / Dateiende (66 lines)

@@ -1,0 +1,10 @@
+/target
+/local-data/
+/re/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+re/original_ui/

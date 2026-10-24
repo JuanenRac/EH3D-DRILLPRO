@@ -1,0 +1,107 @@
+<p align="center">
+  <img src="images/EH3D_BANNER.svg" alt="EH3D-DRILLPRO banner" width="100%">
+</p>
+
+# 🔩 EH3D-DRILLPRO
+
+<p align="center"><a href="README.md">🇺🇸 English</a> | 🇪🇸 <b>Español</b> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
+
+### Una reimplementación multiplataforma en Rust del flujo de taladrado del clásico software DOS para máquinas Bungard CCD, con una interfaz de modo texto parecida a la original en ocho idiomas
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
+  <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
+  <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
+  <img src="https://img.shields.io/badge/Version-0.0.1-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
+</p>
+
+---
+
+**Comprobación de honestidad - lo que se ejecuta hoy:** un programa en Rust con interfaz de texto de 80x25 que lee ficheros de taladrado Excellon `.NCD`, la tabla de herramientas y la configuración de la máquina, ordena los agujeros, los muestra y ejecuta todo el trabajo **contra un simulador** (por defecto) o, cuando el fichero de la máquina lo indica, **en una máquina real** por el puerto serie del ordenador, un adaptador USB-serie o el EH3D-NODE-BUNGARD. 123 pruebas se ejecutan en un ordenador. En una Bungard CCD MTC real se han probado la referencia de los tres ejes (Z, X e Y hasta sus finales de carrera, con la señal de «los tres en home» de la unidad de control confirmada en directo) y los movimientos de cada eje; **un trabajo de taladrado completo todavía no se ha ejecutado en la máquina**, y los pasos por milímetro solo se han contrastado con la configuración del original.
+
+---
+
+> **Estado de seguridad (safety) y de seguridad informática:** este programa no es un sistema de seguridad. Con una conexión real (`connection` en el fichero de la máquina) **Iniciar mueve la máquina**: saca la herramienta, mantén una mano en el interruptor de la máquina y ten lista la tecla `Esc`, que detiene el trabajo al instante y apaga los drivers de los motores. Los finales de carrera los vigila la propia unidad de control de la máquina (para el eje en su tope por sí sola); este software no tiene parada de emergencia propia, y unos bytes de paso o velocidades erróneos pueden llevar la herramienta contra la pieza o la mesa o hacer que los motores pierdan pasos. La capa de protocolo se niega a mover nada hasta que se arma. El proyecto es independiente: no lo fabrica, respalda ni da soporte Bungard Elektronik, y los nombres de producto aparecen solo para indicar con qué formatos de fichero y máquinas debe funcionar.
+
+## 📋 De un vistazo
+
+| | |
+|---|---|
+| Versión | `0.0.1` |
+| Madurez | Andamiaje |
+| Pruebas | 123 |
+| Pila tecnológica | Rust |
+| En hardware real | Sí, en una Bungard CCD MTC: la referencia y los movimientos de cada eje; un trabajo completo todavía no se ha ejecutado. Sin fichero de máquina se ejecuta en el simulador |
+
+## 🎯 Descripción general
+
+* Los **lectores de ficheros**: ficheros de taladrado Excellon `.NCD` (con o sin la cabecera `M48`, coordenadas modales, unidades imperiales de 1 mil), la tabla de herramientas `DRILLPRO.DTD` y la configuración de la máquina `DRILLPRO.DCF`.
+* El **planificador del trabajo**: ordena los agujeros (como en el fichero, primero X, primero Y o camino más corto) y los mantiene agrupados por herramienta.
+* La **interfaz**: una pantalla de modo texto de 80x25 con colores CGA, menús, un diálogo de ficheros y una vista vectorial de los agujeros, mostrada en una ventana. Habla inglés, español, italiano, alemán, francés, portugués, chino y japonés: elige el idioma en el menú o arranca con `--lang`.
+* El **protocolo de la máquina** (`protocol/`, crate `eh3d-drillpro-protocol`): una biblioteca sin interfaz: transporte de bytes (puerto serie o simulador), planificación de movimiento en milímetros con rampas de aceleración y una compuerta de seguridad que rechaza el movimiento hasta que se arma.
+* El **simulador**: el trabajo completo se ejecuta hasta el final sin hardware; las pruebas lo usan.
+* Las **máquinas**: las que llevan una central por puerto serie que usaba el software de MS-DOS 4.6: Bungard CCD MTC y CCD/2 MTC (cambio de herramienta manual; la CCD/2 tiene la mesa más pequeña de 325 x 270 mm). El tamaño de la mesa y demás constantes salen del fichero de configuración de la máquina. Solo se ha probado en una CCD MTC, y las salidas del taladro (husillo) y de la activación de la aspiradora todavía no se han probado. Los dos modelos ATC (CCD ATC y CCD/2 ATC, cambio automático) tendrán aplicaciones aparte, hechas con lo que permita la ingeniería inversa. Los modelos XL y las máquinas posteriores llevan unidad de control y software modernos propios y no están cubiertos.
+* El **fichero de la máquina** (`machine.cfg`, compartido por DRILLPRO y ROUTEPRO): cómo llega el trabajo a la máquina (`demo` simulador, `rs232` el puerto serie del propio ordenador, `usb` un adaptador USB-serie o `node` el EH3D-NODE-BUNGARD por la red) y, un valor por línea, todo lo afinado en una máquina real: velocidades y rampas de búsqueda, el salto de calibración, los límites de los motores.
+* La **referencia**: Z sube hasta su final de carrera, luego X e Y, y después un salto de calibración suave. La unidad de control indica «los tres ejes en home» por la línea RI, que el programa vigila; con la máquina aparcada se salta las búsquedas, separa X e Y 10 mm de sus finales de carrera y los busca de nuevo, así los ve llegar en directo.
+* **Movimiento estable**: los movimientos salen como un único flujo continuo cuyas posiciones de byte llevan el tiempo (un adaptador USB entrega los bytes a ráfagas si no), Z se mueve byte a byte, y `Esc` cancela un trabajo en una fracción de segundo y apaga los drivers de los motores.
+* El **husillo**: por defecto el de la propia central (sus bits de latch, hasta 60000 rpm); con `spindle = node` en el fichero de la máquina el trabajo se lo pide al EH3D-NODE-BUNGARD (un variador de frecuencia en las salidas del nodo, cualquier velocidad hasta el máximo del nodo, parado en cualquier parada). Con un nodo los programas leen además los LED de la máquina, así cada eje que llega a home se ve en directo sin leer la línea de home en mitad del flujo.
+* La **conexión al servidor** (`connection = server` en el fichero de la máquina, con `server_address`, `server_token` y `server_machine`): en vez de manejar la máquina él mismo, el programa envía el trabajo al [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER), que lo planifica con las constantes de la máquina, lo ejecuta a través del nodo de la máquina y le cuenta al programa cómo va; el programa muestra el avance y responde a los diálogos como siempre, `Esc` detiene el trabajo en el servidor, y cerrar el programa no lo detiene.
+
+## 🧩 Papel en EH3D
+
+EH3D-DRILLPRO es un programa independiente de la familia EH3D para máquinas cuya unidad de control necesita que el PC genere cada paso de motor. EH3D-ROUTEPRO, su hermano de fresado, reutiliza su protocolo, su pantalla y su soporte de idiomas. Todavía no depende de ningún otro repositorio de EH3D; el lector Excellon de EH3D-CORE-LIBS podría sustituir al suyo más adelante.
+
+## 📂 Estructura del repositorio
+
+```text
+EH3D-DRILLPRO/
+├── src/          library: file formats, job planning, screen, application, languages
+├── src/bin/      the drillpro executable (feature gui)
+├── protocol/     eh3d-drillpro-protocol: serial transport, motion, safety gate
+├── tests/        formats, job planning, screens in all languages
+├── testdata/     small sample files written for the tests
+├── docs/         PROTOCOL.md y CONNECTION.md: el protocolo, el fichero de la máquina y cada valor de ajuste; machine.cfg.example: el fichero con todos sus valores
+├── tools/        ci_validate.py: manifest, versions, changelog and README checks
+├── images/       banner
+└── eh3d.project.json   the manifest of the project
+```
+
+## 🛠️ COMPILAR Y EJECUTAR
+
+Necesitas una cadena de herramientas de Rust estable.
+
+```bash
+cargo build --release --features gui
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+cargo fmt --all --check
+python -I tools/ci_validate.py
+```
+
+Ejecútalo con `run.bat` (Windows) o `./run.sh` (Linux y macOS); ambos compilan antes el programa si hace falta: `run.bat [FICHERO.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` es la carpeta con `DRILLPRO.DTD` y `DRILLPRO.DCF` (por defecto: `testdata/`) y `--dump` imprime la pantalla como texto plano. Teclas: `Alt` más la letra resaltada abre un menú, las flechas mueven, `Enter` acepta, `Esc` vuelve; también se puede pulsar la barra de menús. El chino y el japonés necesitan una fuente CJK entre las del sistema. `--connection FILE` indica otro fichero de máquina distinto del predeterminado (`%APPDATA%\EH3D\machine.cfg` en Windows, `~/.config/eh3d/machine.cfg` en el resto); sin fichero de máquina el programa se ejecuta en el simulador.
+
+## 🔗 Proyectos relacionados
+
+* [EH3D-ROUTEPRO](https://github.com/JuanenRac/EH3D-ROUTEPRO): el hermano de fresado; usa el protocolo, la pantalla y los idiomas de este proyecto
+* [EH3D-CORE-LIBS](https://github.com/JuanenRac/EH3D-CORE-LIBS): los lectores Excellon y de G-code compartidos de la suite
+* [EH3D-COMMON](https://github.com/JuanenRac/EH3D-COMMON): el contenedor de proyecto y los tipos de telemetría de máquina de la suite
+* [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD): un nodo ESP32-S3 (Ethernet o Wi-Fi) que va en la caja de la máquina, saca los pasos por su propio puerto serie con la temporización que un adaptador USB no puede mantener, lee los LED de la máquina y maneja el variador del husillo; tiene su propio panel web
+* [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER): el centro de la familia EH3D: recibe los trabajos de este programa (`connection = server`) y de los demás clientes, y los ejecuta en la máquina a través de su nodo
+
+## 📚 Documentación y comunidad
+
+* [Notas del protocolo](docs/PROTOCOL.md): lo que se sabe de cómo se maneja la unidad de control y lo que sigue siendo una hipótesis.
+* [Conexión y ajuste](docs/CONNECTION.md): el fichero de la máquina, las tres conexiones y cada valor
+* [Registro de cambios](CHANGELOG.md)
+* [Cómo contribuir](CONTRIBUTING.md)
+* [Política de seguridad](SECURITY.md)
+* [Soporte](SUPPORT.md)
+
+## 👤 AUTOR
+
+**JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
+
+## 📜 LICENCIA
+
+Software: GPL-3.0-or-later. Véase [LICENSE](LICENSE). Los diseños de hardware de la suite usan CERN OHL-S.

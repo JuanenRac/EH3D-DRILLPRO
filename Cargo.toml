@@ -1,0 +1,27 @@
+[package]
+name = "eh3d-drillpro"
+version = "0.0.1"
+edition = "2021"
+description = "Open implementation of the Bungard CCD drilling workflow (file formats and machine protocol)"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/JuanenRac/EH3D-DRILLPRO"
+readme = "README.md"
+
+[workspace]
+members = ["protocol"]
+
+[features]
+default = []
+gui = ["dep:eframe", "dep:png"]
+
+[dependencies]
+serde_json = "1"
+eh3d-drillpro-protocol = { path = "protocol", features = ["serial", "node"] }
+eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"], optional = true }
+
+png = { version = "0.17", optional = true }
+
+[[bin]]
+name = "drillpro"
+path = "src/bin/drillpro.rs"
+required-features = ["gui"]

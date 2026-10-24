@@ -1,0 +1,107 @@
+<p align="center">
+  <img src="images/EH3D_BANNER.svg" alt="EH3D-DRILLPRO banner" width="100%">
+</p>
+
+# 🔩 EH3D-DRILLPRO
+
+<p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | 🇨🇳 <b>中文</b> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
+
+### 用 Rust 跨平台重新实现 Bungard CCD 机器经典 DOS 软件的钻孔流程，提供类似原版的文本模式界面，支持八种语言
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
+  <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
+  <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
+  <img src="https://img.shields.io/badge/Version-0.0.1-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
+</p>
+
+---
+
+**诚实性核对 - 今天真正能运行的内容：** 一个带 80x25 文本模式界面的 Rust 程序，读取 Excellon `.NCD` 钻孔文件、刀具表和机器配置，对孔排序并显示，然后**在模拟器上**（默认）运行整个作业；若机器文件指定，则通过电脑串口、USB 串口适配器或 EH3D-NODE-BUNGARD **在真实机器上**运行。电脑上运行 123 项测试。在一台真实的 Bungard CCD MTC 上，已经试过三轴回参考点（Z、X、Y 到各自限位开关，并现场确认控制单元的“三轴全部到位”信号）以及每个轴的运动；**完整的钻孔作业尚未在机器上运行**，每毫米步数也只是与原版配置核对过。
+
+---
+
+> **安全（safety）与信息安全现状：** 本程序不是安全系统。使用真实连接（机器文件中的 `connection`）时，**“开始”会让机器动起来**：先取下刀具，一只手放在机器电源开关上，并随时准备按 `Esc`，它会立即停止作业并关闭步进驱动器。限位开关由机器自己的控制单元监视（它会在开关处自行停住轴）；本软件没有自己的紧急停止，错误的步进字节或速度可能使刀具撞向工件或工作台，或使电机失步。协议层在被解锁之前拒绝移动任何东西。本项目是独立的：它不是 Bungard Elektronik 制造、认可或支持的，产品名称只是用来说明它面向哪些文件格式和机器。
+
+## 📋 概览
+
+| | |
+|---|---|
+| 版本 | `0.0.1` |
+| 成熟度 | 脚手架 |
+| 测试 | 123 |
+| 技术栈 | Rust |
+| 真实硬件 | 是，在一台 Bungard CCD MTC 上：回参考点和每个轴的运动；完整作业尚未运行。没有机器文件时在模拟器上运行 |
+
+## 🎯 简介
+
+* **文件读取器**：Excellon `.NCD` 钻孔文件（带或不带 `M48` 文件头，模态坐标，1 mil 英制单位）、刀具表 `DRILLPRO.DTD` 和机床配置 `DRILLPRO.DCF`。
+* **作业规划器**：对孔排序（按文件顺序、先 X、先 Y 或最短路径），并按刀具保持分组。
+* **界面**：80x25 的文本模式屏幕，带有 CGA 颜色、菜单、文件对话框和孔的矢量视图，显示在一个窗口中。支持英语、西班牙语、意大利语、德语、法语、葡萄牙语、中文和日语：可在菜单中选择语言，或用 `--lang` 启动。
+* **机床协议**（`protocol/`，crate `eh3d-drillpro-protocol`）：一个没有界面的库：字节传输（串口或模拟器）、带加减速曲线的毫米级运动规划，以及在解除保险之前拒绝运动的安全闸。
+* **模拟器**：整个作业无需硬件即可运行到结束；测试使用它。
+* **机器**：控制单元通过串口连接、使用过 DOS 软件 4.6 的机器：Bungard CCD MTC 和 CCD/2 MTC（手动换刀；CCD/2 台面较小，325 x 270 mm）。台面尺寸等机器常数来自机器的配置文件。只在一台 CCD MTC 上试过，主轴（钻头）和吸尘器启动输出尚未试过。两种 ATC 型号（CCD ATC 和 CCD/2 ATC，自动换刀）将另做独立的应用，利用逆向工程所能得到的信息。XL 型号及之后的机器带有自己的现代控制单元和软件，不在支持范围内。
+* **机器文件**（`machine.cfg`，DRILLPRO 与 ROUTEPRO 共用）：作业如何到达机器（`demo` 模拟器，`rs232` 电脑自己的串口，`usb` USB 串口适配器，`node` 经网络的 EH3D-NODE-BUNGARD），并且每行一个值，记录在真实机器上调出的所有参数：搜索速度和加减速斜坡、校准跳、电机极限。
+* **回参考点**：Z 先上升到限位开关，然后 X 和 Y，最后做一次柔和的校准跳。控制单元在 RI 线上报告“三轴全部到位”，程序监视这条线；机器已停在原点时，它跳过搜索，先让 X 和 Y 离开开关 10 mm，再重新搜索，从而现场看到它们到位。
+* **平稳运动**：运动以一条连续数据流发出，字节位置携带时间（否则 USB 适配器会成批地交付字节），Z 逐字节运动，`Esc` 在一瞬间取消作业并关闭步进驱动器。
+* **主轴**：默认使用控制单元自己的（锁存位，最高 60000 rpm）；在机器文件中设置 `spindle = node` 后，作业改为向 EH3D-NODE-BUNGARD 要求主轴（节点输出端的变频器，节点最大值以内的任意转速，任何停止时都会停转）。使用节点时，程序还会读取机器的指示灯，因此每个轴到达原点都能实时看到，无需在数据流中间读取原点线。
+* **服务器连接**（机器文件中的 `connection = server`，配合 `server_address`、`server_token` 和 `server_machine`）：程序不再自己驱动机器，而是把作业发给 [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER)，由它按机器的常数规划、通过机器的节点执行，并告诉程序进展如何；程序照常显示进度并回答对话框，`Esc` 会停止服务器上的作业，关闭程序则不会停止它。
+
+## 🧩 在 EH3D 中的角色
+
+EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由 PC 生成每一个电机步进的机床。它的铣削姊妹项目 EH3D-ROUTEPRO 复用其协议、屏幕和语言支持。它目前不依赖 EH3D 的其他仓库；以后可以用 EH3D-CORE-LIBS 的 Excellon 读取器替换自己的读取器。
+
+## 📂 仓库结构
+
+```text
+EH3D-DRILLPRO/
+├── src/          library: file formats, job planning, screen, application, languages
+├── src/bin/      the drillpro executable (feature gui)
+├── protocol/     eh3d-drillpro-protocol: serial transport, motion, safety gate
+├── tests/        formats, job planning, screens in all languages
+├── testdata/     small sample files written for the tests
+├── docs/         PROTOCOL.md 和 CONNECTION.md：协议、机器文件和每个调整值；machine.cfg.example：包含全部值的文件
+├── tools/        ci_validate.py: manifest, versions, changelog and README checks
+├── images/       banner
+└── eh3d.project.json   the manifest of the project
+```
+
+## 🛠️ 构建与运行
+
+需要稳定版的 Rust 工具链。
+
+```bash
+cargo build --release --features gui
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+cargo fmt --all --check
+python -I tools/ci_validate.py
+```
+
+用 `run.bat`（Windows）或 `./run.sh`（Linux 和 macOS）运行；两者都会在需要时先构建程序：`run.bat [文件.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` 是存放 `DRILLPRO.DTD` 和 `DRILLPRO.DCF` 的文件夹（默认：`testdata/`），`--dump` 将屏幕以纯文本输出。按键：`Alt` 加高亮字母打开菜单，方向键移动，`Enter` 确认，`Esc` 返回；也可以点击菜单栏。中文和日文需要系统字体中有 CJK 字体。 `--connection FILE` 指向不同于默认的机器文件（Windows 上默认为 `%APPDATA%\EH3D\machine.cfg`，其他系统为 `~/.config/eh3d/machine.cfg`）；没有机器文件时程序在模拟器上运行。
+
+## 🔗 相关项目
+
+* [EH3D-ROUTEPRO](https://github.com/JuanenRac/EH3D-ROUTEPRO): 铣削姊妹项目；使用本项目的协议、屏幕和语言
+* [EH3D-CORE-LIBS](https://github.com/JuanenRac/EH3D-CORE-LIBS): 套件共享的 Excellon 和 G-code 读取器
+* [EH3D-COMMON](https://github.com/JuanenRac/EH3D-COMMON): 套件的项目容器和机床遥测类型
+* [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD)：装在机器箱内的 ESP32-S3 节点（以太网或 Wi-Fi），通过自己的串口发出步进，时序是 USB 适配器保持不了的，并读取机器的指示灯、控制主轴驱动器；它有自己的网页面板
+* [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER)： EH3D 家族的中心：接收本程序（`connection = server`）和其他客户端的作业，并通过节点在机器上执行
+
+## 📚 文档与社区
+
+* [协议说明](docs/PROTOCOL.md): 已知的控制单元驱动方式，以及哪些仍是假设。
+* [连接与调整](docs/CONNECTION.md)：机器文件、三种连接方式和每个值
+* [更新日志](CHANGELOG.md)
+* [参与贡献](CONTRIBUTING.md)
+* [安全政策](SECURITY.md)
+* [支持](SUPPORT.md)
+
+## 👤 作者
+
+**JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
+
+## 📜 许可证
+
+软件：GPL-3.0-or-later。见 [LICENSE](LICENSE)。套件的硬件设计使用 CERN OHL-S。

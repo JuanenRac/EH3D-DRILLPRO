@@ -1,0 +1,42 @@
+              * Sample machine configuration of the test data
+              * Written for the tests of EH3D-DRILLPRO; it is not a copy of any other file.
+              * Decimal separator = .
+              *
+0000001       * Serial number
+TEST.000000A  * Software version
+              * Following line: Directory
+              * Following line / n„chste Zeile: Directory
+.\RACK3000
+*.NCD         * Default extension (*.NCD, *.DRL)
+              * MAIN MENUE / HAUPTMENUE
+1.0000        * Scale X (0.0000 ... 10.000)
+1.0000        * Scale Y (0.0000 ... 10.000)
+02.50         * Offset X (abs. value <= 495.00 mm)
+02.50         * Offset Y (abs. value <= 325.00 mm)
+555.00        * Clipping X (max. course length, <= 495 mm)
+405.00        * Clipping Y (max. course length, <= 325 mm)
+1.00          * Board thickness / Plattenst„rke (mm)
+12.00         * Base sheet th. / Unterlagenst.  (mm)
+              * MACHINE CONSTANTS / MASCHINENKONSTANTEN
+4000          * Max.  Speed XY Normal     (mm/min)
+1000          *             XY Reference
+1000          * Start Speed XY Ramp
+5000          * Max.  Speed  Z Normal
+1000          *              Z Reference
+1000          * Start Speed  Z Ramp
+10            * Acceleration coeff. XY
+20            * Acceleration coeff. Z
+0.9992        * Correction   coeff. X
+0.9998        * Correction   coeff. Y
+0.8988        * Correction   coeff. Z
+37.30         * Max. Z depth / Tiefe (mm)
+16.00         * Distance tool - board (mm)
+0.50          * Spindle start time (s/(10000*1/min))
+              * Coordinates unit / Masseinheit:
+1             * 0: 1/10 mil, 1: 1 mil, 2: 0.025 mm, 3: 0.01 mm,
+              * Coordinates Sorting / Sortierung:
+3             * 0:No, 1:X first, 2:Y first, 3:Special
+0 0           * RESERVED, DO NOT CHANGE
+0             * Ser. Interface: 0=COM1:, 1=COM2:, 2=COM3:, 3=COM4:, 4=DEMO
+2             * RS232: 0:9600 baud via DOS, 1:19200 bd, 2:38400 bd
+              * End of Configuration file / Dateiende (47 lines)
