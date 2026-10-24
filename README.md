@@ -34,6 +34,25 @@
 | Stack | Rust |
 | On real hardware | Yes, on one Bungard CCD MTC: the reference run and the moves of every axis; a whole job has not run yet. Without a machine file it runs on the simulator |
 
+## 🚦 Project status
+
+Each line is one part of this repository and the light says how far it is today. It is written from what the repository can show (tests, builds, runs), not from what is planned.
+
+🟢 Done and verified · 🟡 Works, with known limits · 🟠 Partly done or not verified yet · 🔴 Not done or not working
+
+| Area | State | What it means here |
+|---|---|---|
+| Software | 🟡 | A Rust program with an 80x25 text-mode screen reads the drill file, the tool table and the machine file, orders the holes and runs the whole job against a simulator, or on a real machine when the machine file says so. |
+| Tests | 🟢 | 123 tests pass (`cargo test --workspace`): the formats, the job planning, the protocol on the simulator and the screens in all eight languages. |
+| File readers | 🟡 | The `.NCD` drill file, the tool table `DRILLPRO.DTD` and the machine file `DRILLPRO.DCF` are read; only with small sample files written for the tests, not with files from real boards. |
+| Machine protocol | 🟠 | The byte protocol of the control unit was rebuilt by reverse engineering and `docs/PROTOCOL.md` still lists parts that are hypotheses; the protocol layer refuses to move anything until it has been armed. |
+| Interface | 🟡 | The text-mode screen, the menus, the file dialog and the vector view of the holes speak all eight languages (tested); Chinese and Japanese need a CJK font in the system. |
+| Real hardware | 🟠 | On one Bungard CCD MTC the reference run of the three axes and the moves of every axis have been tried; a whole drilling job has not run, the steps per millimetre are only checked against the original's configuration, and the spindle and vacuum outputs are untried. |
+| Safety in use | 🟡 | `Esc` stops the job within a fraction of a second and switches the stepper drivers off, and the machine's own control unit watches the limit switches; the software has no emergency stop of its own. |
+| Server connection | 🟠 | With `connection = server` the program sends the job to EH3D-SERVER and follows its progress; this path has only been exercised against the simulator. |
+| Ready-made packages | 🟡 | The first release carries packages for Windows, Linux and macOS (Apple silicon and Intel), each with its SHA-256, built by the release workflow. |
+| Documentation | 🟢 | README in eight languages, the protocol notes with what is still a hypothesis, and the guide to the machine file with every tuning value. |
+
 ## 🎯 Overview
 
 * The **file readers**: Excellon `.NCD` drill files (with or without the `M48` header, modal coordinates, imperial units of 1 mil), the tool table `DRILLPRO.DTD` and the machine configuration `DRILLPRO.DCF`.

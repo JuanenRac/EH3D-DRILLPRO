@@ -34,6 +34,25 @@
 | Pila tecnológica | Rust |
 | En hardware real | Sí, en una Bungard CCD MTC: la referencia y los movimientos de cada eje; un trabajo completo todavía no se ha ejecutado. Sin fichero de máquina se ejecuta en el simulador |
 
+## 🚦 Estado del proyecto
+
+Cada línea es una parte de este repositorio y la luz dice hasta dónde llega hoy. Se escribe con lo que el repositorio puede demostrar (pruebas, compilaciones, ejecuciones), no con lo previsto.
+
+🟢 Hecho y verificado · 🟡 Funciona, con límites conocidos · 🟠 Hecho a medias o sin verificar · 🔴 Sin hacer o sin funcionar
+
+| Área | Estado | Qué significa aquí |
+|---|---|---|
+| Software | 🟡 | Un programa en Rust con pantalla de texto de 80x25 lee el fichero de taladros, la tabla de herramientas y el fichero de la máquina, ordena los agujeros y ejecuta el trabajo entero contra un simulador, o en una máquina real si el fichero de la máquina lo indica. |
+| Pruebas | 🟢 | Pasan 123 pruebas (`cargo test --workspace`): los formatos, la planificación del trabajo, el protocolo en el simulador y las pantallas en los ocho idiomas. |
+| Lectores de ficheros | 🟡 | Se leen el fichero de taladros `.NCD`, la tabla de herramientas `DRILLPRO.DTD` y el fichero de la máquina `DRILLPRO.DCF`; solo con pequeños ficheros de muestra escritos para las pruebas, no con ficheros de placas reales. |
+| Protocolo de la máquina | 🟠 | El protocolo de bytes de la unidad de control se reconstruyó por ingeniería inversa y `docs/PROTOCOL.md` aún lista partes que son hipótesis; la capa de protocolo se niega a mover nada hasta que se arma. |
+| Interfaz | 🟡 | La pantalla de texto, los menús, el diálogo de ficheros y la vista vectorial de los agujeros hablan los ocho idiomas (probado); el chino y el japonés necesitan una fuente CJK en el sistema. |
+| Hardware real | 🟠 | En una Bungard CCD MTC se han probado la marcha de referencia de los tres ejes y los movimientos de cada eje; no se ha ejecutado un trabajo de taladrado completo, los pasos por milímetro solo se han cotejado con la configuración del original y las salidas del husillo y del aspirador no se han probado. |
+| Seguridad de uso | 🟡 | `Esc` detiene el trabajo en una fracción de segundo y apaga los drivers de los motores, y la propia unidad de control de la máquina vigila los finales de carrera; el software no tiene parada de emergencia propia. |
+| Conexión con el servidor | 🟠 | Con `connection = server` el programa envía el trabajo a EH3D-SERVER y sigue su avance; este camino solo se ha ejercitado contra el simulador. |
+| Paquetes listos para usar | 🟡 | La primera versión publicada lleva paquetes para Windows, Linux y macOS (Apple silicon e Intel), cada uno con su SHA-256, generados por el flujo de publicación. |
+| Documentación | 🟢 | README en ocho idiomas, las notas del protocolo con lo que aún es hipótesis y la guía del fichero de la máquina con cada valor de ajuste. |
+
 ## 🎯 Descripción general
 
 * Los **lectores de ficheros**: ficheros de taladrado Excellon `.NCD` (con o sin la cabecera `M48`, coordenadas modales, unidades imperiales de 1 mil), la tabla de herramientas `DRILLPRO.DTD` y la configuración de la máquina `DRILLPRO.DCF`.

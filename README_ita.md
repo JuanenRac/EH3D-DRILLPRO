@@ -34,6 +34,25 @@
 | Stack tecnologico | Rust |
 | Su hardware reale | Sì, su una Bungard CCD MTC: il riferimento e i movimenti di ogni asse; un lavoro completo non è ancora stato eseguito. Senza file della macchina gira sul simulatore |
 
+## 🚦 Stato del progetto
+
+Ogni riga è una parte di questo repository e il semaforo dice a che punto è oggi. È scritta in base a ciò che il repository può mostrare (test, compilazioni, esecuzioni), non a ciò che è previsto.
+
+🟢 Fatto e verificato · 🟡 Funziona, con limiti noti · 🟠 Fatto a metà o non ancora verificato · 🔴 Non fatto o non funzionante
+
+| Area | Stato | Cosa significa qui |
+|---|---|---|
+| Software | 🟡 | Un programma Rust con schermo di testo 80x25 legge il file di foratura, la tabella utensili e il file della macchina, ordina i fori ed esegue l'intero lavoro su un simulatore, o su una macchina reale se il file della macchina lo indica. |
+| Test | 🟢 | 123 test passano (`cargo test --workspace`): i formati, la pianificazione del lavoro, il protocollo sul simulatore e le schermate in tutte e otto le lingue. |
+| Lettori di file | 🟡 | Il file di foratura `.NCD`, la tabella utensili `DRILLPRO.DTD` e il file della macchina `DRILLPRO.DCF` vengono letti; solo con piccoli file di esempio scritti per i test, non con file di schede reali. |
+| Protocollo della macchina | 🟠 | Il protocollo di byte dell'unità di controllo è stato ricostruito per ingegneria inversa e `docs/PROTOCOL.md` elenca ancora parti che sono ipotesi; il livello di protocollo si rifiuta di muovere qualsiasi cosa finché non è armato. |
+| Interfaccia | 🟡 | Lo schermo di testo, i menu, la finestra dei file e la vista vettoriale dei fori parlano tutte e otto le lingue (testato); cinese e giapponese richiedono un font CJK nel sistema. |
+| Hardware reale | 🟠 | Su una Bungard CCD MTC sono stati provati la corsa di riferimento dei tre assi e i movimenti di ogni asse; un intero lavoro di foratura non è mai girato, i passi per millimetro sono confrontati solo con la configurazione dell'originale, e le uscite di mandrino e aspiratore non sono state provate. |
+| Sicurezza d'uso | 🟡 | `Esc` ferma il lavoro in una frazione di secondo e spegne i driver dei motori, e l'unità di controllo della macchina sorveglia i finecorsa; il software non ha un arresto di emergenza proprio. |
+| Connessione al server | 🟠 | Con `connection = server` il programma invia il lavoro a EH3D-SERVER e ne segue l'avanzamento; questo percorso è stato provato solo sul simulatore. |
+| Pacchetti pronti | 🟡 | La prima pubblicazione contiene pacchetti per Windows, Linux e macOS (Apple silicon e Intel), ciascuno con il suo SHA-256, costruiti dal workflow di rilascio. |
+| Documentazione | 🟢 | README in otto lingue, le note sul protocollo con ciò che è ancora ipotesi e la guida al file della macchina con ogni valore di taratura. |
+
 ## 🎯 Panoramica
 
 * I **lettori di file**: file di foratura Excellon `.NCD` (con o senza l'intestazione `M48`, coordinate modali, unità imperiali da 1 mil), la tabella degli utensili `DRILLPRO.DTD` e la configurazione della macchina `DRILLPRO.DCF`.
