@@ -81,6 +81,8 @@ python -I tools/ci_validate.py
 
 Starten Sie es mit `run.bat` (Windows) oder `./run.sh` (Linux und macOS); beide bauen das Programm bei Bedarf zuerst: `run.bat [DATEI.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` ist der Ordner mit `DRILLPRO.DTD` und `DRILLPRO.DCF` (Standard: `testdata/`), `--dump` gibt den Bildschirm als einfachen Text aus. Tasten: `Alt` plus der hervorgehobene Buchstabe öffnet ein Menü, Pfeile bewegen, `Enter` bestätigt, `Esc` geht zurück; die Menüleiste ist auch anklickbar. Chinesisch und Japanisch brauchen eine CJK-Schrift unter den Systemschriften. `--connection FILE` verweist auf eine andere Maschinendatei als die Standarddatei (`%APPDATA%\EH3D\machine.cfg` unter Windows, sonst `~/.config/eh3d/machine.cfg`); ohne Maschinendatei läuft das Programm im Simulator.
 
+**Fertige Pakete:** Jede Version enthält ein Paket für Windows (zip), Linux (tar.gz) und macOS (Apple Silicon und Intel, tar.gz) mit dem Programm, der Lizenz und dieser README, jeweils mit der SHA-256-Prüfsumme daneben. Sie werden vom Workflow `Release binaries` dieses Repositorys gebaut. Laden Sie eines von der Releases-Seite herunter; unter Linux braucht das Fenster X11 oder Wayland.
+
 ## 🔗 Verwandte Projekte
 
 * [EH3D-ROUTEPRO](https://github.com/JuanenRac/EH3D-ROUTEPRO): das Geschwister für das Fräsen; es verwendet Protokoll, Bildschirm und Sprachen dieses Projekts

@@ -81,6 +81,8 @@ python -I tools/ci_validate.py
 
 用 `run.bat`（Windows）或 `./run.sh`（Linux 和 macOS）运行；两者都会在需要时先构建程序：`run.bat [文件.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` 是存放 `DRILLPRO.DTD` 和 `DRILLPRO.DCF` 的文件夹（默认：`testdata/`），`--dump` 将屏幕以纯文本输出。按键：`Alt` 加高亮字母打开菜单，方向键移动，`Enter` 确认，`Esc` 返回；也可以点击菜单栏。中文和日文需要系统字体中有 CJK 字体。 `--connection FILE` 指向不同于默认的机器文件（Windows 上默认为 `%APPDATA%\EH3D\machine.cfg`，其他系统为 `~/.config/eh3d/machine.cfg`）；没有机器文件时程序在模拟器上运行。
 
+**预编译软件包：** 每个发布版本都附带适用于 Windows（zip）、Linux（tar.gz）和 macOS（Apple 芯片与 Intel，tar.gz）的软件包，内含程序、许可证和本 README，旁边附有各自的 SHA-256。它们由本仓库的 `Release binaries` 工作流构建。请从 Releases 页面下载；在 Linux 上，窗口需要 X11 或 Wayland。
+
 ## 🔗 相关项目
 
 * [EH3D-ROUTEPRO](https://github.com/JuanenRac/EH3D-ROUTEPRO): 铣削姊妹项目；使用本项目的协议、屏幕和语言

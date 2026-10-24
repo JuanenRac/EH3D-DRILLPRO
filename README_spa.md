@@ -81,6 +81,8 @@ python -I tools/ci_validate.py
 
 Ejecútalo con `run.bat` (Windows) o `./run.sh` (Linux y macOS); ambos compilan antes el programa si hace falta: `run.bat [FICHERO.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` es la carpeta con `DRILLPRO.DTD` y `DRILLPRO.DCF` (por defecto: `testdata/`) y `--dump` imprime la pantalla como texto plano. Teclas: `Alt` más la letra resaltada abre un menú, las flechas mueven, `Enter` acepta, `Esc` vuelve; también se puede pulsar la barra de menús. El chino y el japonés necesitan una fuente CJK entre las del sistema. `--connection FILE` indica otro fichero de máquina distinto del predeterminado (`%APPDATA%\EH3D\machine.cfg` en Windows, `~/.config/eh3d/machine.cfg` en el resto); sin fichero de máquina el programa se ejecuta en el simulador.
 
+**Paquetes ya compilados:** cada versión publicada lleva un paquete para Windows (zip), Linux (tar.gz) y macOS (Apple silicon e Intel, tar.gz) con el programa, la licencia y este README, cada uno con su SHA-256 al lado. Los construye el workflow `Release binaries` de este repositorio. Descarga uno desde la página de Releases; en Linux la ventana necesita X11 o Wayland.
+
 ## 🔗 Proyectos relacionados
 
 * [EH3D-ROUTEPRO](https://github.com/JuanenRac/EH3D-ROUTEPRO): el hermano de fresado; usa el protocolo, la pantalla y los idiomas de este proyecto

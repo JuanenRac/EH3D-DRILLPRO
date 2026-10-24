@@ -2,8 +2,6 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
-
 ## [0.0.1] - First version: file readers, job planning, text-mode interface and a simulated machine
 
 - **Excellon reader:** `.NCD` drill files with or without the `M48` header, modal coordinates and imperial units of 1 mil, with the tool table (`.DTD`) and the machine configuration (`.DCF`).
@@ -18,3 +16,4 @@ All notable changes to this project are documented here.
 - **Steady motion:** moves go out as one continuous stream paced by the adapter's UART, Z moves byte by byte.
 - **Documentation:** protocol notes, the connection guide with the CH340 findings, and a machine file example with every value.
 - 123 tests, `cargo clippy -D warnings` and `cargo fmt --check` in CI on Linux and Windows, and a repository check of the manifest, the versions, the changelog and the eight README files.
+- **Ready-made packages for Windows, Linux and macOS:** the `Release binaries` workflow builds the program with its window for Windows (zip), Linux (tar.gz; X11 and Wayland) and macOS (Apple silicon and Intel, tar.gz), each package with its SHA-256, and the release carries them.
