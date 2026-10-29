@@ -156,6 +156,10 @@ impl Planner<'_> {
                 .latches
                 .spindle_on(spindle_level(rpm), t.spindle_start_wait_ms as u64 * 1000);
             self.latch(s);
+            if t.vacuum_aux {
+                let v = self.latches.vacuum_on(spindle_level(rpm));
+                self.latch(v);
+            }
         }
     }
 

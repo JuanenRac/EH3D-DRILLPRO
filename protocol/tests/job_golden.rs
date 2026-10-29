@@ -205,3 +205,36 @@ fn with_the_nodes_spindle_the_job_asks_the_node_instead_of_writing_the_latches()
     let bytes = flatten_bytes(&items);
     assert!(!bytes.iter().any(|&b| b == 0x90 || b == 0xA8 || b == 0xE8));
 }
+
+#[test]
+fn the_vacuum_output_goes_on_with_the_spindle_and_off_with_it_only_when_asked() {
+    let tools = [JobTool {
+        number: 1,
+        extra_stroke_mm: 0.0,
+        feed_mm_min: 1000,
+        spindle_rpm: 60_000,
+    }];
+    let holes = [JobHole {
+        tool: 1,
+        x_mm: mil(1000.0),
+        y_mm: mil(1000.0),
+    }];
+    // as the original: the auxiliary bit of latch A (0x20) is never written
+    let plain = flatten_bytes(&plan_drill_job(&machine(), &tools, &holes));
+    assert!(!plain.iter().any(|&b| (0xA0..=0xBF).contains(&b)));
+    // asked for: it goes out with the spindle at its speed (0x9F | 0x20) and the latch goes back to 0x80 with the stop
+    let mut m = machine();
+    m.geometry.tuning.vacuum_aux = true;
+    let bytes = flatten_bytes(&plan_drill_job(&m, &tools, &holes));
+    assert_eq!(bytes.iter().filter(|&&b| b == 0xBF).count(), 1);
+    let on = bytes.iter().position(|&b| b == 0xBF).unwrap();
+    assert_eq!(bytes[on - 1], 0x9F, "right after the speed level");
+    let stop = bytes.iter().position(|&b| b == 0xD2).unwrap();
+    assert!(on < stop);
+    assert_eq!(
+        bytes[stop + 1],
+        0x80,
+        "the stop clears run and auxiliary together"
+    );
+    assert!(!bytes[stop..].iter().any(|&b| (0xA0..=0xBF).contains(&b)));
+}

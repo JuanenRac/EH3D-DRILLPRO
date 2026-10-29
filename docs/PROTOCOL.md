@@ -64,7 +64,7 @@ Bytes with bit 7 set write one of two latches (the base values are `0x80` and `0
 | `OR` of two | a diagonal step: the bytes of both axes combined (it stalls X at speed, see above) |
 | latch `0xC0` bit 4 (`0x10`) | motor drivers on (needed before any move: without it nothing moves), off with `0xC0`. **Confirmed.** |
 | latch `0x80` bit 4 (`0x10`) | spindle running (not tried on the machine yet) |
-| latch `0x80` bit 5 (`0x20`) | an auxiliary output, with a 500 ms wait (not tried) |
+| latch `0x80` bit 5 (`0x20`) | an auxiliary output, with a 500 ms wait (not tried). The original on the manual machine never switches it; on the automatic-tool-change models it opens (`0xA0`) and closes (`0x80`) the chuck. With `vacuum = aux` in the machine file this program switches it on with the spindle and off with it |
 | latch `0x80` low bits | spindle speed level (not tried) |
 
 The spindle start sequence is: write the second latch with its spindle bits set, wait about 100 ms, write the first latch with bit 4, wait for the spindle to come up, then write the speed level. Stopping reverses it.

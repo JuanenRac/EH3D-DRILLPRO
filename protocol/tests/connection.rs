@@ -262,3 +262,31 @@ fn a_job_can_go_to_the_eh3d_server() {
     // nothing of the server in a file that does not ask for it
     assert_eq!(parse("").unwrap().server_address, "");
 }
+
+#[test]
+fn the_vacuum_cleaner_can_use_the_auxiliary_output() {
+    assert!(!parse("").unwrap().tuning.vacuum_aux);
+    assert!(
+        parse(
+            "vacuum = aux
+"
+        )
+        .unwrap()
+        .tuning
+        .vacuum_aux
+    );
+    assert!(
+        !parse(
+            "vacuum = central
+"
+        )
+        .unwrap()
+        .tuning
+        .vacuum_aux
+    );
+    assert!(parse(
+        "vacuum = maybe
+"
+    )
+    .is_err());
+}

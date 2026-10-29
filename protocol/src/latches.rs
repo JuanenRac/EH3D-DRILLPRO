@@ -131,10 +131,21 @@ impl Latches {
         }
     }
 
+    /// The auxiliary output on with the spindle running at `level` (a vacuum cleaner wired to it); the speed level goes out again
+    /// with the bit, so the spindle keeps its speed. 500 ms of settling, as the original waits after the output changes.
+    pub fn vacuum_on(&self, level: u8) -> Sequence {
+        let a = self.a | A_AUX;
+        Sequence {
+            ops: vec![Op::Send(a | (level & A_LEVEL_MASK)), Op::WaitUs(500_000)],
+            next: Latches { a, b: self.b },
+        }
+    }
+
     /// Spindle stop: brake on, drop the enables, release run, then release the brake.
     pub fn spindle_off(&self, spin_down_us: u64) -> Sequence {
         let braked = (self.b | B_SPINDLE_BRAKE) & !B_SPINDLE_ENABLE;
-        let a = self.a & !A_SPINDLE_RUN;
+        // the auxiliary output (vacuum) goes off with the spindle
+        let a = self.a & !(A_SPINDLE_RUN | A_AUX);
         let b = braked & !B_SPINDLE_BRAKE;
         let ops = vec![
             Op::Send(braked),

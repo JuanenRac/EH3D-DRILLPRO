@@ -79,6 +79,9 @@ spindle_start_wait_ms = 1680
 spindle_stop_wait_ms = 1000
 # Whose spindle runs the job: central (the control unit's own, by its latch bits) or node (the EH3D-NODE-BUNGARD's: a variable-frequency drive).
 spindle = central
+# Where a vacuum cleaner is switched: central (the control unit's own relay follows the spindle bits, as with the original software on the
+# manual machine) or aux (the auxiliary output, latch A bit 5, goes on with the spindle and off with it; for a cleaner wired to that output).
+vacuum = central
 # 0: on a usb or node connection the last search goes out as one unbroken stream and the home line is read once, at the end. Every
 # reading in the middle leaves a gap of a few milliseconds in the stream, and a motor at speed (Y on the CH340) loses steps in it.
 # 50 to 4000: the search goes out in chunks of that many bytes (260 microseconds each) and the line is read between them; when it

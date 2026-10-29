@@ -44,6 +44,9 @@ pub struct Tuning {
     pub spindle_start_wait_ms: u32,
     pub spindle_stop_wait_ms: u32,
     pub spindle_node: bool,
+    /// The auxiliary output (latch A bit 5) is switched on with the spindle and off with it, for a vacuum cleaner wired there. The
+    /// original on the manual machine never does it (its vacuum relay, if any, follows the control unit's spindle bits), so the default is off.
+    pub vacuum_aux: bool,
     /// A search on a paced connection goes out in chunks of this many bytes (260 microseconds each) while another thread watches the
     /// home line; when it rises no more chunks are sent. A chunk of 900 bytes is about 0.23 s, which is also how often the driver of a
     /// USB adapter lets a reading through while it writes.
@@ -91,6 +94,7 @@ impl Default for Tuning {
             spindle_start_wait_ms: 1680,
             spindle_stop_wait_ms: 1000,
             spindle_node: false,
+            vacuum_aux: false,
             home_watch_chunk_bytes: 0,
             home_watch_seek: false,
             unstick_mm: 10.0,
@@ -150,6 +154,7 @@ impl Tuning {
             "spindle_start_wait_ms" => self.spindle_start_wait_ms = ms(value)?,
             "spindle_stop_wait_ms" => self.spindle_stop_wait_ms = ms(value)?,
             "spindle" => self.spindle_node = !choice(key, value, "central", "node")?,
+            "vacuum" => self.vacuum_aux = !choice(key, value, "central", "aux")?,
             "unstick_mm" => self.unstick_mm = number(key, value, 0.0, 50.0)?,
             "unstick_always" => self.unstick_always = choice(key, value, "on", "off")?,
             "travel_ramp_steps" => self.travel_ramp_steps = steps(value)?,
