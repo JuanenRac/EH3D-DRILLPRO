@@ -29,7 +29,7 @@ pub enum Input {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum Mode {
+pub(crate) enum Mode {
     Main,
     FileDialog,
     Vectors,
@@ -41,48 +41,48 @@ enum Mode {
     ConfirmQuit,
 }
 
-struct Loaded {
-    path: PathBuf,
-    file: DrillFile,
+pub(crate) struct Loaded {
+    pub(crate) path: PathBuf,
+    pub(crate) file: DrillFile,
 }
 
-struct Entry {
-    name: String,
-    dir: bool,
+pub(crate) struct Entry {
+    pub(crate) name: String,
+    pub(crate) dir: bool,
 }
 
-struct Run {
-    items: Vec<Item>,
-    next: usize,
-    total_holes: usize,
+pub(crate) struct Run {
+    pub(crate) items: Vec<Item>,
+    pub(crate) next: usize,
+    pub(crate) total_holes: usize,
     /// Holes whose stroke has been completed.
-    done: usize,
-    pending_descent: bool,
-    sim: Simulator,
-    connected: bool,
+    pub(crate) done: usize,
+    pub(crate) pending_descent: bool,
+    pub(crate) sim: Simulator,
+    pub(crate) connected: bool,
     /// The job on a real machine (a connection other than `demo`); the simulator above is then unused.
-    real: Option<RealRun>,
+    pub(crate) real: Option<RealRun>,
     /// Index of the item that finishes each hole, to count the holes done from the real progress.
-    hole_ends: Vec<usize>,
+    pub(crate) hole_ends: Vec<usize>,
 }
 
 pub struct App {
     pub lang: Lang,
-    mode: Mode,
-    dir: PathBuf,
-    entries: Vec<Entry>,
-    sel: usize,
-    loaded: Option<Loaded>,
-    error: Option<String>,
-    tools: Vec<Tool>,
-    tools_found: bool,
-    config: Option<Config>,
-    settings: Option<crate::config::MachineSettings>,
-    sorting: Sorting,
-    geometry: Geometry,
-    run: Option<Run>,
-    board_mm: f64,
-    connection: ConnectionConfig,
+    pub(crate) mode: Mode,
+    pub(crate) dir: PathBuf,
+    pub(crate) entries: Vec<Entry>,
+    pub(crate) sel: usize,
+    pub(crate) loaded: Option<Loaded>,
+    pub(crate) error: Option<String>,
+    pub(crate) tools: Vec<Tool>,
+    pub(crate) tools_found: bool,
+    pub(crate) config: Option<Config>,
+    pub(crate) settings: Option<crate::config::MachineSettings>,
+    pub(crate) sorting: Sorting,
+    pub(crate) geometry: Geometry,
+    pub(crate) run: Option<Run>,
+    pub(crate) board_mm: f64,
+    pub(crate) connection: ConnectionConfig,
     pub quit: bool,
 }
 
@@ -155,7 +155,7 @@ impl App {
         }
     }
 
-    fn refresh_entries(&mut self) {
+    pub(crate) fn refresh_entries(&mut self) {
         let mut v = vec![Entry {
             name: "..".into(),
             dir: true,
@@ -282,7 +282,7 @@ impl App {
         .unwrap_or(0)
     }
 
-    fn start(&mut self) {
+    pub(crate) fn start(&mut self) {
         let Some(l) = &self.loaded else {
             self.mode = Mode::FileDialog;
             self.refresh_entries();

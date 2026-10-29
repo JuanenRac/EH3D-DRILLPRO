@@ -1,6 +1,7 @@
 //! File formats used by the Bungard drilling workflow.
 
 pub mod app;
+pub mod classic;
 pub mod config;
 pub mod i18n;
 pub mod job;

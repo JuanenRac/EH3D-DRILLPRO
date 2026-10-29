@@ -114,6 +114,8 @@ pub struct MachineSettings {
     pub spindle_start_time: f64,
     pub unit: CoordUnit,
     pub sorting: SortMode,
+    /// Chord angle of the routing program in degrees (the line where the drilling program keeps its sorting); 0 for drilling.
+    pub chord_angle: i32,
     /// Serial interface index: 0..3 = COM1..COM4, 4 = demo.
     pub interface: u8,
     /// Baud selector: 0 = 9600 via DOS, 1 = 19200, 2 = 38400.
@@ -132,13 +134,34 @@ impl Config {
 
     /// Parses the numeric fields. `None` when the file does not have the expected layout.
     pub fn settings(&self) -> Option<MachineSettings> {
+        self.parse_settings(false)
+    }
+
+    /// The same for the routing program, whose line 23 is the HP-GL chord angle instead of the sorting.
+    pub fn route_settings(&self) -> Option<MachineSettings> {
+        self.parse_settings(true)
+    }
+
+    fn parse_settings(&self, route: bool) -> Option<MachineSettings> {
         let unit = CoordUnit::from_index(self.u(22)?)?;
-        let sorting = match self.u(23)? {
-            0 => SortMode::None,
-            1 => SortMode::XFirst,
-            2 => SortMode::YFirst,
-            3 => SortMode::Special,
-            _ => return None,
+        let (sorting, chord_angle) = if route {
+            let angle: i32 = self
+                .values
+                .get(23)?
+                .split_whitespace()
+                .next()?
+                .parse()
+                .ok()?;
+            (SortMode::None, angle)
+        } else {
+            let sorting = match self.u(23)? {
+                0 => SortMode::None,
+                1 => SortMode::XFirst,
+                2 => SortMode::YFirst,
+                3 => SortMode::Special,
+                _ => return None,
+            };
+            (sorting, 0)
         };
         let atc = self
             .values
@@ -170,6 +193,7 @@ impl Config {
             spindle_start_time: self.f(21)?,
             unit,
             sorting,
+            chord_angle,
             interface: self.u(25)? as u8,
             baud: self.u(26)? as u8,
             atc,

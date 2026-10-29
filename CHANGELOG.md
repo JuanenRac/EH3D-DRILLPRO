@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Classic screens (the default):** the main form (scale, offset, clip, vectors, board, base), the Parameter, Tool Data, Select File, Panelization and Quit dialogs and the homing and job windows of the MS-DOS program, drawn cell by cell in the same layout and colours, with every text in the eight languages. `--modern` starts the menu-driven interface as before. The classic screens are a shared front end (`classic`) that DRILLPRO and ROUTEPRO both use; a test per screen compares it with screens captured from the original when `EH3D_ORIGINAL_UI` points to them, and further tests check the hot letters, the label widths and the keyboard flow in every language.
+- **Chord angle:** the configuration of the routing program is read with its chord angle (`Config::route_settings`) instead of the drilling sorting.
 - **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
 
 ## [0.0.1] - First version: file readers, job planning, text-mode interface and a simulated machine
