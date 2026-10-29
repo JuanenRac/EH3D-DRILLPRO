@@ -260,6 +260,8 @@ pub struct ClassicApp<E: ClassicEngine = App> {
     panel: Option<engine::Panel>,
     /// The settings or the form changed since the files were read or written.
     dirty: bool,
+    /// Esc was pressed during the job: it waits for Cont. or Abort.
+    interrupted: bool,
     /// Name of the machine shown where the original shows the licence number.
     pub machine_name: String,
     hits: RefCell<Vec<Hit>>,
@@ -293,6 +295,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             quit: false,
             panel: None,
             dirty: false,
+            interrupted: false,
             machine_name,
             hits: RefCell::new(Vec::new()),
             last_click: Cell::new(None),
@@ -764,8 +767,13 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
 
     fn tick(&mut self) -> bool {
         if matches!(self.dialog, Dialog::Running) {
+            if self.interrupted {
+                // the job waits for the operator
+                return true;
+            }
             let more = self.engine.tick(1);
             if !more {
+                self.interrupted = false;
                 self.dialog = Dialog::None;
             }
             return more;

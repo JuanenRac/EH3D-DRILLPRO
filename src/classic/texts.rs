@@ -163,4 +163,7 @@ translations! { CText, ctr, ALL_CTEXTS;
     Loaded => ["Loaded", "Cargado", "Caricato", "Geladen", "Chargé", "Carregado", "已载入", "読込済み"],
     ErrWrite => ["Cannot write", "No se puede escribir", "Impossibile scrivere", "Schreiben nicht möglich", "Écriture impossible", "Não é possível gravar", "无法写入", "書き込めません"],
     ErrRead => ["Cannot read", "No se puede leer", "Impossibile leggere", "Lesen nicht möglich", "Lecture impossible", "Não é possível ler", "无法读取", "読み込めません"],
+    QInterrupted => ["INTERRUPTED", "INTERRUMPIDO", "INTERROTTO", "UNTERBROCHEN", "INTERROMPU", "INTERROMPIDO", "已中断", "中断されました"],
+    QWhatNext => ["What next?", "¿Y ahora qué?", "Come proseguire?", "Wie weiter?", "Et ensuite ?", "E agora?", "下一步？", "どうしますか？"],
+    BCont => ["~C~ont.", "~C~ont.", "~C~ont.", "~W~eiter", "~C~ont.", "~C~ont.", "继续(~C~)", "続行(~C~)"],
 }

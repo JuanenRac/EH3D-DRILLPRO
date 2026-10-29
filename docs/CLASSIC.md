@@ -77,6 +77,8 @@ configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`).
   the length of the run, the spindle, the Z speed and the stroke) for every tool. `Enter` (or the letter of Ok) goes on; `Esc`
   (or the letter of Abort) stops the job. The words of the Tool Change window are the original's; its layout is ours, as it
   could not be captured from the original.
+* `Esc` while the job runs opens INTERRUPTED / What next?: Cont. (`Enter`, `C`) goes on, Abort (`Esc`, `A`) stops the job. The job
+  waits while the window is open. During the homing `Esc` stops at once.
 
 ## The machines
 

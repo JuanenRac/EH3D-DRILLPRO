@@ -167,3 +167,43 @@ fn the_window_shows_the_planned_figures_while_drilling() {
     let t = text(&a);
     assert!(t.contains("Drilling") && t.contains("TWO.NCD"), "{t}");
 }
+
+/// Runs the job, answering the operator, until `holes` are drilled.
+fn drill_until(a: &mut ClassicApp, holes: usize) {
+    for _ in 0..6000 {
+        if a.engine.question().is_some() {
+            a.handle(Input::Enter);
+        }
+        a.tick();
+        if a.engine.done() >= holes {
+            return;
+        }
+    }
+    panic!("the job did not reach {holes} holes");
+}
+
+#[test]
+fn esc_while_drilling_asks_what_next_and_the_job_waits() {
+    let dir = scratch("t5");
+    let mut a = ClassicApp::new(Lang::En, &dir);
+    a.load_file(&dir.join("TWO.NCD"));
+    a.handle(Input::Char('s'));
+    drill_until(&mut a, 1);
+    a.handle(Input::Esc);
+    let t = text(&a);
+    assert!(t.contains("INTERRUPTED") && t.contains("What next?"), "{t}");
+    let done = a.engine.done();
+    for _ in 0..200 {
+        a.tick();
+    }
+    assert_eq!(a.engine.done(), done, "the job waits for the operator");
+    // Cont. goes on
+    a.handle(Input::Enter);
+    assert!(!text(&a).contains("INTERRUPTED"));
+    drill_until(&mut a, done + 1);
+    // Abort stops it and the form is back
+    a.handle(Input::Esc);
+    a.handle(Input::Char('a'));
+    let t = text(&a);
+    assert!(!t.contains("INTERRUPTED") && t.contains("Scale"), "{t}");
+}

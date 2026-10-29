@@ -176,6 +176,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
     pub(crate) fn handle_click(&mut self, act: Act, double: bool) {
         match self.dialog {
             Dialog::None => self.click_main(act),
+            Dialog::Running if self.interrupted => match act {
+                Act::Dlg(Dlg::Ok) => self.interrupted = false,
+                Act::Dlg(Dlg::Abort) => self.abort_job(),
+                _ => {}
+            },
             Dialog::Running => {
                 // the operator's question has its two buttons
                 match act {
@@ -201,10 +206,32 @@ impl<E: ClassicEngine> ClassicApp<E> {
     /// Keys while a job runs: Esc stops it; at a question of the operator Enter (or the letter of Ok) goes on and Esc
     /// (or the letter of Abort) stops the job.
     fn running_key(&mut self, input: Input) {
+        if self.interrupted {
+            let cont = hot_letter(self.t(CText::BCont));
+            let abort = hot_letter(self.t(CText::BAbort));
+            match input {
+                Input::Enter => self.interrupted = false,
+                Input::Esc => self.abort_job(),
+                Input::Char(c) | Input::Alt(c) => {
+                    let c = c.to_ascii_lowercase();
+                    if Some(c) == cont {
+                        self.interrupted = false;
+                    } else if Some(c) == abort {
+                        self.abort_job();
+                    }
+                }
+                _ => {}
+            }
+            return;
+        }
         if self.engine.question().is_none() {
             if input == Input::Esc {
-                self.engine.stop();
-                self.dialog = Dialog::None;
+                if self.engine.started() {
+                    // drilling: the original asks what next before it stops
+                    self.interrupted = true;
+                } else {
+                    self.abort_job();
+                }
             }
             return;
         }
@@ -230,6 +257,35 @@ impl<E: ClassicEngine> ClassicApp<E> {
             self.engine.answer(false);
             self.dialog = Dialog::None;
         }
+    }
+
+    fn abort_job(&mut self) {
+        self.interrupted = false;
+        self.engine.stop();
+        self.dialog = Dialog::None;
+    }
+
+    /// The window after Esc during the job: INTERRUPTED, what next, Cont. and Abort.
+    fn render_interrupted(&self, s: &mut Screen) {
+        window(s, 19, 6, 41, 11, "", false);
+        let title = self.t(CText::QInterrupted);
+        label(
+            s,
+            19 + (41usize.saturating_sub(str_width(title))) / 2,
+            8,
+            title,
+        );
+        let ask = self.t(CText::QWhatNext);
+        label(
+            s,
+            19 + (41usize.saturating_sub(str_width(ask))) / 2,
+            10,
+            ask,
+        );
+        button(s, 24, 13, 12, self.t(CText::BCont), true, true);
+        button(s, 43, 13, 12, self.t(CText::BAbort), false, true);
+        self.hit(24, 13, 13, 2, Act::Dlg(Dlg::Ok));
+        self.hit(43, 13, 13, 2, Act::Dlg(Dlg::Abort));
     }
 
     /// The window the job asks the operator with: the sign, the words and Ok and Abort.
@@ -2022,7 +2078,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
         s.fill(20, 16, 20, 1, ' ', RED, RED);
         s.text(21, 16, hint, YELLOW, RED);
         label(s, 50, 16, &self.file_name());
-        if let Some(q) = self.engine.question() {
+        if self.interrupted {
+            self.render_interrupted(s);
+        } else if let Some(q) = self.engine.question() {
             self.render_question(s, q);
         }
     }
