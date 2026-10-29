@@ -1,5 +1,6 @@
 {
   "repo": "EH3D-DRILLPRO",
+  "exempt": ["test.bat", "test.sh"],
   "ecosystem": "eh3d",
   "svg": "en",
   "tagline": {
