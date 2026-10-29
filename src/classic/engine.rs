@@ -142,6 +142,11 @@ pub trait ClassicEngine {
     fn done(&self) -> usize;
     /// Advances the job; true while it goes on.
     fn tick(&mut self, n: usize) -> bool;
+    /// Advances the simulated job by this many seconds of machine time (the moves take as long as the machine would take, with the feeds
+    /// and the speeds of the tools); true while it goes on. An engine without a clock does one step.
+    fn tick_for(&mut self, _seconds: f64) -> bool {
+        self.tick(1)
+    }
     fn stop(&mut self);
 }
 
@@ -496,6 +501,14 @@ impl ClassicEngine for App {
 
     fn tick(&mut self, n: usize) -> bool {
         let more = App::tick(self, n);
+        if !more {
+            self.mode = Mode::Main;
+        }
+        more
+    }
+
+    fn tick_for(&mut self, seconds: f64) -> bool {
+        let more = self.tick_seconds(seconds);
         if !more {
             self.mode = Mode::Main;
         }

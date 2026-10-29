@@ -80,6 +80,18 @@ pub(crate) struct Run {
     pub(crate) skipped: usize,
     /// The simulated job waits for the operator at this dialog.
     pub(crate) waiting: Option<Pause>,
+    /// Seconds of machine time already spent on the item that is running (the simulated job follows the clock).
+    pub(crate) item_clock: f64,
+}
+
+/// How long an item of the plan takes on the machine, in seconds.
+fn item_seconds(item: &Item) -> f64 {
+    match item {
+        Item::Steps(s) | Item::Search(s) | Item::Seek(s) => crate::protocol::motion::duration_s(s),
+        Item::Latch(ops) => 0.05 * ops.len() as f64,
+        Item::Spindle { wait_ms, .. } => *wait_ms as f64 / 1000.0,
+        _ => 0.0,
+    }
 }
 
 pub struct App {
@@ -416,6 +428,7 @@ impl App {
             plan: job_holes,
             skipped,
             waiting: None,
+            item_clock: 0.0,
         });
         self.mode = Mode::Running;
     }
@@ -446,6 +459,36 @@ impl App {
     }
 
     /// Advances the simulated job by up to `n` holes. Returns true while work remains.
+    /// The simulated job goes on by `dt` seconds of machine time: an item is done when the time it takes on the machine has passed.
+    pub fn tick_seconds(&mut self, mut dt: f64) -> bool {
+        for _ in 0..20_000 {
+            if self.mode != Mode::Running {
+                return false;
+            }
+            let Some(run) = self.run.as_mut() else {
+                return false;
+            };
+            if run.waiting.is_some() || run.real.is_some() {
+                return self.tick(1);
+            }
+            let Some(item) = run.items.get(run.next) else {
+                return false;
+            };
+            let dur = item_seconds(item);
+            if run.item_clock + dt < dur {
+                run.item_clock += dt;
+                return true;
+            }
+            dt -= dur - run.item_clock;
+            run.item_clock = 0.0;
+            let more = self.tick(1);
+            if !more || dt <= 0.0 {
+                return more;
+            }
+        }
+        true
+    }
+
     pub fn tick(&mut self, n: usize) -> bool {
         if self.mode != Mode::Running {
             return false;

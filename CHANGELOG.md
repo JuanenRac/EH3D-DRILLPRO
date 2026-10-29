@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The simulated job follows the clock of the machine:** the engine can be advanced by seconds of machine time (`tick_for`), so a move on the simulator takes as long as it would on the machine, with the feeds and the speeds of the tools, instead of running as fast as the computer can.
+
 - **A lighter debug build:** the `dev` profile keeps the file and line of a panic (`debug = "line-tables-only"`) but not the full debug symbols, so the `target` folder of a test run is about a tenth of its size.
 - **The Offset window moves the real machine:** with a real connection (RS-232, USB-RS232 or the node) the machine homes when the Offset Teach window opens, follows every move of the window (X, Y and Z, in steps of 1, 10, 100 or 1000 mil) and goes home again with the drivers off when the window closes; the window says when it is homing and shows a failure of the link. Through the EH3D server the window does not move a machine and says so. On the simulator it only follows the position on the screen, as before.
 - **The arrow of the file name opens a list of patterns:** `*.NCD`, `*.ZIP` and `*.*` (`*.DTD`, `*.DCF` and `*.*` for the tool and configuration files); the list of files follows the pattern, and job archives are listed when the pattern asks for them.
