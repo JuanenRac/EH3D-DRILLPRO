@@ -1,0 +1,493 @@
+{
+  "repo": "EH3D-DRILLPRO",
+  "ecosystem": "eh3d",
+  "svg": "en",
+  "tagline": {
+    "en": "A Rust program with the classic screens of the Bungard CCD drilling software, in eight languages.",
+    "es": "Un programa en Rust con las pantallas clásicas del software de taladrado de Bungard CCD, en ocho idiomas.",
+    "de": "Ein Rust-Programm mit den klassischen Bildschirmen der Bungard-CCD-Bohr-Software, in acht Sprachen.",
+    "fr": "Un programme Rust avec les écrans classiques du logiciel de perçage Bungard CCD, en huit langues.",
+    "it": "Un programma in Rust con le schermate classiche del software di foratura Bungard CCD, in otto lingue.",
+    "ja": "Bungard CCD のドリルソフトの従来の画面を備えた、8 言語対応の Rust プログラム。",
+    "zh": "采用 Bungard CCD 钻孔软件经典界面的 Rust 程序，支持八种语言。",
+    "pt": "Um programa em Rust com os ecrãs clássicos do software de furação da Bungard CCD, em oito idiomas."
+  },
+  "cards": [
+    {
+      "name": "src/",
+      "span": 3,
+      "accent": "a",
+      "sub": {
+        "en": "the library: formats, job planning, screens and languages",
+        "es": "la biblioteca: formatos, planificación, pantallas e idiomas",
+        "de": "die Bibliothek: Formate, Planung, Bildschirme und Sprachen",
+        "fr": "la bibliothèque : formats, planification, écrans et langues",
+        "it": "la libreria: formati, pianificazione, schermate e lingue",
+        "ja": "ライブラリ：形式、作業計画、画面、言語",
+        "zh": "库：格式、作业规划、界面和语言",
+        "pt": "a biblioteca: formatos, planeamento, ecrãs e idiomas"
+      },
+      "rows": [
+        {
+          "name": "classic/",
+          "desc": {
+            "en": "the classic screens, dialogs and keys of the MS-DOS program",
+            "es": "las pantallas, diálogos y teclas clásicos del programa de MS-DOS",
+            "de": "die klassischen Bildschirme, Dialoge und Tasten des MS-DOS-Programms",
+            "fr": "les écrans, boîtes de dialogue et touches classiques du programme MS-DOS",
+            "it": "le schermate, i dialoghi e i tasti classici del programma MS-DOS",
+            "ja": "MS-DOS プログラムの従来の画面・ダイアログ・キー",
+            "zh": "MS-DOS 程序的经典界面、对话框和按键",
+            "pt": "os ecrãs, diálogos e teclas clássicos do programa de MS-DOS"
+          }
+        },
+        {
+          "name": "ncd.rs  tools.rs  config.rs",
+          "tree_name": "ncd.rs tools.rs config.rs",
+          "desc": {
+            "en": "the drill file, the tool table and the machine file",
+            "es": "el archivo de taladros, la tabla de herramientas y el archivo de la máquina",
+            "de": "die Bohrdatei, die Werkzeugtabelle und die Maschinendatei",
+            "fr": "le fichier de perçage, la table d'outils et le fichier de la machine",
+            "it": "il file di foratura, la tabella degli utensili e il file della macchina",
+            "ja": "ドリルファイル、ツールテーブル、マシンファイル",
+            "zh": "钻孔文件、刀具表和机器文件",
+            "pt": "o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina"
+          }
+        },
+        {
+          "name": "job.rs  runner.rs",
+          "tree_name": "job.rs runner.rs",
+          "desc": {
+            "en": "ordering the holes and running the job on its own thread",
+            "es": "ordenar los taladros y ejecutar el trabajo en su propio hilo",
+            "de": "die Löcher ordnen und den Auftrag in einem eigenen Thread ausführen",
+            "fr": "ordonner les trous et exécuter le travail dans son propre fil",
+            "it": "ordinare i fori ed eseguire il lavoro nel suo thread",
+            "ja": "穴の並べ替えと、専用スレッドでの作業実行",
+            "zh": "排列孔位，并在独立线程中运行作业",
+            "pt": "ordenar os furos e executar o trabalho na sua própria thread"
+          }
+        },
+        {
+          "name": "app.rs  screen.rs  textapp.rs",
+          "tree_name": "app.rs screen.rs textapp.rs",
+          "desc": {
+            "en": "the 80x25 text-mode screen and the modern menus",
+            "es": "la pantalla de texto de 80x25 y los menús modernos",
+            "de": "der Textbildschirm mit 80x25 Zeichen und die modernen Menüs",
+            "fr": "l'écran texte de 80x25 et les menus modernes",
+            "it": "lo schermo di testo 80x25 e i menu moderni",
+            "ja": "80x25 のテキスト画面とモダンなメニュー",
+            "zh": "80x25 文本屏幕和现代菜单",
+            "pt": "o ecrã de texto de 80x25 e os menus modernos"
+          }
+        },
+        {
+          "name": "i18n.rs  texts.rs",
+          "tree_name": "i18n.rs texts.rs",
+          "desc": {
+            "en": "the eight languages and their texts",
+            "es": "los ocho idiomas y sus textos",
+            "de": "die acht Sprachen und ihre Texte",
+            "fr": "les huit langues et leurs textes",
+            "it": "le otto lingue e i loro testi",
+            "ja": "8 言語とそのテキスト",
+            "zh": "八种语言及其文本",
+            "pt": "os oito idiomas e os seus textos"
+          }
+        },
+        {
+          "name": "gui.rs  console.rs  bin/",
+          "tree_name": "gui.rs console.rs bin/",
+          "desc": {
+            "en": "the window, the terminal version and the executables",
+            "es": "la ventana, la versión de terminal y los ejecutables",
+            "de": "das Fenster, die Terminal-Version und die ausführbaren Programme",
+            "fr": "la fenêtre, la version terminal et les exécutables",
+            "it": "la finestra, la versione da terminale e gli eseguibili",
+            "ja": "ウィンドウ、ターミナル版、実行ファイル",
+            "zh": "窗口、终端版本和可执行文件",
+            "pt": "a janela, a versão de terminal e os executáveis"
+          }
+        },
+        {
+          "name": "server_link.rs  cli.rs",
+          "tree_name": "server_link.rs cli.rs",
+          "desc": {
+            "en": "the link to EH3D-SERVER and the command line",
+            "es": "el enlace con EH3D-SERVER y la línea de órdenes",
+            "de": "die Verbindung zu EH3D-SERVER und die Befehlszeile",
+            "fr": "le lien avec EH3D-SERVER et la ligne de commande",
+            "it": "il collegamento con EH3D-SERVER e la riga di comando",
+            "ja": "EH3D-SERVER への接続とコマンドライン",
+            "zh": "与 EH3D-SERVER 的连接和命令行",
+            "pt": "a ligação ao EH3D-SERVER e a linha de comandos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "protocol/src/",
+      "span": 3,
+      "accent": "b",
+      "sub": {
+        "en": "eh3d-drillpro-protocol: serial transport, motion, safety gate",
+        "es": "eh3d-drillpro-protocol: transporte serie, movimiento, compuerta de seguridad",
+        "de": "eh3d-drillpro-protocol: serieller Transport, Bewegung, Sicherheitstor",
+        "fr": "eh3d-drillpro-protocol : transport série, mouvement, barrière de sécurité",
+        "it": "eh3d-drillpro-protocol: trasporto seriale, movimento, blocco di sicurezza",
+        "ja": "eh3d-drillpro-protocol：シリアル転送、動作、安全ゲート",
+        "zh": "eh3d-drillpro-protocol：串口传输、运动、安全门",
+        "pt": "eh3d-drillpro-protocol: transporte série, movimento, barreira de segurança"
+      },
+      "rows": [
+        {
+          "name": "safety.rs",
+          "desc": {
+            "en": "the gate that refuses to move until armed",
+            "es": "la compuerta que impide mover hasta armar",
+            "de": "das Tor, das ohne Scharfstellen nichts bewegt",
+            "fr": "la barrière qui refuse de bouger tant qu'elle n'est pas armée",
+            "it": "il blocco che impedisce di muovere finché non è armato",
+            "ja": "アームされるまで動かさないゲート",
+            "zh": "未启用前拒绝运动的保护门",
+            "pt": "a barreira que impede o movimento até estar armada"
+          }
+        },
+        {
+          "name": "motion.rs  positioner.rs",
+          "tree_name": "motion.rs positioner.rs",
+          "desc": {
+            "en": "motion in millimetres with ramps",
+            "es": "movimiento en milímetros con rampas",
+            "de": "Bewegung in Millimetern mit Rampen",
+            "fr": "mouvement en millimètres avec rampes",
+            "it": "movimento in millimetri con rampe",
+            "ja": "ランプ付きのミリ単位の動作",
+            "zh": "带加减速的毫米级运动",
+            "pt": "movimento em milímetros com rampas"
+          }
+        },
+        {
+          "name": "execute.rs  job.rs",
+          "tree_name": "execute.rs job.rs",
+          "desc": {
+            "en": "turning a job into the byte stream",
+            "es": "convertir un trabajo en el flujo de bytes",
+            "de": "einen Auftrag in den Byte-Strom umsetzen",
+            "fr": "transformer un travail en flux d'octets",
+            "it": "trasformare un lavoro nel flusso di byte",
+            "ja": "作業をバイトストリームに変換",
+            "zh": "把作业转换成字节流",
+            "pt": "converter um trabalho no fluxo de bytes"
+          }
+        },
+        {
+          "name": "homing.rs  latches.rs",
+          "tree_name": "homing.rs latches.rs",
+          "desc": {
+            "en": "the reference run and the control unit's latch bits",
+            "es": "la marcha de referencia y los bits de enclavamiento",
+            "de": "die Referenzfahrt und die Latch-Bits der Steuerung",
+            "fr": "la prise de référence et les bits de verrouillage",
+            "it": "la corsa di riferimento e i bit di latch",
+            "ja": "原点復帰とラッチビット",
+            "zh": "回参考点和锁存位",
+            "pt": "a referência dos eixos e os bits de latch"
+          }
+        },
+        {
+          "name": "serial.rs  node.rs  nullmodem.rs",
+          "tree_name": "serial.rs node.rs nullmodem.rs",
+          "desc": {
+            "en": "serial port, node and simulator",
+            "es": "puerto serie, nodo y simulador",
+            "de": "serielle Schnittstelle, Knoten und Simulator",
+            "fr": "port série, nœud et simulateur",
+            "it": "porta seriale, nodo e simulatore",
+            "ja": "シリアルポート、ノード、シミュレーター",
+            "zh": "串口、节点和模拟器",
+            "pt": "porta série, nó e simulador"
+          }
+        },
+        {
+          "name": "connection.rs  tuning.rs",
+          "tree_name": "connection.rs tuning.rs",
+          "desc": {
+            "en": "the machine file and its tuning values",
+            "es": "el archivo de la máquina y sus valores de ajuste",
+            "de": "die Maschinendatei und ihre Abstimmwerte",
+            "fr": "le fichier de la machine et ses valeurs de réglage",
+            "it": "il file della macchina e i suoi valori di taratura",
+            "ja": "マシンファイルとその調整値",
+            "zh": "机器文件及其调校值",
+            "pt": "o ficheiro da máquina e os seus valores de ajuste"
+          }
+        }
+      ]
+    },
+    {
+      "name": "tests/",
+      "span": 3,
+      "accent": "c",
+      "tree": {
+        "en": "formats, job planning, the classic screens and the screens in all languages",
+        "es": "formatos, planificación, pantallas clásicas y pantallas en todos los idiomas",
+        "de": "Formate, Planung, die klassischen Bildschirme und die Bildschirme in allen Sprachen",
+        "fr": "formats, planification, écrans classiques et écrans dans toutes les langues",
+        "it": "formati, pianificazione, schermate classiche e schermate in tutte le lingue",
+        "ja": "形式、作業計画、従来の画面、全言語の画面",
+        "zh": "格式、作业规划、经典界面和所有语言的界面",
+        "pt": "formatos, planeamento, ecrãs clássicos e ecrãs em todos os idiomas"
+      },
+      "rows": [
+        {
+          "desc": {
+            "en": "formats, job planning, the classic screens and the screens in all languages",
+            "es": "formatos, planificación, pantallas clásicas y pantallas en todos los idiomas",
+            "de": "Formate, Planung, die klassischen Bildschirme und die Bildschirme in allen Sprachen",
+            "fr": "formats, planification, écrans classiques et écrans dans toutes les langues",
+            "it": "formati, pianificazione, schermate classiche e schermate in tutte le lingue",
+            "ja": "形式、作業計画、従来の画面、全言語の画面",
+            "zh": "格式、作业规划、经典界面和所有语言的界面",
+            "pt": "formatos, planeamento, ecrãs clássicos e ecrãs em todos os idiomas"
+          }
+        }
+      ]
+    },
+    {
+      "name": "docs/",
+      "span": 3,
+      "accent": "d",
+      "tree": {
+        "en": "the protocol notes, the classic screens, the connection guide and the machine file with all its values",
+        "es": "las notas del protocolo, las pantallas clásicas, la guía de conexión y el archivo de la máquina con todos sus valores",
+        "de": "die Protokollnotizen, die klassischen Bildschirme, der Verbindungsleitfaden und die Maschinendatei mit allen Werten",
+        "fr": "les notes de protocole, les écrans classiques, le guide de connexion et le fichier de la machine avec toutes ses valeurs",
+        "it": "le note sul protocollo, le schermate classiche, la guida alla connessione e il file della macchina con tutti i valori",
+        "ja": "プロトコルノート、従来の画面、接続ガイド、全項目入りのマシンファイル",
+        "zh": "协议说明、经典界面、连接指南和含全部取值的机器文件",
+        "pt": "as notas do protocolo, os ecrãs clássicos, o guia de ligação e o ficheiro da máquina com todos os valores"
+      },
+      "rows": [
+        {
+          "name": "PROTOCOL.md",
+          "desc": {
+            "en": "what is known about the control unit, and what is a hypothesis",
+            "es": "lo que se sabe de la unidad de control y lo que es hipótesis",
+            "de": "was über die Steuerung bekannt ist und was Hypothese ist",
+            "fr": "ce que l'on sait de l'unité de commande et ce qui est hypothèse",
+            "it": "cosa si sa dell'unità di controllo e cosa è un'ipotesi",
+            "ja": "制御ユニットについて分かっていること、仮説のこと",
+            "zh": "关于控制单元已知的内容和假设",
+            "pt": "o que se sabe da unidade de controlo e o que é hipótese"
+          }
+        },
+        {
+          "name": "CLASSIC.md",
+          "desc": {
+            "en": "the classic screens and how they are checked",
+            "es": "las pantallas clásicas y cómo se comprueban",
+            "de": "die klassischen Bildschirme und wie sie geprüft werden",
+            "fr": "les écrans classiques et leur vérification",
+            "it": "le schermate classiche e come si verificano",
+            "ja": "従来の画面とその検証方法",
+            "zh": "经典界面及其核对方式",
+            "pt": "os ecrãs clássicos e como são verificados"
+          }
+        },
+        {
+          "name": "CONNECTION.md",
+          "desc": {
+            "en": "the machine file, the connections and every value",
+            "es": "el archivo de la máquina, las conexiones y cada valor",
+            "de": "die Maschinendatei, die Verbindungen und jeder Wert",
+            "fr": "le fichier de la machine, les connexions et chaque valeur",
+            "it": "il file della macchina, le connessioni e ogni valore",
+            "ja": "マシンファイル、接続、すべての値",
+            "zh": "机器文件、连接方式和每个取值",
+            "pt": "o ficheiro da máquina, as ligações e cada valor"
+          }
+        },
+        {
+          "name": "machine.cfg.example",
+          "desc": {
+            "en": "the machine file with all its values",
+            "es": "el archivo de la máquina con todos sus valores",
+            "de": "die Maschinendatei mit allen Werten",
+            "fr": "le fichier de la machine avec toutes ses valeurs",
+            "it": "il file della macchina con tutti i valori",
+            "ja": "全項目を載せたマシンファイル",
+            "zh": "含全部取值的机器文件",
+            "pt": "o ficheiro da máquina com todos os valores"
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "en": "Other folders and the files at the root",
+        "es": "Otras carpetas y los archivos de la raíz",
+        "de": "Weitere Ordner und die Dateien im Wurzelverzeichnis",
+        "fr": "Autres dossiers et fichiers à la racine",
+        "it": "Altre cartelle e i file nella radice",
+        "ja": "その他のフォルダーとルートのファイル",
+        "zh": "其他文件夹和根目录文件",
+        "pt": "Outras pastas e os ficheiros da raiz"
+      },
+      "kind": "group",
+      "span": 3,
+      "rows": [
+        {
+          "name": "testdata/",
+          "desc": {
+            "en": "small sample files written for the tests",
+            "es": "pequeños archivos de muestra escritos para las pruebas",
+            "de": "kleine Beispieldateien für die Tests",
+            "fr": "petits fichiers d'exemple écrits pour les tests",
+            "it": "piccoli file di esempio scritti per i test",
+            "ja": "テスト用に書いた小さなサンプルファイル",
+            "zh": "为测试编写的小型示例文件",
+            "pt": "pequenos ficheiros de exemplo escritos para os testes"
+          }
+        },
+        {
+          "name": "tools/",
+          "desc": {
+            "en": "CI check, README check and the picture tools",
+            "es": "comprobación de CI, del README y las herramientas de imágenes",
+            "de": "CI-Prüfung, README-Prüfung und die Bild-Werkzeuge",
+            "fr": "contrôle de CI, du README et outils d'images",
+            "it": "controllo di CI, del README e strumenti per le immagini",
+            "ja": "CI チェック、README チェック、図の生成ツール",
+            "zh": "CI 检查、README 检查和图片工具",
+            "pt": "verificação de CI, do README e ferramentas de imagens"
+          }
+        },
+        {
+          "name": "images/",
+          "desc": {
+            "en": "banner and the Architecture and Repository Structure pictures",
+            "es": "banner y las imágenes de Arquitectura y Estructura del repositorio",
+            "de": "Banner und die Bilder von Architektur und Repository-Struktur",
+            "fr": "bannière et images d'Architecture et de Structure du dépôt",
+            "it": "banner e le immagini di Architettura e Struttura del repository",
+            "ja": "バナーとアーキテクチャ・リポジトリ構成の図",
+            "zh": "横幅图以及架构和仓库结构图片",
+            "pt": "banner e as imagens de Arquitetura e Estrutura do repositório"
+          }
+        },
+        {
+          "name": ".github/",
+          "desc": {
+            "en": "CI and release workflows, issue and pull-request templates",
+            "es": "flujos de CI y de publicación, plantillas de issues y pull requests",
+            "de": "CI- und Release-Workflows, Vorlagen für Issues und Pull Requests",
+            "fr": "workflows de CI et de publication, modèles d'issues et de pull requests",
+            "it": "workflow di CI e di rilascio, modelli di issue e pull request",
+            "ja": "CI とリリースのワークフロー、Issue と PR のテンプレート",
+            "zh": "CI 与发布工作流、Issue 和 PR 模板",
+            "pt": "fluxos de CI e de publicação, modelos de issues e pull requests"
+          }
+        },
+        {
+          "name": "build.sh  build.bat",
+          "tree_name": "build.sh build.bat",
+          "desc": {
+            "en": "build and test scripts",
+            "es": "scripts de compilación y pruebas",
+            "de": "Build- und Testskripte",
+            "fr": "scripts de compilation et de test",
+            "it": "script di compilazione e test",
+            "ja": "ビルドとテストのスクリプト",
+            "zh": "构建和测试脚本",
+            "pt": "scripts de compilação e testes"
+          }
+        },
+        {
+          "name": "run.sh  run.bat",
+          "tree_name": "run.sh run.bat",
+          "desc": {
+            "en": "start the program",
+            "es": "arrancan el programa",
+            "de": "starten das Programm",
+            "fr": "lancent le programme",
+            "it": "avviano il programma",
+            "ja": "プログラムを起動",
+            "zh": "启动程序",
+            "pt": "arrancam o programa"
+          }
+        },
+        {
+          "name": "eh3d.project.json",
+          "desc": {
+            "en": "manifest: version, role, maturity and build command",
+            "es": "manifiesto: versión, rol, madurez y comando de compilación",
+            "de": "Manifest: Version, Rolle, Reifegrad und Build-Befehl",
+            "fr": "manifeste : version, rôle, maturité et commande de compilation",
+            "it": "manifesto: versione, ruolo, maturità e comando di compilazione",
+            "ja": "マニフェスト：バージョン、役割、成熟度、ビルドコマンド",
+            "zh": "清单：版本、角色、成熟度和构建命令",
+            "pt": "manifesto: versão, papel, maturidade e comando de compilação"
+          }
+        },
+        {
+          "name": "Cargo.toml  Cargo.lock",
+          "tree_name": "Cargo.toml Cargo.lock",
+          "desc": {
+            "en": "the Rust package and its locked dependencies",
+            "es": "el paquete de Rust y sus dependencias fijadas",
+            "de": "das Rust-Paket und seine festgelegten Abhängigkeiten",
+            "fr": "le paquet Rust et ses dépendances figées",
+            "it": "il pacchetto Rust e le sue dipendenze bloccate",
+            "ja": "Rust パッケージと固定された依存関係",
+            "zh": "Rust 包及其锁定的依赖",
+            "pt": "o pacote Rust e as suas dependências fixadas"
+          }
+        },
+        {
+          "name": "CHANGELOG.md",
+          "desc": {
+            "en": "what changed in each version",
+            "es": "qué cambió en cada versión",
+            "de": "was sich in jeder Version geändert hat",
+            "fr": "ce qui a changé dans chaque version",
+            "it": "cosa è cambiato in ogni versione",
+            "ja": "各バージョンの変更点",
+            "zh": "每个版本的变更",
+            "pt": "o que mudou em cada versão"
+          }
+        },
+        {
+          "name": "SECURITY.md  SUPPORT.md",
+          "tree_name": "SECURITY.md SUPPORT.md",
+          "desc": {
+            "en": "how to report a vulnerability and where to ask",
+            "es": "cómo informar de una vulnerabilidad y dónde preguntar",
+            "de": "Schwachstellen melden und Fragen stellen",
+            "fr": "signaler une vulnérabilité et poser des questions",
+            "it": "come segnalare una vulnerabilità e dove chiedere",
+            "ja": "脆弱性の報告方法と問い合わせ先",
+            "zh": "如何报告漏洞及在哪里提问",
+            "pt": "como comunicar uma vulnerabilidade e onde perguntar"
+          }
+        },
+        {
+          "name": "CONTRIBUTING.md  LICENSE",
+          "tree_name": "CONTRIBUTING.md CODE_OF_CONDUCT.md LICENSE",
+          "desc": {
+            "en": "how to contribute, the code of conduct and the licence",
+            "es": "cómo contribuir, el código de conducta y la licencia",
+            "de": "Mitwirken, Verhaltenskodex und Lizenz",
+            "fr": "contribuer, code de conduite et licence",
+            "it": "come contribuire, codice di condotta e licenza",
+            "ja": "貢献方法、行動規範、ライセンス",
+            "zh": "参与贡献、行为准则和许可证",
+            "pt": "como contribuir, o código de conduta e a licença"
+          }
+        }
+      ]
+    }
+  ]
+}

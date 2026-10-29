@@ -1,0 +1,204 @@
+{
+  "repo": "EH3D-DRILLPRO",
+  "ecosystem": "eh3d",
+  "tagline": "The drilling workflow of a classic DOS program for Bungard CCD machines, in Rust.",
+  "description": "EH3D-DRILLPRO reads Excellon drill files, the tool table and the machine file, orders the holes and runs the job through its classic or modern text-mode screens. The job goes to a simulator, to the serial port or a USB adapter, to the EH3D-NODE-BUNGARD node or to EH3D-SERVER. EH3D-ROUTEPRO reuses its protocol, screens and languages. Everything is tested on a computer; on one real machine only the reference run and the moves of each axis have been tried.",
+  "columns": [
+    "WHO USES IT",
+    "THIS REPOSITORY",
+    "WHERE THE JOB GOES"
+  ],
+  "nodes": [
+    {
+      "id": "op",
+      "column": 0,
+      "level": "external",
+      "title": "The operator",
+      "lines": [
+        "keyboard and mouse, in a window",
+        "or in a terminal (SSH, a text",
+        "console, an old PC)"
+      ]
+    },
+    {
+      "id": "files",
+      "column": 0,
+      "level": "external",
+      "title": "Drill files",
+      "lines": [
+        "Excellon .NCD, the tool table",
+        "DRILLPRO.DTD and the machine",
+        "file DRILLPRO.DCF"
+      ]
+    },
+    {
+      "id": "route",
+      "column": 0,
+      "level": "external",
+      "title": "EH3D-ROUTEPRO",
+      "lines": [
+        "the milling sibling: reuses",
+        "the protocol, the screens and",
+        "the languages"
+      ]
+    },
+    {
+      "id": "screens",
+      "column": 1,
+      "level": "tested",
+      "title": "Screens",
+      "lines": [
+        "classic 80x25 screens, checked",
+        "cell by cell; --modern menus;",
+        "eight languages"
+      ],
+      "code": [
+        "src/classic/mod.rs",
+        "src/texts.rs",
+        "src/console.rs"
+      ]
+    },
+    {
+      "id": "formats",
+      "column": 1,
+      "level": "tested",
+      "title": "Formats and job",
+      "lines": [
+        "reads .NCD, .DTD and .DCF;",
+        "orders the holes, grouped",
+        "by tool"
+      ],
+      "code": [
+        "src/ncd.rs",
+        "src/tools.rs",
+        "src/config.rs",
+        "src/job.rs"
+      ]
+    },
+    {
+      "id": "proto",
+      "column": 1,
+      "level": "tested",
+      "title": "Protocol crate",
+      "lines": [
+        "bytes, motion with ramps and a",
+        "gate that refuses to move",
+        "until it is armed"
+      ],
+      "code": [
+        "protocol/src/safety.rs",
+        "protocol/src/motion.rs",
+        "protocol/src/execute.rs"
+      ]
+    },
+    {
+      "id": "sim",
+      "column": 2,
+      "level": "tested",
+      "title": "Simulator",
+      "lines": [
+        "the default; no machine needed"
+      ],
+      "code": [
+        "protocol/src/nullmodem.rs"
+      ]
+    },
+    {
+      "id": "serial",
+      "column": 2,
+      "level": "untested",
+      "title": "Serial port or USB",
+      "lines": [
+        "Bungard CCD MTC: axis moves",
+        "tried, no whole job yet"
+      ],
+      "code": [
+        "protocol/src/serial.rs"
+      ]
+    },
+    {
+      "id": "node",
+      "column": 2,
+      "level": "config",
+      "title": "EH3D-NODE-BUNGARD",
+      "lines": [
+        "steps and spindle drive from",
+        "its own port; machine file"
+      ],
+      "code": [
+        "protocol/src/node.rs"
+      ]
+    },
+    {
+      "id": "server",
+      "column": 2,
+      "level": "config",
+      "title": "EH3D-SERVER",
+      "lines": [
+        "runs the job via the node;",
+        "tried on the simulator only"
+      ],
+      "code": [
+        "src/server_link.rs"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "op",
+      "to": "screens",
+      "label": "keys",
+      "level": "tested"
+    },
+    {
+      "from": "files",
+      "to": "formats",
+      "label": "read",
+      "level": "tested"
+    },
+    {
+      "from": "route",
+      "to": "proto",
+      "label": "reuses",
+      "level": "tested"
+    },
+    {
+      "from": "screens",
+      "to": "formats",
+      "level": "tested"
+    },
+    {
+      "from": "formats",
+      "to": "proto",
+      "level": "tested"
+    },
+    {
+      "from": "proto",
+      "to": "sim",
+      "level": "tested"
+    },
+    {
+      "from": "proto",
+      "to": "serial",
+      "label": "rs232 / usb",
+      "level": "untested"
+    },
+    {
+      "from": "proto",
+      "to": "node",
+      "level": "config"
+    },
+    {
+      "from": "formats",
+      "to": "server",
+      "level": "config"
+    }
+  ],
+  "legend": {
+    "tested": "covered by tests on a computer",
+    "config": "chosen in the machine file; not tried for real",
+    "untested": "has not run a whole job on real hardware",
+    "external": "a person, a file or another repository"
+  },
+  "footer": "A whole drilling job has not run on a machine yet."
+}

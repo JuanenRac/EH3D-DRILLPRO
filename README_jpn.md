@@ -18,21 +18,23 @@
 
 ---
 
-**正直さの確認 - 今日実際に動くもの：** 80x25 のテキストモードインターフェースを持つ Rust プログラムです。Excellon `.NCD` ドリルファイル、工具テーブル、機械設定を読み込み、穴を並べ替えて表示し、ジョブ全体を **シミュレーター上**（既定）で、または機械ファイルで指定すればパソコンのシリアルポート、USB シリアルアダプター、EH3D-NODE-BUNGARD 経由で **実機上** で実行します。パソコン上で 123 件のテストが動きます。実機の Bungard CCD MTC では、3 軸の原点出し（Z、X、Y をリミットスイッチまで動かし、制御ユニットの「3 軸すべて原点」信号をその場で確認）と各軸の動きを試しました。**ドリル加工ジョブ全体はまだ機械で実行していません**。1 ミリあたりのステップ数は、オリジナルの設定と照合しただけです。 既定では MS-DOS 版のクラシック画面（原版とセル単位で照合済み）が表示されます。`--modern` でメニュー式の画面を起動します。 キーボードとマウスで操作でき、ウィンドウは最大化できます（画面は 640x400 から 1080p 以上まで拡大縮小）。設定ファイルと工具表はダイアログで編集・保存でき、「情報」ボタンで Bungard CCD と CCD/2 の機種（MTC 対応、ATC は未対応）を確認できます。 コンソール版（`drillpro-console`）は同じ画面をターミナルに表示し、キーボードとマウスで操作でき、ウィンドウシステムは不要です（SSH、テキストコンソール、古い PC）。
+**正直さの確認 - 今日実際に動くもの：** 80x25 のテキストモードインターフェースを持つ Rust プログラムです。Excellon `.NCD` ドリルファイル、工具テーブル、機械設定を読み込み、穴を並べ替えて表示し、ジョブ全体を **シミュレーター上**（既定）で、または機械ファイルで指定すればパソコンのシリアルポート、USB シリアルアダプター、EH3D-NODE-BUNGARD 経由で **実機上** で実行します。パソコン上で 172 件のテストが動きます。実機の Bungard CCD MTC では、3 軸の原点出し（Z、X、Y をリミットスイッチまで動かし、制御ユニットの「3 軸すべて原点」信号をその場で確認）と各軸の動きを試しました。**ドリル加工ジョブ全体はまだ機械で実行していません**。1 ミリあたりのステップ数は、オリジナルの設定と照合しただけです。 既定では MS-DOS 版のクラシック画面（原版とセル単位で照合済み）が表示されます。`--modern` でメニュー式の画面を起動します。 キーボードとマウスで操作でき、ウィンドウは最大化できます（画面は 640x400 から 1080p 以上まで拡大縮小）。設定ファイルと工具表はダイアログで編集・保存でき、「情報」ボタンで Bungard CCD と CCD/2 の機種（MTC 対応、ATC は未対応）を確認できます。 コンソール版（`drillpro-console`）は同じ画面をターミナルに表示し、キーボードとマウスで操作でき、ウィンドウシステムは不要です（SSH、テキストコンソール、古い PC）。
 
 ---
 
 > **安全性とセキュリティの現状：** このプログラムは安全システムではありません。実機接続（機械ファイルの `connection`）では **開始で機械が動きます**。工具を外し、機械の電源スイッチに手を置き、ジョブを即座に止めてステッピングドライバをオフにする `Esc` をいつでも押せるようにしてください。リミットスイッチは機械自身の制御ユニットが監視します（スイッチで軸を自分で止めます）。このソフトウェアには独自の非常停止がなく、誤ったステップバイトや速度は、工具を加工物やテーブルにぶつけたり、モーターに脱調を起こしたりすることがあります。プロトコル層は、アーム（有効化）されるまで何も動かしません。このプロジェクトは独立しており、Bungard Elektronik が製造・推奨・サポートするものではありません。製品名は、対応するファイル形式と機械を示すためだけに使っています。
 
-## 📋 概要
+## 📋 ひと目で
 
 | | |
 |---|---|
 | バージョン | `0.0.2` |
 | 成熟度 | 足場 |
-| テスト | 123 |
+| テスト | 172 |
 | 技術スタック | Rust |
 | 実機での動作 | はい、Bungard CCD MTC 1 台で：原点出しと各軸の動き。ジョブ全体はまだ実行していません。機械ファイルがなければシミュレーターで動きます |
+
+**移動先：** [概要](#-概要) · [アーキテクチャ](#-アーキテクチャ) · [クイックスタート](#-クイックスタート) · [テスト](#-テスト) · [構成](#-リポジトリの構成) · [関連](#-関連プロジェクト)
 
 ## 🚦 プロジェクトの状況
 
@@ -43,7 +45,7 @@
 | 領域 | 状態 | ここでの意味 |
 |---|---|---|
 | ソフトウェア | 🟡 | 80x25 のテキスト画面を持つ Rust プログラムが、穴あけファイル、工具テーブル、マシンファイルを読み、穴の順序を決め、ジョブ全体をシミュレータ上で、またはマシンファイルの指定があれば実機で実行します。 |
-| テスト | 🟢 | 123 件のテストが通ります（`cargo test --workspace`）：各形式、ジョブの計画、シミュレータ上のプロトコル、8 言語すべての画面。 |
+| テスト | 🟢 | 172 件のテストが通ります（`cargo test --workspace`）：各形式、ジョブの計画、シミュレータ上のプロトコル、8 言語すべての画面。 |
 | ファイルリーダー | 🟡 | 穴あけファイル `.NCD`、工具テーブル `DRILLPRO.DTD`、マシンファイル `DRILLPRO.DCF` を読み取ります。テスト用に作った小さなサンプルだけで、実際の基板のファイルでは試していません。 |
 | マシンのプロトコル | 🟠 | 制御ユニットのバイトプロトコルはリバースエンジニアリングで再構築したもので、`docs/PROTOCOL.md` にはまだ仮説の部分が残っています。プロトコル層はアームされるまで何も動かしません。 |
 | インターフェース | 🟡 | テキスト画面、メニュー、ファイルダイアログ、穴のベクトル表示は 8 言語すべてに対応しています（テスト済み）。中国語と日本語にはシステムに CJK フォントが必要です。 |
@@ -53,7 +55,7 @@
 | 配布パッケージ | 🟡 | 最初のリリースには Windows、Linux、macOS（Apple シリコンと Intel）用のパッケージがあり、それぞれ SHA-256 付きで、リリースワークフローが作成します。 |
 | ドキュメント | 🟢 | 8 言語の README、仮説のまま残っている点を含むプロトコルのメモ、すべての調整値を載せたマシンファイルのガイド。 |
 
-## 🎯 概要説明
+## 🎯 概要
 
 * **ファイルリーダー**：Excellon の `.NCD` 穴あけファイル（`M48` ヘッダーの有無どちらも、モーダル座標、1 mil のインチ単位）、工具テーブル `DRILLPRO.DTD`、マシン設定 `DRILLPRO.DCF`。
 * **ジョブプランナー**：穴を並べ替え（ファイル順、X 優先、Y 優先、最短経路）、工具ごとにまとめます。
@@ -71,22 +73,15 @@
 
 EH3D-DRILLPRO は、制御ユニットがすべてのモーターステップを PC に生成させるマシン向けの、EH3D ファミリーの単独プログラムです。フライス加工向けの姉妹プロジェクト EH3D-ROUTEPRO は、そのプロトコル、画面、言語対応を再利用します。今のところ他の EH3D リポジトリには依存しておらず、将来は EH3D-CORE-LIBS の Excellon リーダーで置き換える可能性があります。
 
-## 📂 リポジトリ構成
+## 🏛️ アーキテクチャ
 
-```text
-EH3D-DRILLPRO/
-├── src/          library: file formats, job planning, screen, application, languages
-├── src/bin/      the drillpro executable (feature gui)
-├── protocol/     eh3d-drillpro-protocol: serial transport, motion, safety gate
-├── tests/        formats, job planning, screens in all languages
-├── testdata/     small sample files written for the tests
-├── docs/         PROTOCOL.md と CONNECTION.md：プロトコル、機械ファイル、各調整値。machine.cfg.example：全値を記したファイル
-├── tools/        ci_validate.py: manifest, versions, changelog and README checks
-├── images/       banner
-└── eh3d.project.json   the manifest of the project
-```
+<p align="center">
+  <img src="images/architecture.svg" alt="EH3D-DRILLPRO のアーキテクチャ：誰が使い、何を持ち、何に依存するか" width="100%">
+</p>
 
-## 🛠️ ビルドと実行
+このリポジトリの各部分の関係：誰が使い、何を持ち、何に依存するか。図は `docs/architecture.json` から描かれ、コードと照合されます。
+
+## 🚀 クイックスタート
 
 安定版の Rust ツールチェーンが必要です。
 
@@ -100,7 +95,79 @@ python -I tools/ci_validate.py
 
 `run.bat`（Windows）または `./run.sh`（Linux と macOS）で実行します。どちらも必要ならプログラムを先にビルドします：`run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` は `DRILLPRO.DTD` と `DRILLPRO.DCF` があるフォルダー（既定：`testdata/`）、`--dump` は画面をプレーンテキストで出力します。キー：`Alt` とハイライトされた文字でメニューを開き、矢印で移動、`Enter` で決定、`Esc` で戻ります。メニューバーはクリックもできます。中国語と日本語にはシステムフォントに CJK フォントが必要です。 `--connection FILE` で既定とは別の機械ファイルを指定できます（既定は Windows では `%APPDATA%\EH3D\machine.cfg`、その他では `~/.config/eh3d/machine.cfg`）。機械ファイルがなければプログラムはシミュレーターで動きます。 `--modern` でクラシック画面の代わりにメニュー式の画面を起動します。
 
+## 🧪 テスト
+
+テストスイートは 172 件のテストから成ります（`cargo test --workspace`）。ファイル形式（ドリルファイル、ツールテーブル、マシンファイルと、その書き戻し）、作業計画、シミュレーター上のプロトコル（バイト、動作、原点復帰、ラッチビット、ノードとの接続、アームされるまで動かさない安全ゲート）、従来の画面のセル単位の照合、8 言語すべての画面を検証します。CI では `cargo fmt --check` と、警告をエラーとする `cargo clippy` も実行し、`python -I tools/ci_validate.py` がマニフェスト、バージョン、変更履歴、8 つの README を検査します。
+
+## 🏗️ ビルドとリリース
+
+バージョンは `Cargo.toml` と `eh3d.project.json` にあり、各バージョンには [CHANGELOG.md](CHANGELOG.md) に項目があります。リリースは GitHub で公開されます。
+
 **ビルド済みパッケージ:** 公開される各バージョンには、Windows（zip）、Linux（tar.gz）、macOS（Apple シリコンと Intel、tar.gz）用のパッケージが含まれ、プログラム、ライセンス、この README が入っており、それぞれ隣に SHA-256 が付きます。このリポジトリの `Release binaries` ワークフローでビルドされます。Releases ページからダウンロードしてください。Linux ではウィンドウに X11 または Wayland が必要です。
+
+## 📂 リポジトリの構成
+
+<p align="center">
+  <img src="images/repository-structure.svg" alt="EH3D-DRILLPRO のリポジトリ構成" width="100%">
+</p>
+
+<details>
+<summary>ツリーのテキスト版</summary>
+
+```text
+EH3D-DRILLPRO/
+├── src/
+│   ├── classic/                                 MS-DOS プログラムの従来の画面・ダイアログ・キー
+│   ├── ncd.rs tools.rs config.rs                ドリルファイル、ツールテーブル、マシンファイル
+│   ├── job.rs runner.rs                         穴の並べ替えと、専用スレッドでの作業実行
+│   ├── app.rs screen.rs textapp.rs              80x25 のテキスト画面とモダンなメニュー
+│   ├── i18n.rs texts.rs                         8 言語とそのテキスト
+│   ├── gui.rs console.rs bin/                   ウィンドウ、ターミナル版、実行ファイル
+│   └── server_link.rs cli.rs                    EH3D-SERVER への接続とコマンドライン
+├── protocol/src/
+│   ├── safety.rs                                アームされるまで動かさないゲート
+│   ├── motion.rs positioner.rs                  ランプ付きのミリ単位の動作
+│   ├── execute.rs job.rs                        作業をバイトストリームに変換
+│   ├── homing.rs latches.rs                     原点復帰とラッチビット
+│   ├── serial.rs node.rs nullmodem.rs           シリアルポート、ノード、シミュレーター
+│   └── connection.rs tuning.rs                  マシンファイルとその調整値
+├── tests/                                       形式、作業計画、従来の画面、全言語の画面
+├── docs/                                        プロトコルノート、従来の画面、接続ガイド、全項目入りのマシンファイル
+├── testdata/                                    テスト用に書いた小さなサンプルファイル
+├── tools/                                       CI チェック、README チェック、図の生成ツール
+├── images/                                      バナーとアーキテクチャ・リポジトリ構成の図
+├── .github/                                     CI とリリースのワークフロー、Issue と PR のテンプレート
+├── build.sh build.bat                           ビルドとテストのスクリプト
+├── run.sh run.bat                               プログラムを起動
+├── eh3d.project.json                            マニフェスト：バージョン、役割、成熟度、ビルドコマンド
+├── Cargo.toml Cargo.lock                        Rust パッケージと固定された依存関係
+├── CHANGELOG.md                                 各バージョンの変更点
+├── SECURITY.md SUPPORT.md                       脆弱性の報告方法と問い合わせ先
+└── CONTRIBUTING.md CODE_OF_CONDUCT.md LICENSE   貢献方法、行動規範、ライセンス
+```
+
+</details>
+
+## 🗺️ ロードマップと既知の制限
+
+**現時点で分かっている制限**
+
+* 実機でのドリル作業全体はまだ実行されていません。1 台の Bungard CCD MTC で試したのは 3 軸の原点復帰と各軸の動作だけで、ミリあたりのステップ数は元の設定と照合しただけ、スピンドルと集塵機の出力は未試験です。
+* `docs/PROTOCOL.md` には仮説のままの部分がまだ載っています。プロトコル層は、アーム（有効化）されるまで何も動かしません。
+* ファイルリーダーは、テスト用に書いた小さなサンプルファイルでしか試しておらず、実際の基板のファイルでは試していません。
+* サーバー接続（`connection = server`）はシミュレーターに対してしか試していません。
+* 対応しているのは MTC モデルだけです。ATC モデルは未対応、XL モデルは対象外です。中国語と日本語にはシステムフォントに CJK フォントが必要です。
+
+**次のステップ**
+
+* 機械でドリル作業全体を実行し、ミリあたりのステップ数、スピンドル、集塵機の出力を確認する。
+* 実際の基板のファイルでファイルリーダーを試す。
+* リバースエンジニアリングで可能な範囲で、ATC モデル向けの別アプリケーションを作る。
+* [EH3D-CORE-LIBS](https://github.com/JuanenRac/EH3D-CORE-LIBS) の Excellon リーダーが整ったら、独自のリーダーをそれに置き換える。
+
+## 🌍 言語
+
+README とテキストは、英語、スペイン語、フランス語、イタリア語、ドイツ語、中国語、日本語、ヨーロッパポルトガル語で提供されています。
 
 ## 🔗 関連プロジェクト
 
@@ -110,14 +177,19 @@ python -I tools/ci_validate.py
 * [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD)：機械の筐体内に置く ESP32-S3 ノード（イーサネットまたは Wi-Fi）。USB アダプターでは保てないタイミングで自身のシリアルポートからステップを送り出し、機械のランプを読み、スピンドルのドライブを制御します。独自の Web パネルがあります
 * [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER)： EH3D ファミリーの中心。このプログラム（`connection = server`）や他のクライアントの作業を受け取り、ノード経由で機械上で実行します
 
-## 📚 ドキュメントとコミュニティ
+## 📚 ドキュメント
 
 * [プロトコルのメモ](docs/PROTOCOL.md): 制御ユニットの駆動方法についてわかっていること、およびまだ仮説にとどまっていること。
 * [接続と調整](docs/CONNECTION.md)：機械ファイル、3 つの接続方法、各値
+* [従来の画面](docs/CLASSIC.md)：MS-DOS プログラムの画面をどのように再現し検証するか
 * [変更履歴](CHANGELOG.md)
-* [貢献方法](CONTRIBUTING.md)
-* [セキュリティポリシー](SECURITY.md)
-* [サポート](SUPPORT.md)
+
+## 🤝 コントリビュートとコミュニティ
+
+* プルリクエストの前に `cargo fmt --all --check`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo test --workspace`、`python -I tools/ci_validate.py` を実行し、すべて通してください。[CONTRIBUTING.md](CONTRIBUTING.md) と[行動規範](CODE_OF_CONDUCT.md)を参照してください。
+* README は 8 言語あります。文章を変更するときは 8 つのファイルすべてを変更し、2 つの図は `docs/architecture.json` と `docs/structure.json` から `tools/make_architecture.py` と `tools/make_structure.py` で描画します。
+* シミュレーターでしか試していないことを、機械で動作するものとして書かないでください。
+* 脆弱性は非公開で報告してください：[SECURITY.md](SECURITY.md)。質問、アイデア、報告：electrohobby3d@gmail.com（[SUPPORT.md](SUPPORT.md)）。
 
 ## 👤 作者
 

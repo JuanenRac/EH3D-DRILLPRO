@@ -73,6 +73,9 @@ pub trait ClassicEngine {
     fn set_connection(&mut self, connection: crate::protocol::connection::ConnectionConfig);
     /// Shows a problem found at start-up on the main screen.
     fn set_error(&mut self, message: String);
+    /// The Offset Teach window moves the head by these steps of 1 mil (0.001 inch) in X, Y and Z (Z positive = down). The
+    /// simulation only follows the position on the screen; an engine on a real machine moves it.
+    fn jog(&mut self, _dx: i32, _dy: i32, _dz: i32) {}
     fn lang(&self) -> crate::i18n::Lang;
     fn set_lang(&mut self, lang: crate::i18n::Lang);
     fn settings(&self) -> Option<&MachineSettings>;

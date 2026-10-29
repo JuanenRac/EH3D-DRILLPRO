@@ -79,6 +79,11 @@ configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`).
   could not be captured from the original.
 * `Esc` while the job runs opens INTERRUPTED / What next?: Cont. (`Enter`, `C`) goes on, Abort (`Esc`, `A`) stops the job. The job
   waits while the window is open. During the homing `Esc` stops at once.
+* **Offset** (the button): "Delete old offset?" (Yes: start at home; No: start at the offset of the form), then the Offset Teach
+  window. Move the head with `E` `S` `D` `X` (Y+, X-, X+, Y-) or the arrow keys, `R` `C` or `PageUp` `PageDown` for Z; `1`-`4` pick the
+  step (1, 10, 100, 1000 mil); every button answers to the mouse. Ok copies the position into the Offset of the main screen.
+  Teach starts the Teach-In mode (the position becomes the origin): `+` records, `-` takes the last back, `M` puts the last one
+  where the head is; Ok asks "Write Teach-In file?" and writes `TEACH.NCD` in the folder of the files.
 
 ## The machines
 

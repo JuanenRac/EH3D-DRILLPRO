@@ -18,21 +18,23 @@
 
 ---
 
-**诚实性核对 - 今天真正能运行的内容：** 一个带 80x25 文本模式界面的 Rust 程序，读取 Excellon `.NCD` 钻孔文件、刀具表和机器配置，对孔排序并显示，然后**在模拟器上**（默认）运行整个作业；若机器文件指定，则通过电脑串口、USB 串口适配器或 EH3D-NODE-BUNGARD **在真实机器上**运行。电脑上运行 123 项测试。在一台真实的 Bungard CCD MTC 上，已经试过三轴回参考点（Z、X、Y 到各自限位开关，并现场确认控制单元的“三轴全部到位”信号）以及每个轴的运动；**完整的钻孔作业尚未在机器上运行**，每毫米步数也只是与原版配置核对过。 默认显示 MS-DOS 程序的经典界面，已逐个单元格与原版核对；`--modern` 启动菜单式界面。 可用键盘和鼠标操作，窗口可最大化（画面从 640x400 缩放到 1080p 及更大），配置文件和刀具表可在对话框中编辑并保存，“关于”按钮列出 Bungard CCD 和 CCD/2 机型（支持 MTC，暂不支持 ATC）。 控制台版本（`drillpro-console`）在终端中显示同样的界面，支持键盘和鼠标，不需要窗口系统（SSH、文本控制台、旧电脑）。
+**诚实性核对 - 今天真正能运行的内容：** 一个带 80x25 文本模式界面的 Rust 程序，读取 Excellon `.NCD` 钻孔文件、刀具表和机器配置，对孔排序并显示，然后**在模拟器上**（默认）运行整个作业；若机器文件指定，则通过电脑串口、USB 串口适配器或 EH3D-NODE-BUNGARD **在真实机器上**运行。电脑上运行 172 项测试。在一台真实的 Bungard CCD MTC 上，已经试过三轴回参考点（Z、X、Y 到各自限位开关，并现场确认控制单元的“三轴全部到位”信号）以及每个轴的运动；**完整的钻孔作业尚未在机器上运行**，每毫米步数也只是与原版配置核对过。 默认显示 MS-DOS 程序的经典界面，已逐个单元格与原版核对；`--modern` 启动菜单式界面。 可用键盘和鼠标操作，窗口可最大化（画面从 640x400 缩放到 1080p 及更大），配置文件和刀具表可在对话框中编辑并保存，“关于”按钮列出 Bungard CCD 和 CCD/2 机型（支持 MTC，暂不支持 ATC）。 控制台版本（`drillpro-console`）在终端中显示同样的界面，支持键盘和鼠标，不需要窗口系统（SSH、文本控制台、旧电脑）。
 
 ---
 
 > **安全（safety）与信息安全现状：** 本程序不是安全系统。使用真实连接（机器文件中的 `connection`）时，**“开始”会让机器动起来**：先取下刀具，一只手放在机器电源开关上，并随时准备按 `Esc`，它会立即停止作业并关闭步进驱动器。限位开关由机器自己的控制单元监视（它会在开关处自行停住轴）；本软件没有自己的紧急停止，错误的步进字节或速度可能使刀具撞向工件或工作台，或使电机失步。协议层在被解锁之前拒绝移动任何东西。本项目是独立的：它不是 Bungard Elektronik 制造、认可或支持的，产品名称只是用来说明它面向哪些文件格式和机器。
 
-## 📋 概览
+## 📋 速览
 
 | | |
 |---|---|
 | 版本 | `0.0.2` |
 | 成熟度 | 脚手架 |
-| 测试 | 123 |
+| 测试 | 172 |
 | 技术栈 | Rust |
 | 真实硬件 | 是，在一台 Bungard CCD MTC 上：回参考点和每个轴的运动；完整作业尚未运行。没有机器文件时在模拟器上运行 |
+
+**跳转到：** [概述](#-概述) · [架构](#-架构) · [快速开始](#-快速开始) · [测试](#-测试) · [结构](#-仓库结构) · [相关项目](#-相关项目)
 
 ## 🚦 项目状态
 
@@ -43,7 +45,7 @@
 | 领域 | 状态 | 在这里的含义 |
 |---|---|---|
 | 软件 | 🟡 | 带 80x25 文本界面的 Rust 程序读取钻孔文件、刀具表和机床文件，排列孔的顺序，并在模拟器上运行整个作业；机床文件指定时则在真实机床上运行。 |
-| 测试 | 🟢 | 123 项测试通过（`cargo test --workspace`）：各种格式、作业规划、模拟器上的协议以及八种语言的界面。 |
+| 测试 | 🟢 | 172 项测试通过（`cargo test --workspace`）：各种格式、作业规划、模拟器上的协议以及八种语言的界面。 |
 | 文件读取器 | 🟡 | 可读取钻孔文件 `.NCD`、刀具表 `DRILLPRO.DTD` 和机床文件 `DRILLPRO.DCF`；只用为测试编写的小型样例文件验证过，没有用过真实电路板的文件。 |
 | 机床协议 | 🟠 | 控制单元的字节协议是通过逆向工程重建的，`docs/PROTOCOL.md` 中仍有属于假设的部分；协议层在上膛之前拒绝移动任何东西。 |
 | 界面 | 🟡 | 文本界面、菜单、文件对话框和孔的矢量视图支持全部八种语言（已测试）；中文和日文需要系统中有 CJK 字体。 |
@@ -53,7 +55,7 @@
 | 现成安装包 | 🟡 | 首个发布版本带有 Windows、Linux 和 macOS（Apple 芯片与 Intel）的安装包，各附 SHA-256，由发布工作流构建。 |
 | 文档 | 🟢 | 八种语言的 README、标明仍属假设之处的协议说明，以及列出每个调校值的机床文件指南。 |
 
-## 🎯 简介
+## 🎯 概述
 
 * **文件读取器**：Excellon `.NCD` 钻孔文件（带或不带 `M48` 文件头，模态坐标，1 mil 英制单位）、刀具表 `DRILLPRO.DTD` 和机床配置 `DRILLPRO.DCF`。
 * **作业规划器**：对孔排序（按文件顺序、先 X、先 Y 或最短路径），并按刀具保持分组。
@@ -71,22 +73,15 @@
 
 EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由 PC 生成每一个电机步进的机床。它的铣削姊妹项目 EH3D-ROUTEPRO 复用其协议、屏幕和语言支持。它目前不依赖 EH3D 的其他仓库；以后可以用 EH3D-CORE-LIBS 的 Excellon 读取器替换自己的读取器。
 
-## 📂 仓库结构
+## 🏛️ 架构
 
-```text
-EH3D-DRILLPRO/
-├── src/          library: file formats, job planning, screen, application, languages
-├── src/bin/      the drillpro executable (feature gui)
-├── protocol/     eh3d-drillpro-protocol: serial transport, motion, safety gate
-├── tests/        formats, job planning, screens in all languages
-├── testdata/     small sample files written for the tests
-├── docs/         PROTOCOL.md 和 CONNECTION.md：协议、机器文件和每个调整值；machine.cfg.example：包含全部值的文件
-├── tools/        ci_validate.py: manifest, versions, changelog and README checks
-├── images/       banner
-└── eh3d.project.json   the manifest of the project
-```
+<p align="center">
+  <img src="images/architecture.svg" alt="EH3D-DRILLPRO 的架构：谁在使用、包含什么、依赖什么" width="100%">
+</p>
 
-## 🛠️ 构建与运行
+本仓库各部分如何协作：谁在使用它、它包含什么、它依赖什么。图片由 `docs/architecture.json` 绘制，并与代码核对。
+
+## 🚀 快速开始
 
 需要稳定版的 Rust 工具链。
 
@@ -100,7 +95,79 @@ python -I tools/ci_validate.py
 
 用 `run.bat`（Windows）或 `./run.sh`（Linux 和 macOS）运行；两者都会在需要时先构建程序：`run.bat [文件.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` 是存放 `DRILLPRO.DTD` 和 `DRILLPRO.DCF` 的文件夹（默认：`testdata/`），`--dump` 将屏幕以纯文本输出。按键：`Alt` 加高亮字母打开菜单，方向键移动，`Enter` 确认，`Esc` 返回；也可以点击菜单栏。中文和日文需要系统字体中有 CJK 字体。 `--connection FILE` 指向不同于默认的机器文件（Windows 上默认为 `%APPDATA%\EH3D\machine.cfg`，其他系统为 `~/.config/eh3d/machine.cfg`）；没有机器文件时程序在模拟器上运行。 `--modern` 启动菜单式界面，而不是经典界面。
 
+## 🧪 测试
+
+测试套件共有 172 个测试（`cargo test --workspace`）。它们检查文件格式（钻孔文件、刀具表和机器文件，以及写回）、作业规划、模拟器上的协议（字节、运动、回参考点、锁存位、与节点的连接，以及未启用前拒绝运动的安全门）、逐个字符单元核对的经典界面，以及八种语言的界面。CI 还会运行 `cargo fmt --check` 和把警告当作错误的 `cargo clippy`，并由 `python -I tools/ci_validate.py` 检查清单、版本、变更日志和八个 README。
+
+## 🏗️ 构建与发布
+
+版本号位于 `Cargo.toml` 和 `eh3d.project.json` 中，每个版本在 [CHANGELOG.md](CHANGELOG.md) 中都有条目。发布版本在 GitHub 上公开。
+
 **预编译软件包：** 每个发布版本都附带适用于 Windows（zip）、Linux（tar.gz）和 macOS（Apple 芯片与 Intel，tar.gz）的软件包，内含程序、许可证和本 README，旁边附有各自的 SHA-256。它们由本仓库的 `Release binaries` 工作流构建。请从 Releases 页面下载；在 Linux 上，窗口需要 X11 或 Wayland。
+
+## 📂 仓库结构
+
+<p align="center">
+  <img src="images/repository-structure.svg" alt="EH3D-DRILLPRO 的仓库结构" width="100%">
+</p>
+
+<details>
+<summary>目录树的文本版</summary>
+
+```text
+EH3D-DRILLPRO/
+├── src/
+│   ├── classic/                                 MS-DOS 程序的经典界面、对话框和按键
+│   ├── ncd.rs tools.rs config.rs                钻孔文件、刀具表和机器文件
+│   ├── job.rs runner.rs                         排列孔位，并在独立线程中运行作业
+│   ├── app.rs screen.rs textapp.rs              80x25 文本屏幕和现代菜单
+│   ├── i18n.rs texts.rs                         八种语言及其文本
+│   ├── gui.rs console.rs bin/                   窗口、终端版本和可执行文件
+│   └── server_link.rs cli.rs                    与 EH3D-SERVER 的连接和命令行
+├── protocol/src/
+│   ├── safety.rs                                未启用前拒绝运动的保护门
+│   ├── motion.rs positioner.rs                  带加减速的毫米级运动
+│   ├── execute.rs job.rs                        把作业转换成字节流
+│   ├── homing.rs latches.rs                     回参考点和锁存位
+│   ├── serial.rs node.rs nullmodem.rs           串口、节点和模拟器
+│   └── connection.rs tuning.rs                  机器文件及其调校值
+├── tests/                                       格式、作业规划、经典界面和所有语言的界面
+├── docs/                                        协议说明、经典界面、连接指南和含全部取值的机器文件
+├── testdata/                                    为测试编写的小型示例文件
+├── tools/                                       CI 检查、README 检查和图片工具
+├── images/                                      横幅图以及架构和仓库结构图片
+├── .github/                                     CI 与发布工作流、Issue 和 PR 模板
+├── build.sh build.bat                           构建和测试脚本
+├── run.sh run.bat                               启动程序
+├── eh3d.project.json                            清单：版本、角色、成熟度和构建命令
+├── Cargo.toml Cargo.lock                        Rust 包及其锁定的依赖
+├── CHANGELOG.md                                 每个版本的变更
+├── SECURITY.md SUPPORT.md                       如何报告漏洞及在哪里提问
+└── CONTRIBUTING.md CODE_OF_CONDUCT.md LICENSE   参与贡献、行为准则和许可证
+```
+
+</details>
+
+## 🗺️ 路线图与已知限制
+
+**目前已知的限制**
+
+* 尚未在真实机器上运行过完整的钻孔作业：只在一台 Bungard CCD MTC 上试过三个轴的回参考点和每个轴的运动，每毫米步数只与原版配置核对过，主轴和吸尘器输出尚未试过。
+* `docs/PROTOCOL.md` 仍列出协议中属于假设的部分；协议层在被解锁之前拒绝移动任何东西。
+* 文件读取器只用为测试编写的小型示例文件试过，没有用真实电路板的文件试过。
+* 服务器连接（`connection = server`）只在模拟器上练过。
+* 只支持 MTC 型号；ATC 型号尚不支持，XL 型号不在范围内。中文和日文需要系统字体中有 CJK 字体。
+
+**下一步**
+
+* 在机器上运行完整的钻孔作业，并确认每毫米步数、主轴和吸尘器输出。
+* 用真实电路板的文件试验文件读取器。
+* 为 ATC 型号单独开发应用程序，以逆向工程所能提供的信息为基础。
+* 待 [EH3D-CORE-LIBS](https://github.com/JuanenRac/EH3D-CORE-LIBS) 的 Excellon 读取器就绪后，用它替换自带的读取器。
+
+## 🌍 语言
+
+README 和文本提供英语、西班牙语、法语、意大利语、德语、汉语、日语和欧洲葡萄牙语版本。
 
 ## 🔗 相关项目
 
@@ -110,14 +177,19 @@ python -I tools/ci_validate.py
 * [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD)：装在机器箱内的 ESP32-S3 节点（以太网或 Wi-Fi），通过自己的串口发出步进，时序是 USB 适配器保持不了的，并读取机器的指示灯、控制主轴驱动器；它有自己的网页面板
 * [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER)： EH3D 家族的中心：接收本程序（`connection = server`）和其他客户端的作业，并通过节点在机器上执行
 
-## 📚 文档与社区
+## 📚 文档
 
 * [协议说明](docs/PROTOCOL.md): 已知的控制单元驱动方式，以及哪些仍是假设。
 * [连接与调整](docs/CONNECTION.md)：机器文件、三种连接方式和每个值
+* [经典界面](docs/CLASSIC.md)：如何复现并核对 MS-DOS 程序的界面
 * [更新日志](CHANGELOG.md)
-* [参与贡献](CONTRIBUTING.md)
-* [安全政策](SECURITY.md)
-* [支持](SUPPORT.md)
+
+## 🤝 参与贡献与社区
+
+* 提交 Pull Request 之前请运行 `cargo fmt --all --check`、`cargo clippy --workspace --all-targets -- -D warnings`、`cargo test --workspace` 和 `python -I tools/ci_validate.py`：必须全部通过。参见 [CONTRIBUTING.md](CONTRIBUTING.md) 和[行为准则](CODE_OF_CONDUCT.md)。
+* README 有八种语言：修改文字时要同步修改全部八个文件，两张图片由 `tools/make_architecture.py` 和 `tools/make_structure.py` 根据 `docs/architecture.json` 和 `docs/structure.json` 绘制。
+* 不要把仅在模拟器上试过的东西描述为已在机器上运行。
+* 请私下报告漏洞：[SECURITY.md](SECURITY.md)。问题、想法和报告：electrohobby3d@gmail.com（[SUPPORT.md](SUPPORT.md)）。
 
 ## 👤 作者
 

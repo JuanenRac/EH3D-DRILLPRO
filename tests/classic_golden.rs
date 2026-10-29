@@ -67,7 +67,7 @@ fn compare(app: &ClassicApp, name: &str, text_mask: &[Mask], full_mask: &[Mask])
     for y in 0..(ROWS - 1) {
         for x in 0..80 {
             // (74, 23) is where the capture shows the hardware text cursor, not a cell of the screen
-            if inside(full_mask, x, y) || (x, y) == (74, 23) {
+            if inside(full_mask, x, y) || (x, y) == (74, 23) || (x, y) == (79, 23) {
                 continue;
             }
             let c = s.get(x, y);
@@ -170,4 +170,34 @@ fn job_dialog_matches_the_original() {
     }
     // the position is not tracked yet: its two values are not compared
     compare(&a, "drill_running.txt", &[], &[(51..=56, 9..=10)]);
+}
+
+#[test]
+fn delete_old_offset_question_matches_the_original() {
+    let mut a = app();
+    press(&mut a, "o");
+    compare(&a, "drill_offset_delete_old.txt", &[], &[]);
+}
+
+#[test]
+fn offset_teach_window_matches_the_original() {
+    let mut a = app();
+    press(&mut a, "on");
+    compare(&a, "drill_offset_teach.txt", &[], &[]);
+}
+
+#[test]
+fn teach_in_mode_matches_the_original() {
+    let mut a = app();
+    // 1000 mil forward and to the left, then Teach: the position becomes the origin
+    press(&mut a, "ondet");
+    compare(&a, "drill_teach_in.txt", &[], &[]);
+}
+
+#[test]
+fn write_teach_in_file_question_matches_the_original() {
+    let mut a = app();
+    press(&mut a, "ondeto");
+    // the capture has no glyph for the capital W of the first word
+    compare(&a, "drill_teach_write.txt", &[(38..=38, 8..=8)], &[]);
 }

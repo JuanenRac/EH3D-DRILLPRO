@@ -7,6 +7,7 @@
 mod dialogs;
 pub mod edit;
 pub mod engine;
+mod teach;
 pub mod texts;
 pub mod ui;
 
@@ -234,6 +235,8 @@ pub(crate) enum Act {
     Pz(usize),
     /// The arrows at the ends of the language field: the previous (-1) or the next (1) language.
     LangStep(isize),
+    /// A control of the Offset Teach window.
+    Teach(teach::TeachBtn),
 }
 
 struct Hit {
@@ -550,7 +553,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             Button::Panelz => self.dialog = self.open_panel(),
             Button::Offset => {
-                self.dialog = Dialog::Message(self.t(CText::SimNote).to_string());
+                self.dialog = self.open_offset();
             }
             Button::About => self.dialog = Dialog::About,
         }

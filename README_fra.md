@@ -18,7 +18,7 @@
 
 ---
 
-**Vérification d'honnêteté - ce qui tourne aujourd'hui :** un programme Rust avec une interface texte de 80x25 qui lit les fichiers de perçage Excellon `.NCD`, la table d'outils et la configuration de la machine, ordonne les trous, les affiche et exécute tout le travail **contre un simulateur** (par défaut) ou, quand le fichier de la machine l'indique, **sur une machine réelle** par le port série de l'ordinateur, un adaptateur USB-série ou l'EH3D-NODE-BUNGARD. 123 tests s'exécutent sur un ordinateur. Sur une Bungard CCD MTC réelle, la référence des trois axes (Z, X et Y jusqu'à leurs fins de course, avec le signal « les trois en origine » de l'unité de commande confirmé en direct) et les déplacements de chaque axe ont été essayés ; **un travail de perçage complet n'a pas encore tourné sur la machine**, et les pas par millimètre ne sont vérifiés que par rapport à la configuration de l'original. Par défaut, ce sont les écrans classiques du programme MS-DOS, vérifiés cellule par cellule avec l'original ; `--modern` lance l'interface à menus. Ils se manipulent au clavier et à la souris, la fenêtre peut être agrandie (l'écran s'adapte de 640x400 à 1080p et plus), les fichiers de configuration et d'outils se modifient et s'enregistrent depuis les dialogues, et le bouton Info indique les machines Bungard CCD et CCD/2 (MTC prises en charge, ATC pas encore). Une version console (`drillpro-console`) affiche les mêmes écrans dans un terminal, au clavier et à la souris et sans système de fenêtres (SSH, console texte, vieux PC).
+**Vérification d'honnêteté - ce qui tourne aujourd'hui :** un programme Rust avec une interface texte de 80x25 qui lit les fichiers de perçage Excellon `.NCD`, la table d'outils et la configuration de la machine, ordonne les trous, les affiche et exécute tout le travail **contre un simulateur** (par défaut) ou, quand le fichier de la machine l'indique, **sur une machine réelle** par le port série de l'ordinateur, un adaptateur USB-série ou l'EH3D-NODE-BUNGARD. 172 tests s'exécutent sur un ordinateur. Sur une Bungard CCD MTC réelle, la référence des trois axes (Z, X et Y jusqu'à leurs fins de course, avec le signal « les trois en origine » de l'unité de commande confirmé en direct) et les déplacements de chaque axe ont été essayés ; **un travail de perçage complet n'a pas encore tourné sur la machine**, et les pas par millimètre ne sont vérifiés que par rapport à la configuration de l'original. Par défaut, ce sont les écrans classiques du programme MS-DOS, vérifiés cellule par cellule avec l'original ; `--modern` lance l'interface à menus. Ils se manipulent au clavier et à la souris, la fenêtre peut être agrandie (l'écran s'adapte de 640x400 à 1080p et plus), les fichiers de configuration et d'outils se modifient et s'enregistrent depuis les dialogues, et le bouton Info indique les machines Bungard CCD et CCD/2 (MTC prises en charge, ATC pas encore). Une version console (`drillpro-console`) affiche les mêmes écrans dans un terminal, au clavier et à la souris et sans système de fenêtres (SSH, console texte, vieux PC).
 
 ---
 
@@ -30,9 +30,11 @@
 |---|---|
 | Version | `0.0.2` |
 | Maturité | Échafaudage |
-| Tests | 123 |
+| Tests | 172 |
 | Pile technique | Rust |
 | Sur du matériel réel | Oui, sur une Bungard CCD MTC : la référence et les déplacements de chaque axe ; un travail complet n'a pas encore tourné. Sans fichier de machine, il s'exécute sur le simulateur |
+
+**Aller à :** [Présentation](#-présentation) · [Architecture](#-architecture) · [Démarrage rapide](#-démarrage-rapide) · [Tests](#-tests) · [Structure](#-structure-du-dépôt) · [Liés](#-projets-liés)
 
 ## 🚦 État du projet
 
@@ -43,7 +45,7 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Logiciel | 🟡 | Un programme Rust à écran texte 80x25 lit le fichier de perçage, la table d'outils et le fichier de la machine, ordonne les trous et exécute tout le travail sur un simulateur, ou sur une vraie machine si le fichier de la machine le dit. |
-| Tests | 🟢 | 123 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les huit langues. |
+| Tests | 🟢 | 172 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les huit langues. |
 | Lecteurs de fichiers | 🟡 | Le fichier de perçage `.NCD`, la table d'outils `DRILLPRO.DTD` et le fichier de la machine `DRILLPRO.DCF` sont lus ; seulement avec de petits fichiers d'exemple écrits pour les tests, pas avec des fichiers de vraies cartes. |
 | Protocole de la machine | 🟠 | Le protocole d'octets de l'unité de commande a été reconstruit par rétro-ingénierie et `docs/PROTOCOL.md` liste encore des parties qui sont des hypothèses ; la couche de protocole refuse de bouger quoi que ce soit avant d'être armée. |
 | Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les huit langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
@@ -53,7 +55,7 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Paquets prêts à l'emploi | 🟡 | La première publication contient des paquets pour Windows, Linux et macOS (Apple silicon et Intel), chacun avec son SHA-256, construits par le workflow de publication. |
 | Documentation | 🟢 | README en huit langues, les notes du protocole avec ce qui reste hypothèse et le guide du fichier de la machine avec chaque valeur de réglage. |
 
-## 🎯 Vue d'ensemble
+## 🎯 Présentation
 
 * Les **lecteurs de fichiers** : fichiers de perçage Excellon `.NCD` (avec ou sans l'en-tête `M48`, coordonnées modales, unités impériales de 1 mil), la table d'outils `DRILLPRO.DTD` et la configuration de la machine `DRILLPRO.DCF`.
 * Le **planificateur de travail** : ordonne les trous (comme dans le fichier, X d'abord, Y d'abord ou chemin le plus court) et les garde regroupés par outil.
@@ -71,22 +73,15 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 
 EH3D-DRILLPRO est un programme autonome de la famille EH3D pour les machines dont l'unité de commande exige que le PC génère chaque pas de moteur. EH3D-ROUTEPRO, son frère pour le fraisage, réutilise son protocole, son écran et sa prise en charge des langues. Il ne dépend encore d'aucun autre dépôt EH3D ; le lecteur Excellon d'EH3D-CORE-LIBS pourrait remplacer le sien plus tard.
 
-## 📂 Structure du dépôt
+## 🏛️ Architecture
 
-```text
-EH3D-DRILLPRO/
-├── src/          library: file formats, job planning, screen, application, languages
-├── src/bin/      the drillpro executable (feature gui)
-├── protocol/     eh3d-drillpro-protocol: serial transport, motion, safety gate
-├── tests/        formats, job planning, screens in all languages
-├── testdata/     small sample files written for the tests
-├── docs/         PROTOCOL.md et CONNECTION.md : le protocole, le fichier de la machine et chaque valeur de réglage ; machine.cfg.example : le fichier avec toutes ses valeurs
-├── tools/        ci_validate.py: manifest, versions, changelog and README checks
-├── images/       banner
-└── eh3d.project.json   the manifest of the project
-```
+<p align="center">
+  <img src="images/architecture.svg" alt="Architecture de EH3D-DRILLPRO : qui l'utilise, ce qu'il contient et de quoi il dépend" width="100%">
+</p>
 
-## 🛠️ COMPILER ET EXÉCUTER
+Comment les parties de ce dépôt s'articulent : qui l'utilise, ce qu'il contient et de quoi il dépend. L'image est dessinée à partir de `docs/architecture.json` et vérifiée par rapport au code.
+
+## 🚀 Démarrage rapide
 
 Il faut une chaîne d'outils Rust stable.
 
@@ -100,7 +95,79 @@ python -I tools/ci_validate.py
 
 Lancez-le avec `run.bat` (Windows) ou `./run.sh` (Linux et macOS) ; les deux compilent d'abord le programme si nécessaire : `run.bat [FICHIER.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` est le dossier contenant `DRILLPRO.DTD` et `DRILLPRO.DCF` (par défaut : `testdata/`) et `--dump` affiche l'écran en texte brut. Touches : `Alt` plus la lettre en surbrillance ouvre un menu, les flèches déplacent, `Entrée` valide, `Échap` revient ; la barre de menus est aussi cliquable. Le chinois et le japonais nécessitent une police CJK parmi les polices du système. `--connection FILE` désigne un autre fichier de machine que celui par défaut (`%APPDATA%\EH3D\machine.cfg` sous Windows, `~/.config/eh3d/machine.cfg` ailleurs) ; sans fichier de machine, le programme s'exécute sur le simulateur. `--modern` lance l'interface à menus au lieu des écrans classiques.
 
+## 🧪 Tests
+
+La suite compte 172 tests (`cargo test --workspace`). Ils vérifient les formats de fichier (le fichier de perçage, la table d'outils et le fichier de la machine, et leur réécriture), la planification du travail, le protocole sur le simulateur (octets, mouvement, la prise de référence, les bits de verrouillage, le lien avec le nœud et la barrière de sécurité qui refuse de bouger tant qu'elle n'est pas armée), les écrans classiques cellule par cellule et les écrans dans les huit langues. La CI exécute aussi `cargo fmt --check` et `cargo clippy` avec les avertissements comme erreurs, et `python -I tools/ci_validate.py` contrôle le manifeste, les versions, le journal des modifications et les huit README.
+
+## 🏗️ Compilation et publication
+
+La version se trouve dans `Cargo.toml` et dans `eh3d.project.json`, et chaque version a son entrée dans [CHANGELOG.md](CHANGELOG.md). Les versions sont publiées sur GitHub.
+
 **Paquets prêts à l'emploi :** chaque version publiée contient un paquet pour Windows (zip), Linux (tar.gz) et macOS (Apple silicon et Intel, tar.gz) avec le programme, la licence et ce README, chacun avec son SHA-256 à côté. Ils sont construits par le workflow `Release binaries` de ce dépôt. Téléchargez-en un depuis la page Releases ; sous Linux, la fenêtre a besoin de X11 ou de Wayland.
+
+## 📂 Structure du dépôt
+
+<p align="center">
+  <img src="images/repository-structure.svg" alt="Structure du dépôt EH3D-DRILLPRO" width="100%">
+</p>
+
+<details>
+<summary>Version texte de l'arborescence</summary>
+
+```text
+EH3D-DRILLPRO/
+├── src/
+│   ├── classic/                                 les écrans, boîtes de dialogue et touches classiques du programme MS-DOS
+│   ├── ncd.rs tools.rs config.rs                le fichier de perçage, la table d'outils et le fichier de la machine
+│   ├── job.rs runner.rs                         ordonner les trous et exécuter le travail dans son propre fil
+│   ├── app.rs screen.rs textapp.rs              l'écran texte de 80x25 et les menus modernes
+│   ├── i18n.rs texts.rs                         les huit langues et leurs textes
+│   ├── gui.rs console.rs bin/                   la fenêtre, la version terminal et les exécutables
+│   └── server_link.rs cli.rs                    le lien avec EH3D-SERVER et la ligne de commande
+├── protocol/src/
+│   ├── safety.rs                                la barrière qui refuse de bouger tant qu'elle n'est pas armée
+│   ├── motion.rs positioner.rs                  mouvement en millimètres avec rampes
+│   ├── execute.rs job.rs                        transformer un travail en flux d'octets
+│   ├── homing.rs latches.rs                     la prise de référence et les bits de verrouillage
+│   ├── serial.rs node.rs nullmodem.rs           port série, nœud et simulateur
+│   └── connection.rs tuning.rs                  le fichier de la machine et ses valeurs de réglage
+├── tests/                                       formats, planification, écrans classiques et écrans dans toutes les langues
+├── docs/                                        les notes de protocole, les écrans classiques, le guide de connexion et le fichier de la machine avec toutes ses valeurs
+├── testdata/                                    petits fichiers d'exemple écrits pour les tests
+├── tools/                                       contrôle de CI, du README et outils d'images
+├── images/                                      bannière et images d'Architecture et de Structure du dépôt
+├── .github/                                     workflows de CI et de publication, modèles d'issues et de pull requests
+├── build.sh build.bat                           scripts de compilation et de test
+├── run.sh run.bat                               lancent le programme
+├── eh3d.project.json                            manifeste : version, rôle, maturité et commande de compilation
+├── Cargo.toml Cargo.lock                        le paquet Rust et ses dépendances figées
+├── CHANGELOG.md                                 ce qui a changé dans chaque version
+├── SECURITY.md SUPPORT.md                       signaler une vulnérabilité et poser des questions
+└── CONTRIBUTING.md CODE_OF_CONDUCT.md LICENSE   contribuer, code de conduite et licence
+```
+
+</details>
+
+## 🗺️ Feuille de route et limites connues
+
+**Limites connues aujourd'hui**
+
+* Un travail de perçage complet n'a pas encore tourné sur une machine réelle : seuls la prise de référence des trois axes et les mouvements de chaque axe ont été essayés sur une Bungard CCD MTC, les pas par millimètre ne sont vérifiés que par rapport à la configuration de l'original, et les sorties de la broche et de l'aspirateur n'ont pas été essayées.
+* `docs/PROTOCOL.md` liste encore des parties du protocole qui sont des hypothèses ; la couche de protocole refuse de déplacer quoi que ce soit tant qu'elle n'a pas été armée.
+* Les lecteurs de fichiers n'ont été essayés qu'avec de petits fichiers d'exemple écrits pour les tests, pas avec des fichiers de vraies cartes.
+* La connexion au serveur (`connection = server`) n'a été exercée que contre le simulateur.
+* Seuls les modèles MTC sont pris en charge ; les modèles ATC pas encore et les modèles XL ne sont pas couverts. Le chinois et le japonais demandent une police CJK parmi les polices du système.
+
+**Ensuite**
+
+* Exécuter un travail de perçage complet sur la machine et confirmer les pas par millimètre, la broche et les sorties de l'aspirateur.
+* Essayer les lecteurs de fichiers avec des fichiers de vraies cartes.
+* Des applications séparées pour les modèles ATC, construites avec ce que permet la rétro-ingénierie.
+* Remplacer son propre lecteur Excellon par celui d'[EH3D-CORE-LIBS](https://github.com/JuanenRac/EH3D-CORE-LIBS) quand il sera prêt.
+
+## 🌍 Langues
+
+Le README et les textes existent en anglais, espagnol, français, italien, allemand, chinois, japonais et portugais européen.
 
 ## 🔗 Projets liés
 
@@ -110,14 +177,19 @@ Lancez-le avec `run.bat` (Windows) ou `./run.sh` (Linux et macOS) ; les deux com
 * [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD) : un nœud ESP32-S3 (Ethernet ou Wi-Fi) qui se place dans le coffret de la machine, envoie les pas par son propre port série avec le cadencement qu'un adaptateur USB ne sait pas tenir, lit les voyants de la machine et pilote le variateur de la broche ; il a son propre panneau web
 * [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER) : le centre de la famille EH3D : il reçoit les travaux de ce programme (`connection = server`) et des autres clients, et les exécute sur la machine par son nœud
 
-## 📚 Documentation et communauté
+## 📚 Documentation
 
 * [Notes sur le protocole](docs/PROTOCOL.md): ce que l'on sait de la façon dont l'unité de commande est pilotée et ce qui reste une hypothèse.
 * [Connexion et réglage](docs/CONNECTION.md) : le fichier de la machine, les trois connexions et chaque valeur
+* [Les écrans classiques](docs/CLASSIC.md) : comment les écrans du programme MS-DOS sont reproduits et vérifiés
 * [Journal des modifications](CHANGELOG.md)
-* [Contribuer](CONTRIBUTING.md)
-* [Politique de sécurité](SECURITY.md)
-* [Assistance](SUPPORT.md)
+
+## 🤝 Contribuer et communauté
+
+* Avant une pull request, exécutez `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test --workspace` et `python -I tools/ci_validate.py` : tout doit passer. Voir [CONTRIBUTING.md](CONTRIBUTING.md) et le [code de conduite](CODE_OF_CONDUCT.md).
+* Le README existe en huit langues : une modification du texte se fait dans les huit fichiers, et les deux images sont dessinées à partir de `docs/architecture.json` et `docs/structure.json` par `tools/make_architecture.py` et `tools/make_structure.py`.
+* Ne décrivez pas comme fonctionnant sur une machine ce qui n'a été essayé que sur le simulateur.
+* Signalez une vulnérabilité en privé : [SECURITY.md](SECURITY.md). Questions, idées et rapports : electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
 
 ## 👤 AUTEUR
 

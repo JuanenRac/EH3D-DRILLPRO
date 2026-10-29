@@ -13,8 +13,22 @@ pub(crate) enum Dialog {
     Tools(ToolDlg),
     Parameter(ParamDlg),
     Panel(PanelDlg),
-    Quit { yes: bool },
-    SaveAsk { yes: bool },
+    Quit {
+        yes: bool,
+    },
+    SaveAsk {
+        yes: bool,
+    },
+    /// "Delete old offset?" before the Offset Teach window.
+    OffsetAsk {
+        yes: bool,
+    },
+    Teach(Box<super::teach::TeachDlg>),
+    /// "Write Teach-In file?" with the positions taught.
+    TeachWrite {
+        yes: bool,
+        teach: Box<super::teach::TeachDlg>,
+    },
     About,
     Message(String),
     Running,
@@ -28,7 +42,7 @@ pub(crate) enum Flow {
 }
 
 impl Flow {
-    fn to(d: Dialog) -> Flow {
+    pub(crate) fn to(d: Dialog) -> Flow {
         Flow::To(Box::new(d))
     }
 }
@@ -378,6 +392,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(p) => self.panel_key(p, input),
             Dialog::Quit { yes } => self.yes_no_key(yes, input, false),
             Dialog::SaveAsk { yes } => self.yes_no_key(yes, input, true),
+            Dialog::OffsetAsk { yes } => self.offset_ask_key(yes, input),
+            Dialog::Teach(t) => self.teach_key(t, input),
+            Dialog::TeachWrite { yes, teach } => self.teach_write_key(yes, teach, input),
             Dialog::About => match input {
                 Input::Enter | Input::Esc | Input::Char(_) | Input::Alt(_) => Flow::Close,
                 _ => Flow::Stay,
@@ -394,6 +411,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(p) => self.panel_click(p, act),
             Dialog::Quit { yes } => self.yes_no_click(yes, act, false),
             Dialog::SaveAsk { yes } => self.yes_no_click(yes, act, true),
+            Dialog::OffsetAsk { .. } => self.offset_ask_click(act),
+            Dialog::Teach(t) => self.teach_click(t, act),
+            Dialog::TeachWrite { teach, .. } => self.teach_write_click(teach, act),
             Dialog::About => match act {
                 Act::Dlg(_) => Flow::Close,
                 _ => Flow::Stay,
@@ -411,6 +431,17 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(d) => self.render_panel(s, d),
             Dialog::Quit { yes } => self.render_yes_no(s, *yes, self.t(CText::QAsk), true),
             Dialog::SaveAsk { yes } => self.render_yes_no(s, *yes, self.t(CText::BackupAsk), false),
+            Dialog::OffsetAsk { yes } => self.render_sign(
+                s,
+                *yes,
+                self.t(CText::QOffsetDelete),
+                self.t(CText::QAttentionPlain),
+                9,
+            ),
+            Dialog::Teach(t) => self.render_teach(s, t),
+            Dialog::TeachWrite { yes, .. } => {
+                self.render_sign(s, *yes, self.t(CText::QTeachWrite), self.t(CText::QInfo), 8)
+            }
             Dialog::About => self.render_about(s),
             Dialog::Message(m) => {
                 let w = (str_width(m) + 6).min(COLS);
@@ -510,15 +541,20 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn render_yes_no(&self, s: &mut Screen, yes: bool, ask: &str, stop_sign: bool) {
-        window(s, 19, 6, 41, 11, "", false);
-        // the STOP sign: a double frame with its own shadow
-        s.frame(21, 8, 12, 3, LIGHT_GREEN, GREY);
         let sign = if stop_sign {
             CText::QStop
         } else {
             CText::QSave
         };
-        s.text(23, 9, self.t(sign), INK, GREY);
+        self.render_sign(s, yes, ask, self.t(sign), 9);
+    }
+
+    /// A question with its sign (STOP, Attention, Info) and Yes and No.
+    pub(crate) fn render_sign(&self, s: &mut Screen, yes: bool, ask: &str, sign: &str, row: usize) {
+        window(s, 19, 6, 41, 11, "", false);
+        // the sign: a double frame with its own shadow
+        s.frame(21, 8, 12, 3, LIGHT_GREEN, GREY);
+        s.text(23, 9, sign, INK, GREY);
         for xx in 23..35 {
             s.put(xx, 11, ' ', BLACK, BLACK);
         }
@@ -526,9 +562,12 @@ impl<E: ClassicEngine> ClassicApp<E> {
             s.put(33, yy, ' ', BLACK, BLACK);
             s.put(34, yy, ' ', BLACK, BLACK);
         }
-        let (l1, l2) = split_two(ask, 18);
-        s.text(38, 9, &l1, INK, GREY);
-        s.text(38, 10, &l2, INK, GREY);
+        let (l1, l2) = match ask.split_once('|') {
+            Some((a, b)) => (a.to_string(), b.to_string()),
+            None => split_two(ask, 18),
+        };
+        s.text(38, row, &l1, INK, GREY);
+        s.text(38, row + 1, &l2, INK, GREY);
         button(s, 29, 14, 10, self.t(CText::BYes), yes, true);
         button(s, 42, 14, 10, self.t(CText::BNo), !yes, true);
         self.hit(29, 14, 11, 2, Act::Dlg(Dlg::Yes));
