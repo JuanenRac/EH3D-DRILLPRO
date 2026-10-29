@@ -148,6 +148,8 @@ fn event_loop<A: TextApp>(app: &mut A, settings: &str, out: &mut io::Stdout) -> 
                         app.handle(i);
                     }
                 }
+                Event::Mouse(m) if m.kind == MouseEventKind::ScrollUp => app.scroll(-1),
+                Event::Mouse(m) if m.kind == MouseEventKind::ScrollDown => app.scroll(1),
                 Event::Mouse(m) if m.kind == MouseEventKind::Down(MouseButton::Left) => {
                     if let Some((x, y)) = cell_at(m.column, m.row, origin) {
                         app.click(x, y);

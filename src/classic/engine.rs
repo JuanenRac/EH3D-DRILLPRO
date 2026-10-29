@@ -45,6 +45,17 @@ pub struct JobView {
     pub used_mm: f64,
     /// Vectors left out because they fall outside the working area.
     pub skipped: usize,
+    /// Length of the run the current tool makes from here on, in mm (what the tool change window tells).
+    pub run_mm: f64,
+}
+
+/// What the job waits for the operator to do.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Question {
+    /// Put this tool in and confirm.
+    ToolChange(u8),
+    /// Confirm that the spindle may start.
+    SpindleStart,
 }
 
 /// What the About dialog says about the program (the texts around it belong to the front end).
@@ -102,6 +113,10 @@ pub trait ClassicEngine {
     fn set_job_options(&mut self, options: JobOptions);
     /// The job window's figures; `None` when no job is running.
     fn job_view(&self) -> Option<JobView>;
+    /// The dialog the job is waiting at, if any.
+    fn question(&self) -> Option<Question>;
+    /// Answers it: Ok goes on, Abort stops the job.
+    fn answer(&mut self, ok: bool);
     fn start(&mut self);
     /// True once the job moved past the homing.
     fn started(&self) -> bool;
@@ -364,8 +379,15 @@ impl ClassicEngine for App {
             .take(run.done)
             .map(|h| stroke_of(h.tool))
             .sum();
+        // the length of the run the tool makes from here on
+        let mut run_mm = 0.0;
+        let mut prev = (hole.x_mm, hole.y_mm);
+        for h in run.plan[at..].iter().take_while(|h| h.tool == hole.tool) {
+            run_mm += ((h.x_mm - prev.0).powi(2) + (h.y_mm - prev.1).powi(2)).sqrt();
+            prev = (h.x_mm, h.y_mm);
+        }
         Some(JobView {
-            percent: (run.next * 100 / run.items.len().max(1)).min(100) as u8,
+            percent: (run.done * 100 / run.plan.len().max(1)).min(100) as u8,
             tool: Some(hole.tool),
             stroke_mm: stroke_of(hole.tool),
             x_mm: hole.x_mm + offset.0,
@@ -375,7 +397,39 @@ impl ClassicEngine for App {
             done: run.done,
             used_mm: used,
             skipped: run.skipped,
+            run_mm,
         })
+    }
+
+    fn question(&self) -> Option<Question> {
+        use crate::protocol::job::Pause;
+        let run = self.run.as_ref()?;
+        let pause = match run.real.as_ref().map(|r| r.state()) {
+            Some(crate::runner::RunState::WaitPause(p)) => Some(p),
+            Some(_) => None,
+            None => run.waiting,
+        }?;
+        Some(match pause {
+            Pause::ToolChange { tool } => Question::ToolChange(tool),
+            Pause::SpindleStart => Question::SpindleStart,
+        })
+    }
+
+    fn answer(&mut self, ok: bool) {
+        let Some(run) = self.run.as_mut() else { return };
+        if let Some(real) = &run.real {
+            if ok {
+                real.confirm();
+            } else {
+                real.cancel();
+            }
+            return;
+        }
+        if ok {
+            run.waiting = None;
+        } else {
+            self.stop();
+        }
     }
 
     fn start(&mut self) {

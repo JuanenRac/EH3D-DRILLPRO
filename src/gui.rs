@@ -151,6 +151,11 @@ impl<A: TextApp> Gui<A> {
                         }
                     }
                 }
+                egui::Event::MouseWheel { delta, .. } => {
+                    // a notch is three lines; the wheel scrolls only what has something to scroll
+                    let lines = (delta.y.abs().ceil() as isize).clamp(1, 3);
+                    self.app.scroll(if delta.y > 0.0 { -lines } else { lines });
+                }
                 egui::Event::Text(t) => {
                     for c in t.chars().filter(|c| !c.is_control()) {
                         self.app.handle(Input::Char(c));

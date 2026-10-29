@@ -198,6 +198,8 @@ pub struct JobOptions {
     /// The working area in mm (the clip): vectors that end outside it are left out.
     pub clip_mm: Option<(f64, f64)>,
     pub panel: Option<Panel>,
+    /// The job stops at the operator's dialogs (tool change, spindle start) even in the simulation, as the original does.
+    pub ask_operator: bool,
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.

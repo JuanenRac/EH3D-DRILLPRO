@@ -163,12 +163,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
     pub(crate) fn handle_input(&mut self, input: Input) {
         match self.dialog {
             Dialog::None => self.key_main(input),
-            Dialog::Running => {
-                if input == Input::Esc {
-                    self.engine.stop();
-                    self.dialog = Dialog::None;
-                }
-            }
+            Dialog::Running => self.running_key(input),
             Dialog::Message(_) => self.dialog = Dialog::None,
             _ => {
                 let mut d = std::mem::replace(&mut self.dialog, Dialog::None);
@@ -181,12 +176,133 @@ impl<E: ClassicEngine> ClassicApp<E> {
     pub(crate) fn handle_click(&mut self, act: Act, double: bool) {
         match self.dialog {
             Dialog::None => self.click_main(act),
-            Dialog::Running | Dialog::Message(_) => {}
+            Dialog::Running => {
+                // the operator's question has its two buttons
+                match act {
+                    Act::Dlg(Dlg::Ok) if self.engine.question().is_some() => {
+                        self.engine.answer(true)
+                    }
+                    Act::Dlg(Dlg::Abort) if self.engine.question().is_some() => {
+                        self.engine.answer(false);
+                        self.dialog = Dialog::None;
+                    }
+                    _ => {}
+                }
+            }
+            Dialog::Message(_) => {}
             _ => {
                 let mut d = std::mem::replace(&mut self.dialog, Dialog::None);
                 let flow = self.dialog_click(&mut d, act, double);
                 self.finish(d, flow);
             }
+        }
+    }
+
+    /// Keys while a job runs: Esc stops it; at a question of the operator Enter (or the letter of Ok) goes on and Esc
+    /// (or the letter of Abort) stops the job.
+    fn running_key(&mut self, input: Input) {
+        if self.engine.question().is_none() {
+            if input == Input::Esc {
+                self.engine.stop();
+                self.dialog = Dialog::None;
+            }
+            return;
+        }
+        let hot_ok = hot_letter(self.t(CText::BOk));
+        let hot_abort = hot_letter(self.t(CText::BAbort));
+        let abort = match input {
+            Input::Enter => {
+                self.engine.answer(true);
+                return;
+            }
+            Input::Esc => true,
+            Input::Char(c) | Input::Alt(c) => {
+                let c = c.to_ascii_lowercase();
+                if Some(c) == hot_ok {
+                    self.engine.answer(true);
+                    return;
+                }
+                Some(c) == hot_abort
+            }
+            _ => false,
+        };
+        if abort {
+            self.engine.answer(false);
+            self.dialog = Dialog::None;
+        }
+    }
+
+    /// The window the job asks the operator with: the sign, the words and Ok and Abort.
+    fn render_question(&self, s: &mut Screen, q: engine::Question) {
+        if let engine::Question::ToolChange(n) = q {
+            return self.render_tool_change(s, n);
+        }
+        window(s, 19, 6, 41, 11, "", false);
+        s.frame(21, 8, 12, 3, LIGHT_GREEN, GREY);
+        s.text(23, 9, self.t(CText::QAttention), INK, GREY);
+        for xx in 23..35 {
+            s.put(xx, 11, ' ', BLACK, BLACK);
+        }
+        for yy in [9, 10] {
+            s.put(33, yy, ' ', BLACK, BLACK);
+            s.put(34, yy, ' ', BLACK, BLACK);
+        }
+        let ask = match q {
+            engine::Question::SpindleStart => self.t(CText::QSpindleAsk).to_string(),
+            engine::Question::ToolChange(n) => {
+                self.t(CText::QToolAsk).replace("{}", &format!("{n:02}"))
+            }
+        };
+        let (l1, l2) = split_two(&ask, 18);
+        s.text(38, 9, &l1, INK, GREY);
+        s.text(38, 10, &l2, INK, GREY);
+        button(s, 29, 14, 10, self.t(CText::BOk), true, true);
+        button(s, 42, 14, 10, self.t(CText::BAbort), false, true);
+        self.hit(29, 14, 11, 2, Act::Dlg(Dlg::Ok));
+        self.hit(42, 14, 11, 2, Act::Dlg(Dlg::Abort));
+    }
+
+    /// The tool change window: which tool goes in and what the run with it will be (the words are the original's).
+    fn render_tool_change(&self, s: &mut Screen, tool: u8) {
+        let (x, y) = (18usize, 3usize);
+        window(s, x, y, 44, 18, "", false);
+        let title = self.t(CText::TcTitle);
+        label(
+            s,
+            x + (44usize.saturating_sub(str_width(title))) / 2,
+            y + 1,
+            title,
+        );
+        label(
+            s,
+            x + 4,
+            y + 4,
+            &format!("{} {:02}", self.t(CText::TcInsert), tool),
+        );
+        let view = self.engine.job_view().unwrap_or_default();
+        let rows = [
+            (y + 7, CText::TcRun, format!("{:.1}", view.run_mm)),
+            (y + 8, CText::TcSpindle, format!("{:05}", view.rpm)),
+            (y + 10, CText::TcZSpeed, format!("{:04}", view.z_feed)),
+            (y + 11, CText::TcStroke, format!("{:05.2}", view.stroke_mm)),
+        ];
+        for (row, k, value) in rows {
+            label(s, x + 4, row, self.t(k));
+            label(s, x + 30, row, &value);
+        }
+        button(s, x + 9, y + 14, 10, self.t(CText::BOk), true, true);
+        button(s, x + 25, y + 14, 10, self.t(CText::BAbort), false, true);
+        self.hit(x + 9, y + 14, 11, 2, Act::Dlg(Dlg::Ok));
+        self.hit(x + 25, y + 14, 11, 2, Act::Dlg(Dlg::Abort));
+    }
+
+    /// The wheel moves the selection of the file list.
+    pub(crate) fn scroll_list(&mut self, lines: isize) {
+        if let Dialog::Files(d) = &mut self.dialog {
+            let n = d.visible().len();
+            let next = (d.sel as isize + lines).clamp(0, n.saturating_sub(1) as isize);
+            d.sel = next as usize;
+            d.list = true;
         }
     }
 
@@ -1899,6 +2015,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
         s.fill(20, 16, 20, 1, ' ', RED, RED);
         s.text(21, 16, hint, YELLOW, RED);
         label(s, 50, 16, &self.file_name());
+        if let Some(q) = self.engine.question() {
+            self.render_question(s, q);
+        }
     }
 }
 

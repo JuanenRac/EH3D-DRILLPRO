@@ -76,6 +76,8 @@ pub(crate) struct Run {
     pub(crate) plan: Vec<JobHole>,
     /// Holes left out because they fall outside the working area.
     pub(crate) skipped: usize,
+    /// The simulated job waits for the operator at this dialog.
+    pub(crate) waiting: Option<Pause>,
 }
 
 pub struct App {
@@ -391,6 +393,7 @@ impl App {
             hole_ends,
             plan: job_holes,
             skipped,
+            waiting: None,
         });
         self.mode = Mode::Running;
     }
@@ -410,9 +413,13 @@ impl App {
         if self.mode != Mode::Running {
             return false;
         }
+        let ask = self.job_options.ask_operator;
         let Some(run) = self.run.as_mut() else {
             return false;
         };
+        if run.waiting.is_some() {
+            return true;
+        }
         if let Some(real) = &run.real {
             let (next, _) = real.progress();
             run.next = next;
@@ -441,7 +448,13 @@ impl App {
                 Item::Latch(ops) => {
                     let _ = run_ops(&mut run.sim, ops);
                 }
-                // The operator dialogs are confirmed automatically in the simulation; there is nothing to unstick, and the simulator has no spindle.
+                // The operator's dialogs are asked for when the front end wants them and confirmed at once otherwise; there is
+                // nothing to unstick, and the simulator has no spindle.
+                Item::Pause(p) if ask => {
+                    run.waiting = Some(*p);
+                    run.next += 1;
+                    return true;
+                }
                 Item::Pause(_) | Item::Unstick(_) | Item::Spindle { .. } => {}
             }
             run.next += 1;

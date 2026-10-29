@@ -267,11 +267,35 @@ fn the_form_and_the_panel_reach_the_job_and_the_window_shows_it() {
         a.tick();
     }
     let t = text(&a);
-    assert!(t.contains("Drilling") || t.contains("Start Pos."), "{t}");
+    assert!(
+        t.contains("Drilling")
+            || t.contains("Start Pos.")
+            || t.contains("Attention!")
+            || t.contains("Tool Change")
+            || t.contains("Homing"),
+        "{t}"
+    );
     let view = {
         use eh3d_drillpro::classic::engine::ClassicEngine;
         a.engine.job_view().expect("a job is running")
     };
     assert!(view.percent <= 100);
     assert_eq!(view.tool, Some(1));
+}
+
+#[test]
+fn the_wheel_scrolls_the_file_list() {
+    let dir = tree("wheel");
+    for i in 0..30 {
+        std::fs::write(dir.join(format!("F{i:02}.NCD")), "%\nT01\nX1Y1\nM30\n").unwrap();
+    }
+    let mut a = ClassicApp::new(Lang::En, &dir);
+    press(&mut a, "l");
+    a.scroll(20);
+    // the second page: the first files are gone, later ones show
+    let t = text(&a);
+    assert!(t.contains("F20.NCD") || t.contains("F21.NCD"), "{t}");
+    assert!(!t.contains("F00.NCD"), "{t}");
+    a.scroll(-100);
+    assert!(text(&a).contains("F00.NCD"));
 }

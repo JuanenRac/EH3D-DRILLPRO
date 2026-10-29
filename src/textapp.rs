@@ -10,6 +10,8 @@ pub trait TextApp {
     /// Advances background work by one step; returns true while more work remains.
     fn tick(&mut self) -> bool;
     fn render(&self, screen: &mut Screen);
+    /// The mouse wheel: positive lines scroll down, negative up. Nothing happens where there is nothing to scroll.
+    fn scroll(&mut self, _lines: isize) {}
     fn lang(&self) -> Lang;
     fn wants_quit(&self) -> bool;
 }

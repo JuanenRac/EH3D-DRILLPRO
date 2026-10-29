@@ -73,6 +73,10 @@ configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`).
   The copies are `board - spacing` apart: that is what the original's count of copies works out to on both axes of the one
   figure that was checked.
 * The job window shows the planned position, tool, stroke, speeds, count and drilled depth.
+* The job asks the operator, as the original does: Attention! before the spindle starts, and Tool Change (the tool to put in,
+  the length of the run, the spindle, the Z speed and the stroke) for every tool. `Enter` (or the letter of Ok) goes on; `Esc`
+  (or the letter of Abort) stops the job. The words of the Tool Change window are the original's; its layout is ours, as it
+  could not be captured from the original.
 
 ## The machines
 

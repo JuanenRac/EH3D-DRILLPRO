@@ -670,6 +670,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             to: self.form.to,
             clip_mm: Some(self.form.clip),
             panel: self.panel,
+            ask_operator: true,
         }
     }
 
@@ -770,6 +771,10 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
             return more;
         }
         false
+    }
+
+    fn scroll(&mut self, lines: isize) {
+        self.scroll_list(lines);
     }
 
     fn render(&self, screen: &mut Screen) {

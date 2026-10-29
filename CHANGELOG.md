@@ -4,6 +4,9 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The operator's dialogs in the classic screens:** the job asks, as the original does, to confirm that the spindle may start (Attention!) and, for every tool, to put it in (Tool Change: the tool, the length of the run, the spindle, the Z speed and the stroke), with Ok and Abort on the keyboard (`Enter`, `Esc`, the letters) and the mouse. The simulation stops there too, so the whole flow can be seen without a machine. Before, a job on a real machine had no way to answer these dialogs from the classic screens (the menu-driven interface did) and would wait for ever.
+- **The mouse wheel** scrolls the file list (window and console).
+- **The percentage** of the job window counts the holes done, as the original does.
 - **Moving through the folders of the computer:** the Select File dialog lists the files, then the folders, then `..\` last, as the original does; it works from the absolute folder (a folder written as `.` could not go up before), shows the drives as `[-C-]` entries on Windows, hides dotted files, ends a long name with `~`, and tells when a folder cannot be opened. A path written in the name field (`D:\jobs\*.NCD`, `..\other`, `C:\`) goes to its folder and takes the rest as the pattern or the file; the name field takes a path of any length. The mouse wheel scrolls the list.
 - **The form drives the job:** the vectors `from` and `to` choose the holes (or paths) that are done, the clip leaves out the ones that end outside the working area (counted), and the Panelization dialog's Ok repeats the job over the copies, a tool at a time so that there is one tool change; the copies are `board - spacing` apart, as the original's count works out.
 - **The job window shows the job:** the position, the tool, its stroke, the speeds, the count and the drilled depth follow the planned job (the values are the planned ones, not read from the machine).
