@@ -1,6 +1,9 @@
 {
   "repo": "EH3D-DRILLPRO",
-  "exempt": ["test.bat", "test.sh"],
+  "exempt": [
+    "test.bat",
+    "test.sh"
+  ],
   "ecosystem": "eh3d",
   "svg": "en",
   "tagline": {
@@ -40,20 +43,6 @@
             "ja": "MS-DOS プログラムの従来の画面・ダイアログ・キー",
             "zh": "MS-DOS 程序的经典界面、对话框和按键",
             "pt": "os ecrãs, diálogos e teclas clássicos do programa de MS-DOS"
-          }
-        },
-        {
-          "name": "ncd.rs  tools.rs  config.rs",
-          "tree_name": "ncd.rs tools.rs config.rs",
-          "desc": {
-            "en": "the drill file, the tool table and the machine file",
-            "es": "el archivo de taladros, la tabla de herramientas y el archivo de la máquina",
-            "de": "die Bohrdatei, die Werkzeugtabelle und die Maschinendatei",
-            "fr": "le fichier de perçage, la table d'outils et le fichier de la machine",
-            "it": "il file di foratura, la tabella degli utensili e il file della macchina",
-            "ja": "ドリルファイル、ツールテーブル、マシンファイル",
-            "zh": "钻孔文件、刀具表和机器文件",
-            "pt": "o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina"
           }
         },
         {

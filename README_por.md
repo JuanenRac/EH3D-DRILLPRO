@@ -72,7 +72,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 
 ## 🧩 Papel no EH3D
 
-O EH3D-DRILLPRO é um programa independente da família EH3D para máquinas cuja unidade de controlo precisa que o PC gere cada passo do motor. O EH3D-ROUTEPRO, o seu irmão de fresagem, reutiliza o seu protocolo, o seu ecrã e o suporte de idiomas. Para os trabalhos empacotados em arquivos ZIP usa um crate do EH3D-COMMON (`eh3d-archive`), que tem de estar ao lado para compilar; o leitor Excellon do EH3D-CORE-LIBS poderá substituir o seu mais tarde.
+O EH3D-DRILLPRO é um programa independente da família EH3D para máquinas cuja unidade de controlo precisa que o PC gere cada passo do motor. O EH3D-ROUTEPRO, o seu irmão de fresagem, reutiliza o seu protocolo, o seu ecrã e o suporte de idiomas. Para os trabalhos empacotados em arquivos ZIP usa um crate do EH3D-COMMON (`eh3d-archive`), que tem de estar ao lado para compilar; o leitor Excellon do EH3D-CORE-LIBS poderá substituir o seu mais tarde. Os ficheiros da máquina (o de furação, o HP-GL, as tabelas de ferramentas e a configuração da máquina) vêm do crate `eh3d-bungard-formats` do EH3D-COMMON, que também tem de estar ao lado.
 
 ## 🏛️ Arquitetura
 
@@ -119,7 +119,6 @@ A versão está em `Cargo.toml` e em `eh3d.project.json`, e cada versão tem a s
 EH3D-DRILLPRO/
 ├── src/
 │   ├── classic/                                 os ecrãs, diálogos e teclas clássicos do programa de MS-DOS
-│   ├── ncd.rs tools.rs config.rs                o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina
 │   ├── job.rs runner.rs                         ordenar os furos e executar o trabalho na sua própria thread
 │   ├── app.rs screen.rs textapp.rs              o ecrã de texto de 80x25 e os menus modernos
 │   ├── i18n.rs texts.rs                         os oito idiomas e os seus textos

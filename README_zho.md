@@ -72,7 +72,7 @@
 
 ## 🧩 在 EH3D 中的角色
 
-EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由 PC 生成每一个电机步进的机床。它的铣削姊妹项目 EH3D-ROUTEPRO 复用其协议、屏幕和语言支持。对于打包成 ZIP 压缩包的作业，它使用 EH3D-COMMON 的一个 crate（`eh3d-archive`），编译时必须放在它旁边；以后可以用 EH3D-CORE-LIBS 的 Excellon 读取器替换自己的读取器。
+EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由 PC 生成每一个电机步进的机床。它的铣削姊妹项目 EH3D-ROUTEPRO 复用其协议、屏幕和语言支持。对于打包成 ZIP 压缩包的作业，它使用 EH3D-COMMON 的一个 crate（`eh3d-archive`），编译时必须放在它旁边；以后可以用 EH3D-CORE-LIBS 的 Excellon 读取器替换自己的读取器。 机器的文件（钻孔文件、HP-GL 文件、刀具表和机器配置）来自 EH3D-COMMON 的 crate `eh3d-bungard-formats`，它同样必须放在旁边。
 
 ## 🏛️ 架构
 
@@ -119,7 +119,6 @@ python -I tools/ci_validate.py
 EH3D-DRILLPRO/
 ├── src/
 │   ├── classic/                                 MS-DOS 程序的经典界面、对话框和按键
-│   ├── ncd.rs tools.rs config.rs                钻孔文件、刀具表和机器文件
 │   ├── job.rs runner.rs                         排列孔位，并在独立线程中运行作业
 │   ├── app.rs screen.rs textapp.rs              80x25 文本屏幕和现代菜单
 │   ├── i18n.rs texts.rs                         八种语言及其文本

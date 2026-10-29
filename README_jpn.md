@@ -72,7 +72,7 @@
 
 ## 🧩 EH3D での役割
 
-EH3D-DRILLPRO は、制御ユニットがすべてのモーターステップを PC に生成させるマシン向けの、EH3D ファミリーの単独プログラムです。フライス加工向けの姉妹プロジェクト EH3D-ROUTEPRO は、そのプロトコル、画面、言語対応を再利用します。ZIP アーカイブにまとめた作業には EH3D-COMMON のクレート（`eh3d-archive`）を使うため、ビルドには隣のフォルダーに置く必要があります。将来は EH3D-CORE-LIBS の Excellon リーダーで置き換える可能性があります。
+EH3D-DRILLPRO は、制御ユニットがすべてのモーターステップを PC に生成させるマシン向けの、EH3D ファミリーの単独プログラムです。フライス加工向けの姉妹プロジェクト EH3D-ROUTEPRO は、そのプロトコル、画面、言語対応を再利用します。ZIP アーカイブにまとめた作業には EH3D-COMMON のクレート（`eh3d-archive`）を使うため、ビルドには隣のフォルダーに置く必要があります。将来は EH3D-CORE-LIBS の Excellon リーダーで置き換える可能性があります。 マシンのファイル（穴あけファイル、HP-GL ファイル、工具テーブル、マシン設定）は EH3D-COMMON のクレート `eh3d-bungard-formats` から来るため、これも隣のフォルダーに置く必要があります。
 
 ## 🏛️ アーキテクチャ
 
@@ -119,7 +119,6 @@ python -I tools/ci_validate.py
 EH3D-DRILLPRO/
 ├── src/
 │   ├── classic/                                 MS-DOS プログラムの従来の画面・ダイアログ・キー
-│   ├── ncd.rs tools.rs config.rs                ドリルファイル、ツールテーブル、マシンファイル
 │   ├── job.rs runner.rs                         穴の並べ替えと、専用スレッドでの作業実行
 │   ├── app.rs screen.rs textapp.rs              80x25 のテキスト画面とモダンなメニュー
 │   ├── i18n.rs texts.rs                         8 言語とそのテキスト

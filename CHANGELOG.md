@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The files of the machine come from a shared crate:** the drill file, the tool table and the machine configuration are read and written by `eh3d-bungard-formats` of EH3D-COMMON (the same code that ROUTEPRO and the modern interface use); nothing changes for the operator.
+
 - **Sounds when the job ends and when the machine asks for a tool:** `sound_finish` and `sound_tool_change` in the machine file are each off (the default), `default` (a tone the program makes, one for each cue) or the path of a WAV file of the operator's. The sound is played by the system (PowerShell, `afplay`, `paplay`/`aplay`/`play`) in a process of its own, so it never stops a job. It is explained in the machine file and in the guide of the configuration in the eight languages.
 
 ## [0.0.4] - Jobs in ZIP archives, an Offset window that moves the machine, file patterns and a simulation at the speed of the machine

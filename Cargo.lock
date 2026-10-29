@@ -585,12 +585,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "eh3d-bungard-formats"
+version = "0.0.1"
+
+[[package]]
 name = "eh3d-drillpro"
 version = "0.0.4"
 dependencies = [
  "crossterm",
  "eframe",
  "eh3d-archive",
+ "eh3d-bungard-formats",
  "eh3d-drillpro-protocol",
  "png 0.17.16",
  "serde_json",

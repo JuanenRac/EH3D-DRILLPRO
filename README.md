@@ -72,7 +72,7 @@ Each line is one part of this repository and the light says how far it is today.
 
 ## 🧩 Role in EH3D
 
-EH3D-DRILLPRO is a stand-alone program of the EH3D family for machines whose control unit needs the PC to generate every motor step. EH3D-ROUTEPRO, its milling sibling, reuses its protocol, screen and language support. For the jobs packed in ZIP archives it uses a crate of EH3D-COMMON (`eh3d-archive`), which has to be next to it to build; the Excellon reader of EH3D-CORE-LIBS could replace its own one later.
+EH3D-DRILLPRO is a stand-alone program of the EH3D family for machines whose control unit needs the PC to generate every motor step. EH3D-ROUTEPRO, its milling sibling, reuses its protocol, screen and language support. For the jobs packed in ZIP archives it uses a crate of EH3D-COMMON (`eh3d-archive`), which has to be next to it to build; the Excellon reader of EH3D-CORE-LIBS could replace its own one later. The files of the machine (the drill file, the HP-GL file, the tool tables and the machine configuration) come from the crate `eh3d-bungard-formats` of EH3D-COMMON, which has to be next to it as well.
 
 ## 🏛️ Architecture
 
@@ -119,7 +119,6 @@ The version lives in `Cargo.toml` and in `eh3d.project.json`, and each version h
 EH3D-DRILLPRO/
 ├── src/
 │   ├── classic/                                 the classic screens, dialogs and keys of the MS-DOS program
-│   ├── ncd.rs tools.rs config.rs                the drill file, the tool table and the machine file
 │   ├── job.rs runner.rs                         ordering the holes and running the job on its own thread
 │   ├── app.rs screen.rs textapp.rs              the 80x25 text-mode screen and the modern menus
 │   ├── i18n.rs texts.rs                         the eight languages and their texts
