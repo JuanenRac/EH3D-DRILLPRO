@@ -595,6 +595,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     fn files_load(&mut self, path: PathBuf) -> Flow {
         self.load_file(&path);
+        // a file that cannot be read is said so in a window, as the original does; otherwise its tool data follow
+        if !self.engine.file_loaded() {
+            if let Some(e) = self.engine.error() {
+                let msg: String = e.chars().take(70).collect();
+                return Flow::to(Dialog::Message(msg));
+            }
+        }
         // the original shows its tool data right after loading
         Flow::to(self.open_tools())
     }

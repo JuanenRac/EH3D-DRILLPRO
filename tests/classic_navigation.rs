@@ -299,3 +299,23 @@ fn the_wheel_scrolls_the_file_list() {
     a.scroll(-100);
     assert!(text(&a).contains("F00.NCD"));
 }
+
+#[test]
+fn a_file_that_cannot_be_read_is_said_so_in_a_window() {
+    let dir = tree("bad");
+    std::fs::write(
+        dir.join("BAD.NCD"),
+        "X1000Y1000\nthis is not a drill file\n",
+    )
+    .unwrap();
+    let mut a = ClassicApp::new(Lang::En, &dir);
+    press(&mut a, "l");
+    press(&mut a, "bad.ncd");
+    a.handle(Input::Enter);
+    let t = text(&a);
+    assert!(t.contains("Error reading"), "{t}");
+    // any key closes the window and the form is back with no file
+    a.handle(Input::Enter);
+    let t = text(&a);
+    assert!(t.contains("--------.---"), "{t}");
+}
