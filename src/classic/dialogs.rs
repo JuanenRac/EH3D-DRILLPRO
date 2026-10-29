@@ -49,6 +49,15 @@ impl Flow {
 
 // ---------------------------------------------------------------------------------------------- state
 
+/// What the Select File window is open for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub(crate) enum Purpose {
+    #[default]
+    Job,
+    Tools,
+    Config,
+}
+
 pub(crate) struct FileDlg {
     name: LineEdit,
     /// The pattern the list is filtered with (`*.NCD`).
@@ -634,20 +643,47 @@ impl<E: ClassicEngine> ClassicApp<E> {
         // a folder written as `.` has no parent to go up to: always work with the absolute one
         let dir = engine::absolute(&self.engine.dir());
         self.engine.set_dir(dir);
-        let mut entries = self.engine.entries();
+        let mut entries = match self.file_purpose {
+            Purpose::Job => self.engine.entries(),
+            p => {
+                // the tool and configuration files of the program: the folders and the files with its extension
+                let ext = self
+                    .purpose_pattern(p)
+                    .trim_start_matches('*')
+                    .to_ascii_lowercase();
+                let mut v = vec![("..".to_string(), true)];
+                if let Ok(rd) = std::fs::read_dir(self.engine.dir()) {
+                    for e in rd.flatten() {
+                        let name = e.file_name().to_string_lossy().into_owned();
+                        let dir = e.path().is_dir();
+                        if !name.starts_with('.')
+                            && (dir || name.to_ascii_lowercase().ends_with(&ext))
+                        {
+                            v.push((name, dir));
+                        }
+                    }
+                }
+                engine::dos_order(v)
+            }
+        };
         // the job archives of the folder are listed like folders: Enter goes inside
-        if let Ok(rd) = std::fs::read_dir(self.engine.dir()) {
-            let mut zips: Vec<String> = rd
-                .flatten()
-                .filter(|e| e.path().is_file())
-                .filter_map(|e| e.file_name().into_string().ok())
-                .filter(|n| n.to_ascii_lowercase().ends_with(".zip"))
-                .collect();
-            zips.sort_unstable_by_key(|n| n.to_ascii_lowercase());
-            entries.extend(zips.into_iter().map(|n| (n, true)));
+        if self.file_purpose == Purpose::Job {
+            if let Ok(rd) = std::fs::read_dir(self.engine.dir()) {
+                let mut zips: Vec<String> = rd
+                    .flatten()
+                    .filter(|e| e.path().is_file())
+                    .filter_map(|e| e.file_name().into_string().ok())
+                    .filter(|n| n.to_ascii_lowercase().ends_with(".zip"))
+                    .collect();
+                zips.sort_unstable_by_key(|n| n.to_ascii_lowercase());
+                entries.extend(zips.into_iter().map(|n| (n, true)));
+            }
         }
         entries.extend(engine::drive_entries());
-        let pattern = self.engine.pattern().to_string();
+        let pattern = match self.file_purpose {
+            Purpose::Job => self.engine.pattern().to_string(),
+            p => self.purpose_pattern(p).to_string(),
+        };
         Dialog::Files(FileDlg {
             name: LineEdit::new(&pattern, EditKind::Text, 260),
             pattern,
@@ -792,7 +828,65 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
     }
 
+    /// The pattern of the tool files or of the configuration files of this program.
+    fn purpose_pattern(&self, p: Purpose) -> &'static str {
+        match (self.engine.kind(), p) {
+            (Kind::Drill, Purpose::Tools) => "*.DTD",
+            (Kind::Drill, _) => "*.DCF",
+            (Kind::Route, Purpose::Tools) => "*.RTD",
+            (Kind::Route, _) => "*.RCF",
+        }
+    }
+
+    /// The Load button of the Tool Data and Parameter windows: choose the file to load, from the folder of the machine files.
+    fn open_files_for(&mut self, p: Purpose) -> Dialog {
+        self.file_purpose = p;
+        self.engine.set_dir(self.engine.data_dir());
+        self.open_files()
+    }
+
     fn files_load(&mut self, path: PathBuf) -> Flow {
+        let purpose = std::mem::take(&mut self.file_purpose);
+        let say = |e: String| Flow::to(Dialog::Message(e.chars().take(70).collect()));
+        match purpose {
+            Purpose::Tools => {
+                return match self.engine.load_tools_from(&path) {
+                    Ok(()) => {
+                        let mut n = self.open_tools();
+                        if let Dialog::Tools(t) = &mut n {
+                            t.status = Some(format!(
+                                "{} {}",
+                                self.t(CText::Loaded),
+                                file_label_of(&path)
+                            ));
+                        }
+                        Flow::to(n)
+                    }
+                    Err(e) => say(format!("{}: {e}", self.t(CText::ErrRead))),
+                };
+            }
+            Purpose::Config => {
+                return match self.engine.load_config_from(&path) {
+                    Ok(()) => {
+                        self.form = Self::form_of(&self.engine);
+                        self.sync_vectors();
+                        self.area = (self.form.clip.0, self.form.clip.1);
+                        self.dirty = false;
+                        let mut n = self.open_parameter();
+                        if let Dialog::Parameter(p) = &mut n {
+                            p.status = Some(format!(
+                                "{} {}",
+                                self.t(CText::Loaded),
+                                file_label_of(&path)
+                            ));
+                        }
+                        Flow::to(n)
+                    }
+                    Err(e) => say(format!("{}: {e}", self.t(CText::ErrRead))),
+                };
+            }
+            Purpose::Job => {}
+        }
         self.load_file(&path);
         // a file that cannot be read is said so in a window, as the original does; otherwise its tool data follow
         if !self.engine.file_loaded() {
@@ -942,6 +1036,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 d.list = false;
                 Flow::Stay
             }
+            Act::Drop => {
+                d.list = true;
+                d.info = None;
+                Flow::Stay
+            }
             Act::Item(i) => {
                 d.list = true;
                 let was = d.sel;
@@ -991,6 +1090,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         s.put(47, 5, '\u{2193}', BLACK, GREEN);
         s.put(48, 5, '\u{258c}', GREEN, GREY);
         self.hit(18, 5, 31, 1, Act::Name);
+        self.hit(46, 5, 3, 1, Act::Drop);
         button(s, 51, 5, 9, self.t(CText::BOkUpper), false, true);
         s.put(54, 5, 'O', LIGHT_CYAN, GREEN);
         self.hit(51, 5, 10, 2, Act::Dlg(Dlg::Ok));
@@ -1177,19 +1277,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 }
                 Flow::Stay
             }
-            Dlg::Load => match self.engine.reload_tools() {
-                Ok(()) => {
-                    let mut n = self.open_tools();
-                    if let Dialog::Tools(t) = &mut n {
-                        t.status = Some(self.t(CText::Loaded).to_string());
-                    }
-                    Flow::to(n)
-                }
-                Err(e) => {
-                    d.error = Some(format!("{}: {e}", self.t(CText::ErrRead)));
-                    Flow::Stay
-                }
-            },
+            Dlg::Load => Flow::to(self.open_files_for(Purpose::Tools)),
             _ => Flow::Stay,
         }
     }
@@ -1617,23 +1705,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 }
                 Flow::Stay
             }
-            Dlg::Load => match self.engine.reload_config() {
-                Ok(()) => {
-                    self.form = Self::form_of(&self.engine);
-                    self.sync_vectors();
-                    self.area = (self.form.clip.0, self.form.clip.1);
-                    self.dirty = false;
-                    let mut n = self.open_parameter();
-                    if let Dialog::Parameter(p) = &mut n {
-                        p.status = Some(self.t(CText::Loaded).to_string());
-                    }
-                    Flow::to(n)
-                }
-                Err(e) => {
-                    d.error = Some(format!("{}: {e}", self.t(CText::ErrRead)));
-                    Flow::Stay
-                }
-            },
+            Dlg::Load => Flow::to(self.open_files_for(Purpose::Config)),
             _ => Flow::Stay,
         }
     }

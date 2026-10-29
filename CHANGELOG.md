@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Buttons that did nothing now work:** Start and Panelz. without a file say "Load a file first" in a window instead of staying silent; the Load button of the Tool Data and Parameter windows opens the Select File window for the tool files (`*.DTD`) or the configuration files (`*.DCF`) of the program and loads the one chosen, saying which; the arrow at the end of the name field of Select File gives the keys to the list of files.
+
 - **Jobs packed in ZIP archives:** the Select File window lists the `.zip` files of a folder like folders, goes inside one with Enter (or by typing its name) and shows the drilling files in it; a file is taken out into a work folder and loaded as any other. `drillpro JOB.ZIP` loads the first drilling file of the archive. The archive code is the shared `eh3d-archive` crate of EH3D-COMMON, which never lists a name that could leave the work folder.
 
 - **A metric header is read as metric:** the `METRIC` line of the header of a drill file begins with an M and was taken for a command, so the diameters of such a file were read as inches. Now it is read as it says.

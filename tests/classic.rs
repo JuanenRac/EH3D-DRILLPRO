@@ -161,8 +161,10 @@ fn start_and_panelz_need_a_file() {
     press(&mut a, "s");
     assert!(
         !text(&a).contains("Homing"),
-        "Start does nothing without a file"
+        "Start does not run without a file"
     );
+    assert!(text(&a).contains("Load a file first"));
+    a.handle(Input::Enter);
     a.load_file(&testdata().join("T1.NCD"));
     let t = text(&a);
     assert!(t.contains("00003"), "three holes counted:\n{t}");

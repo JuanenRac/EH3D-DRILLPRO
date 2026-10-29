@@ -230,6 +230,8 @@ pub(crate) enum Act {
     Cell(usize, usize),
     /// The name field and the entries of the Select File dialog.
     Name,
+    /// The arrow at the end of the name field: the list of files takes the keys.
+    Drop,
     Item(usize),
     /// A control of the Panelization dialog, by its place in the focus ring.
     Pz(usize),
@@ -268,6 +270,8 @@ pub struct ClassicApp<E: ClassicEngine = App> {
     /// Name of the machine shown where the original shows the licence number.
     pub machine_name: String,
     hits: RefCell<Vec<Hit>>,
+    /// What the Select File window is open for: a job, a tool file or a configuration file.
+    file_purpose: dialogs::Purpose,
     last_click: Cell<Option<(usize, usize, Instant)>>,
 }
 
@@ -301,6 +305,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             interrupted: false,
             machine_name,
             hits: RefCell::new(Vec::new()),
+            file_purpose: dialogs::Purpose::Job,
             last_click: Cell::new(None),
         }
     }
@@ -534,6 +539,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     fn press(&mut self, b: Button) {
         if !self.enabled(b) {
+            // a button that cannot work now says why instead of staying silent
+            if matches!(self.dialog, Dialog::None) {
+                self.dialog = Dialog::Message(self.t(CText::NoFile).to_string());
+            }
             return;
         }
         self.commit_edit();
@@ -542,7 +551,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         self.focus = None;
         match b {
-            Button::Load => self.dialog = self.open_files(),
+            Button::Load => {
+                self.file_purpose = dialogs::Purpose::Job;
+                self.dialog = self.open_files();
+            }
             Button::Tools => self.dialog = self.open_tools(),
             Button::Config => self.dialog = self.open_parameter(),
             Button::Quit => self.dialog = Dialog::Quit { yes: true },

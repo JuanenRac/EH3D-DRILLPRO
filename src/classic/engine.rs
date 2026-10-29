@@ -112,6 +112,14 @@ pub trait ClassicEngine {
     fn apply_tool_rows(&mut self, rows: &[ToolRow]);
     fn save_tools(&mut self) -> Result<PathBuf, String>;
     fn reload_tools(&mut self) -> Result<(), String>;
+    /// Loads the tool table from another file (the Load button of the Tool Data window).
+    fn load_tools_from(&mut self, _path: &Path) -> Result<(), String> {
+        Err("not supported".into())
+    }
+    /// Loads the machine configuration from another file (the Load button of the Parameter window).
+    fn load_config_from(&mut self, _path: &Path) -> Result<(), String> {
+        Err("not supported".into())
+    }
     /// What the main form and the Panelization dialog add to the next job.
     fn set_job_options(&mut self, options: JobOptions);
     /// The job window's figures; `None` when no job is running.
@@ -215,7 +223,11 @@ impl ClassicEngine for App {
 
     fn reload_config(&mut self) -> Result<(), String> {
         let path = self.data_dir.join("DRILLPRO.DCF");
-        let text = config::bytes_to_text(&std::fs::read(&path).map_err(|e| e.to_string())?);
+        self.load_config_from(&path)
+    }
+
+    fn load_config_from(&mut self, path: &std::path::Path) -> Result<(), String> {
+        let text = config::bytes_to_text(&std::fs::read(path).map_err(|e| e.to_string())?);
         let cfg =
             config::parse(&text).ok_or("the configuration file is not in the expected layout")?;
         self.settings = cfg.settings();
@@ -351,7 +363,11 @@ impl ClassicEngine for App {
 
     fn reload_tools(&mut self) -> Result<(), String> {
         let path = self.data_dir.join("DRILLPRO.DTD");
-        let text = config::bytes_to_text(&std::fs::read(&path).map_err(|e| e.to_string())?);
+        self.load_tools_from(&path)
+    }
+
+    fn load_tools_from(&mut self, path: &std::path::Path) -> Result<(), String> {
+        let text = config::bytes_to_text(&std::fs::read(path).map_err(|e| e.to_string())?);
         self.tools = tools::parse(&text);
         self.tools_text = Some(text);
         self.tools_found = true;
