@@ -1,0 +1,109 @@
+# EH3D machine file: shared by DRILLPRO and ROUTEPRO.
+#
+# Where it goes:
+#   Windows   %APPDATA%\EH3D\machine.cfg
+#   Linux     ~/.config/eh3d/machine.cfg
+# or anywhere, with  drillpro --connection FILE  /  routepro --connection FILE.
+#
+# Lines are  key = value. Blank lines and lines starting with # or ; are ignored. An unknown key or a value out of range is an error
+# (nothing is silently replaced by a default). Every key is optional: a missing one keeps the value written here.
+# Speeds are in steps per second: the control unit takes one byte per step, and the most the line allows at 38400 baud is 3840.
+
+# --- How the job reaches the machine ---------------------------------------------------------------------------------------
+# demo   no machine: the job runs on the built-in simulator (the default when there is no file)
+# rs232  the computer's own serial port, one byte at a time
+# usb    a USB to RS-232 adapter; moves go out as one continuous stream so the adapter's bursts do not roughen the motors
+# node   the EH3D-NODE-BUNGARD in the machine's box, over Ethernet or Wi-Fi
+# server the EH3D server (see below)
+connection = demo
+rs232_port = COM1
+usb_port = COM8
+node_address = 192.168.0.50:5800
+node_token = the-access-token-set-in-the-node
+# server  the EH3D server: the program sends it the job and follows it; the server runs it on the machine's node.
+# server_address is host:port; server_token is the token the server's administrator made for this program; server_machine is the id of the machine there.
+server_address = 192.168.0.200:18200
+server_token = eh3d_the-token-made-for-this-program
+server_machine = bungard
+
+# The control unit reports "all three axes are on their switches" on the RI line. With it on, the reference run skips a search when
+# the machine is already home and fails if the line never rises; off, every search is sent in full and nothing is checked.
+home_signal = on
+
+# --- Speed limits of the real machine's motors (optional: no key, no limit) -----------------------------------------------
+# Every speed of the job stays at or below these, whatever the machine's own configuration file says.
+# xy_hz_limit = 2600
+# z_hz_limit = 900
+
+# --- Tuning of the reference run (the values found by trying the owner's machine) ------------------------------------------
+# X and Y search towards their switches. On the owner's machine X stalls at 2700 and goes well at 2400, Y stalls at 2700; 2200 is the value chosen for both.
+x_search_hz = 2200
+y_search_hz = 2200
+# Length of their ramps in steps: a longer ramp is gentler and calmer to listen to.
+search_ramp_steps = 800
+# How much longer than the travel of each axis a search is, in percent (the control unit swallows the surplus at the switch).
+search_margin_percent = 12
+
+# Z search: its fastest rate, the rate it starts at and the length of its ramp. The Z motor carries the spindle.
+z_search_hz = 900
+z_start_hz = 450
+z_ramp_steps = 200
+# Steps of the Z search: more than the whole travel of Z (about 1900 steps for 54 mm); the control unit swallows the surplus
+# once the axis is on its switch
+z_search_steps = 2150
+
+# Calibration jump of X and Y (back off, then approach the switch again, smoothly): the rate it rises to, where it starts as a
+# fraction of the reference speed, the number of parts the move is cut into for the ramps (3: a third accelerating, a third cruising,
+# a third slowing down before the switch), and the steps of each leg.
+jump_peak_hz = 1400
+jump_start_fraction = 0.5
+jump_ramp_parts = 2
+jump_backoff_steps = 200
+jump_approach_steps = 250
+# The same for Z: steps down and steps up again.
+z_backoff_steps = 45
+z_approach_steps = 54
+
+# --- How the moves are sent ------------------------------------------------------------------------------------------------
+# bytes   moves of Z alone go one byte at a time with the PC clock, even on a usb or node connection (the Z motor is weak and jerky
+#         with the filler bytes of a continuous stream); stream: Z goes as a stream too.
+z_pacing = bytes
+# The filler between two steps of a stream: dir keeps the direction bits of the last step, zero is 0x00.
+stream_filler = dir
+# Steps sent at a time before the cancel key is looked at again, and steps between two readings of the home line in a search on the
+# computer's own serial port (on a usb adapter a reading costs about 5 ms, so searches go out in one piece there).
+cancel_piece_steps = 1500
+home_check_piece_steps = 100
+# How long the job waits for the spindle to reach speed after starting it, and to stop after braking it.
+spindle_start_wait_ms = 1680
+spindle_stop_wait_ms = 1000
+# Whose spindle runs the job: central (the control unit's own, by its latch bits) or node (the EH3D-NODE-BUNGARD's: a variable-frequency drive).
+spindle = central
+# Where a vacuum cleaner is switched: central (the control unit's own relay follows the spindle bits, as with the original software on the
+# manual machine) or aux (the auxiliary output, latch A bit 5, goes on with the spindle and off with it; for a cleaner wired to that output).
+vacuum = central
+# 0: on a usb or node connection the last search goes out as one unbroken stream and the home line is read once, at the end. Every
+# reading in the middle leaves a gap of a few milliseconds in the stream, and a motor at speed (Y on the CH340) loses steps in it.
+# 50 to 4000: the search goes out in chunks of that many bytes (260 microseconds each) and the line is read between them; when it
+# rises no more chunks are sent. 1900 bytes is about 0.5 s; a longer chunk means fewer gaps and a later cut.
+home_watch_chunk_bytes = 0
+# Also watch the home line during the first long searches (Z, then X), which end blind. Off: the line cannot rise before the last axis
+# has arrived, and the readings only cost gaps.
+home_watch_seek = off
+
+# --- Leaving the switches before the reference run -------------------------------------------------------------------------
+# When the home line is already up at the start (all three axes on their switches: the machine is parked), X and Y first move this many
+# millimetres away from their switches, smoothly (the calibration jump shape), and then search for them again. The way back is a short,
+# known distance and the arrival of both is seen live on the home line, instead of searching their whole travel blind. 0 turns it off.
+unstick_mm = 10
+# Do it even when the home line is down. The positions are then unknown, so there is no short search, and an axis at the far end of its
+# travel would be driven against its end stop: leave it off unless you know where the axes are.
+unstick_always = off
+# Steps added to the known distance of that short search, in case the axis is a little further than expected (if the line still does not
+# rise, the whole search is repeated).
+search_hint_margin_steps = 300
+
+# --- Moves between holes and paths ----------------------------------------------------------------------------------------
+# Length of the ramp (in steps) of the moves between holes and paths: a long ramp is gentle on the motors. With xy_hz_limit and
+# z_hz_limit above these moves never go faster than the motors keep up with.
+travel_ramp_steps = 400

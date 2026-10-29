@@ -1,0 +1,28 @@
+GUIA DE CONFIGURAÇÃO - os ficheiros explicados em palavras simples
+
+O QUE AQUI ESTÁ
+  DRILLPRO.DCF         a máquina: tamanho da mesa, velocidades, calibração. Cada linha diz o que é logo a seguir ao valor.
+  DRILLPRO.DTD         as ferramentas: uma linha por broca com o curso extra, o avanço e a velocidade do fuso.
+  machine.cfg.example  a ligação a uma máquina REAL (porta série, adaptador USB ou o nó EH3D). Copie-o como machine.cfg para o usar.
+
+COMO USAR
+  1. Mantenha o programa, o DRILLPRO.DCF e o DRILLPRO.DTD na mesma pasta e arranque-o a partir dela.
+  2. Tal como vêm, nada está ligado: o programa corre no SIMULADOR, pode experimentar tudo sem qualquer risco.
+  3. Faça uma cópia de cada ficheiro antes de o alterar. O programa também guarda uma cópia .BAK quando grava.
+
+O QUE AJUSTAR PRIMEIRO PARA A SUA MÁQUINA
+  - Clipping X e Y: o tamanho real da sua mesa (CCD 495 x 325 mm, CCD/2 325 x 270 mm). Nunca se fura mais longe.
+  - Unidade: a unidade dos seus ficheiros de furação (1 = mil, a habitual). Uma unidade errada coloca mal os furos.
+  - Correções X, Y, Z: fure dois furos afastados, meça-os e multiplique a correção por pretendido / medido.
+  - Velocidades: se os motores perderem passos ou encravarem, baixe a velocidade máxima de XY e tente de novo.
+
+LIGAR UMA MÁQUINA REAL
+  Copie machine.cfg.example como machine.cfg, indique connection = e a porta, e experimente primeiro com o fuso DESLIGADO e a cabeça livre para se mover.
+  Comece pelo exemplo 01_one_hole.ncd. Tenha a mão perto da paragem; os fins de curso são vigiados pela central, não por este programa.
+
+MÁQUINAS COM TROCADOR AUTOMÁTICO DE FERRAMENTA (ATC)
+  O seu ficheiro de configuração tem a linha "Tool change 1=Auto, 0=Man." e as posições do rack a seguir; essas linhas não estão neste ficheiro básico.
+  O suporte ATC é novo e só foi comparado com uma gravação, não foi experimentado numa máquina real.
+
+SE ALGO CORRER MAL
+  Reponha a sua cópia. Não altere as linhas marcadas RESERVED. A pasta examples tem ficheiros desde um furo até vinte mil.

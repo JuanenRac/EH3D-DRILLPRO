@@ -1,6 +1,6 @@
 name: Release binaries
 
-# Builds the program for Windows, Linux and macOS (Apple silicon and Intel) and keeps the packages as artifacts of the run.
+# Builds the program for Windows (64 and 32 bits), Linux and macOS (Apple silicon and Intel) and keeps the packages as artifacts of the run.
 # The release itself is published from the maintainer's machine, which downloads these artifacts, so that the notes and the assets
 # of every repository of the ecosystem are made the same way. Run it by hand: Actions > Release binaries > Run workflow.
 
@@ -20,6 +20,7 @@ jobs:
         include:
           - { os: ubuntu-latest, label: linux-x86_64, target: x86_64-unknown-linux-gnu, ext: "", archive: tar.gz }
           - { os: windows-latest, label: windows-x86_64, target: x86_64-pc-windows-msvc, ext: ".exe", archive: zip }
+          - { os: windows-latest, label: windows-x86, target: i686-pc-windows-msvc, ext: ".exe", archive: zip }
           - { os: macos-latest, label: macos-arm64, target: aarch64-apple-darwin, ext: "", archive: tar.gz }
           - { os: macos-latest, label: macos-x86_64, target: x86_64-apple-darwin, ext: "", archive: tar.gz }
     steps:
@@ -42,6 +43,9 @@ jobs:
           mkdir "$name"
           cp "target/${{ matrix.target }}/release/drillpro${{ matrix.ext }}" "$name/"
           cp LICENSE README.md CHANGELOG.md "$name/"
+          # the basic configuration (explained line by line) and the examples, from one hole to twenty thousand
+          cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$name/"
+          cp -r examples "$name/examples"
           mkdir -p dist
           if [ "${{ matrix.archive }}" = "zip" ]; then
             7z a -tzip "dist/${name}.zip" "$name" >/dev/null
@@ -57,6 +61,8 @@ jobs:
           mkdir "$cname"
           cp "target/${{ matrix.target }}/release/drillpro-console${{ matrix.ext }}" "$cname/"
           cp LICENSE README.md CHANGELOG.md "$cname/"
+          cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$cname/"
+          cp -r examples "$cname/examples"
           if [ "${{ matrix.archive }}" = "zip" ]; then
             7z a -tzip "dist/${cname}.zip" "$cname" >/dev/null
             casset="dist/${cname}.zip"

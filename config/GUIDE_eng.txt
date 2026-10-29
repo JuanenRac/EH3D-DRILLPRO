@@ -1,0 +1,28 @@
+CONFIGURATION GUIDE - the files explained in plain words
+
+WHAT IS HERE
+  DRILLPRO.DCF         the machine: table size, speeds, calibration. Every line says what it is right after the value.
+  DRILLPRO.DTD         the tools: one line per drill with its extra stroke, feed and spindle speed.
+  machine.cfg.example  the connection to a REAL machine (serial port, USB adapter or the EH3D node). Copy it as machine.cfg to use it.
+
+HOW TO USE THEM
+  1. Keep the program, DRILLPRO.DCF and DRILLPRO.DTD in the same folder and start it from there.
+  2. Out of the box nothing is connected: the program runs on the SIMULATOR, so you can try everything without any risk.
+  3. Make a copy of each file before you change it. The program also keeps a .BAK copy when it saves.
+
+THE FIRST THINGS TO SET FOR YOUR MACHINE
+  - Clipping X and Y: the real size of your table (CCD 495 x 325 mm, CCD/2 325 x 270 mm). Nothing farther is ever drilled.
+  - Unit: the unit of your drill files (1 = mil, the usual one). A wrong unit puts the holes in the wrong place.
+  - Corrections X, Y, Z: drill two holes far apart, measure them, and multiply the correction by wanted / measured.
+  - Speeds: if the motors lose steps or stall, lower the fastest XY speed and try again.
+
+CONNECTING A REAL MACHINE
+  Copy machine.cfg.example as machine.cfg, set connection = and the port, and try first with the spindle OFF and the head free to move.
+  Start with the example 01_one_hole.ncd. Keep your hand near the stop; the limit switches are watched by the control unit, not by this program.
+
+MACHINES WITH AN AUTOMATIC TOOL CHANGER (ATC)
+  Their configuration file has the line "Tool change 1=Auto, 0=Man." and the positions of the rack after it; those lines are not in this basic file.
+  The ATC support is new and has only been compared with a recording, not run on a real machine.
+
+IF SOMETHING GOES WRONG
+  Put your copy back. Do not change the lines marked RESERVED. The examples folder has files from one hole to twenty thousand.

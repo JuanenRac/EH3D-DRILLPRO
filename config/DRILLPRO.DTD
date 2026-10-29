@@ -1,0 +1,34 @@
+Basic tool table of EH3D-DRILLPRO
+
+Written for this program; it is not a copy of any other file.
+
+Table of tool data. 15 lines of data begin at line 20; lines 1 to 19 are comments like these.
+Each data line is four numbers separated by spaces, with a point for decimals:
+
+nn   d.d   vvvv   sssss
+
+nn    = the tool number in your drill file (two digits): T01 in the file uses the line that begins 01
+d.d   = extra stroke in mm: how far the tip goes below the board into the base sheet (0.5 is usual for small drills)
+vvvv  = feed of the drill going down in mm/min (smaller for small, fragile drills: 500 to 1500; larger ones go faster)
+sssss = spindle speed in turns per minute: 30000 to 60000 on the CCD
+
+A tool that is not in the table gets a safe default. Change the numbers, never the number of lines.
+Too fast a feed breaks small drills; too slow burns the board. Try on a scrap board first.
+
+Delimiter between the numbers: one or more spaces.
+
+04 0.5 1200 60000
+06 0.5 2400 60000
+07 0.5 3600 60000
+08 0.5 3600 60000
+09 0.5 3600 60000
+10 1.0 3600 60000
+12 1.0 3500 60000
+13 1.0 3500 50000
+15 1.0 3600 40000
+20 1.2 1500 60000
+25 1.5 1000 60000
+30 1.5 0500 60000
+01 0.0 1000 60000
+02 0.0 1000 60000
+03 0.0 1000 60000

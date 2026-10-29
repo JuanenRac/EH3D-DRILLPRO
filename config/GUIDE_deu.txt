@@ -1,0 +1,28 @@
+KONFIGURATIONSANLEITUNG - die Dateien in einfachen Worten
+
+WAS HIER LIEGT
+  DRILLPRO.DCF         die Maschine: Tischgröße, Geschwindigkeiten, Kalibrierung. Jede Zeile sagt direkt hinter dem Wert, was sie bedeutet.
+  DRILLPRO.DTD         die Werkzeuge: eine Zeile je Bohrer mit Zusatzhub, Vorschub und Spindeldrehzahl.
+  machine.cfg.example  die Verbindung zu einer ECHTEN Maschine (serielle Schnittstelle, USB-Adapter oder der EH3D-Knoten). Als machine.cfg kopieren.
+
+SO WERDEN SIE BENUTZT
+  1. Programm, DRILLPRO.DCF und DRILLPRO.DTD im selben Ordner halten und von dort starten.
+  2. Ab Werk ist nichts angeschlossen: das Programm läuft im SIMULATOR, man kann alles ohne Risiko ausprobieren.
+  3. Vor jeder Änderung eine Kopie anlegen. Beim Speichern legt das Programm außerdem eine .BAK-Kopie an.
+
+DIE ERSTEN EINSTELLUNGEN FÜR IHRE MASCHINE
+  - Clipping X und Y: die wirkliche Größe Ihres Tisches (CCD 495 x 325 mm, CCD/2 325 x 270 mm). Weiter außen wird nie gebohrt.
+  - Einheit: die Einheit Ihrer Bohrdateien (1 = mil, üblich). Eine falsche Einheit setzt die Löcher an die falsche Stelle.
+  - Korrekturen X, Y, Z: zwei weit entfernte Löcher bohren, messen und die Korrektur mit Soll / Ist multiplizieren.
+  - Geschwindigkeiten: verlieren die Motoren Schritte oder bleiben stehen, die höchste XY-Geschwindigkeit senken.
+
+ECHTE MASCHINE ANSCHLIESSEN
+  machine.cfg.example als machine.cfg kopieren, connection = und den Anschluss eintragen, zuerst bei AUSGESCHALTETER Spindel und frei beweglichem Kopf testen.
+  Mit dem Beispiel 01_one_hole.ncd beginnen. Die Hand am Not-Aus halten; die Endschalter überwacht die Steuerung, nicht dieses Programm.
+
+MASCHINEN MIT AUTOMATISCHEM WERKZEUGWECHSLER (ATC)
+  Deren Konfigurationsdatei hat die Zeile "Tool change 1=Auto, 0=Man." und danach die Rack-Positionen; diese Zeilen fehlen in der Basisdatei.
+  Die ATC-Unterstützung ist neu und wurde nur mit einer Aufzeichnung verglichen, nicht an einer echten Maschine erprobt.
+
+WENN ETWAS SCHIEFGEHT
+  Die Kopie zurückspielen. Zeilen mit RESERVED nicht ändern. Der Ordner examples enthält Dateien von einem Loch bis zu zwanzigtausend.

@@ -1,0 +1,28 @@
+GUIDA ALLA CONFIGURAZIONE - i file spiegati in parole semplici
+
+COSA C'È QUI
+  DRILLPRO.DCF         la macchina: dimensione del piano, velocità, taratura. Ogni riga dice cos'è subito dopo il valore.
+  DRILLPRO.DTD         gli utensili: una riga per punta con corsa extra, avanzamento e velocità del mandrino.
+  machine.cfg.example  il collegamento a una macchina REALE (porta seriale, adattatore USB o il nodo EH3D). Copialo come machine.cfg per usarlo.
+
+COME USARLI
+  1. Tieni il programma, DRILLPRO.DCF e DRILLPRO.DTD nella stessa cartella e avvialo da lì.
+  2. Così come sono, nulla è collegato: il programma gira nel SIMULATORE, puoi provare tutto senza rischi.
+  3. Fai una copia di ogni file prima di modificarlo. Il programma salva anche una copia .BAK quando scrive.
+
+LE PRIME COSE DA IMPOSTARE PER LA TUA MACCHINA
+  - Clipping X e Y: la dimensione reale del piano (CCD 495 x 325 mm, CCD/2 325 x 270 mm). Non si fora mai oltre.
+  - Unità: l'unità dei tuoi file di foratura (1 = mil, la più comune). Un'unità sbagliata sposta i fori.
+  - Correzioni X, Y, Z: fora due fori lontani, misurali e moltiplica la correzione per voluto / misurato.
+  - Velocità: se i motori perdono passi o si bloccano, abbassa la velocità massima XY e riprova.
+
+COLLEGARE UNA MACCHINA REALE
+  Copia machine.cfg.example come machine.cfg, imposta connection = e la porta, e prova prima con il mandrino SPENTO e la testa libera di muoversi.
+  Inizia con l'esempio 01_one_hole.ncd. Tieni la mano vicino all'arresto; i finecorsa li controlla la centralina, non questo programma.
+
+MACCHINE CON CAMBIO UTENSILE AUTOMATICO (ATC)
+  Il loro file di configurazione ha la riga "Tool change 1=Auto, 0=Man." e le posizioni del rack dopo; queste righe non sono in questo file di base.
+  Il supporto ATC è nuovo ed è stato confrontato solo con una registrazione, non provato su una macchina reale.
+
+SE QUALCOSA VA STORTO
+  Rimetti la tua copia. Non cambiare le righe segnate RESERVED. La cartella examples ha file da un foro a ventimila.

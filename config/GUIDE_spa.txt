@@ -1,0 +1,28 @@
+GUÍA DE CONFIGURACIÓN - los ficheros explicados en palabras sencillas
+
+QUÉ HAY AQUÍ
+  DRILLPRO.DCF         la máquina: tamaño de la mesa, velocidades, calibración. Cada línea explica qué es justo después del valor.
+  DRILLPRO.DTD         las herramientas: una línea por broca con su carrera extra, avance y velocidad del husillo.
+  machine.cfg.example  la conexión a una máquina REAL (puerto serie, adaptador USB o el nodo EH3D). Cópialo como machine.cfg para usarlo.
+
+CÓMO USARLOS
+  1. Deja el programa, DRILLPRO.DCF y DRILLPRO.DTD en la misma carpeta y arráncalo desde ahí.
+  2. Tal como vienen no hay nada conectado: el programa funciona en el SIMULADOR, así que puedes probarlo todo sin ningún riesgo.
+  3. Haz una copia de cada fichero antes de cambiarlo. El programa también guarda una copia .BAK cuando graba.
+
+LO PRIMERO QUE HAY QUE AJUSTAR PARA TU MÁQUINA
+  - Clipping X e Y: el tamaño real de tu mesa (CCD 495 x 325 mm, CCD/2 325 x 270 mm). Nunca se taladra más allá.
+  - Unidad: la unidad de tus ficheros de taladros (1 = mil, la habitual). Una unidad equivocada coloca mal los agujeros.
+  - Correcciones X, Y, Z: taladra dos agujeros muy separados, mídelos y multiplica la corrección por lo deseado / lo medido.
+  - Velocidades: si los motores pierden pasos o se atascan, baja la velocidad máxima de XY y vuelve a probar.
+
+CONECTAR UNA MÁQUINA REAL
+  Copia machine.cfg.example como machine.cfg, pon connection = y el puerto, y prueba primero con el husillo APAGADO y el cabezal libre para moverse.
+  Empieza con el ejemplo 01_one_hole.ncd. Ten la mano cerca del paro; los finales de carrera los vigila la central, no este programa.
+
+MÁQUINAS CON CAMBIADOR AUTOMÁTICO DE HERRAMIENTA (ATC)
+  Su fichero de configuración tiene la línea "Tool change 1=Auto, 0=Man." y las posiciones del rack a continuación; esas líneas no están en este fichero básico.
+  El soporte de ATC es nuevo y solo se ha comparado con una grabación, no se ha probado en una máquina real.
+
+SI ALGO SALE MAL
+  Vuelve a poner tu copia. No cambies las líneas marcadas RESERVED. La carpeta examples tiene ficheros desde un agujero hasta veinte mil.

@@ -1,0 +1,28 @@
+GUIDE DE CONFIGURATION - les fichiers expliqués en mots simples
+
+CE QUE VOUS TROUVEZ ICI
+  DRILLPRO.DCF         la machine : taille de la table, vitesses, étalonnage. Chaque ligne dit ce qu'elle est juste après la valeur.
+  DRILLPRO.DTD         les outils : une ligne par foret avec sa course supplémentaire, son avance et la vitesse de la broche.
+  machine.cfg.example  la connexion à une machine RÉELLE (port série, adaptateur USB ou le nœud EH3D). Copiez-le sous le nom machine.cfg.
+
+COMMENT LES UTILISER
+  1. Gardez le programme, DRILLPRO.DCF et DRILLPRO.DTD dans le même dossier et lancez-le depuis ce dossier.
+  2. Tel quel, rien n'est connecté : le programme tourne sur le SIMULATEUR, vous pouvez tout essayer sans risque.
+  3. Faites une copie de chaque fichier avant de le modifier. Le programme garde aussi une copie .BAK quand il enregistre.
+
+LES PREMIERS RÉGLAGES POUR VOTRE MACHINE
+  - Clipping X et Y : la taille réelle de votre table (CCD 495 x 325 mm, CCD/2 325 x 270 mm). On ne perce jamais plus loin.
+  - Unité : l'unité de vos fichiers de perçage (1 = mil, la plus courante). Une mauvaise unité place mal les trous.
+  - Corrections X, Y, Z : percez deux trous éloignés, mesurez-les et multipliez la correction par voulu / mesuré.
+  - Vitesses : si les moteurs perdent des pas ou calent, baissez la vitesse maximale XY et réessayez.
+
+CONNECTER UNE MACHINE RÉELLE
+  Copiez machine.cfg.example en machine.cfg, indiquez connection = et le port, et essayez d'abord broche ARRÊTÉE et tête libre de bouger.
+  Commencez par l'exemple 01_one_hole.ncd. Gardez la main près de l'arrêt ; les fins de course sont surveillées par la centrale, pas par ce programme.
+
+MACHINES AVEC CHANGEUR D'OUTILS AUTOMATIQUE (ATC)
+  Leur fichier de configuration a la ligne "Tool change 1=Auto, 0=Man." et les positions du râtelier ensuite ; ces lignes ne sont pas dans ce fichier de base.
+  Le support ATC est nouveau et n'a été comparé qu'à un enregistrement, pas essayé sur une machine réelle.
+
+SI QUELQUE CHOSE VA MAL
+  Remettez votre copie. Ne changez pas les lignes marquées RESERVED. Le dossier examples contient des fichiers d'un trou à vingt mille.
