@@ -18,6 +18,8 @@ console = ["dep:crossterm"]
 [dependencies]
 serde_json = "1"
 eh3d-drillpro-protocol = { path = "protocol", features = ["serial", "node"] }
+# jobs packed in ZIP archives (the shared code of the suite lives in EH3D-COMMON)
+eh3d-archive = { path = "../EH3D-COMMON/crates/archive" }
 eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"], optional = true }
 
 png = { version = "0.17", optional = true }
@@ -40,3 +42,6 @@ required-features = ["console"]
 [[test]]
 name = "console"
 required-features = ["console"]
+
+[dev-dependencies]
+zip = { version = "2", default-features = false, features = ["deflate"] }

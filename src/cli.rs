@@ -100,7 +100,11 @@ pub fn start_classic<E: crate::classic::engine::ClassicEngine>(
     }
     let mut app = crate::classic::ClassicApp::with_engine(engine);
     if let Some(f) = &o.file {
-        app.load_file(f);
+        if f.extension().is_some_and(|e| e.eq_ignore_ascii_case("zip")) {
+            app.load_zip(f);
+        } else {
+            app.load_file(f);
+        }
     }
     app
 }

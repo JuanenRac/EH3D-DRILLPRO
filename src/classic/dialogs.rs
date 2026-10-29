@@ -58,11 +58,23 @@ pub(crate) struct FileDlg {
     /// The arrows work on the list (true) or the keys go to the name field (false).
     list: bool,
     info: Option<String>,
+    /// The archive the dialog is inside of, when it is.
+    zip: Option<ZipView>,
+}
+
+/// A ZIP archive the Select File dialog is inside of: where it is and the full names of the files it lists (`entries[i + 1]` is `full[i]`;
+/// the first entry takes back out).
+pub(crate) struct ZipView {
+    path: PathBuf,
+    full: Vec<String>,
 }
 
 impl FileDlg {
-    /// The folders and the files that match the pattern.
+    /// The folders and the files that match the pattern (inside an archive, every file of the kind of the program).
     fn visible(&self) -> Vec<&(String, bool)> {
+        if self.zip.is_some() {
+            return self.entries.iter().collect();
+        }
         self.entries
             .iter()
             .filter(|(n, dir)| *dir || glob_matches(&self.pattern, n))
@@ -623,6 +635,17 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let dir = engine::absolute(&self.engine.dir());
         self.engine.set_dir(dir);
         let mut entries = self.engine.entries();
+        // the job archives of the folder are listed like folders: Enter goes inside
+        if let Ok(rd) = std::fs::read_dir(self.engine.dir()) {
+            let mut zips: Vec<String> = rd
+                .flatten()
+                .filter(|e| e.path().is_file())
+                .filter_map(|e| e.file_name().into_string().ok())
+                .filter(|n| n.to_ascii_lowercase().ends_with(".zip"))
+                .collect();
+            zips.sort_unstable_by_key(|n| n.to_ascii_lowercase());
+            entries.extend(zips.into_iter().map(|n| (n, true)));
+        }
         entries.extend(engine::drive_entries());
         let pattern = self.engine.pattern().to_string();
         Dialog::Files(FileDlg {
@@ -632,6 +655,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             sel: 0,
             list: false,
             info: None,
+            zip: None,
         })
     }
 
@@ -659,6 +683,26 @@ impl<E: ClassicEngine> ClassicApp<E> {
             return Flow::Stay;
         };
         let dir = self.engine.dir();
+        // inside an archive: the first entry takes back out, the others are extracted and loaded
+        if let Some(z) = &d.zip {
+            if d.sel == 0 {
+                return self.files_enter(d, dir, true);
+            }
+            let (path, full) = (z.path.clone(), z.full.get(d.sel - 1).cloned());
+            let Some(full) = full else {
+                return Flow::Stay;
+            };
+            return match extract_to_temp(&path, &full) {
+                Ok(p) => self.files_load(p),
+                Err(e) => {
+                    d.info = Some(e.chars().take(44).collect());
+                    Flow::Stay
+                }
+            };
+        }
+        if is_dir && name.to_ascii_lowercase().ends_with(".zip") && dir.join(&name).is_file() {
+            return self.files_enter_zip(d, dir.join(&name));
+        }
         if is_dir {
             if let Some(drive) = engine::drive_path(&name) {
                 return self.files_enter(d, drive, true);
@@ -674,6 +718,62 @@ impl<E: ClassicEngine> ClassicApp<E> {
             return self.files_enter(d, next, true);
         }
         self.files_load(dir.join(name))
+    }
+
+    /// Goes inside a job archive: lists the files of the kind of this program (drilling or routing).
+    fn files_enter_zip(&mut self, d: &mut FileDlg, path: PathBuf) -> Flow {
+        let kind = match self.engine.kind() {
+            Kind::Drill => eh3d_archive::Kind::Drill,
+            Kind::Route => eh3d_archive::Kind::Route,
+        };
+        let archive = match eh3d_archive::Archive::open(&path) {
+            Ok(a) => a,
+            Err(e) => {
+                d.info = Some(e.chars().take(44).collect());
+                return Flow::Stay;
+            }
+        };
+        let full: Vec<String> = archive
+            .entries
+            .iter()
+            .filter(|e| e.kind == kind)
+            .map(|e| e.name.clone())
+            .collect();
+        if full.is_empty() {
+            d.info = Some(self.t(CText::FNotFound).to_string());
+            return Flow::Stay;
+        }
+        let mut entries = vec![("..".to_string(), true)];
+        entries.extend(
+            full.iter()
+                .map(|n| (n.rsplit('/').next().unwrap_or(n).to_string(), false)),
+        );
+        Flow::to(Dialog::Files(FileDlg {
+            name: LineEdit::new(&d.pattern, EditKind::Text, 260),
+            pattern: d.pattern.clone(),
+            entries,
+            sel: 1,
+            list: true,
+            info: None,
+            zip: Some(ZipView { path, full }),
+        }))
+    }
+
+    /// Loads the first file of the kind of this program from a job archive (`drillpro job.zip` on the command line).
+    pub fn load_zip(&mut self, path: &std::path::Path) {
+        let kind = match self.engine.kind() {
+            Kind::Drill => eh3d_archive::Kind::Drill,
+            Kind::Route => eh3d_archive::Kind::Route,
+        };
+        let first = eh3d_archive::Archive::open(path).and_then(|a| {
+            a.first(kind)
+                .map(|e| e.name.clone())
+                .ok_or_else(|| format!("{}: no file of this kind in the archive", path.display()))
+        });
+        match first.and_then(|name| extract_to_temp(path, &name)) {
+            Ok(p) => self.load_file(&p),
+            Err(e) => self.engine.set_error(e),
+        }
     }
 
     /// Like [`Self::files_enter`], with the pattern the dialog holds now.
@@ -708,6 +808,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
     /// Enter in the name field: a pattern filters the list, a name opens the file.
     fn files_accept_name(&mut self, d: &mut FileDlg) -> Flow {
         let typed = d.name.text.trim().to_string();
+        // the name of a job archive goes inside it
+        if typed.to_ascii_lowercase().ends_with(".zip") {
+            let dir = self.engine.dir();
+            let candidate = [dir.join(&typed), PathBuf::from(&typed)]
+                .into_iter()
+                .find(|p| p.is_file());
+            if let Some(p) = candidate {
+                return self.files_enter_zip(d, p);
+            }
+        }
         if typed.is_empty() {
             d.pattern = self.engine.pattern().to_string();
             d.name = LineEdit::new(&d.pattern, EditKind::Text, 260);
@@ -930,7 +1040,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
         self.hit(51, 8, 10, 2, Act::Dlg(Dlg::Cancel));
         // path and file line
         s.fill(16, 18, 47, 2, ' ', BLUE, BLUE);
-        let path = format!("{}\\{}", self.engine.dir().display(), d.pattern);
+        let path = match &d.zip {
+            Some(z) => format!("{}\\", z.path.display()),
+            None => format!("{}\\{}", self.engine.dir().display(), d.pattern),
+        };
         s.text(17, 18, &shorten_path(&path, 44), CYAN, BLUE);
         if let Some(info) = &d.info {
             s.text(17, 19, info, YELLOW, BLUE);
@@ -2169,6 +2282,12 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
 /// A heading of the Tool Data table: column, text, and the unit line (column, text) under it.
 type Heading = (usize, CText, Option<(usize, &'static str)>);
+
+/// Takes a file of a job archive out into the work folder of this run and says where it went.
+fn extract_to_temp(archive: &std::path::Path, name: &str) -> Result<PathBuf, String> {
+    let dir = std::env::temp_dir().join(format!("eh3d-zip-{}", std::process::id()));
+    eh3d_archive::Archive::open(archive).and_then(|mut a| a.extract(name, &dir))
+}
 
 /// A path that fits `width` cells: a long one keeps its end (the folder one is in), after `~`.
 fn shorten_path(path: &str, width: usize) -> String {
