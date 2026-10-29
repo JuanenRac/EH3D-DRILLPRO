@@ -16,7 +16,7 @@ fn latin1(path: &str) -> String {
 }
 
 /// The examples with the holes and tools each one has (the list in `examples/README.txt` is written by the same script).
-const examples: [(&str, usize, usize); 9] = [
+const EXAMPLES: [(&str, usize, usize); 9] = [
     ("01_one_hole.ncd", 1, 1),
     ("02_three_holes.ncd", 3, 1),
     ("03_two_tools.ncd", 6, 2),
@@ -30,7 +30,7 @@ const examples: [(&str, usize, usize); 9] = [
 
 #[test]
 fn every_example_is_read_with_its_holes_and_tools() {
-    for (name, holes, ntools) in examples {
+    for (name, holes, ntools) in EXAMPLES {
         let f = ncd::parse(&latin1(&root(&format!("examples/{name}")))).unwrap();
         assert_eq!(f.holes.len(), holes, "{name}");
         assert_eq!(f.tools.len(), ntools, "{name}");
@@ -52,7 +52,7 @@ fn no_example_is_missing_from_the_list() {
         .filter(|n| n.ends_with(".ncd"))
         .collect();
     on_disk.sort();
-    let listed: Vec<String> = examples.iter().map(|e| e.0.to_string()).collect();
+    let listed: Vec<String> = EXAMPLES.iter().map(|e| e.0.to_string()).collect();
     assert_eq!(on_disk, listed);
 }
 
