@@ -175,6 +175,9 @@ pub fn hole_end_indexes(items: &[crate::protocol::job::Item]) -> Vec<usize> {
                 ends.push(i);
                 pending = false;
             }
+        } else if matches!(item, Item::Latch(_)) {
+            // a descent that ends in a latch is the tool changer's (Z down to open the chuck), not a hole
+            pending = false;
         }
     }
     ends

@@ -76,6 +76,8 @@ enum Ctl {
     Unit,
     Sort,
     Lang,
+    /// The "AutoChg" check box of the models with a tool changer.
+    Auto,
     Btn(Dlg),
 }
 
@@ -84,6 +86,8 @@ pub(crate) struct ParamDlg {
     unit: usize,
     sorting: usize,
     lang: usize,
+    /// The state of the AutoChg check box; `None` on the models without a tool changer (no box).
+    auto: Option<bool>,
     ring: Vec<Ctl>,
     focus: Option<usize>,
     edit: Option<LineEdit>,
@@ -139,7 +143,7 @@ fn param_format(i: usize, v: f64) -> String {
     match i {
         2..=9 => format!("{v:.0}"),
         10..=12 => format!("{v:.4}"),
-        13 | 14 => format!("{v:.2}"),
+        13 | 14 => format!("{v:05.2}"),
         15 => format!("{v}"),
         _ => format!("{:+03}", v as i32),
     }
@@ -1325,6 +1329,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let mut ring = vec![Ctl::Text(0), Ctl::Text(1), Ctl::Unit];
         ring.push(if route { Ctl::Text(16) } else { Ctl::Sort });
         ring.extend((2..=15).map(Ctl::Text));
+        let auto = m
+            .as_ref()
+            .filter(|m| !m.atc.is_empty() && !route)
+            .map(|m| m.auto_change);
+        if auto.is_some() {
+            ring.push(Ctl::Auto);
+        }
         ring.push(Ctl::Lang);
         ring.extend([Dlg::Load, Dlg::Save, Dlg::Ok, Dlg::Abort].map(Ctl::Btn));
         Dialog::Parameter(ParamDlg {
@@ -1332,6 +1343,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             unit,
             sorting,
             lang,
+            auto,
             ring,
             focus: None,
             edit: None,
@@ -1415,6 +1427,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         match ctl {
             Ctl::Unit => d.unit = step(d.unit, 4),
             Ctl::Sort => d.sorting = step(d.sorting, 4),
+            Ctl::Auto => d.auto = d.auto.map(|a| !a),
             Ctl::Lang => {
                 d.lang = step(d.lang, Lang::ALL.len());
                 // the language changes at once, so that the choice can be seen
@@ -1439,6 +1452,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
         m.distance_tool_board_mm = num(14);
         m.spindle_start_time = num(15);
         m.unit = CoordUnit::from_index(d.unit as u32).unwrap_or(CoordUnit::Mil);
+        if let Some(a) = d.auto {
+            m.auto_change = a;
+        }
         if route {
             m.chord_angle = num(16) as i32;
         } else {
@@ -1606,6 +1622,15 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 }
                 None => Flow::Stay,
             },
+            // the hot letter of the AutoChg check box (where the model has one)
+            Input::Char(c) | Input::Alt(c)
+                if d.auto.is_some()
+                    && c.eq_ignore_ascii_case(&'u')
+                    && (!on_text || matches!(input, Input::Alt(_))) =>
+            {
+                self.param_cycle(d, Ctl::Auto, 1);
+                Flow::Stay
+            }
             Input::Alt(c) => match self.param_hot(c) {
                 Some(ctl) => self.param_go(d, ctl),
                 None => Flow::Stay,
@@ -1625,8 +1650,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
                     self.param_focus(d, i);
                 }
                 // the language is chosen by clicking its field: each click takes the next one
-                if d.ring[i] == Ctl::Lang {
-                    self.param_cycle(d, Ctl::Lang, 1);
+                if matches!(d.ring[i], Ctl::Lang | Ctl::Auto) {
+                    self.param_cycle(d, d.ring[i], 1);
                 }
                 Flow::Stay
             }
@@ -1755,16 +1780,33 @@ impl<E: ClassicEngine> ClassicApp<E> {
         label(s, 55, 15, self.t(CText::PDelay));
         text_field(s, 15, 62, 15, 3);
         label(s, 68, 15, self.t(CText::PSecond));
+        // the AutoChg check box of the models with a tool changer, under the spindle
+        let mut lang_row = 17;
+        if let Some(on) = d.auto {
+            let ink = if focused(Ctl::Auto) { WHITE } else { BLACK };
+            s.fill(54, 17, 14, 1, ' ', ink, CYAN);
+            let mark = if on { 'X' } else { ' ' };
+            s.hot_text(55, 17, &format!("[{mark}] A~u~toChg"), ink, HOT, CYAN);
+            self.hit(54, 17, 14, 1, Act::Ctl(ring_at(Ctl::Auto)));
+            // the language moves down one row
+            lang_row = 18;
+        }
         // the language, an option of ours in the free place under the spindle
-        caption(s, 54, 17, self.t(CText::PLanguage), focused(Ctl::Lang));
+        caption(
+            s,
+            54,
+            lang_row,
+            self.t(CText::PLanguage),
+            focused(Ctl::Lang),
+        );
         let lang_name = Lang::ALL[d.lang].native_name();
         let lang_focus = focused(Ctl::Lang);
-        field(s, 63, 17, 9, lang_name, lang_focus);
-        s.put(63, 17, '\u{25c4}', LIGHT_CYAN, BLUE);
-        s.put(73, 17, '\u{25ba}', LIGHT_CYAN, BLUE);
-        self.hit(54, 17, 19, 1, Act::Ctl(ring_at(Ctl::Lang)));
-        self.hit(63, 17, 1, 1, Act::LangStep(-1));
-        self.hit(73, 17, 1, 1, Act::LangStep(1));
+        field(s, 63, lang_row, 9, lang_name, lang_focus);
+        s.put(63, lang_row, '\u{25c4}', LIGHT_CYAN, BLUE);
+        s.put(73, lang_row, '\u{25ba}', LIGHT_CYAN, BLUE);
+        self.hit(54, lang_row, 19, 1, Act::Ctl(ring_at(Ctl::Lang)));
+        self.hit(63, lang_row, 1, 1, Act::LangStep(-1));
+        self.hit(73, lang_row, 1, 1, Act::LangStep(1));
         // buttons
         let btns = [
             (11usize, Dlg::Load, CText::BLoad),

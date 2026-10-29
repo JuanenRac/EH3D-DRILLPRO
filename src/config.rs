@@ -140,6 +140,9 @@ pub struct MachineSettings {
     pub interface: u8,
     /// Baud selector: 0 = 9600 via DOS, 1 = 19200, 2 = 38400.
     pub baud: u8,
+    /// The automatic tool changer is on (line "Tool change 1=Auto, 0=Man." of the ATC models' files; the manual models do not have it).
+    pub auto_change: bool,
+    /// The rack: position 0 is the test pin, 1 to 14 the tools and 15 the drill break detector.
     pub atc: Vec<AtcSlot>,
 }
 
@@ -216,6 +219,7 @@ impl Config {
             chord_angle,
             interface: self.u(25)? as u8,
             baud: self.u(26)? as u8,
+            auto_change: self.u(27) == Some(1),
             atc,
         })
     }
@@ -270,6 +274,8 @@ pub fn rewrite(
                     s.sorting.index().to_string()
                 }
             }
+            // only the ATC models' files have this line; the rewrite only replaces lines that exist
+            27 => if s.auto_change { "1" } else { "0" }.to_string(),
             _ => return None,
         })
     };

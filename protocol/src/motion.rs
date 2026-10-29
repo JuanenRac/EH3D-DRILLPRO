@@ -98,11 +98,11 @@ impl Geometry {
     }
 
     pub fn x_steps(&self, mm: f64) -> i32 {
-        (mm * self.steps_per_mm_xy * self.correction.0).round() as i32
+        round_half_even(mm * self.steps_per_mm_xy * self.correction.0) as i32
     }
 
     pub fn y_steps(&self, mm: f64) -> i32 {
-        (mm * self.steps_per_mm_xy * self.correction.1).round() as i32
+        round_half_even(mm * self.steps_per_mm_xy * self.correction.1) as i32
     }
 
     /// X steps without correction; kept for callers that treat X and Y alike.
@@ -111,7 +111,7 @@ impl Geometry {
     }
 
     pub fn z_steps(&self, mm: f64) -> u32 {
-        (mm.max(0.0) * self.steps_per_mm_z * self.correction.2).round() as u32
+        round_half_even(mm.max(0.0) * self.steps_per_mm_z * self.correction.2) as u32
     }
 
     /// Z distance in mm of a number of steps (inverse of [`Geometry::z_steps`]).
@@ -220,5 +220,20 @@ pub fn z_levels(p: &ZParams, g: &Geometry) -> ZLevels {
         stroke_steps: stroke,
         end_steps: end,
         travel_steps: end.saturating_sub(stroke),
+    }
+}
+
+/// The rounding of the original (Pascal's `Round`): to the nearest whole number, and a value exactly halfway goes to the even one
+/// (1498.5 is 1498, 1499.5 is 1500). It decides the step of a hole that falls on a half step.
+pub fn round_half_even(v: f64) -> f64 {
+    let floor = v.floor();
+    if (v - floor - 0.5).abs() < 1e-9 {
+        if floor % 2.0 == 0.0 {
+            floor
+        } else {
+            floor + 1.0
+        }
+    } else {
+        v.round()
     }
 }

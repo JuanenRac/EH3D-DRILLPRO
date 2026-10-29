@@ -7,7 +7,9 @@ use crate::i18n::{str_width, Lang};
 use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
 use crate::protocol::connection::{ConnectionConfig, Kind as ConnectionKind};
-use crate::protocol::job::{plan_drill_job, Item, JobHole, JobMachine, JobTool, Pause};
+use crate::protocol::job::{
+    plan_drill_job, plan_drill_job_atc, Item, JobHole, JobMachine, JobTool, Pause, Rack,
+};
 use crate::protocol::latches::run_ops;
 use crate::protocol::{bits, connect, run_steps, Simulator};
 use crate::runner::{RealRun, RunState};
@@ -340,7 +342,24 @@ impl App {
                 spindle_rpm: t.spindle_rpm,
             })
             .collect();
-        let items = plan_drill_job(&self.job_machine(), &tools, &job_holes);
+        let items = match self.rack() {
+            Some(rack) => {
+                // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
+                let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
+                used.sort_unstable();
+                used.dedup();
+                if used.len() + 2 > rack.places.len() {
+                    self.error = Some(format!(
+                        "{} {})",
+                        tr(self.lang, Text::TooManyTools),
+                        rack.places.len().saturating_sub(2)
+                    ));
+                    return;
+                }
+                plan_drill_job_atc(&self.job_machine(), &tools, &job_holes, &rack)
+            }
+            None => plan_drill_job(&self.job_machine(), &tools, &job_holes),
+        };
         let hole_ends = Self::hole_end_indexes(&items);
         let mut sim = Simulator::default();
         let (connected, real) = if self.connection.kind == ConnectionKind::Server {
@@ -398,6 +417,21 @@ impl App {
         self.mode = Mode::Running;
     }
 
+    /// The tool changer's rack when the machine has one and its configuration asks for the automatic change: place 0 is the test pin,
+    /// 1 to 14 the tools and 15 the drill break detector.
+    fn rack(&self) -> Option<Rack> {
+        let m = self.settings.as_ref()?;
+        if !m.auto_change || m.atc.is_empty() {
+            return None;
+        }
+        let size = m.atc.iter().map(|a| a.index as usize).max()? + 1;
+        let mut places = vec![(0.0, 0.0, 0.0); size];
+        for a in &m.atc {
+            places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
+        }
+        Some(Rack { places })
+    }
+
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.
     fn job_machine(&self) -> JobMachine {
         crate::job::job_machine(
@@ -447,6 +481,8 @@ impl App {
                 }
                 Item::Latch(ops) => {
                     let _ = run_ops(&mut run.sim, ops);
+                    // a descent that ends in a latch is the tool changer's (Z down to open the chuck), not a hole
+                    run.pending_descent = false;
                 }
                 // The operator's dialogs are asked for when the front end wants them and confirmed at once otherwise; there is
                 // nothing to unstick, and the simulator has no spindle.

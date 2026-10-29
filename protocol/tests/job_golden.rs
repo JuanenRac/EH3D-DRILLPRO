@@ -238,3 +238,148 @@ fn the_vacuum_output_goes_on_with_the_spindle_and_off_with_it_only_when_asked() 
     );
     assert!(!bytes[stop..].iter().any(|&b| (0xA0..=0xBF).contains(&b)));
 }
+
+// ---------------------------------------------------------------------------------------------- the tool changer
+
+/// Where the control unit's latch bytes go out and where the head is then (steps), following the bytes as the control unit does:
+/// a step towards a switch is swallowed at the switch unless the limit override bit is set.
+fn latch_events(bytes: &[u8]) -> Vec<(u8, i32, i32, i32)> {
+    let (mut x, mut y, mut z) = (0i32, 0i32, 0i32);
+    let mut out = Vec::new();
+    for &b in bytes {
+        if b & 0x80 != 0 {
+            out.push((b, x, y, z));
+            continue;
+        }
+        let over = b & 0x40 != 0;
+        for (step, dir, pos, up_is_plus) in [
+            (0x01u8, 0x02u8, &mut x, false),
+            (0x04, 0x08, &mut y, false),
+            (0x10, 0x20, &mut z, true),
+        ] {
+            if b & step == 0 {
+                continue;
+            }
+            let plus = (b & dir != 0) != up_is_plus;
+            if plus {
+                *pos += 1;
+            } else if *pos > 0 || over {
+                *pos -= 1;
+            }
+        }
+    }
+    out
+}
+
+fn atc_machine() -> JobMachine {
+    let mut geometry = Geometry::with_correction(0.9993, 0.9990, 0.8988);
+    geometry.tuning.z_search_steps = 0;
+    JobMachine {
+        geometry,
+        offset_mm: (0.0, 0.0),
+        max_depth_mm: 37.5,
+        base_mm: 6.0,
+        board_mm: 1.5,
+        distance_tool_board_mm: 3.0,
+        xy_search_steps: 26613,
+    }
+}
+
+/// The rack of the recorded machine (the positions of its configuration file; the first four places).
+fn atc_rack() -> Rack {
+    Rack {
+        places: vec![
+            (540.0, 20.0, 37.4),
+            (530.0, 40.0, 37.4),
+            (540.0, 60.0, 37.4),
+            (530.0, 80.0, 37.4),
+        ],
+    }
+}
+
+#[test]
+fn three_tools_on_the_tool_changer_match_the_recorded_job_event_by_event() {
+    let tool = |n, rpm| JobTool {
+        number: n,
+        extra_stroke_mm: 0.1,
+        feed_mm_min: 100,
+        spindle_rpm: rpm,
+    };
+    let tools = [tool(1, 60_000), tool(2, 60_000), tool(3, 30_000)];
+    let h = |tool, x: f64, y: f64| JobHole {
+        tool,
+        x_mm: mil(x),
+        y_mm: mil(y),
+    };
+    // the holes in the order the original drilled them (its sorting is the program's, not the protocol's)
+    let holes = [
+        h(1, 500.0, 500.0),
+        h(1, 3000.0, 500.0),
+        h(1, 3000.0, 2500.0),
+        h(2, 500.0, 2000.0),
+        h(2, 1000.0, 2500.0),
+        h(2, 2000.0, 1500.0),
+        h(3, 1500.0, 500.0),
+        h(3, 2500.0, 3000.0),
+    ];
+    let plan = plan_drill_job_atc(&atc_machine(), &tools, &holes, &atc_rack());
+    let got = latch_events(&flatten_bytes(&plan));
+    // Recorded from the original: (latch byte, X, Y, Z in steps). A0 opens the chuck, 80 closes it.
+    let expected: Vec<(u8, i32, i32, i32)> = vec![
+        (0xD0, 0, 0, 0),
+        (0xD0, 0, 0, 0),
+        // tool 1: to place 0, Z down, open, slide to place 1, close, up and to the first hole
+        (0xA0, 21245, 787, 1323),
+        (0x80, 20852, 1573, 1323),
+        (0xD0, 500, 500, 0),
+        (0xF8, 500, 500, 0),
+        (0x90, 500, 500, 0),
+        (0x9F, 500, 500, 0),
+        (0xD2, 2998, 2498, 0),
+        (0x80, 2998, 2498, 0),
+        (0xD0, 2998, 2498, 0),
+        // tool 2: back to place 1, open, slide to place 2, close
+        (0xA0, 20852, 1573, 1323),
+        (0x80, 21245, 2360, 1323),
+        (0xD0, 500, 1998, 0),
+        (0xF8, 500, 1998, 0),
+        (0x90, 500, 1998, 0),
+        (0x9F, 500, 1998, 0),
+        (0xD2, 1999, 1498, 0),
+        (0x80, 1999, 1498, 0),
+        (0xD0, 1999, 1498, 0),
+        // tool 3
+        (0xA0, 21245, 2360, 1323),
+        (0x80, 20852, 3146, 1323),
+        (0xD0, 1499, 500, 0),
+        (0xF8, 1499, 500, 0),
+        (0x90, 1499, 500, 0),
+        (0x90, 1499, 500, 0),
+        (0xD2, 2498, 2997, 0),
+        (0x80, 2498, 2997, 0),
+        (0xD0, 2498, 2997, 0),
+        // the last tool goes back to its place and the chuck closes on the test pin's place
+        (0xA0, 20852, 3146, 1323),
+        (0x80, 21245, 787, 1323),
+        (0xD0, 21245, 787, 0),
+        (0xC0, 0, 0, 0),
+    ];
+    assert_eq!(got, expected);
+}
+
+#[test]
+fn the_manual_plan_never_opens_the_chuck() {
+    let tools = [JobTool {
+        number: 1,
+        extra_stroke_mm: 0.0,
+        feed_mm_min: 1000,
+        spindle_rpm: 60_000,
+    }];
+    let holes = [JobHole {
+        tool: 1,
+        x_mm: 10.0,
+        y_mm: 10.0,
+    }];
+    let bytes = flatten_bytes(&plan_drill_job(&machine(), &tools, &holes));
+    assert!(!bytes.iter().any(|&b| (0xA0..=0xBF).contains(&b)));
+}

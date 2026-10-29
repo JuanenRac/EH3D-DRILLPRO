@@ -136,3 +136,35 @@ fn typed_settings_of_the_second_machine_with_a_tool_changer() {
     );
     assert_eq!(s.atc[15].index, 15);
 }
+
+#[test]
+fn the_tool_changer_flag_is_read_and_written_back() {
+    let text = read("DRILLPRO_CNCA.DCF");
+    let c = config::parse(&text).unwrap();
+    let mut s = c.settings().unwrap();
+    assert!(s.auto_change, "the file asks for the automatic change");
+    // switching it off rewrites only that value
+    s.auto_change = false;
+    let out = config::rewrite(&text, &s, r".\DEMO", "*.NCD", false);
+    assert!(!config::parse(&out).unwrap().settings().unwrap().auto_change);
+    s.auto_change = true;
+    let back = config::rewrite(&out, &s, r".\DEMO", "*.NCD", false);
+    assert!(
+        config::parse(&back)
+            .unwrap()
+            .settings()
+            .unwrap()
+            .auto_change
+    );
+    // the value keeps its column and its comment
+    assert!(back.contains("1             * Tool change"));
+    assert!(out.contains("0             * Tool change"));
+    // the manual machine has no such line
+    assert!(
+        !config::parse(&read("DRILLPRO.DCF"))
+            .unwrap()
+            .settings()
+            .unwrap()
+            .auto_change
+    );
+}

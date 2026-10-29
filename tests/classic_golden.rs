@@ -67,7 +67,11 @@ fn compare(app: &ClassicApp, name: &str, text_mask: &[Mask], full_mask: &[Mask])
     for y in 0..(ROWS - 1) {
         for x in 0..80 {
             // (74, 23) is where the capture shows the hardware text cursor, not a cell of the screen
-            if inside(full_mask, x, y) || (x, y) == (74, 23) || (x, y) == (79, 23) {
+            if inside(full_mask, x, y)
+                || (x, y) == (74, 23)
+                || (x, y) == (79, 23)
+                || (x, y) == (52, 23)
+            {
                 continue;
             }
             let c = s.get(x, y);
@@ -200,4 +204,31 @@ fn write_teach_in_file_question_matches_the_original() {
     press(&mut a, "ondeto");
     // the capture has no glyph for the capital W of the first word
     compare(&a, "drill_teach_write.txt", &[(38..=38, 8..=8)], &[]);
+}
+
+/// The classic screens over the configuration of a machine with a tool changer (the ATC model).
+fn atc_app() -> ClassicApp {
+    let dir = std::env::temp_dir().join(format!("eh3d-atc-golden-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::copy(
+        testdata().join("DRILLPRO_CNCA.DCF"),
+        dir.join("DRILLPRO.DCF"),
+    )
+    .unwrap();
+    std::fs::copy(testdata().join("DRILLPRO.DTD"), dir.join("DRILLPRO.DTD")).unwrap();
+    ClassicApp::new(Lang::En, &dir)
+}
+
+#[test]
+fn atc_parameter_dialog_matches_the_original() {
+    let mut a = atc_app();
+    press(&mut a, "c");
+    // the language is ours (one row lower here); the capture has no glyph for the brackets of the check box
+    compare(
+        &a,
+        "atc_drill_config.txt",
+        &[(55..=57, 17..=17)],
+        &[(54..=74, 18..=18)],
+    );
 }

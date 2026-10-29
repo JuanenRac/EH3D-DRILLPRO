@@ -79,6 +79,8 @@ configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`).
   could not be captured from the original.
 * `Esc` while the job runs opens INTERRUPTED / What next?: Cont. (`Enter`, `C`) goes on, Abort (`Esc`, `A`) stops the job. The job
   waits while the window is open. During the homing `Esc` stops at once.
+* **AutoChg** (Parameter window, only on the models with a tool changer): the box (`U`, or a click) says whether the tools are changed by
+  the machine. The language field of ours moves one row down there.
 * **Offset** (the button): "Delete old offset?" (Yes: start at home; No: start at the offset of the form), then the Offset Teach
   window. Move the head with `E` `S` `D` `X` (Y+, X-, X+, Y-) or the arrow keys, `R` `C` or `PageUp` `PageDown` for Z; `1`-`4` pick the
   step (1, 10, 100, 1000 mil); every button answers to the mouse. Ok copies the position into the Offset of the main screen.

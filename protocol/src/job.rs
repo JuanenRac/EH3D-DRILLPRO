@@ -24,6 +24,13 @@ pub struct JobMachine {
     pub xy_search_steps: u32,
 }
 
+/// The rack of a machine with the automatic tool changer: the place of each tool as (X, Y, Z) in mm. Place 0 is the test pin, 1 to
+/// 14 are the tools (15 holds the drill break detector).
+#[derive(Debug, Clone, PartialEq)]
+pub struct Rack {
+    pub places: Vec<(f64, f64, f64)>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct JobTool {
     pub number: u8,
@@ -135,6 +142,8 @@ struct Planner<'a> {
     pos: (i32, i32),
     /// Z depth in steps below home.
     z: u32,
+    /// The tool changer of the ATC models: where the tools wait (see [`Rack`]).
+    rack: Option<Rack>,
 }
 
 impl Planner<'_> {
@@ -177,8 +186,33 @@ impl Planner<'_> {
                 .spindle_off(t.spindle_stop_wait_ms as u64 * 1000);
             self.latch(off);
         }
-        let on = self.latches.drivers_on();
-        self.latch(on);
+        // the control unit's own stop already ends with the drivers on; the original sends them again only on the manual models
+        if self.rack.is_none() {
+            let on = self.latches.drivers_on();
+            self.latch(on);
+        }
+    }
+
+    /// The chuck exchange of the tool changer: to the place `from` of the rack, Z down, chuck open (auxiliary output), a slide to the
+    /// place `to`, chuck closed, Z up. As the original does it (recorded on the automatic models).
+    fn chuck_swap(&mut self, from: usize, to: usize) {
+        let Some(rack) = self.rack.clone() else {
+            return;
+        };
+        let g = self.m.geometry;
+        let place = |i: usize| {
+            let (x, y, z) = rack.places.get(i).copied().unwrap_or((0.0, 0.0, 0.0));
+            ((g.x_steps(x), g.y_steps(y)), g.z_steps(z))
+        };
+        let ((from_xy, z_from), (to_xy, _)) = (place(from), place(to));
+        self.goto_xy(from_xy);
+        self.z_down(z_from, g.z_max_hz);
+        let open = self.latches.aux(true);
+        self.latch(open);
+        self.goto_xy(to_xy);
+        let close = self.latches.aux(false);
+        self.latch(close);
+        self.z_up(z_from, g.z_max_hz);
     }
 
     fn goto_xy(&mut self, target: (i32, i32)) {
@@ -324,6 +358,7 @@ impl<'a> JobBuilder<'a> {
             m,
             items: Vec::new(),
             latches: Latches::default(),
+            rack: None,
             pos: (0, 0),
             z: 0,
         };
@@ -401,12 +436,29 @@ impl<'a> JobBuilder<'a> {
 /// Plans a drilling job. `holes` must already be in drilling order, grouped by tool in the order
 /// the tools are used; `tools` gives the data of each tool number.
 pub fn plan_drill_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole]) -> Vec<Item> {
+    plan_job(m, tools, holes, None)
+}
+
+/// The same job on a machine with the automatic tool changer: the tools wait in the rack and the head changes them itself (the
+/// chuck opens with the auxiliary output). Tool number N of the job is taken from place N of the rack, in the order the tools are
+/// used (place 1 for the first tool used, 2 for the second, ...); place 0 is the test pin, where the cycle starts and ends.
+pub fn plan_drill_job_atc(
+    m: &JobMachine,
+    tools: &[JobTool],
+    holes: &[JobHole],
+    rack: &Rack,
+) -> Vec<Item> {
+    plan_job(m, tools, holes, Some(rack.clone()))
+}
+
+fn plan_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole], rack: Option<Rack>) -> Vec<Item> {
     let mut p = Planner {
         m,
         items: Vec::new(),
         latches: Latches::default(),
         pos: (0, 0),
         z: 0,
+        rack,
     };
     let g = m.geometry;
 
@@ -452,7 +504,18 @@ pub fn plan_drill_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole]) -> V
         let feed_hz = g.z_hz(tool.feed_mm_min as f64);
         let fast_hz = g.z_max_hz;
 
-        if gi == 0 {
+        if p.rack.is_some() {
+            // The tool changer: from the place of the tool that was in the chuck (place 0, the test pin, at the start) to the place of
+            // this one, then to the first hole; the drivers go on again before the spindle starts.
+            p.chuck_swap(gi, gi + 1);
+            p.goto_xy(first);
+            let on = p.latches.drivers_on();
+            p.latch(on);
+            if gi == 0 {
+                p.items.push(Item::Pause(Pause::SpindleStart));
+            }
+            p.spindle_start(tool.spindle_rpm);
+        } else if gi == 0 {
             // The first tool: go to the first hole, then confirm the tool, drivers on again.
             p.goto_xy(first);
             p.items
@@ -488,6 +551,13 @@ pub fn plan_drill_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole]) -> V
 
         // Spindle stop (brake, release run, release brake) and drivers on again.
         p.spindle_stop();
+    }
+
+    // The last tool goes back to its place and the chuck is left closed on the test pin's place.
+    if p.rack.is_some() {
+        p.chuck_swap(order.len(), 0);
+        let on = p.latches.drivers_on();
+        p.latch(on);
     }
 
     // Return: Z fine search again, back to the origin, XY search, drivers off.

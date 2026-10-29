@@ -76,6 +76,22 @@ The spindle start sequence is: write the second latch with its spindle bits set,
 - Steps per millimetre: the original uses one step per mil (0.0254 mm), multiplied by correction coefficients of the machine configuration. A move of 400 steps on X and Y covered the expected 10 mm to the eye; Z has not been measured.
 - The work area comes from the machine configuration: 495 x 325 mm or 555 x 405 mm on the tried machine, 325 x 270 mm on the CCD/2.
 
+## The tool changer (ATC models)
+
+On the models with the automatic tool changer (`Tool change 1=Auto` in the configuration file, with the rack positions after it) the
+auxiliary output, latch `0x80` bit 5, opens the chuck: `0xA0` opens it, `0x80` closes it, with 500 ms after each change. The rack has
+16 places: 0 is the test pin, 1 to 14 hold the tools and 15 the drill break detector; each has its X, Y and Z in mm. A tool change is
+(recorded on the original, event by event):
+
+1. go to the place of the tool in the chuck (place 0 at the start), Z down to the place's Z;
+2. `0xA0` (open);
+3. slide to the place of the next tool;
+4. `0x80` (close) and Z up.
+
+The job begins with that change towards place 1, drills, and for each following tool changes again; after the last tool it changes
+towards place 0. Between the steps the bytes are those of the manual models (drivers on, spindle `0xF8` `0x90` `0x9F`, stop `0xD2` `0x80`
+`0xD0`). This has been compared with a recording only; it has not run on a real ATC machine.
+
 ## Safety in this project
 
 The `protocol` crate has a safety gate: a `Machine` refuses to move anything until it has been armed. A real connection in the machine file is the operator's statement that the machine is ready. `Esc` cancels a job within a fraction of a second and switches the stepper drivers off, also after an error or when the link drops. The limit switches are watched by the control unit itself; this software has no emergency stop of its own.
