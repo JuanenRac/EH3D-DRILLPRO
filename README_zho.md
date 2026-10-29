@@ -134,6 +134,8 @@ EH3D-DRILLPRO/
 ├── tests/                                       格式、作业规划、经典界面和所有语言的界面
 ├── docs/                                        协议说明、经典界面、连接指南和含全部取值的机器文件
 ├── testdata/                                    为测试编写的小型示例文件
+├── config/                                      逐行解释的基本配置
+├── examples/                                    示例：从1个孔到2万个孔
 ├── tools/                                       CI 检查、README 检查和图片工具
 ├── images/                                      横幅图以及架构和仓库结构图片
 ├── .github/                                     CI 与发布工作流、Issue 和 PR 模板

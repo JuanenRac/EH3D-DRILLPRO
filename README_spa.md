@@ -134,6 +134,8 @@ EH3D-DRILLPRO/
 ├── tests/                                       formatos, planificación, pantallas clásicas y pantallas en todos los idiomas
 ├── docs/                                        las notas del protocolo, las pantallas clásicas, la guía de conexión y el archivo de la máquina con todos sus valores
 ├── testdata/                                    pequeños archivos de muestra escritos para las pruebas
+├── config/                                      la configuración básica, explicada línea a línea
+├── examples/                                    ejemplos, de un agujero a 20000
 ├── tools/                                       comprobación de CI, del README y las herramientas de imágenes
 ├── images/                                      banner y las imágenes de Arquitectura y Estructura del repositorio
 ├── .github/                                     flujos de CI y de publicación, plantillas de issues y pull requests

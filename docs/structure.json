@@ -353,6 +353,32 @@
           }
         },
         {
+          "name": "config/",
+          "desc": {
+            "en": "the basic configuration, explained line by line",
+            "es": "la configuración básica, explicada línea a línea",
+            "de": "die Basiskonfiguration, Zeile für Zeile erklärt",
+            "fr": "la configuration de base, expliquée ligne par ligne",
+            "it": "la configurazione base, spiegata riga per riga",
+            "ja": "基本設定（1行ずつ解説）",
+            "zh": "逐行解释的基本配置",
+            "pt": "a configuração básica, explicada linha a linha"
+          }
+        },
+        {
+          "name": "examples/",
+          "desc": {
+            "en": "example files, from one hole to 20000",
+            "es": "ejemplos, de un agujero a 20000",
+            "de": "Beispiele, von einem Loch bis 20000",
+            "fr": "exemples, d'un trou à 20000",
+            "it": "esempi, da un foro a 20000",
+            "ja": "例：1穴から2万穴",
+            "zh": "示例：从1个孔到2万个孔",
+            "pt": "exemplos, de um furo a 20000"
+          }
+        },
+        {
           "name": "tools/",
           "desc": {
             "en": "CI check, README check and the picture tools",

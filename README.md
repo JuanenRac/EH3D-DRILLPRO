@@ -134,6 +134,8 @@ EH3D-DRILLPRO/
 ├── tests/                                       formats, job planning, the classic screens and the screens in all languages
 ├── docs/                                        the protocol notes, the classic screens, the connection guide and the machine file with all its values
 ├── testdata/                                    small sample files written for the tests
+├── config/                                      the basic configuration, explained line by line
+├── examples/                                    example files, from one hole to 20000
 ├── tools/                                       CI check, README check and the picture tools
 ├── images/                                      banner and the Architecture and Repository Structure pictures
 ├── .github/                                     CI and release workflows, issue and pull-request templates
