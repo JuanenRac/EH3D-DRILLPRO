@@ -26,3 +26,7 @@
 
 出现问题时
   放回您的备份。不要修改标有 RESERVED 的行。examples 文件夹里有从一个孔到两万个孔的文件。
+
+声音（可选）
+  在 machine.cfg 中：sound_finish 和 sound_tool_change。每项可以是 off（默认）、default（程序自己生成的提示音）或您自己的 WAV 文件的完整路径。
+  前者在作业自行结束时播放，后者在机器请求刀具时播放。没有播放器或声卡时，作业照常进行。

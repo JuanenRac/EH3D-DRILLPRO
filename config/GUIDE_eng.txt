@@ -26,3 +26,7 @@ MACHINES WITH AN AUTOMATIC TOOL CHANGER (ATC)
 
 IF SOMETHING GOES WRONG
   Put your copy back. Do not change the lines marked RESERVED. The examples folder has files from one hole to twenty thousand.
+
+SOUNDS (OPTIONAL)
+  In machine.cfg: sound_finish and sound_tool_change. Each one is off (the default), default (a tone the program makes) or the full path of a WAV file
+  of your own. The first plays when a job ends by itself; the second when the machine asks for a tool. If there is no player or no sound card the job goes on.

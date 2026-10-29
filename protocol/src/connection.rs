@@ -8,6 +8,8 @@
 //! node_address = 192.168.0.50:5800
 //! node_token = the-access-token-set-in-the-node
 //! # Tuning of the reference run (all optional; see docs/machine.cfg.example for every value and its default):
+//! sound_finish = default    # off | default | the path of a WAV file: a sound when the job ends
+//! sound_tool_change = off   # the same for the sound when the machine asks for a tool
 //! x_search_hz = 2700
 //! xy_hz_limit = 1800      # optional: the most steps per second the X and Y motors keep up with
 //! z_hz_limit = 400        # optional: the same for Z (its motor carries the spindle)
@@ -71,6 +73,9 @@ pub struct ConnectionConfig {
     pub z_hz_limit: Option<f64>,
     /// The values found by trying the real machine (search speeds, ramps, the calibration jump); see [`crate::tuning`].
     pub tuning: crate::tuning::Tuning,
+    /// The sound when the job ends and the sound when the machine asks for a tool (`sound_finish`, `sound_tool_change`); see [`crate::sound`].
+    pub sound_finish: crate::sound::SoundSetting,
+    pub sound_tool_change: crate::sound::SoundSetting,
 }
 
 impl Default for ConnectionConfig {
@@ -93,6 +98,8 @@ impl Default for ConnectionConfig {
             xy_hz_limit: None,
             z_hz_limit: None,
             tuning: crate::tuning::Tuning::default(),
+            sound_finish: crate::sound::SoundSetting::Off,
+            sound_tool_change: crate::sound::SoundSetting::Off,
         }
     }
 }
@@ -133,6 +140,8 @@ pub fn parse(text: &str) -> Result<ConnectionConfig, String> {
             "server_address" => c.server_address = value,
             "server_token" => c.server_token = value,
             "server_machine" => c.server_machine = value,
+            "sound_finish" => c.sound_finish = crate::sound::SoundSetting::parse(&value),
+            "sound_tool_change" => c.sound_tool_change = crate::sound::SoundSetting::parse(&value),
             "xy_hz_limit" | "z_hz_limit" => {
                 let v: f64 = value.parse().map_err(|_| {
                     format!("line {}: {key} must be a number of steps per second", n + 1)

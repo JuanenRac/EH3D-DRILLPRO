@@ -26,3 +26,7 @@ MACCHINE CON CAMBIO UTENSILE AUTOMATICO (ATC)
 
 SE QUALCOSA VA STORTO
   Rimetti la tua copia. Non cambiare le righe segnate RESERVED. La cartella examples ha file da un foro a ventimila.
+
+SUONI (FACOLTATIVO)
+  In machine.cfg: sound_finish e sound_tool_change. Ognuno è off (predefinito), default (un tono che crea il programma) o il percorso completo di un file WAV
+  vostro. Il primo suona quando un lavoro finisce da solo; il secondo quando la macchina chiede un utensile. Senza lettore o scheda audio il lavoro continua.

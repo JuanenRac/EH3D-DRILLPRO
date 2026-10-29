@@ -26,3 +26,7 @@ MÁQUINAS COM TROCADOR AUTOMÁTICO DE FERRAMENTA (ATC)
 
 SE ALGO CORRER MAL
   Reponha a sua cópia. Não altere as linhas marcadas RESERVED. A pasta examples tem ficheiros desde um furo até vinte mil.
+
+SONS (OPCIONAL)
+  Em machine.cfg: sound_finish e sound_tool_change. Cada um é off (o normal), default (um tom que o programa faz) ou o caminho completo de um ficheiro WAV
+  seu. O primeiro toca quando um trabalho termina sozinho; o segundo quando a máquina pede uma ferramenta. Sem leitor ou placa de som, o trabalho continua.

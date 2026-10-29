@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Sounds when the job ends and when the machine asks for a tool:** `sound_finish` and `sound_tool_change` in the machine file are each off (the default), `default` (a tone the program makes, one for each cue) or the path of a WAV file of the operator's. The sound is played by the system (PowerShell, `afplay`, `paplay`/`aplay`/`play`) in a process of its own, so it never stops a job. It is explained in the machine file and in the guide of the configuration in the eight languages.
+
 ## [0.0.4] - Jobs in ZIP archives, an Offset window that moves the machine, file patterns and a simulation at the speed of the machine
 
 - **The simulated job follows the clock of the machine:** the engine can be advanced by seconds of machine time (`tick_for`), so a move on the simulator takes as long as it would on the machine, with the feeds and the speeds of the tools, instead of running as fast as the computer can.

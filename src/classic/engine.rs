@@ -500,16 +500,24 @@ impl ClassicEngine for App {
     }
 
     fn tick(&mut self, n: usize) -> bool {
+        let was = self.mode == Mode::Running;
         let more = App::tick(self, n);
         if !more {
+            if was {
+                self.play_finish_sound();
+            }
             self.mode = Mode::Main;
         }
         more
     }
 
     fn tick_for(&mut self, seconds: f64) -> bool {
+        let was = self.mode == Mode::Running;
         let more = self.tick_seconds(seconds);
         if !more {
+            if was {
+                self.play_finish_sound();
+            }
             self.mode = Mode::Main;
         }
         more

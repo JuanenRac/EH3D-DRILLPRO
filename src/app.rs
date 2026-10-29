@@ -82,6 +82,8 @@ pub(crate) struct Run {
     pub(crate) waiting: Option<Pause>,
     /// Seconds of machine time already spent on the item that is running (the simulated job follows the clock).
     pub(crate) item_clock: f64,
+    /// The sound of the tool change has been played for the dialog that is on.
+    pub(crate) pause_sounded: bool,
 }
 
 /// How long an item of the plan takes on the machine, in seconds.
@@ -429,6 +431,7 @@ impl App {
             skipped,
             waiting: None,
             item_clock: 0.0,
+            pause_sounded: false,
         });
         self.mode = Mode::Running;
     }
@@ -459,6 +462,23 @@ impl App {
     }
 
     /// Advances the simulated job by up to `n` holes. Returns true while work remains.
+    /// The sound of the end of the job, when it ended by itself (not stopped, not failed) and the machine file asks for one.
+    pub(crate) fn play_finish_sound(&self) {
+        let Some(run) = &self.run else {
+            return;
+        };
+        let done = match &run.real {
+            Some(real) => matches!(real.state(), RunState::Done),
+            None => run.next >= run.items.len(),
+        };
+        if done {
+            crate::protocol::sound::play(
+                &self.connection.sound_finish,
+                crate::protocol::sound::Cue::Finished,
+            );
+        }
+    }
+
     /// The simulated job goes on by `dt` seconds of machine time: an item is done when the time it takes on the machine has passed.
     pub fn tick_seconds(&mut self, mut dt: f64) -> bool {
         for _ in 0..20_000 {
@@ -494,6 +514,7 @@ impl App {
             return false;
         }
         let ask = self.job_options.ask_operator;
+        let tool_sound = self.connection.sound_tool_change.clone();
         let Some(run) = self.run.as_mut() else {
             return false;
         };
@@ -501,6 +522,12 @@ impl App {
             return true;
         }
         if let Some(real) = &run.real {
+            // the machine asks for a tool: the sound is played once for each dialog
+            let asks = matches!(real.state(), RunState::WaitPause(Pause::ToolChange { .. }));
+            if asks && !run.pause_sounded {
+                crate::protocol::sound::play(&tool_sound, crate::protocol::sound::Cue::ToolChange);
+            }
+            run.pause_sounded = asks;
             let (next, _) = real.progress();
             run.next = next;
             run.done = run.hole_ends.iter().filter(|&&e| e < next).count();
@@ -533,6 +560,12 @@ impl App {
                 // The operator's dialogs are asked for when the front end wants them and confirmed at once otherwise; there is
                 // nothing to unstick, and the simulator has no spindle.
                 Item::Pause(p) if ask => {
+                    if matches!(p, Pause::ToolChange { .. }) {
+                        crate::protocol::sound::play(
+                            &tool_sound,
+                            crate::protocol::sound::Cue::ToolChange,
+                        );
+                    }
                     run.waiting = Some(*p);
                     run.next += 1;
                     return true;

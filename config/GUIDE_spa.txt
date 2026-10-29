@@ -26,3 +26,7 @@ MÁQUINAS CON CAMBIADOR AUTOMÁTICO DE HERRAMIENTA (ATC)
 
 SI ALGO SALE MAL
   Vuelve a poner tu copia. No cambies las líneas marcadas RESERVED. La carpeta examples tiene ficheros desde un agujero hasta veinte mil.
+
+SONIDOS (OPCIONAL)
+  En machine.cfg: sound_finish y sound_tool_change. Cada uno es off (lo normal), default (un tono que hace el programa) o la ruta completa de un archivo WAV
+  propio. El primero suena cuando un trabajo termina solo; el segundo cuando la máquina pide una herramienta. Si no hay reproductor o tarjeta de sonido, el trabajo sigue.

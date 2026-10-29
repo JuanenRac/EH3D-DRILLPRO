@@ -26,3 +26,7 @@ MACHINES AVEC CHANGEUR D'OUTILS AUTOMATIQUE (ATC)
 
 SI QUELQUE CHOSE VA MAL
   Remettez votre copie. Ne changez pas les lignes marquées RESERVED. Le dossier examples contient des fichiers d'un trou à vingt mille.
+
+SONS (FACULTATIF)
+  Dans machine.cfg : sound_finish et sound_tool_change. Chacun vaut off (par défaut), default (une tonalité que le programme fabrique) ou le chemin complet d'un fichier
+  WAV à vous. Le premier retentit quand un travail se termine tout seul ; le second quand la machine demande un outil. Sans lecteur ou carte son, le travail continue.

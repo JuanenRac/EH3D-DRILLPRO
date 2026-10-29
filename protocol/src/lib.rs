@@ -25,6 +25,7 @@ pub mod positioner;
 pub mod safety;
 #[cfg(feature = "serial")]
 pub mod serial;
+pub mod sound;
 pub mod tuning;
 
 /// Serial parameters used by the original program (divisor 3 on a 115200 base).

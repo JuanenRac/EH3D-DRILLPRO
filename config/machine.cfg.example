@@ -107,3 +107,11 @@ search_hint_margin_steps = 300
 # Length of the ramp (in steps) of the moves between holes and paths: a long ramp is gentle on the motors. With xy_hz_limit and
 # z_hz_limit above these moves never go faster than the motors keep up with.
 travel_ramp_steps = 400
+
+# --- Sounds (all optional) ------------------------------------------------------------------------------------------------
+# A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
+# ("default"), or a sound file of your own: write the full path of a WAV file. Nothing is played when the line is missing or says off.
+# Windows plays it with PowerShell, macOS with afplay and Linux with paplay, aplay or play, whichever is installed; if there is no player
+# or no sound card the job goes on as always.
+sound_finish = off
+sound_tool_change = off

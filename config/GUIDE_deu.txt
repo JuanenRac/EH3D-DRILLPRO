@@ -26,3 +26,7 @@ MASCHINEN MIT AUTOMATISCHEM WERKZEUGWECHSLER (ATC)
 
 WENN ETWAS SCHIEFGEHT
   Die Kopie zurückspielen. Zeilen mit RESERVED nicht ändern. Der Ordner examples enthält Dateien von einem Loch bis zu zwanzigtausend.
+
+TÖNE (OPTIONAL)
+  In machine.cfg: sound_finish und sound_tool_change. Jede Zeile ist off (Standard), default (ein Ton, den das Programm erzeugt) oder der vollständige Pfad einer eigenen
+  WAV-Datei. Der erste Ton erklingt, wenn ein Auftrag von selbst endet; der zweite, wenn die Maschine ein Werkzeug verlangt. Ohne Player oder Soundkarte läuft der Auftrag weiter.
