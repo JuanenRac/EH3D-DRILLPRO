@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A metric header is read as metric:** the `METRIC` line of the header of a drill file begins with an M and was taken for a command, so the diameters of such a file were read as inches. Now it is read as it says.
+
 - **The build, build-test and test scripts show a live panel:** a banner with the name and version, one line per step with its time, the number of tests that passed and a summary at the end, with the whole output kept in a log file. `test.sh` and `test.bat` run only the tests and never change the version; without `tools/pretty_run.py` the scripts behave as they always did.
 
 ## [0.0.3] - The Offset teach-in, the tool changer of the ATC models, examples and a 32-bit Windows build

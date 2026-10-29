@@ -112,7 +112,8 @@ pub fn parse(text: &str) -> Result<DrillFile, ParseError> {
         }
         if line.starts_with('M') {
             // M72 = inch, M71 = metric; M30 end of program; others carry no geometry.
-            if line == "M71" {
+            // `METRIC` of the header begins with an M too
+            if line == "M71" || line.starts_with("METRIC") {
                 out.metric = true;
             }
             continue;

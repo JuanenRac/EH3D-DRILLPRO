@@ -168,3 +168,32 @@ fn the_tool_changer_flag_is_read_and_written_back() {
             .auto_change
     );
 }
+
+#[test]
+fn a_metric_header_is_read_as_metric() {
+    let f = ncd::parse(
+        "M48
+METRIC,TZ
+T01C0.8
+%
+T01
+X1000Y1000
+M30
+",
+    )
+    .unwrap();
+    assert!(f.metric);
+    assert_eq!(f.diameters, vec![(1, 0.8)]);
+    let inch = ncd::parse(
+        "M48
+INCH,TZ
+T01C0.0315
+%
+T01
+X1000Y1000
+M30
+",
+    )
+    .unwrap();
+    assert!(!inch.metric);
+}
