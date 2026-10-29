@@ -12,13 +12,13 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Version-0.0.3-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.4-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
 ---
 
-**Verificação de honestidade - o que funciona hoje:** um programa em Rust com interface de texto de 80x25 que lê ficheiros de furação Excellon `.NCD`, a tabela de ferramentas e a configuração da máquina, ordena os furos, mostra-os e executa todo o trabalho **contra um simulador** (por omissão) ou, quando o ficheiro da máquina o indica, **numa máquina real** pela porta série do computador, um adaptador USB-série ou o EH3D-NODE-BUNGARD. 202 testes correm num computador. Numa Bungard CCD MTC real foram experimentados a referência dos três eixos (Z, X e Y até aos fins de curso, com o sinal «os três em origem» da unidade de controlo confirmado em direto) e os movimentos de cada eixo; **um trabalho de furação completo ainda não correu na máquina**, e os passos por milímetro só foram confrontados com a configuração do original. Por predefinição, aparecem os ecrãs clássicos do programa MS-DOS, verificados célula a célula com o original; `--modern` inicia a interface de menus. Funcionam com teclado e rato, a janela pode ser maximizada (o ecrã ajusta-se de 640x400 a 1080p e mais), os ficheiros de configuração e de ferramentas editam-se e gravam-se nos diálogos, e o botão Sobre indica as máquinas Bungard CCD e CCD/2 (MTC suportadas, ATC ainda não). Uma versão de consola (`drillpro-console`) desenha os mesmos ecrãs num terminal, com teclado e rato e sem sistema de janelas (SSH, consola de texto, um PC antigo). Os pacotes de cada versão incluem a configuração básica, explicada linha a linha, e uma pasta `examples` desde um furo até vinte mil. O trocador de ferramenta dos modelos ATC (troca automática) funciona a partir de uma gravação do original e não foi experimentado numa máquina real.
+**Verificação de honestidade - o que funciona hoje:** um programa em Rust com interface de texto de 80x25 que lê ficheiros de furação Excellon `.NCD`, a tabela de ferramentas e a configuração da máquina, ordena os furos, mostra-os e executa todo o trabalho **contra um simulador** (por omissão) ou, quando o ficheiro da máquina o indica, **numa máquina real** pela porta série do computador, um adaptador USB-série ou o EH3D-NODE-BUNGARD. 213 testes correm num computador. Numa Bungard CCD MTC real foram experimentados a referência dos três eixos (Z, X e Y até aos fins de curso, com o sinal «os três em origem» da unidade de controlo confirmado em direto) e os movimentos de cada eixo; **um trabalho de furação completo ainda não correu na máquina**, e os passos por milímetro só foram confrontados com a configuração do original. Por predefinição, aparecem os ecrãs clássicos do programa MS-DOS, verificados célula a célula com o original; `--modern` inicia a interface de menus. Funcionam com teclado e rato, a janela pode ser maximizada (o ecrã ajusta-se de 640x400 a 1080p e mais), os ficheiros de configuração e de ferramentas editam-se e gravam-se nos diálogos, e o botão Sobre indica as máquinas Bungard CCD e CCD/2 (MTC suportadas, ATC ainda não). Uma versão de consola (`drillpro-console`) desenha os mesmos ecrãs num terminal, com teclado e rato e sem sistema de janelas (SSH, consola de texto, um PC antigo). Os pacotes de cada versão incluem a configuração básica, explicada linha a linha, e uma pasta `examples` desde um furo até vinte mil. O trocador de ferramenta dos modelos ATC (troca automática) funciona a partir de uma gravação do original e não foi experimentado numa máquina real.
 
 ---
 
@@ -28,9 +28,9 @@
 
 | | |
 |---|---|
-| Versão | `0.0.3` |
+| Versão | `0.0.4` |
 | Maturidade | Estrutura inicial |
-| Testes | 202 |
+| Testes | 213 |
 | Tecnologias | Rust |
 | Em hardware real | Sim, numa Bungard CCD MTC: a referência e os movimentos de cada eixo; um trabalho completo ainda não correu. Sem ficheiro da máquina corre no simulador |
 
@@ -45,7 +45,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Software | 🟡 | Um programa Rust com ecrã de texto de 80x25 lê o ficheiro de furação, a tabela de ferramentas e o ficheiro da máquina, ordena os furos e executa o trabalho inteiro num simulador, ou numa máquina real se o ficheiro da máquina o indicar. |
-| Testes | 🟢 | Passam 202 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos oito idiomas. |
+| Testes | 🟢 | Passam 213 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos oito idiomas. |
 | Leitores de ficheiros | 🟡 | Leem-se o ficheiro de furação `.NCD`, a tabela de ferramentas `DRILLPRO.DTD` e o ficheiro da máquina `DRILLPRO.DCF`; só com pequenos ficheiros de exemplo escritos para os testes, não com ficheiros de placas reais. |
 | Protocolo da máquina | 🟠 | O protocolo de bytes da unidade de controlo foi reconstruído por engenharia inversa e o `docs/PROTOCOL.md` ainda lista partes que são hipóteses; a camada de protocolo recusa mover o que quer que seja até ser armada. |
 | Interface | 🟡 | O ecrã de texto, os menus, o diálogo de ficheiros e a vista vetorial dos furos falam os oito idiomas (testado); o chinês e o japonês precisam de um tipo de letra CJK no sistema. |
@@ -68,10 +68,11 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 * **Movimento estável**: os movimentos saem como um único fluxo contínuo cujas posições de byte levam o tempo (senão um adaptador USB entrega os bytes em rajadas), Z move-se byte a byte, e `Esc` cancela um trabalho numa fração de segundo e desliga os drivers dos motores.
 * O **eixo-árvore**: por omissão o da própria unidade de controlo (os seus bits de latch, até 60000 rpm); com `spindle = node` no ficheiro da máquina o trabalho pede-o ao EH3D-NODE-BUNGARD (um variador de frequência nas saídas do nó, qualquer velocidade até ao máximo do nó, parado em qualquer paragem). Com um nó, os programas leem também os LED da máquina, de modo que cada eixo que chega a casa é visto em direto sem ler a linha de home a meio do fluxo.
 * A **ligação ao servidor** (`connection = server` no ficheiro da máquina, com `server_address`, `server_token` e `server_machine`): em vez de conduzir ele próprio a máquina, o programa envia o trabalho ao [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER), que o planeia com as constantes da máquina, o executa através do nó da máquina e diz ao programa como vai; o programa mostra o progresso e responde aos diálogos como sempre, `Esc` pára o trabalho no servidor, e fechar o programa não o pára.
+* Os **arquivos de trabalho, a janela Offset e a simulação**: um trabalho pode vir empacotado num arquivo ZIP (a janela Select File entra nele e `drillpro JOB.ZIP` carrega o seu primeiro ficheiro de furação); a seta junto ao nome do ficheiro lista os padrões `*.NCD`, `*.ZIP` e `*.*`; os botões Load das janelas de ferramentas e de configuração escolhem o ficheiro a carregar; numa máquina real a janela Offset faz o home, segue cada movimento da janela e volta a fazer o home; e o trabalho simulado demora o que a máquina demoraria.
 
 ## 🧩 Papel no EH3D
 
-O EH3D-DRILLPRO é um programa independente da família EH3D para máquinas cuja unidade de controlo precisa que o PC gere cada passo do motor. O EH3D-ROUTEPRO, o seu irmão de fresagem, reutiliza o seu protocolo, o seu ecrã e o suporte de idiomas. Ainda não depende de nenhum outro repositório EH3D; o leitor Excellon do EH3D-CORE-LIBS poderá substituir o seu mais tarde.
+O EH3D-DRILLPRO é um programa independente da família EH3D para máquinas cuja unidade de controlo precisa que o PC gere cada passo do motor. O EH3D-ROUTEPRO, o seu irmão de fresagem, reutiliza o seu protocolo, o seu ecrã e o suporte de idiomas. Para os trabalhos empacotados em arquivos ZIP usa um crate do EH3D-COMMON (`eh3d-archive`), que tem de estar ao lado para compilar; o leitor Excellon do EH3D-CORE-LIBS poderá substituir o seu mais tarde.
 
 ## 🏛️ Arquitetura
 
@@ -97,7 +98,7 @@ Execute-o com `run.bat` (Windows) ou `./run.sh` (Linux e macOS); ambos compilam 
 
 ## 🧪 Testes
 
-A suite tem 202 testes (`cargo test --workspace`). Verificam os formatos de ficheiro (o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina, e a sua escrita de volta), o planeamento do trabalho, o protocolo no simulador (bytes, movimento, a referência dos eixos, os bits de latch, a ligação ao nó e a barreira de segurança que se recusa a mover até estar armada), os ecrãs clássicos célula a célula e os ecrãs nos oito idiomas. A CI também executa `cargo fmt --check` e `cargo clippy` com os avisos como erros, e `python -I tools/ci_validate.py` verifica o manifesto, as versões, o registo de alterações e os oito README.
+A suite tem 213 testes (`cargo test --workspace`). Verificam os formatos de ficheiro (o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina, e a sua escrita de volta), o planeamento do trabalho, o protocolo no simulador (bytes, movimento, a referência dos eixos, os bits de latch, a ligação ao nó e a barreira de segurança que se recusa a mover até estar armada), os ecrãs clássicos célula a célula e os ecrãs nos oito idiomas. A CI também executa `cargo fmt --check` e `cargo clippy` com os avisos como erros, e `python -I tools/ci_validate.py` verifica o manifesto, as versões, o registo de alterações e os oito README.
 
 ## 🏗️ Compilação e publicação
 

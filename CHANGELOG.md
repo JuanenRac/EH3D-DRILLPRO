@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.4] - Jobs in ZIP archives, an Offset window that moves the machine, file patterns and a simulation at the speed of the machine
+
 - **The simulated job follows the clock of the machine:** the engine can be advanced by seconds of machine time (`tick_for`), so a move on the simulator takes as long as it would on the machine, with the feeds and the speeds of the tools, instead of running as fast as the computer can.
 
 - **A lighter debug build:** the `dev` profile keeps the file and line of a panic (`debug = "line-tables-only"`) but not the full debug symbols, so the `target` folder of a test run is about a tenth of its size.
