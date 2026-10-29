@@ -49,7 +49,7 @@ fn the_dialog_goes_inside_an_archive_and_loads_a_file() {
     let dir = scratch("dlg");
     let mut a = ClassicApp::new(Lang::En, &dir);
     a.handle(Input::Char('l'));
-    for c in "job.zip".chars() {
+    for c in "JOB.ZIP".chars() {
         a.handle(Input::Char(c));
     }
     a.handle(Input::Enter);
