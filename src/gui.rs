@@ -133,6 +133,14 @@ impl<A: TextApp> Gui<A> {
                         Key::ArrowDown => Some(Input::Down),
                         Key::PageUp => Some(Input::PageUp),
                         Key::PageDown => Some(Input::PageDown),
+                        Key::Tab if modifiers.shift => Some(Input::BackTab),
+                        Key::Tab => Some(Input::Tab),
+                        Key::Backspace => Some(Input::Backspace),
+                        Key::Delete => Some(Input::Delete),
+                        Key::ArrowLeft => Some(Input::Left),
+                        Key::ArrowRight => Some(Input::Right),
+                        Key::Home => Some(Input::Home),
+                        Key::End => Some(Input::End),
                         _ => None,
                     };
                     if let Some(i) = named {
@@ -158,15 +166,22 @@ impl<A: TextApp> Gui<A> {
         }
     }
 
+    /// Draws the screen scaled to the room the window gives it (the 80x25 proportions are kept and the rest is black),
+    /// and returns the cell that was clicked.
     fn paint(&self, ui: &mut egui::Ui) -> Option<(usize, usize)> {
-        let size = Vec2::new(CELL_W * COLS as f32, CELL_H * ROWS as f32);
-        let (resp, painter) = ui.allocate_painter(size, Sense::click());
-        let origin = resp.rect.min;
-        let font = FontId::monospace(FONT_SIZE);
+        let avail = ui.available_size();
+        let base = Vec2::new(CELL_W * COLS as f32, CELL_H * ROWS as f32);
+        let scale = (avail.x / base.x).min(avail.y / base.y).max(0.4);
+        let size = base * scale;
+        let (resp, painter) = ui.allocate_painter(avail.max(size), Sense::click());
+        // the screen sits in the middle of the room
+        let origin = resp.rect.min + (resp.rect.size() - size) * 0.5;
+        let (cw, ch) = (CELL_W * scale, CELL_H * scale);
+        let font = FontId::monospace(FONT_SIZE * scale);
         let rect_of = |x: usize, y: usize| {
             Rect::from_min_size(
-                origin + Vec2::new(x as f32 * CELL_W, y as f32 * CELL_H),
-                Vec2::new(CELL_W, CELL_H),
+                origin + Vec2::new(x as f32 * cw, y as f32 * ch),
+                Vec2::new(cw, ch),
             )
         };
         // Backgrounds first: a wide glyph must not be covered by the background of its second cell.
@@ -177,16 +192,16 @@ impl<A: TextApp> Gui<A> {
                 let rect = rect_of(x, y);
                 painter.rect_filled(rect, 0.0, bg);
                 match cell.ch {
-                    '█' => {
+                    '\u{2588}' => {
                         painter.rect_filled(rect, 0.0, fg);
                     }
-                    '▓' => {
+                    '\u{2593}' => {
                         painter.rect_filled(rect, 0.0, mix(bg, fg, 0.75));
                     }
-                    '▒' => {
+                    '\u{2592}' => {
                         painter.rect_filled(rect, 0.0, mix(bg, fg, 0.5));
                     }
-                    '░' => {
+                    '\u{2591}' => {
                         painter.rect_filled(rect, 0.0, mix(bg, fg, 0.25));
                     }
                     _ => {}
@@ -196,12 +211,15 @@ impl<A: TextApp> Gui<A> {
         for y in 0..ROWS {
             for x in 0..COLS {
                 let cell = self.screen.get(x, y);
-                if matches!(cell.ch, ' ' | CONTINUATION | '█' | '▓' | '▒' | '░') {
+                if matches!(
+                    cell.ch,
+                    ' ' | CONTINUATION | '\u{2588}' | '\u{2593}' | '\u{2592}' | '\u{2591}'
+                ) {
                     continue;
                 }
                 let rect = rect_of(x, y);
                 painter.text(
-                    Pos2::new(rect.min.x, rect.min.y + 1.0),
+                    Pos2::new(rect.min.x, rect.min.y + scale),
                     Align2::LEFT_TOP,
                     cell.ch.to_string(),
                     font.clone(),
@@ -211,10 +229,13 @@ impl<A: TextApp> Gui<A> {
         }
         if resp.clicked() {
             if let Some(p) = resp.interact_pointer_pos() {
-                return Some((
-                    ((p.x - origin.x) / CELL_W) as usize,
-                    ((p.y - origin.y) / CELL_H) as usize,
-                ));
+                let (dx, dy) = (p.x - origin.x, p.y - origin.y);
+                if dx >= 0.0 && dy >= 0.0 {
+                    let (c, r) = ((dx / cw) as usize, (dy / ch) as usize);
+                    if c < COLS && r < ROWS {
+                        return Some((c, r));
+                    }
+                }
             }
         }
         None
@@ -283,10 +304,19 @@ pub fn run_capture<A: TextApp + 'static>(
     app: A,
     capture: Option<Capture>,
 ) -> eframe::Result {
-    let size = Vec2::new(CELL_W * COLS as f32, CELL_H * ROWS as f32);
+    // A capture keeps the classic size so that pictures stay the same; a normal run starts roomier and can be
+    // resized or maximized: the screen scales between 640x400 and any larger size (720p, 1080p and beyond).
+    let size = if capture.is_some() {
+        Vec2::new(CELL_W * COLS as f32, CELL_H * ROWS as f32)
+    } else {
+        Vec2::new(1040.0, 650.0)
+    };
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size(size)
+            .with_min_inner_size([640.0, 400.0])
+            .with_resizable(true)
+            .with_maximize_button(true)
             .with_title(title),
         ..Default::default()
     };

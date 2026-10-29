@@ -65,6 +65,15 @@ impl CoordUnit {
         })
     }
 
+    pub fn index(self) -> u32 {
+        match self {
+            Self::TenthMil => 0,
+            Self::Mil => 1,
+            Self::PlotterStep => 2,
+            Self::HundredthMm => 3,
+        }
+    }
+
     pub fn mm(self) -> f64 {
         match self {
             Self::TenthMil => 0.00254,
@@ -82,6 +91,17 @@ pub enum SortMode {
     XFirst,
     YFirst,
     Special,
+}
+
+impl SortMode {
+    pub fn index(self) -> u32 {
+        match self {
+            Self::None => 0,
+            Self::XFirst => 1,
+            Self::YFirst => 2,
+            Self::Special => 3,
+        }
+    }
 }
 
 /// One position of the automatic tool changer (millimetres).
@@ -199,4 +219,152 @@ impl Config {
             atc,
         })
     }
+}
+
+/// Writes `settings` back into the text of a configuration file, keeping every comment, the blank lines, the reserved
+/// lines and the layout: only the first value of each data line that the program edits is replaced (and padded to the
+/// width of the old one, so the comments stay in their column). `route` selects the routing layout (chord angle on the
+/// line where the drilling program keeps its sorting).
+pub fn rewrite(
+    original: &str,
+    settings: &MachineSettings,
+    directory: &str,
+    pattern: &str,
+    route: bool,
+) -> String {
+    let chord = if settings.chord_angle >= 0 {
+        format!("{:02}", settings.chord_angle)
+    } else {
+        format!("{:03}", settings.chord_angle)
+    };
+    let value = |j: usize| -> Option<String> {
+        let s = settings;
+        Some(match j {
+            0 => format!("{:.4}", s.scale.0),
+            1 => format!("{:.4}", s.scale.1),
+            2 => format!("{:05.2}", s.offset_mm.0),
+            3 => format!("{:05.2}", s.offset_mm.1),
+            4 => format!("{:06.2}", s.clip_mm.0),
+            5 => format!("{:06.2}", s.clip_mm.1),
+            6 => format!("{:.2}", s.board_mm),
+            7 => format!("{:.2}", s.base_mm),
+            8 => s.speed_xy.0.to_string(),
+            9 => s.speed_xy.1.to_string(),
+            10 => s.speed_xy.2.to_string(),
+            11 => s.speed_z.0.to_string(),
+            12 => s.speed_z.1.to_string(),
+            13 => s.speed_z.2.to_string(),
+            14 => s.accel.0.to_string(),
+            15 => s.accel.1.to_string(),
+            16 => format!("{:.4}", s.correction.0),
+            17 => format!("{:.4}", s.correction.1),
+            18 => format!("{:.4}", s.correction.2),
+            19 => format!("{:.2}", s.z_max_depth_mm),
+            20 => format!("{:.2}", s.distance_tool_board_mm),
+            21 => format!("{:.2}", s.spindle_start_time),
+            22 => s.unit.index().to_string(),
+            23 => {
+                if route {
+                    chord.clone()
+                } else {
+                    s.sorting.index().to_string()
+                }
+            }
+            _ => return None,
+        })
+    };
+    let mut out = String::with_capacity(original.len() + 64);
+    let mut data_index = 0usize;
+    for line in original.split_inclusive('\n') {
+        let is_data = !strip_comment(line).trim().is_empty();
+        if !is_data {
+            out.push_str(line);
+            continue;
+        }
+        let new = match data_index {
+            2 => Some(directory.to_string()),
+            3 => Some(pattern.to_string()),
+            k if k >= 4 => value(k - 4),
+            _ => None,
+        };
+        data_index += 1;
+        let Some(new) = new else {
+            out.push_str(line);
+            continue;
+        };
+        let start = line.len() - line.trim_start().len();
+        let token_len = line[start..]
+            .find(char::is_whitespace)
+            .unwrap_or(line.len() - start);
+        let pad = " ".repeat(token_len.saturating_sub(new.len()));
+        out.push_str(&line[..start]);
+        out.push_str(&new);
+        out.push_str(&pad);
+        out.push_str(&line[start + token_len..]);
+    }
+    out
+}
+
+/// The folder the files of the jobs live in: the `Directory` line of the configuration (DOS style, `.\RACK3000`)
+/// under `data_dir`, when that folder exists; `data_dir` itself otherwise.
+pub fn work_dir(data_dir: &std::path::Path, cfg: Option<&Config>) -> std::path::PathBuf {
+    let Some(c) = cfg else {
+        return data_dir.to_path_buf();
+    };
+    let rel = c.directory.trim().replace('\\', "/");
+    let rel = rel.trim_start_matches("./").trim_start_matches('/');
+    if rel.is_empty() || rel == "." {
+        return data_dir.to_path_buf();
+    }
+    let dir = data_dir.join(rel);
+    if dir.is_dir() {
+        dir
+    } else {
+        data_dir.to_path_buf()
+    }
+}
+
+/// Bytes of a file read as text (the files are DOS text: one character per byte).
+pub fn bytes_to_text(b: &[u8]) -> String {
+    b.iter().map(|&c| c as char).collect()
+}
+
+/// The text written back as bytes (characters above 255 become `?`).
+pub fn text_to_bytes(t: &str) -> Vec<u8> {
+    t.chars()
+        .map(|c| u8::try_from(c as u32).unwrap_or(b'?'))
+        .collect()
+}
+
+/// Writes `text` to `path`, keeping the old file as `<name>.BAK` next to it.
+pub fn write_with_backup(path: &std::path::Path, text: &str) -> Result<(), String> {
+    if path.exists() {
+        let mut bak = path.as_os_str().to_owned();
+        bak.push(".BAK");
+        std::fs::copy(path, std::path::PathBuf::from(bak)).map_err(|e| e.to_string())?;
+    }
+    std::fs::write(path, text_to_bytes(text)).map_err(|e| e.to_string())
+}
+
+/// Where the program looks for its files when no folder is given: the current folder, the folder of the program, and
+/// the user's configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`); the first one that holds `file` (for example
+/// `DRILLPRO.DCF`) wins, and the current folder is the answer when none does.
+pub fn find_data_dir(file: &str) -> std::path::PathBuf {
+    let mut candidates = vec![std::path::PathBuf::from(".")];
+    if let Some(exe) = std::env::current_exe()
+        .ok()
+        .and_then(|e| e.parent().map(|p| p.to_path_buf()))
+    {
+        candidates.push(exe);
+    }
+    if let Some(appdata) = std::env::var_os("APPDATA") {
+        candidates.push(std::path::PathBuf::from(appdata).join("EH3D"));
+    }
+    if let Some(home) = std::env::var_os("HOME") {
+        candidates.push(std::path::PathBuf::from(home).join(".config").join("eh3d"));
+    }
+    candidates
+        .into_iter()
+        .find(|d| d.join(file).is_file())
+        .unwrap_or_else(|| std::path::PathBuf::from("."))
 }

@@ -26,6 +26,14 @@ pub enum Input {
     Down,
     PageUp,
     PageDown,
+    Tab,
+    BackTab,
+    Backspace,
+    Delete,
+    Left,
+    Right,
+    Home,
+    End,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -83,6 +91,10 @@ pub struct App {
     pub(crate) run: Option<Run>,
     pub(crate) board_mm: f64,
     pub(crate) connection: ConnectionConfig,
+    /// The folder of `DRILLPRO.DTD` and `DRILLPRO.DCF`, and the text of both files as they were read (to write them back).
+    pub(crate) data_dir: PathBuf,
+    pub(crate) config_text: Option<String>,
+    pub(crate) tools_text: Option<String>,
     pub quit: bool,
 }
 
@@ -98,7 +110,8 @@ impl App {
                 .map(|b| b.iter().map(|&c| c as char).collect::<String>())
         };
         let tool_text = read("DRILLPRO.DTD");
-        let config = read("DRILLPRO.DCF").and_then(|t| config::parse(&t));
+        let config_text = read("DRILLPRO.DCF");
+        let config = config_text.as_deref().and_then(config::parse);
         // The machine calibration (correction coefficients) comes from the configuration file.
         let settings = config.as_ref().and_then(|c| c.settings());
         let geometry = crate::job::geometry_from(settings.as_ref());
@@ -121,7 +134,10 @@ impl App {
             loaded: None,
             error: None,
             tools_found: tool_text.is_some(),
-            tools: tool_text.map(|t| tools::parse(&t)).unwrap_or_default(),
+            tools: tool_text.as_deref().map(tools::parse).unwrap_or_default(),
+            data_dir: data_dir.to_path_buf(),
+            config_text,
+            tools_text: tool_text,
             settings,
             config: config.clone(),
             sorting,
@@ -131,6 +147,7 @@ impl App {
             connection: ConnectionConfig::default(),
             quit: false,
         };
+        app.dir = crate::config::work_dir(data_dir, app.config.as_ref());
         app.refresh_entries();
         app
     }

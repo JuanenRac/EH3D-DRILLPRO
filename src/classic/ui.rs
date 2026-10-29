@@ -114,13 +114,46 @@ pub fn button(
     }
 }
 
-/// A group of radio buttons on a cyan box; `rows` are the already translated labels.
-pub fn radio_group(s: &mut Screen, x: usize, y: usize, w: usize, rows: &[String], selected: usize) {
+/// A group of radio buttons on a cyan box; `rows` are the already translated labels. The group that has the
+/// keyboard focus writes its selected entry in white.
+pub fn radio_group(
+    s: &mut Screen,
+    x: usize,
+    y: usize,
+    w: usize,
+    rows: &[String],
+    selected: usize,
+    focused: bool,
+) {
     s.fill(x, y, w, rows.len(), ' ', CYAN, CYAN);
     for (i, r) in rows.iter().enumerate() {
         let mark = if i == selected { "(\u{2022})" } else { "( )" };
-        s.text(x + 1, y + i, mark, BLACK, CYAN);
-        s.text(x + 5, y + i, r, BLACK, CYAN);
+        let ink = if focused && i == selected {
+            WHITE
+        } else {
+            BLACK
+        };
+        s.text(x + 1, y + i, mark, ink, CYAN);
+        s.text(x + 5, y + i, r, ink, CYAN);
+    }
+}
+
+/// A field being edited: green with black text and the cursor drawn as an inverted cell (a bar in the first cell while
+/// the text is still selected).
+pub fn edit_field(
+    s: &mut Screen,
+    x: usize,
+    y: usize,
+    width: usize,
+    e: &crate::classic::edit::LineEdit,
+) {
+    field(s, x, y, width, &e.text, true);
+    if e.fresh {
+        s.put(x + 1, y, '\u{2595}', GREEN, BLACK);
+    } else {
+        let ch = e.text.chars().nth(e.cursor).unwrap_or(' ');
+        let at = x + 1 + e.cursor.min(width.saturating_sub(1));
+        s.put(at, y, ch, GREEN, BLACK);
     }
 }
 

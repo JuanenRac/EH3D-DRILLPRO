@@ -19,7 +19,13 @@ fn main() -> eframe::Result {
         .ok()
         .and_then(|s| Lang::from_code(&s))
         .unwrap_or_default();
-    let (mut data, mut file, mut dump, mut modern) = (PathBuf::from("."), None, false, false);
+    // without --data the files are looked for where the program is used (see `find_data_dir`)
+    let (mut data, mut file, mut dump, mut modern) = (
+        eh3d_drillpro::config::find_data_dir("DRILLPRO.DCF"),
+        None,
+        false,
+        false,
+    );
     let mut connection: Option<PathBuf> = None;
     let (mut keys, mut shot, mut wait) = (String::new(), None::<PathBuf>, 8u32);
     let mut args = std::env::args().skip(1);

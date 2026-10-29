@@ -26,3 +26,18 @@ pub fn parse(text: &str) -> Vec<Tool> {
         })
         .collect()
 }
+
+/// The text of a tool table file: the 19 comment lines of `original` followed by one line per tool.
+pub fn rewrite(original: &str, tools: &[Tool]) -> String {
+    let mut out: String = original.split_inclusive('\n').take(19).collect();
+    if !out.is_empty() && !out.ends_with('\n') {
+        out.push('\n');
+    }
+    for t in tools {
+        out.push_str(&format!(
+            "{:02} {:.1} {:04} {:05}\r\n",
+            t.number, t.extra_stroke_mm, t.feed_mm_min, t.spindle_rpm
+        ));
+    }
+    out
+}

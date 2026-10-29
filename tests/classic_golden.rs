@@ -95,6 +95,11 @@ fn compare(app: &ClassicApp, name: &str, text_mask: &[Mask], full_mask: &[Mask])
     );
 }
 
+/// What we added to the original screen: the About button in the free place under Load.
+fn ours() -> Vec<Mask> {
+    vec![(62..=75, 19..=20)]
+}
+
 /// Heading texts that are our own wording: the project lines, the title box and the machine number.
 fn heading() -> Vec<Mask> {
     vec![(5..=51, 3..=5), (62..=74, 3..=4)]
@@ -102,14 +107,14 @@ fn heading() -> Vec<Mask> {
 
 #[test]
 fn main_screen_matches_the_original() {
-    compare(&app(), "drill_main.txt", &heading(), &[]);
+    compare(&app(), "drill_main.txt", &heading(), &ours());
 }
 
 #[test]
 fn main_screen_with_a_file_matches_the_original() {
     let mut a = app();
     a.load_file(&testdata().join("T1.NCD"));
-    compare(&a, "drill_main_loaded.txt", &heading(), &[]);
+    compare(&a, "drill_main_loaded.txt", &heading(), &ours());
 }
 
 #[test]
@@ -123,7 +128,7 @@ fn quit_dialog_matches_the_original() {
 fn parameter_dialog_matches_the_original() {
     let mut a = app();
     press(&mut a, "c");
-    compare(&a, "drill_parameter.txt", &[], &[]);
+    compare(&a, "drill_parameter.txt", &[], &[(54..=74, 17..=17)]);
 }
 
 #[test]
