@@ -19,12 +19,7 @@ const FONT_SIZE: f32 = 16.0;
 
 /// File where the chosen language is remembered between runs.
 pub fn settings_path(name: &str) -> PathBuf {
-    let base = std::env::var_os("APPDATA")
-        .or_else(|| std::env::var_os("XDG_CONFIG_HOME"))
-        .map(PathBuf::from)
-        .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))
-        .unwrap_or_else(|| PathBuf::from("."));
-    base.join(name)
+    crate::cli::settings_path(name)
 }
 
 fn color(i: u8) -> Color32 {

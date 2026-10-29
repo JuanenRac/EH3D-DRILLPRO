@@ -35,6 +35,6 @@ jobs:
       - name: Format
         run: cargo fmt --all --check
       - name: Lints
-        run: cargo clippy --workspace --all-targets -- -D warnings
+        run: cargo clippy --workspace --all-targets --features console -- -D warnings
       - name: Tests
-        run: cargo test --workspace --all-targets
+        run: cargo test --workspace --all-targets --features console

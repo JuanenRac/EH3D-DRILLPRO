@@ -232,6 +232,8 @@ pub(crate) enum Act {
     Item(usize),
     /// A control of the Panelization dialog, by its place in the focus ring.
     Pz(usize),
+    /// The arrows at the ends of the language field: the previous (-1) or the next (1) language.
+    LangStep(isize),
 }
 
 struct Hit {

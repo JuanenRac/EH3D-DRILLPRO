@@ -2,6 +2,7 @@
 
 pub mod app;
 pub mod classic;
+pub mod cli;
 pub mod config;
 pub mod i18n;
 pub mod job;
@@ -14,6 +15,9 @@ pub mod server_link;
 pub mod textapp;
 pub mod texts;
 pub mod tools;
+
+#[cfg(feature = "console")]
+pub mod console;
 
 #[cfg(feature = "gui")]
 pub mod gui;

@@ -38,6 +38,10 @@ pub struct About {
 pub trait ClassicEngine {
     fn kind(&self) -> Kind;
     fn about(&self) -> About;
+    /// Chooses how the job reaches the machine (see the connection file).
+    fn set_connection(&mut self, connection: crate::protocol::connection::ConnectionConfig);
+    /// Shows a problem found at start-up on the main screen.
+    fn set_error(&mut self, message: String);
     fn lang(&self) -> crate::i18n::Lang;
     fn set_lang(&mut self, lang: crate::i18n::Lang);
     fn settings(&self) -> Option<&MachineSettings>;
@@ -94,6 +98,14 @@ impl ClassicEngine for App {
             version: env!("CARGO_PKG_VERSION"),
             repository: env!("CARGO_PKG_REPOSITORY"),
         }
+    }
+
+    fn set_connection(&mut self, connection: crate::protocol::connection::ConnectionConfig) {
+        App::set_connection(self, connection);
+    }
+
+    fn set_error(&mut self, message: String) {
+        App::set_error(self, message);
     }
 
     fn lang(&self) -> crate::i18n::Lang {

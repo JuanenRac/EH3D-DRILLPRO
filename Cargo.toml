@@ -1,6 +1,6 @@
 [package]
 name = "eh3d-drillpro"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 description = "Open implementation of the Bungard CCD drilling workflow (file formats and machine protocol)"
 license = "GPL-3.0-or-later"
@@ -13,6 +13,7 @@ members = ["protocol"]
 [features]
 default = []
 gui = ["dep:eframe", "dep:png"]
+console = ["dep:crossterm"]
 
 [dependencies]
 serde_json = "1"
@@ -20,6 +21,7 @@ eh3d-drillpro-protocol = { path = "protocol", features = ["serial", "node"] }
 eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"], optional = true }
 
 png = { version = "0.17", optional = true }
+crossterm = { version = "0.28", optional = true }
 
 # the window of Linux needs a windowing system chosen at build time (X11 and Wayland); Windows and macOS have their own
 [target.'cfg(target_os = "linux")'.dependencies]
@@ -29,3 +31,12 @@ eframe = { version = "0.37.0", default-features = false, features = ["glow", "de
 name = "drillpro"
 path = "src/bin/drillpro.rs"
 required-features = ["gui"]
+
+[[bin]]
+name = "drillpro-console"
+path = "src/bin/drillpro_console.rs"
+required-features = ["console"]
+
+[[test]]
+name = "console"
+required-features = ["console"]

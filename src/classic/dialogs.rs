@@ -1319,6 +1319,17 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 if d.focus != Some(i) {
                     self.param_focus(d, i);
                 }
+                // the language is chosen by clicking its field: each click takes the next one
+                if d.ring[i] == Ctl::Lang {
+                    self.param_cycle(d, Ctl::Lang, 1);
+                }
+                Flow::Stay
+            }
+            Act::LangStep(delta) => {
+                if let Some(i) = d.ring.iter().position(|c| *c == Ctl::Lang) {
+                    self.param_focus(d, i);
+                }
+                self.param_cycle(d, Ctl::Lang, delta);
                 Flow::Stay
             }
             Act::Unit(k) => {
@@ -1444,7 +1455,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let lang_name = Lang::ALL[d.lang].native_name();
         let lang_focus = focused(Ctl::Lang);
         field(s, 63, 17, 9, lang_name, lang_focus);
-        self.hit(54, 17, 20, 1, Act::Ctl(ring_at(Ctl::Lang)));
+        s.put(63, 17, '\u{25c4}', LIGHT_CYAN, BLUE);
+        s.put(73, 17, '\u{25ba}', LIGHT_CYAN, BLUE);
+        self.hit(54, 17, 19, 1, Act::Ctl(ring_at(Ctl::Lang)));
+        self.hit(63, 17, 1, 1, Act::LangStep(-1));
+        self.hit(73, 17, 1, 1, Act::LangStep(1));
         // buttons
         let btns = [
             (11usize, Dlg::Load, CText::BLoad),

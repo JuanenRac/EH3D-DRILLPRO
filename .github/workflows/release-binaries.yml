@@ -31,6 +31,8 @@ jobs:
         run: rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
       - name: Build
         run: cargo build --release --features gui --target ${{ matrix.target }}
+      - name: Build the console version
+        run: cargo build --release --features console --bin drillpro-console --target ${{ matrix.target }}
       - name: Package
         shell: bash
         run: |
@@ -50,6 +52,20 @@ jobs:
           fi
           if command -v sha256sum >/dev/null; then sha256sum "$asset" | sed 's#dist/##' > "${asset}.sha256"; else shasum -a 256 "$asset" | sed 's#dist/##' > "${asset}.sha256"; fi
           cat "${asset}.sha256"
+          # the console version: the same screens in a terminal, no window system needed
+          cname="drillpro-${version}-console-${{ matrix.label }}"
+          mkdir "$cname"
+          cp "target/${{ matrix.target }}/release/drillpro-console${{ matrix.ext }}" "$cname/"
+          cp LICENSE README.md CHANGELOG.md "$cname/"
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            7z a -tzip "dist/${cname}.zip" "$cname" >/dev/null
+            casset="dist/${cname}.zip"
+          else
+            tar -czf "dist/${cname}.tar.gz" "$cname"
+            casset="dist/${cname}.tar.gz"
+          fi
+          if command -v sha256sum >/dev/null; then sha256sum "$casset" | sed 's#dist/##' > "${casset}.sha256"; else shasum -a 256 "$casset" | sed 's#dist/##' > "${casset}.sha256"; fi
+          cat "${casset}.sha256"
       - uses: actions/upload-artifact@v4
         with:
           name: drillpro-${{ matrix.label }}

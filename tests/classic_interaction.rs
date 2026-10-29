@@ -196,11 +196,27 @@ fn the_language_is_changed_from_the_config_dialog() {
     let mut a = app_in(&dir);
     press(&mut a, "c");
     assert!(text(&a).contains("English"));
-    // click the language field: one step on, and the screen follows at once
-    a.click(65, 17);
-    a.handle(Input::Right);
-    assert_ne!(a.engine.lang, Lang::En);
+    // one click on the field takes the next language, and the screen follows at once
+    a.click(67, 17);
+    assert_eq!(a.engine.lang, Lang::Es);
     assert!(text(&a).contains("Español"), "{}", text(&a));
+    // the arrows at the ends of the field go both ways
+    a.click(73, 17);
+    assert_eq!(a.engine.lang, Lang::It);
+    a.click(63, 17);
+    a.click(63, 17);
+    assert_eq!(a.engine.lang, Lang::En);
+    // and the keyboard: the hot letter of the language, then the arrow keys
+    press(&mut a, "u");
+    a.handle(Input::Right);
+    assert_eq!(a.engine.lang, Lang::Es);
+    a.handle(Input::Left);
+    assert_eq!(a.engine.lang, Lang::En);
+    // every language can be reached in turn
+    for _ in 0..8 {
+        a.click(67, 17);
+    }
+    assert_eq!(a.engine.lang, Lang::En);
 }
 
 #[test]

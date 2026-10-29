@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.2] - The classic screens, the mouse, the real files and a console version
+
+- **Console version:** `drillpro-console` draws the same screens in a terminal, with the keyboard and the mouse, and needs no window system: it runs over SSH, on a text console and on an old PC, in the MS-DOS spirit of the original. The terminal must be 80 columns by 25 rows or larger; a larger one shows the screen in the middle.
+- **Packages:** the release carries, for Windows, Linux and macOS (Apple silicon and Intel), the program with its window and the console version, each with its SHA-256.
+- **One command line:** the window and the console read the same options (`--lang`, `--data`, `--connection`, `--modern`, `--dump`).
 - **Classic screens (the default):** the main form (scale, offset, clip, vectors, board, base), the Parameter, Tool Data, Select File, Panelization and Quit dialogs and the homing and job windows of the MS-DOS program, drawn cell by cell in the same layout and colours, with every text in the eight languages. `--modern` starts the menu-driven interface as before. The classic screens are a shared front end (`classic`) that DRILLPRO and ROUTEPRO both use; a test per screen compares it with screens captured from the original when `EH3D_ORIGINAL_UI` points to them, and further tests check the hot letters, the label widths and the keyboard flow in every language.
 - **Chord angle:** the configuration of the routing program is read with its chord angle (`Config::route_settings`) instead of the drilling sorting.
 - **Editing and the mouse:** every field takes typing, `Backspace`, `Delete`, `Home`, `End` and the arrow keys (the first key typed replaces the whole value), `Tab` and `Shift+Tab` move between fields, `Enter` accepts and `Esc` cancels. Every field, button, radio button, list entry and dialog button answers to the mouse; a double click opens a file.

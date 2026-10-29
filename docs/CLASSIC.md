@@ -45,6 +45,11 @@ rows). Texts are ours, in eight languages; the heading lines and the machine num
 The window can be maximized or resized. The 80x25 screen is drawn as large as the window allows (from 640x400 up to
 1080p and beyond) with its proportions, centred; clicks are mapped through the scaling.
 
+## The console version
+
+`drillpro-console` draws the same screens in a terminal (80x25 at least; a larger terminal shows them in the middle), with the keyboard
+and the mouse, and needs no window system. `Ctrl+C` leaves at once. It reads the same options as the window.
+
 ## The files
 
 | Dialog | Reads | Writes |
