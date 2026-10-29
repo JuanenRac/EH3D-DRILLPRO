@@ -62,6 +62,18 @@ and the mouse, and needs no window system. `Ctrl+C` leaves at once. It reads the
 Without `--data` the files are looked for in the current folder, the folder of the program and the user's
 configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`).
 
+## Folders and the job
+
+* The Select File list is the files, then the folders, then `..\` last, as in the original. It works from the absolute
+  folder, shows the drives as `[-C-]` entries on Windows, hides dotted files, and ends a name longer than 14 cells with `~`.
+* A path written in the name field goes to its folder: `D:\jobs\*.NCD`, `..\other`, `C:\`. What follows the last
+  separator is the pattern, or the file to open. The mouse wheel scrolls the list.
+* The form drives the job: `from` and `to` choose the vectors in the order of the file, the clip leaves out what ends
+  outside the working area (the offset counts), and the Panelization dialog's Ok makes the copies (a tool at a time).
+  The copies are `board - spacing` apart: that is what the original's count of copies works out to on both axes of the one
+  figure that was checked.
+* The job window shows the planned position, tool, stroke, speeds, count and drilled depth.
+
 ## The machines
 
 Bungard CCD and CCD/2 with manual tool change (MTC): supported (tried on a CCD MTC only). CCD and CCD/2 with automatic
@@ -72,6 +84,6 @@ Bungard Elektronik.
 
 * The limits of the fields come from the comments of the configuration file (for example scale 0 to 10) and from what the
   machine accepts; the original's own limits have not been read from the program.
-* The copies of the panelization are counted (the formula is inferred from one figure of the original) but the job does
-  not repeat the board yet. The Offset button only reports that it is not available.
-* The job window shows the counters; the live position, tool and speed are not tracked yet.
+* The count of copies of the panelization is inferred from one figure of the original. The Offset button only reports that it
+  is not available.
+* The job window shows planned values, not the machine's own readings.

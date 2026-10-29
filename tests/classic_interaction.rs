@@ -264,6 +264,8 @@ fn the_main_form_is_saved_when_leaving() {
     a.click(14, 10);
     press(&mut a, "1.5");
     a.handle(Input::Enter);
+    // Enter went on to the next field: Esc leaves it
+    a.handle(Input::Esc);
     // Quit asks, then offers to save the changed settings
     press(&mut a, "q");
     press(&mut a, "y");

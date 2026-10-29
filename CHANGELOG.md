@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Moving through the folders of the computer:** the Select File dialog lists the files, then the folders, then `..\` last, as the original does; it works from the absolute folder (a folder written as `.` could not go up before), shows the drives as `[-C-]` entries on Windows, hides dotted files, ends a long name with `~`, and tells when a folder cannot be opened. A path written in the name field (`D:\jobs\*.NCD`, `..\other`, `C:\`) goes to its folder and takes the rest as the pattern or the file; the name field takes a path of any length. The mouse wheel scrolls the list.
+- **The form drives the job:** the vectors `from` and `to` choose the holes (or paths) that are done, the clip leaves out the ones that end outside the working area (counted), and the Panelization dialog's Ok repeats the job over the copies, a tool at a time so that there is one tool change; the copies are `board - spacing` apart, as the original's count works out.
+- **The job window shows the job:** the position, the tool, its stroke, the speeds, the count and the drilled depth follow the planned job (the values are the planned ones, not read from the machine).
+- **Enter walks the form:** accepting a field goes on to the next one, as in the original.
 ## [0.0.2] - The classic screens, the mouse, the real files and a console version
 
 - **Console version:** `drillpro-console` draws the same screens in a terminal, with the keyboard and the mouse, and needs no window system: it runs over SSH, on a text console and on an old PC, in the MS-DOS spirit of the original. The terminal must be 80 columns by 25 rows or larger; a larger one shows the screen in the middle.

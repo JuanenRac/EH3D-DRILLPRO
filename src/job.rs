@@ -179,3 +179,116 @@ pub fn hole_end_indexes(items: &[crate::protocol::job::Item]) -> Vec<usize> {
     }
     ends
 }
+
+/// Copies of the board in a panel: `columns` by `rows`, each `pitch_mm` from the next (the board less the spacing, as the
+/// original's count of copies works out).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Panel {
+    pub columns: u32,
+    pub rows: u32,
+    pub pitch_mm: (f64, f64),
+}
+
+/// What the main form and the Panelization dialog add to a job.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct JobOptions {
+    /// First and last vector to do, counted from 1 in the order of the file; 0 for no limit.
+    pub from: usize,
+    pub to: usize,
+    /// The working area in mm (the clip): vectors that end outside it are left out.
+    pub clip_mm: Option<(f64, f64)>,
+    pub panel: Option<Panel>,
+}
+
+/// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Selection {
+    pub holes: Vec<crate::protocol::job::JobHole>,
+    /// Holes left out because they fall outside the working area.
+    pub skipped: usize,
+}
+
+/// Picks and orders the holes of `file` for a job. Coordinates are scaled, and the offset decides what falls outside the
+/// working area; the holes returned are in file coordinates (the job planner adds the offset itself).
+pub fn select_holes(
+    file: &DrillFile,
+    sorting: Sorting,
+    opts: &JobOptions,
+    unit_mm: f64,
+    scale: (f64, f64),
+    offset_mm: (f64, f64),
+) -> Selection {
+    use crate::protocol::job::JobHole;
+    // the vectors asked for, in the order of the file
+    let first = opts.from.max(1);
+    let last = if opts.to == 0 { usize::MAX } else { opts.to };
+    let kept: Vec<Hole> = file
+        .holes
+        .iter()
+        .enumerate()
+        .filter(|(i, _)| (first..=last).contains(&(i + 1)))
+        .map(|(_, h)| h.clone())
+        .collect();
+    let mut tools: Vec<u8> = Vec::new();
+    for h in &kept {
+        if !tools.contains(&h.tool) {
+            tools.push(h.tool);
+        }
+    }
+    let sub = DrillFile {
+        holes: kept,
+        tools,
+        diameters: Vec::new(),
+        metric: file.metric,
+    };
+    let ordered = sort_holes(&sub, sorting);
+    let base: Vec<JobHole> = ordered
+        .iter()
+        .map(|h| JobHole {
+            tool: h.tool,
+            x_mm: h.x_mil as f64 * unit_mm * scale.0,
+            y_mm: h.y_mil as f64 * unit_mm * scale.1,
+        })
+        .collect();
+    let copies: Vec<(f64, f64)> = match opts.panel {
+        Some(p) if p.columns * p.rows > 1 => (0..p.rows)
+            .flat_map(|iy| {
+                (0..p.columns).map(move |ix| (ix as f64 * p.pitch_mm.0, iy as f64 * p.pitch_mm.1))
+            })
+            .collect(),
+        _ => vec![(0.0, 0.0)],
+    };
+    let mut out = Vec::with_capacity(base.len() * copies.len());
+    let mut skipped = 0;
+    // one tool after the other (the tool changes are the operator's), every copy of its holes in turn
+    let mut i = 0;
+    while i < base.len() {
+        let mut j = i;
+        while j < base.len() && base[j].tool == base[i].tool {
+            j += 1;
+        }
+        for &(dx, dy) in &copies {
+            for h in &base[i..j] {
+                let moved = JobHole {
+                    tool: h.tool,
+                    x_mm: h.x_mm + dx,
+                    y_mm: h.y_mm + dy,
+                };
+                let inside = opts.clip_mm.is_none_or(|(cx, cy)| {
+                    let (x, y) = (moved.x_mm + offset_mm.0, moved.y_mm + offset_mm.1);
+                    x >= 0.0 && y >= 0.0 && x <= cx && y <= cy
+                });
+                if inside {
+                    out.push(moved);
+                } else {
+                    skipped += 1;
+                }
+            }
+        }
+        i = j;
+    }
+    Selection {
+        holes: out,
+        skipped,
+    }
+}

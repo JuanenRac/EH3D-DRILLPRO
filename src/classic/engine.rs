@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 use crate::app::{App, Mode};
 use crate::config::{self, Config, MachineSettings};
 use crate::job::{geometry_from, sort_holes, Sorting};
+pub use crate::job::{JobOptions, Panel};
 use crate::tools::{self, Tool};
 
 /// Which of the two programs the screens are for: they differ in the tool table and in one box of the Parameter dialog.
@@ -25,6 +26,25 @@ pub struct ToolRow {
     pub first_vector: usize,
     /// The tool was found in the tool table file.
     pub in_table: bool,
+}
+
+/// What the job window shows: where the job is, and what the tool is doing (the values are the planned ones).
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct JobView {
+    /// How far the job has gone, in percent.
+    pub percent: u8,
+    pub tool: Option<u8>,
+    /// Stroke of the tool: board thickness plus the extra stroke of its table entry.
+    pub stroke_mm: f64,
+    pub x_mm: f64,
+    pub y_mm: f64,
+    pub z_feed: u32,
+    pub rpm: u32,
+    /// Vectors done, and drilled depth so far in mm.
+    pub done: usize,
+    pub used_mm: f64,
+    /// Vectors left out because they fall outside the working area.
+    pub skipped: usize,
 }
 
 /// What the About dialog says about the program (the texts around it belong to the front end).
@@ -78,6 +98,10 @@ pub trait ClassicEngine {
     fn apply_tool_rows(&mut self, rows: &[ToolRow]);
     fn save_tools(&mut self) -> Result<PathBuf, String>;
     fn reload_tools(&mut self) -> Result<(), String>;
+    /// What the main form and the Panelization dialog add to the next job.
+    fn set_job_options(&mut self, options: JobOptions);
+    /// The job window's figures; `None` when no job is running.
+    fn job_view(&self) -> Option<JobView>;
     fn start(&mut self);
     /// True once the job moved past the homing.
     fn started(&self) -> bool;
@@ -229,10 +253,13 @@ impl ClassicEngine for App {
 
     fn entries(&mut self) -> Vec<(String, bool)> {
         self.refresh_entries();
-        self.entries
-            .iter()
-            .map(|e| (e.name.clone(), e.dir))
-            .collect()
+        dos_order(
+            self.entries
+                .iter()
+                .filter(|e| !e.name.starts_with('.') || e.name == "..")
+                .map(|e| (e.name.clone(), e.dir))
+                .collect(),
+        )
     }
 
     fn tool_rows(&self) -> Vec<ToolRow> {
@@ -313,6 +340,44 @@ impl ClassicEngine for App {
         Ok(())
     }
 
+    fn set_job_options(&mut self, options: JobOptions) {
+        self.job_options = options;
+    }
+
+    fn job_view(&self) -> Option<JobView> {
+        let run = self.run.as_ref()?;
+        let offset = self.settings.as_ref().map_or((0.0, 0.0), |m| m.offset_mm);
+        let at = run.done.min(run.plan.len().saturating_sub(1));
+        let hole = run.plan.get(at)?;
+        let tool = self.tools.iter().find(|t| t.number == hole.tool);
+        let stroke_of = |n: u8| {
+            self.board_mm
+                + self
+                    .tools
+                    .iter()
+                    .find(|t| t.number == n)
+                    .map_or(0.0, |t| t.extra_stroke_mm)
+        };
+        let used: f64 = run
+            .plan
+            .iter()
+            .take(run.done)
+            .map(|h| stroke_of(h.tool))
+            .sum();
+        Some(JobView {
+            percent: (run.next * 100 / run.items.len().max(1)).min(100) as u8,
+            tool: Some(hole.tool),
+            stroke_mm: stroke_of(hole.tool),
+            x_mm: hole.x_mm + offset.0,
+            y_mm: hole.y_mm + offset.1,
+            z_feed: tool.map_or(50, |t| t.feed_mm_min),
+            rpm: tool.map_or(30000, |t| t.spindle_rpm),
+            done: run.done,
+            used_mm: used,
+            skipped: run.skipped,
+        })
+    }
+
     fn start(&mut self) {
         App::start(self);
     }
@@ -337,4 +402,50 @@ impl ClassicEngine for App {
         self.run = None;
         self.mode = Mode::Main;
     }
+}
+
+/// The entries of a folder in the order the original lists them: the files, then the folders, then `..` last.
+pub fn dos_order(entries: Vec<(String, bool)>) -> Vec<(String, bool)> {
+    let key = |s: &str| s.to_lowercase();
+    let mut files: Vec<(String, bool)> = entries.iter().filter(|(_, d)| !d).cloned().collect();
+    let mut dirs: Vec<(String, bool)> = entries
+        .iter()
+        .filter(|(n, d)| *d && n != "..")
+        .cloned()
+        .collect();
+    let parent: Vec<(String, bool)> = entries.iter().filter(|(n, _)| n == "..").cloned().collect();
+    files.sort_by_key(|(n, _)| key(n));
+    dirs.sort_by_key(|(n, _)| key(n));
+    files.extend(dirs);
+    files.extend(parent);
+    files
+}
+
+/// A path made absolute (and without the `\\?\` prefix Windows adds), so that going up always has somewhere to go.
+pub fn absolute(p: &Path) -> PathBuf {
+    let a = std::fs::canonicalize(p)
+        .or_else(|_| std::path::absolute(p))
+        .unwrap_or_else(|_| p.to_path_buf());
+    let text = a.to_string_lossy();
+    match text.strip_prefix(r"\\?\") {
+        Some(rest) if !rest.starts_with("UNC") => PathBuf::from(rest),
+        _ => a,
+    }
+}
+
+/// The drives of the computer as `[-C-]` entries (Windows; none elsewhere), to move from one to another.
+pub fn drive_entries() -> Vec<(String, bool)> {
+    if !cfg!(windows) {
+        return Vec::new();
+    }
+    ('C'..='Z')
+        .filter(|c| Path::new(&format!("{c}:\\")).exists())
+        .map(|c| (format!("[-{c}-]"), true))
+        .collect()
+}
+
+/// The folder a `[-C-]` entry stands for.
+pub fn drive_path(name: &str) -> Option<PathBuf> {
+    let letter = name.strip_prefix("[-")?.strip_suffix("-]")?;
+    (letter.len() == 1).then(|| PathBuf::from(format!("{letter}:\\")))
 }

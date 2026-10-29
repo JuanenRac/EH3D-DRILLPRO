@@ -72,6 +72,10 @@ pub(crate) struct Run {
     pub(crate) real: Option<RealRun>,
     /// Index of the item that finishes each hole, to count the holes done from the real progress.
     pub(crate) hole_ends: Vec<usize>,
+    /// The holes of the job in the order they are drilled (with the copies of a panel).
+    pub(crate) plan: Vec<JobHole>,
+    /// Holes left out because they fall outside the working area.
+    pub(crate) skipped: usize,
 }
 
 pub struct App {
@@ -95,6 +99,8 @@ pub struct App {
     pub(crate) data_dir: PathBuf,
     pub(crate) config_text: Option<String>,
     pub(crate) tools_text: Option<String>,
+    /// What the main form and the Panelization dialog add to the job.
+    pub(crate) job_options: crate::job::JobOptions,
     pub quit: bool,
 }
 
@@ -138,6 +144,7 @@ impl App {
             data_dir: data_dir.to_path_buf(),
             config_text,
             tools_text: tool_text,
+            job_options: crate::job::JobOptions::default(),
             settings,
             config: config.clone(),
             sorting,
@@ -305,20 +312,22 @@ impl App {
             self.refresh_entries();
             return;
         };
-        let holes = sort_holes(&l.file, self.sorting);
         let unit_mm = self
             .settings
             .as_ref()
             .map_or(crate::ncd::MIL_MM, |m| m.unit.mm());
         let scale = self.settings.as_ref().map_or((1.0, 1.0), |m| m.scale);
-        let job_holes: Vec<JobHole> = holes
-            .iter()
-            .map(|h| JobHole {
-                tool: h.tool,
-                x_mm: h.x_mil as f64 * unit_mm * scale.0,
-                y_mm: h.y_mil as f64 * unit_mm * scale.1,
-            })
-            .collect();
+        let offset = self.settings.as_ref().map_or((0.0, 0.0), |m| m.offset_mm);
+        let selection = crate::job::select_holes(
+            &l.file,
+            self.sorting,
+            &self.job_options,
+            unit_mm,
+            scale,
+            offset,
+        );
+        let skipped = selection.skipped;
+        let job_holes: Vec<JobHole> = selection.holes;
         let tools: Vec<JobTool> = self
             .tools
             .iter()
@@ -373,13 +382,15 @@ impl App {
         self.run = Some(Run {
             items,
             next: 0,
-            total_holes: holes.len(),
+            total_holes: job_holes.len(),
             done: 0,
             pending_descent: false,
             sim,
             connected,
             real,
             hole_ends,
+            plan: job_holes,
+            skipped,
         });
         self.mode = Mode::Running;
     }

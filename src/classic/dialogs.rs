@@ -404,10 +404,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
     // ------------------------------------------------------------------------------------------ Select File
 
     pub(crate) fn open_files(&mut self) -> Dialog {
-        let entries = self.engine.entries();
+        // a folder written as `.` has no parent to go up to: always work with the absolute one
+        let dir = engine::absolute(&self.engine.dir());
+        self.engine.set_dir(dir);
+        let mut entries = self.engine.entries();
+        entries.extend(engine::drive_entries());
         let pattern = self.engine.pattern().to_string();
         Dialog::Files(FileDlg {
-            name: LineEdit::new(&pattern, EditKind::Text, 22),
+            name: LineEdit::new(&pattern, EditKind::Text, 260),
             pattern,
             entries,
             sel: 0,
@@ -416,21 +420,61 @@ impl<E: ClassicEngine> ClassicApp<E> {
         })
     }
 
+    /// Goes into `target` (a folder); when it cannot be read the dialog stays where it was and says so.
+    fn files_enter(&mut self, d: &mut FileDlg, target: PathBuf, keep_pattern: bool) -> Flow {
+        let before = self.engine.dir();
+        if std::fs::read_dir(&target).is_err() {
+            d.info = Some(self.t(CText::FNoFolder).to_string());
+            return Flow::Stay;
+        }
+        self.engine.set_dir(target);
+        let Dialog::Files(mut fresh) = self.open_files() else {
+            self.engine.set_dir(before);
+            return Flow::Stay;
+        };
+        if keep_pattern {
+            fresh.pattern = d.pattern.clone();
+            fresh.name = LineEdit::new(&d.pattern, EditKind::Text, 260);
+        }
+        Flow::to(Dialog::Files(fresh))
+    }
+
     fn files_open_selected(&mut self, d: &mut FileDlg) -> Flow {
         let Some((name, is_dir)) = d.visible().get(d.sel).map(|e| (*e).clone()) else {
             return Flow::Stay;
         };
         let dir = self.engine.dir();
         if is_dir {
+            if let Some(drive) = engine::drive_path(&name) {
+                return self.files_enter(d, drive, true);
+            }
             let next = if name == ".." {
-                dir.parent().map(|p| p.to_path_buf()).unwrap_or(dir)
+                match dir.parent() {
+                    Some(p) => p.to_path_buf(),
+                    None => return Flow::Stay,
+                }
             } else {
                 dir.join(name)
             };
-            self.engine.set_dir(next);
-            return Flow::to(self.open_files());
+            return self.files_enter(d, next, true);
         }
         self.files_load(dir.join(name))
+    }
+
+    /// Like [`Self::files_enter`], with the pattern the dialog holds now.
+    fn files_enter_pattern(&mut self, d: &mut FileDlg, target: PathBuf) -> Flow {
+        let pattern = d.pattern.clone();
+        match self.files_enter(d, target, false) {
+            Flow::To(n) => match *n {
+                Dialog::Files(mut f) => {
+                    f.name = LineEdit::new(&pattern, EditKind::Text, 260);
+                    f.pattern = pattern;
+                    Flow::to(Dialog::Files(f))
+                }
+                other => Flow::to(other),
+            },
+            other => other,
+        }
     }
 
     fn files_load(&mut self, path: PathBuf) -> Flow {
@@ -444,7 +488,42 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let typed = d.name.text.trim().to_string();
         if typed.is_empty() {
             d.pattern = self.engine.pattern().to_string();
-            d.name = LineEdit::new(&d.pattern, EditKind::Text, 22);
+            d.name = LineEdit::new(&d.pattern, EditKind::Text, 260);
+            return Flow::Stay;
+        }
+        // a path (`D:\jobs\*.NCD`, `..\other`, `C:\`): go to its folder and take the rest as the pattern or the file
+        if typed.contains('\\') || typed.contains('/') || typed.contains(':') {
+            let norm = typed.replace('\\', "/");
+            let (folder, rest) = match norm.rfind('/') {
+                Some(i) => (norm[..=i].to_string(), norm[i + 1..].to_string()),
+                None => (norm.clone(), String::new()),
+            };
+            let folder = if folder.ends_with(':') {
+                format!("{folder}/")
+            } else {
+                folder
+            };
+            let absolute_path = folder.chars().nth(1) == Some(':') || folder.starts_with('/');
+            let base = if absolute_path {
+                PathBuf::from(&folder)
+            } else {
+                self.engine.dir().join(&folder)
+            };
+            if base.is_dir() {
+                if !rest.is_empty() && !rest.contains('*') && !rest.contains('?') {
+                    let file = base.join(&rest);
+                    if file.is_file() {
+                        return self.files_load(file);
+                    }
+                }
+                d.pattern = if rest.is_empty() {
+                    self.engine.pattern().to_string()
+                } else {
+                    rest
+                };
+                return self.files_enter_pattern(d, base);
+            }
+            d.info = Some(self.t(CText::FNoFolder).to_string());
             return Flow::Stay;
         }
         if typed.contains('*') || typed.contains('?') {
@@ -558,14 +637,22 @@ impl<E: ClassicEngine> ClassicApp<E> {
         caption(s, 18, 4, self.t(CText::FName), !d.list);
         // name field: 22 cells wide + the drop-down button
         s.fill(18, 5, 28, 1, ' ', BLUE, BLUE);
-        if d.list {
-            s.text(19, 5, &d.name.text, WHITE, BLUE);
-        } else if d.name.fresh {
-            s.text(19, 5, &d.name.text, WHITE, GREEN);
+        // a long text shows its end, with the cursor in view
+        let chars: Vec<char> = d.name.text.chars().collect();
+        let start = if chars.len() <= 26 {
+            0
         } else {
-            s.text(19, 5, &d.name.text, WHITE, BLUE);
-            let at = 19 + d.name.cursor.min(26);
-            let ch = d.name.text.chars().nth(d.name.cursor).unwrap_or(' ');
+            (d.name.cursor + 1).saturating_sub(26).min(chars.len() - 26)
+        };
+        let shown: String = chars.iter().skip(start).take(26).collect();
+        if d.list {
+            s.text(19, 5, &shown, WHITE, BLUE);
+        } else if d.name.fresh {
+            s.text(19, 5, &shown, WHITE, GREEN);
+        } else {
+            s.text(19, 5, &shown, WHITE, BLUE);
+            let at = 19 + d.name.cursor.saturating_sub(start).min(25);
+            let ch = chars.get(d.name.cursor).copied().unwrap_or(' ');
             s.put(at, 5, ch, BLUE, WHITE);
         }
         s.put(46, 5, '\u{258c}', GREY, GREEN);
@@ -585,10 +672,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
         for (k, (name, dir)) in visible.iter().skip(page).take(16).enumerate() {
             let i = page + k;
             let (col, row) = (k / 8, k % 8);
-            let text = if *dir {
+            let text = if *dir && !name.starts_with("[-") {
                 format!("{name}\\")
             } else {
                 name.clone()
+            };
+            // the column holds 14 cells: a longer name ends with ~
+            let text = if text.chars().count() > 14 {
+                format!("{}~", text.chars().take(13).collect::<String>())
+            } else {
+                text
             };
             let x = 19 + col * 16;
             let (fg, bg) = if i == d.sel && d.list {
@@ -616,13 +709,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         // path and file line
         s.fill(16, 18, 47, 2, ' ', BLUE, BLUE);
         let path = format!("{}\\{}", self.engine.dir().display(), d.pattern);
-        s.text(
-            17,
-            18,
-            &path.chars().take(44).collect::<String>(),
-            CYAN,
-            BLUE,
-        );
+        s.text(17, 18, &shorten_path(&path, 44), CYAN, BLUE);
         if let Some(info) = &d.info {
             s.text(17, 19, info, YELLOW, BLUE);
         } else if let Some((name, dir)) = visible.get(d.sel) {
@@ -1602,6 +1689,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             Dlg::Ok => {
                 if self.pz_commit(d) {
+                    let num = |i: usize| d.values[i].trim().parse::<f64>().unwrap_or(0.0);
+                    let (columns, rows) = (num(4) as u32, num(5) as u32);
+                    // the copies are `pitch` apart: the board less the spacing, as the original's count works out
+                    self.panel = (columns * rows > 1).then_some(engine::Panel {
+                        columns,
+                        rows,
+                        pitch_mm: (num(0) - num(2), num(1) - num(3)),
+                    });
                     Flow::Close
                 } else {
                     Flow::Stay
@@ -1749,35 +1844,56 @@ impl<E: ClassicEngine> ClassicApp<E> {
             CText::Drilling
         };
         label(s, 20, 6, self.t(status));
-        label(s, 52, 6, "000");
+        // the figures: the position follows the job; the tool's own values appear once it has started drilling
+        let view = self.engine.job_view();
+        let live = view.as_ref().filter(|_| self.engine.done() > 0);
+        label(s, 52, 6, &format!("{:03}", live.map_or(0, |v| v.percent)));
         label(s, 56, 6, "%");
         label(s, 20, 8, self.t(CText::JTool));
         label(s, 39, 8, self.t(CText::JPosition));
         label(s, 22, 9, self.t(CText::JNo));
         label(s, 29, 9, ":");
-        label(s, 31, 9, "--");
+        label(
+            s,
+            31,
+            9,
+            &live
+                .and_then(|v| v.tool)
+                .map_or("--".to_string(), |t| format!("{t:02}")),
+        );
         label(s, 22, 10, self.t(CText::JStroke));
         label(s, 29, 10, ":");
-        label(s, 31, 10, "00.00");
-        for (y, axis) in [(9, "X"), (10, "Y")] {
+        label(
+            s,
+            31,
+            10,
+            &format!("{:05.2}", live.map_or(0.0, |v| v.stroke_mm)),
+        );
+        let (px, py) = view.as_ref().map_or((0.0, 0.0), |v| (v.x_mm, v.y_mm));
+        for (y, axis, v) in [(9, "X", px), (10, "Y", py)] {
             label(s, 41, y, axis);
             label(s, 45, y, "(mm):");
-            label(s, 51, y, "000.00");
+            label(s, 51, y, &format!("{v:06.2}"));
         }
         label(s, 20, 12, self.t(CText::JSpeed));
         label(s, 39, 12, self.t(CText::JCount));
         label(s, 22, 13, "Z");
         label(s, 29, 13, ":");
-        label(s, 31, 13, "0000");
+        label(s, 31, 13, &format!("{:04}", live.map_or(0, |v| v.z_feed)));
         label(s, 22, 14, "1/min");
         label(s, 29, 14, ":");
-        label(s, 31, 14, "00000");
+        label(s, 31, 14, &format!("{:05}", live.map_or(0, |v| v.rpm)));
         label(s, 41, 13, self.t(CText::LblDone));
         label(s, 49, 13, ":");
         label(s, 51, 13, &format!("{:05}", self.engine.done()));
         label(s, 41, 14, self.t(CText::JUse));
         label(s, 45, 14, "(mm):");
-        label(s, 51, 14, "00000");
+        label(
+            s,
+            51,
+            14,
+            &format!("{:05.0}", live.map_or(0.0, |v| v.used_mm)),
+        );
         // the red strip: one cell of margin on the left, two on the right
         let hint = self.t(CText::PressEsc);
         s.fill(20, 16, 20, 1, ' ', RED, RED);
@@ -1788,6 +1904,19 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
 /// A heading of the Tool Data table: column, text, and the unit line (column, text) under it.
 type Heading = (usize, CText, Option<(usize, &'static str)>);
+
+/// A path that fits `width` cells: a long one keeps its end (the folder one is in), after `~`.
+fn shorten_path(path: &str, width: usize) -> String {
+    let n = path.chars().count();
+    if n <= width {
+        path.to_string()
+    } else {
+        format!(
+            "~{}",
+            path.chars().skip(n - (width - 1)).collect::<String>()
+        )
+    }
+}
 
 /// The file name of a path, for the "saved" notes.
 fn file_label_of(p: &std::path::Path) -> String {

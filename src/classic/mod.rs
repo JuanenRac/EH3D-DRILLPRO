@@ -256,6 +256,8 @@ pub struct ClassicApp<E: ClassicEngine = App> {
     dialog: Dialog,
     area: (f64, f64),
     quit: bool,
+    /// The copies the Panelization dialog set for the next job (columns, rows, pitch in mm).
+    panel: Option<engine::Panel>,
     /// The settings or the form changed since the files were read or written.
     dirty: bool,
     /// Name of the machine shown where the original shows the licence number.
@@ -289,6 +291,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             dialog: Dialog::None,
             area,
             quit: false,
+            panel: None,
             dirty: false,
             machine_name,
             hits: RefCell::new(Vec::new()),
@@ -538,6 +541,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Button::Config => self.dialog = self.open_parameter(),
             Button::Quit => self.dialog = Dialog::Quit { yes: true },
             Button::Start => {
+                self.engine.set_job_options(self.job_options());
                 self.engine.start();
                 self.dialog = Dialog::Running;
             }
@@ -580,7 +584,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 }
             }
             match input {
-                Input::Enter => return self.commit_edit(),
+                // Enter accepts the field and goes on to the next one, as in the original; the last one just accepts
+                Input::Enter => {
+                    if self.focus == Field::ALL.last().copied() {
+                        return self.commit_edit();
+                    }
+                    return self.move_focus(1);
+                }
                 Input::Esc => {
                     self.edit = None;
                     self.focus = None;
@@ -650,6 +660,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 self.press(b);
             }
             _ => {}
+        }
+    }
+
+    /// What the form and the Panelization dialog add to the next job.
+    fn job_options(&self) -> engine::JobOptions {
+        engine::JobOptions {
+            from: self.form.from,
+            to: self.form.to,
+            clip_mm: Some(self.form.clip),
+            panel: self.panel,
         }
     }
 
