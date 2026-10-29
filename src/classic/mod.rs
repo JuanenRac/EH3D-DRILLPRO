@@ -1012,7 +1012,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 let dir = self.engine.dir();
                 let mut path: Option<PathBuf> = None;
                 if !typed.contains('*') && !typed.is_empty() {
-                    let p = dir.join(&typed);
+                    // DOS names have no case: match the typed name against the folder whatever its capitals
+                    let found = d
+                        .entries
+                        .iter()
+                        .find(|(n, is_dir)| !is_dir && n.eq_ignore_ascii_case(&typed))
+                        .map(|(n, _)| dir.join(n));
+                    let p = found.unwrap_or_else(|| dir.join(&typed));
                     if p.exists() {
                         path = Some(p);
                     }
