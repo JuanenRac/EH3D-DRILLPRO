@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
+
 ## [0.0.1] - First version: file readers, job planning, text-mode interface and a simulated machine
 
 - **Excellon reader:** `.NCD` drill files with or without the `M48` header, modal coordinates and imperial units of 1 mil, with the tool table (`.DTD`) and the machine configuration (`.DCF`).
