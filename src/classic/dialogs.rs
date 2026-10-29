@@ -69,6 +69,8 @@ pub(crate) struct FileDlg {
     info: Option<String>,
     /// The archive the dialog is inside of, when it is.
     zip: Option<ZipView>,
+    /// The drop-down list of patterns is open, with this one chosen.
+    drop: Option<usize>,
 }
 
 /// A ZIP archive the Select File dialog is inside of: where it is and the full names of the files it lists (`entries[i + 1]` is `full[i]`;
@@ -86,7 +88,15 @@ impl FileDlg {
         }
         self.entries
             .iter()
-            .filter(|(n, dir)| *dir || glob_matches(&self.pattern, n))
+            .filter(|(n, dir)| {
+                // a job archive is listed like a folder, but only when the pattern asks for it (*.ZIP or *.*)
+                let zip = *dir && n.to_ascii_lowercase().ends_with(".zip");
+                if zip {
+                    glob_matches(&self.pattern, n)
+                } else {
+                    *dir || glob_matches(&self.pattern, n)
+                }
+            })
             .collect()
     }
 }
@@ -402,10 +412,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn finish(&mut self, d: Dialog, flow: Flow) {
+        let by_hand = |d: &Dialog| matches!(d, Dialog::Teach(_) | Dialog::TeachWrite { .. });
+        let was_by_hand = by_hand(&d);
         match flow {
             Flow::Stay => self.dialog = d,
             Flow::Close => {}
             Flow::To(n) => self.dialog = *n,
+        }
+        // leaving the Offset Teach window sends a real machine home again
+        if was_by_hand && !by_hand(&self.dialog) {
+            self.engine.teach_end();
         }
     }
 
@@ -692,6 +708,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             list: false,
             info: None,
             zip: None,
+            drop: None,
         })
     }
 
@@ -792,6 +809,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             list: true,
             info: None,
             zip: Some(ZipView { path, full }),
+            drop: None,
         }))
     }
 
@@ -974,7 +992,36 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
     }
 
+    /// The patterns the drop-down list of the name field offers.
+    fn pattern_choices(&self) -> Vec<&'static str> {
+        match self.file_purpose {
+            Purpose::Job => vec![self.engine.pattern(), "*.ZIP", "*.*"],
+            p => vec![self.purpose_pattern(p), "*.*"],
+        }
+    }
+
+    fn choose_pattern(&mut self, d: &mut FileDlg, i: usize) {
+        if let Some(p) = self.pattern_choices().get(i) {
+            d.pattern = (*p).to_string();
+            d.name = LineEdit::new(p, EditKind::Text, 260);
+            d.sel = 0;
+            d.list = false;
+        }
+        d.drop = None;
+    }
+
     fn files_key(&mut self, d: &mut FileDlg, input: Input) -> Flow {
+        if let Some(cur) = d.drop {
+            let n = self.pattern_choices().len();
+            match input {
+                Input::Esc => d.drop = None,
+                Input::Up => d.drop = Some(cur.saturating_sub(1)),
+                Input::Down => d.drop = Some((cur + 1).min(n - 1)),
+                Input::Enter => self.choose_pattern(d, cur),
+                _ => {}
+            }
+            return Flow::Stay;
+        }
         let n = d.visible().len();
         match input {
             Input::Esc => Flow::Close,
@@ -1037,8 +1084,20 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 Flow::Stay
             }
             Act::Drop => {
-                d.list = true;
                 d.info = None;
+                d.drop = match d.drop {
+                    Some(_) => None,
+                    None => Some(
+                        self.pattern_choices()
+                            .iter()
+                            .position(|p| p.eq_ignore_ascii_case(&d.pattern))
+                            .unwrap_or(0),
+                    ),
+                };
+                Flow::Stay
+            }
+            Act::Pat(i) => {
+                self.choose_pattern(d, i);
                 Flow::Stay
             }
             Act::Item(i) => {
@@ -1156,6 +1215,21 @@ impl<E: ClassicEngine> ClassicApp<E> {
                     .unwrap_or_default()
             };
             s.text(17, 19, &format!("{name}  {size}"), CYAN, BLUE);
+        }
+        // the drop-down list of patterns, over the file list
+        if let Some(cur) = d.drop {
+            let choices = self.pattern_choices();
+            s.fill(18, 6, 31, choices.len(), ' ', BLACK, GREY);
+            for (i, p) in choices.iter().enumerate() {
+                let (fg, bg) = if i == cur {
+                    (WHITE, BLUE)
+                } else {
+                    (BLACK, GREY)
+                };
+                s.fill(18, 6 + i, 31, 1, ' ', fg, bg);
+                s.text(19, 6 + i, p, fg, bg);
+                self.hit(18, 6 + i, 31, 1, Act::Pat(i));
+            }
         }
     }
 

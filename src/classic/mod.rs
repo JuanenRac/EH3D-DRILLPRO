@@ -232,6 +232,8 @@ pub(crate) enum Act {
     Name,
     /// The arrow at the end of the name field: the list of files takes the keys.
     Drop,
+    /// A pattern of the drop-down list of the name field.
+    Pat(usize),
     Item(usize),
     /// A control of the Panelization dialog, by its place in the focus ring.
     Pz(usize),

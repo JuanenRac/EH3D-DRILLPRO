@@ -84,6 +84,8 @@ pub(crate) struct Run {
 
 pub struct App {
     pub lang: Lang,
+    /// The machine moved by hand while the Offset Teach window is open (a real connection only).
+    pub(crate) teach: Option<crate::runner::TeachSession>,
     pub(crate) mode: Mode,
     pub(crate) dir: PathBuf,
     pub(crate) entries: Vec<Entry>,
@@ -154,6 +156,7 @@ impl App {
             sorting,
             geometry,
             run: None,
+            teach: None,
             board_mm,
             connection: ConnectionConfig::default(),
             quit: false,
@@ -433,7 +436,7 @@ impl App {
     }
 
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.
-    fn job_machine(&self) -> JobMachine {
+    pub(crate) fn job_machine(&self) -> JobMachine {
         crate::job::job_machine(
             self.settings.as_ref(),
             self.geometry,

@@ -126,6 +126,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
             )
         };
         let max_z = self.engine.settings().map_or(37.3, |m| m.z_max_depth_mm);
+        // on a real machine it homes now and follows the window from here on
+        self.engine.teach_begin();
         Flow::to(Dialog::Teach(Box::new(TeachDlg {
             x,
             y,
@@ -366,6 +368,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
             self.hit(x, y, w + 1, 2, Act::Teach(b));
         }
 
+        match self.engine.teach_state() {
+            Some(crate::runner::TeachState::Homing) => {
+                label(s, 9, 20, self.t(CText::HomingXy));
+            }
+            Some(crate::runner::TeachState::Failed(e)) => {
+                let e: String = e.chars().take(44).collect();
+                label(s, 9, 20, &e);
+            }
+            _ => {}
+        }
         label(s, 10, 15, self.t(CText::TeachMil));
         let rows: Vec<String> = STEPS.iter().map(|n| format!("{n:>4}")).collect();
         radio_group(s, 10, 16, 13, &rows, t.step, false);

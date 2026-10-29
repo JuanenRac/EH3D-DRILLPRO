@@ -375,6 +375,11 @@ impl<'a> JobBuilder<'a> {
         self.p.items.push(Item::Pause(pause));
     }
 
+    /// What has been planned so far, without the end of the job: for a session that homes the machine and then goes on by hand.
+    pub fn into_items(self) -> Vec<Item> {
+        self.p.items
+    }
+
     /// Spindle on at `rpm` (it waits for the spindle to reach speed).
     pub fn spindle_on(&mut self, rpm: u32) {
         self.p.spindle_start(rpm);

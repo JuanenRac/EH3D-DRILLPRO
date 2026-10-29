@@ -13,7 +13,8 @@ use std::time::Duration;
 
 use crate::protocol::connection::ConnectionConfig;
 use crate::protocol::execute::{run_items, Hooks, Outcome};
-use crate::protocol::job::{Item, Pause};
+use crate::protocol::job::{Item, JobBuilder, JobMachine, Pause};
+use crate::protocol::motion::{rapid_xy, z_move};
 use crate::protocol::safety::{Machine, Verified};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -319,5 +320,164 @@ fn follow_on_server(
             }
         }
         thread::sleep(Duration::from_millis(250));
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------- by hand
+
+/// Where a hand session (the Offset Teach window) is.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TeachState {
+    /// Opening the link and homing the machine.
+    Homing,
+    /// Homed: the head follows the jogs.
+    Ready,
+    /// The head went home again and the drivers are off.
+    Finished,
+    Failed(String),
+}
+
+enum TeachCmd {
+    /// A move relative to where the head is, in mm (X, Y, and Z downwards).
+    Jog(f64, f64, f64),
+    /// Z up, home again and drivers off.
+    End,
+    /// Stop at once.
+    Cancel,
+}
+
+struct NoDialogs(Arc<AtomicBool>);
+
+impl Hooks for NoDialogs {
+    fn pause(&mut self, _pause: Pause) -> bool {
+        true
+    }
+    fn progress(&mut self, _next: usize, _total: usize) {}
+    fn cancelled(&mut self) -> bool {
+        self.0.load(Ordering::SeqCst)
+    }
+}
+
+/// The machine moved by hand: it homes when the session starts, follows every [`TeachSession::jog`] and homes again at the end.
+/// Used by the Offset Teach window of DRILLPRO and ROUTEPRO.
+pub struct TeachSession {
+    state: Arc<Mutex<TeachState>>,
+    cancel: Arc<AtomicBool>,
+    tx: std::sync::mpsc::Sender<TeachCmd>,
+    handle: Option<JoinHandle<()>>,
+}
+
+impl TeachSession {
+    pub fn start(config: ConnectionConfig, jm: JobMachine) -> Self {
+        let state = Arc::new(Mutex::new(TeachState::Homing));
+        let cancel = Arc::new(AtomicBool::new(false));
+        let (tx, rx) = std::sync::mpsc::channel::<TeachCmd>();
+        let (st, cn) = (state.clone(), cancel.clone());
+        let handle = thread::spawn(move || {
+            let set = |s: TeachState| {
+                if let Ok(mut g) = st.lock() {
+                    *g = s;
+                }
+            };
+            let result = (|| -> Result<(), String> {
+                if config.kind == crate::protocol::connection::Kind::Server {
+                    return Err(
+                        "the Offset window does not move a machine through the server".into(),
+                    );
+                }
+                let link = config
+                    .open()
+                    .map_err(|e| format!("{}: {e}", config.describe()))?;
+                let mut machine = Machine::new(link);
+                machine.set_pacing(config.pacing());
+                machine.set_tuning(config.tuning);
+                machine.set_home_signal(config.home_signal);
+                machine.connect().map_err(|e| format!("{e:?}"))?;
+                machine.arm(Verified::all()).map_err(|e| format!("{e:?}"))?;
+                let start = JobBuilder::new(&jm).into_items();
+                let mut hooks = NoDialogs(cn.clone());
+                match run_items(&mut machine, &start, &mut hooks).map_err(|e| format!("{e:?}"))? {
+                    Outcome::Completed => {}
+                    Outcome::Cancelled => return Ok(()),
+                }
+                set(TeachState::Ready);
+                let g = jm.geometry;
+                let (mut pos, mut z) = ((0.0f64, 0.0f64), 0.0f64);
+                loop {
+                    match rx.recv() {
+                        Ok(TeachCmd::Jog(dx, dy, dz)) => {
+                            let to = (pos.0 + dx, pos.1 + dy);
+                            let mut steps = Vec::new();
+                            if dx != 0.0 || dy != 0.0 {
+                                steps.extend(rapid_xy(pos, to, &g));
+                            }
+                            if dz != 0.0 {
+                                let new_z = (z + dz).max(0.0);
+                                let d = new_z - z;
+                                if d != 0.0 {
+                                    steps.extend(z_move(d.abs(), d > 0.0, g.z_max_feed(), &g));
+                                }
+                                z = new_z;
+                            }
+                            machine.run(&steps).map_err(|e| format!("{e:?}"))?;
+                            pos = to;
+                        }
+                        Ok(TeachCmd::End) | Err(_) => break,
+                        Ok(TeachCmd::Cancel) => {
+                            machine.emergency_stop();
+                            return Ok(());
+                        }
+                    }
+                }
+                if z > 0.0 {
+                    machine
+                        .run(&z_move(z, false, g.z_max_feed(), &g))
+                        .map_err(|e| format!("{e:?}"))?;
+                }
+                let end = JobBuilder::new(&jm).finish();
+                run_items(&mut machine, &end, &mut hooks).map_err(|e| format!("{e:?}"))?;
+                Ok(())
+            })();
+            set(match result {
+                Ok(()) => TeachState::Finished,
+                Err(e) => TeachState::Failed(e),
+            });
+        });
+        TeachSession {
+            state,
+            cancel,
+            tx,
+            handle: Some(handle),
+        }
+    }
+
+    pub fn state(&self) -> TeachState {
+        self.state
+            .lock()
+            .map(|g| g.clone())
+            .unwrap_or(TeachState::Failed("internal error".into()))
+    }
+
+    /// Moves the head by this much (mm; Z positive is down). Moves queue up and run in order.
+    pub fn jog(&self, dx_mm: f64, dy_mm: f64, dz_mm: f64) {
+        let _ = self.tx.send(TeachCmd::Jog(dx_mm, dy_mm, dz_mm));
+    }
+
+    /// Z up, home again and drivers off; returns at once.
+    pub fn end(&self) {
+        let _ = self.tx.send(TeachCmd::End);
+    }
+}
+
+impl Drop for TeachSession {
+    fn drop(&mut self) {
+        // a session that is dropped without the end stops the machine; one that ended is left to finish its way home
+        self.cancel.store(true, Ordering::SeqCst);
+        let _ = self.tx.send(TeachCmd::Cancel);
+        if let Some(h) = self.handle.take() {
+            if matches!(self.state(), TeachState::Finished | TeachState::Failed(_)) {
+                let _ = h.join();
+            }
+        }
     }
 }

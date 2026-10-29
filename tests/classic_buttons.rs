@@ -78,12 +78,41 @@ fn a_missing_tool_file_is_said_in_a_window() {
 }
 
 #[test]
-fn the_arrow_of_the_name_field_gives_the_keys_to_the_list() {
-    let mut a = ClassicApp::new(Lang::En, &scratch("arrow"));
+fn the_arrow_of_the_name_field_offers_the_patterns() {
+    use std::io::Write;
+    let dir = scratch("arrow");
+    std::fs::copy(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/03_two_tools.ncd"),
+        dir.join("BOARD.NCD"),
+    )
+    .unwrap();
+    let mut w = zip::ZipWriter::new(std::fs::File::create(dir.join("JOB.ZIP")).unwrap());
+    w.start_file("A.NCD", zip::write::SimpleFileOptions::default())
+        .unwrap();
+    w.write_all(
+        b"M48
+",
+    )
+    .unwrap();
+    w.finish().unwrap();
+    let mut a = ClassicApp::new(Lang::En, &dir);
     a.handle(Input::Char('l'));
-    let before = text(&a);
+    let t = text(&a);
+    assert!(t.contains("BOARD.NCD") && !t.contains("JOB.ZIP"), "{t}");
+    // the arrow opens the list of patterns; the second one is the archives
     a.click(47, 5);
-    // with the keys in the list, Enter opens the selected entry (the folder above) instead of taking the pattern
+    let t = text(&a);
+    assert!(t.contains("*.ZIP") && t.contains("*.*"), "{t}");
+    a.click(20, 7);
+    let t = text(&a);
+    assert!(t.contains("JOB.ZIP") && !t.contains("BOARD.NCD"), "{t}");
+    // the keys work in the list too
+    a.click(47, 5);
+    a.handle(Input::Down);
     a.handle(Input::Enter);
-    assert_ne!(text(&a), before);
+    let t = text(&a);
+    assert!(
+        t.contains("JOB.ZIP") && t.contains("BOARD.NCD") || t.contains("BOARD.NCD"),
+        "{t}"
+    );
 }

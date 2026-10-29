@@ -76,6 +76,14 @@ pub trait ClassicEngine {
     /// The Offset Teach window moves the head by these steps of 1 mil (0.001 inch) in X, Y and Z (Z positive = down). The
     /// simulation only follows the position on the screen; an engine on a real machine moves it.
     fn jog(&mut self, _dx: i32, _dy: i32, _dz: i32) {}
+    /// The Offset Teach window opened: an engine on a real machine homes it and follows the jogs from now on.
+    fn teach_begin(&mut self) {}
+    /// The window closed: the machine goes home again and the drivers go off.
+    fn teach_end(&mut self) {}
+    /// How the machine is doing, when the window moves a real one.
+    fn teach_state(&self) -> Option<crate::runner::TeachState> {
+        None
+    }
     fn lang(&self) -> crate::i18n::Lang;
     fn set_lang(&mut self, lang: crate::i18n::Lang);
     fn settings(&self) -> Option<&MachineSettings>;
@@ -140,6 +148,29 @@ pub trait ClassicEngine {
 impl ClassicEngine for App {
     fn kind(&self) -> Kind {
         Kind::Drill
+    }
+
+    fn jog(&mut self, dx: i32, dy: i32, dz: i32) {
+        const MIL_MM: f64 = 0.0254;
+        if let Some(t) = &self.teach {
+            t.jog(dx as f64 * MIL_MM, dy as f64 * MIL_MM, dz as f64 * MIL_MM);
+        }
+    }
+
+    fn teach_begin(&mut self) {
+        self.teach = self.connection.is_real().then(|| {
+            crate::runner::TeachSession::start(self.connection.clone(), self.job_machine())
+        });
+    }
+
+    fn teach_end(&mut self) {
+        if let Some(t) = &self.teach {
+            t.end();
+        }
+    }
+
+    fn teach_state(&self) -> Option<crate::runner::TeachState> {
+        self.teach.as_ref().map(|t| t.state())
     }
 
     fn about(&self) -> About {
