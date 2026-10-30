@@ -2447,6 +2447,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                         columns,
                         rows,
                         pitch_mm: (num(0) - num(2), num(1) - num(3)),
+                        tabs: None,
                     });
                     Flow::Close
                 } else {

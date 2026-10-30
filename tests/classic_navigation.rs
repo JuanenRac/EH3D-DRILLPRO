@@ -237,6 +237,7 @@ fn a_panel_repeats_every_tool_over_all_the_copies() {
             columns: 3,
             rows: 2,
             pitch_mm: (50.0, 40.0),
+            tabs: None,
         }),
         ..Default::default()
     };

@@ -190,6 +190,99 @@ pub struct Panel {
     pub columns: u32,
     pub rows: u32,
     pub pitch_mm: (f64, f64),
+    /// Tabs that hold the boards while the outside of the panel is routed; none routes the outside through.
+    pub tabs: Option<Tabs>,
+}
+
+/// Where the tabs of a side go: spread evenly along it, near its two ends, or together in its middle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TabPlacement {
+    Even,
+    Ends,
+    Middle,
+}
+
+/// The tabs (notches) that hold the boards of a panel while the outside is routed: on every straight side of a closed path the router lifts for `width_mm`
+/// at each tab, so the board stays joined to the panel by a bridge there and is broken out by hand afterwards.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Tabs {
+    /// How many tabs each side has.
+    pub per_side: u32,
+    /// How wide each tab is, along the side.
+    pub width_mm: f64,
+    pub placement: TabPlacement,
+}
+
+impl Tabs {
+    /// The places of the tabs of a side, as fractions of its length (from 0 to 1).
+    fn fractions(&self, length_mm: f64) -> Vec<f64> {
+        let n = self.per_side as usize;
+        if n == 0 || length_mm <= 0.0 {
+            return Vec::new();
+        }
+        let w = self.width_mm / length_mm;
+        match self.placement {
+            TabPlacement::Even => (0..n).map(|k| (k + 1) as f64 / (n + 1) as f64).collect(),
+            TabPlacement::Ends => match n {
+                1 => vec![0.15],
+                _ => (0..n).map(|k| 0.15 + 0.70 * k as f64 / (n - 1) as f64).collect(),
+            },
+            TabPlacement::Middle => (0..n)
+                .map(|k| 0.5 + (k as f64 - (n as f64 - 1.0) / 2.0) * 2.0 * w)
+                .collect(),
+        }
+    }
+}
+
+/// Cuts the tabs into a closed path: the pieces of the path between the tabs, in the order of the path. A path that is open, or has fewer than four points,
+/// or a side too short to hold a tab with some bridge on both sides of it, is left as it is on that side. The piece that ends where the path began is joined to
+/// the first one, so the router does not lift there for nothing.
+pub fn cut_tabs(points: &[(f64, f64)], tabs: &Tabs) -> Vec<Vec<(f64, f64)>> {
+    let closed = points.len() >= 4
+        && (points[0].0 - points[points.len() - 1].0).abs() < 1e-9
+        && (points[0].1 - points[points.len() - 1].1).abs() < 1e-9;
+    if !closed || tabs.per_side == 0 || tabs.width_mm <= 0.0 {
+        return vec![points.to_vec()];
+    }
+    let mut pieces: Vec<Vec<(f64, f64)>> = vec![vec![points[0]]];
+    let mut cut_any = false;
+    for pair in points.windows(2) {
+        let (a, b) = (pair[0], pair[1]);
+        let len = (b.0 - a.0).hypot(b.1 - a.1);
+        let at = |d: f64| (a.0 + (b.0 - a.0) * d / len, a.1 + (b.1 - a.1) * d / len);
+        // the gaps of this side, in mm from its start, inside the side with half a tab of bridge at each end
+        let mut gaps: Vec<(f64, f64)> = Vec::new();
+        if len > 1e-9 {
+            for c in tabs.fractions(len) {
+                let (g0, g1) = (c * len - tabs.width_mm / 2.0, c * len + tabs.width_mm / 2.0);
+                let margin = tabs.width_mm / 2.0;
+                if g0 >= margin && g1 <= len - margin && gaps.last().is_none_or(|l| g0 >= l.1 + 1e-9) {
+                    gaps.push((g0, g1));
+                }
+            }
+        }
+        for (g0, g1) in gaps {
+            cut_any = true;
+            pieces.last_mut().expect("a piece").push(at(g0));
+            pieces.push(vec![at(g1)]);
+        }
+        pieces.last_mut().expect("a piece").push(b);
+    }
+    if !cut_any {
+        return vec![points.to_vec()];
+    }
+    // the last piece ends where the path began: it goes on into the first one
+    if pieces.len() > 1 {
+        let last = pieces.pop().expect("a piece");
+        let first = pieces.remove(0);
+        let mut joined = last;
+        joined.extend(first.into_iter().skip(1));
+        pieces.insert(0, joined);
+        // the joined piece starts in the middle of the path: it goes first in the order of the pieces only for the router's sake, so put it where it was (last)
+        let joined = pieces.remove(0);
+        pieces.push(joined);
+    }
+    pieces
 }
 
 /// What the main form and the Panelization dialog add to a job.
@@ -295,5 +388,69 @@ pub fn select_holes(
     Selection {
         holes: out,
         skipped,
+    }
+}
+
+#[cfg(test)]
+mod tab_tests {
+    use super::*;
+
+    fn rectangle(w: f64, h: f64) -> Vec<(f64, f64)> {
+        vec![(0.0, 0.0), (w, 0.0), (w, h), (0.0, h), (0.0, 0.0)]
+    }
+
+    fn length(p: &[(f64, f64)]) -> f64 {
+        p.windows(2).map(|s| (s[1].0 - s[0].0).hypot(s[1].1 - s[0].1)).sum()
+    }
+
+    #[test]
+    fn two_tabs_on_each_side_of_a_rectangle_leave_eight_pieces_and_take_their_width_away() {
+        let tabs = Tabs { per_side: 2, width_mm: 4.0, placement: TabPlacement::Even };
+        let pieces = cut_tabs(&rectangle(100.0, 50.0), &tabs);
+        assert_eq!(pieces.len(), 8);
+        let total: f64 = pieces.iter().map(|p| length(p)).sum();
+        assert!((total - (300.0 - 8.0 * 4.0)).abs() < 1e-6, "{total}");
+        // no point of any piece is inside a gap of the bottom side (the first tab is at a third of 100 mm)
+        for p in &pieces {
+            for &(x, y) in p {
+                if y == 0.0 {
+                    let (g0, g1) = (100.0 / 3.0 - 2.0, 100.0 / 3.0 + 2.0);
+                    assert!(x <= g0 + 1e-6 || x >= g1 - 1e-6, "{x}");
+                }
+            }
+        }
+        // the pieces are in the order of the path, and the one that crosses the start is whole
+        let around = pieces.iter().find(|p| p.contains(&(0.0, 0.0))).expect("the start");
+        assert!(around.len() >= 3);
+    }
+
+    #[test]
+    fn the_tabs_are_where_the_placement_says() {
+        let r = rectangle(120.0, 80.0);
+        for (placement, per_side) in [(TabPlacement::Even, 3), (TabPlacement::Ends, 2), (TabPlacement::Middle, 1), (TabPlacement::Middle, 2)] {
+            let tabs = Tabs { per_side, width_mm: 3.0, placement };
+            let pieces = cut_tabs(&r, &tabs);
+            assert_eq!(pieces.len(), 4 * per_side as usize, "{placement:?} {per_side}");
+        }
+        // near the ends: the first tab of the bottom side is at 15 % of 120 mm = 18 mm
+        let tabs = Tabs { per_side: 1, width_mm: 4.0, placement: TabPlacement::Ends };
+        let pieces = cut_tabs(&r, &tabs);
+        assert!(pieces.iter().any(|p| p.iter().any(|q| (q.0 - 16.0).abs() < 1e-6 && q.1 == 0.0)));
+        assert!(pieces.iter().any(|p| p.iter().any(|q| (q.0 - 20.0).abs() < 1e-6 && q.1 == 0.0)));
+    }
+
+    #[test]
+    fn a_side_too_short_for_a_tab_and_a_path_that_is_not_closed_are_left_alone() {
+        let tabs = Tabs { per_side: 1, width_mm: 10.0, placement: TabPlacement::Even };
+        // 12 mm sides cannot hold a 10 mm tab with half a tab of bridge at each end
+        let small = rectangle(12.0, 12.0);
+        assert_eq!(cut_tabs(&small, &tabs), vec![small.clone()]);
+        // a side of 40 mm can, the short ones cannot
+        let long = rectangle(40.0, 12.0);
+        assert_eq!(cut_tabs(&long, &tabs).len(), 2);
+        let open = vec![(0.0, 0.0), (50.0, 0.0), (50.0, 50.0)];
+        assert_eq!(cut_tabs(&open, &tabs), vec![open.clone()]);
+        let none = Tabs { per_side: 0, ..tabs };
+        assert_eq!(cut_tabs(&long, &none), vec![long.clone()]);
     }
 }
