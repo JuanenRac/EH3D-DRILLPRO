@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The node of the drill head in the machine file:** `head_node` (`off`, `direct` or `server`), `head_address`, `head_token` and `head_camera` say how EH3D-NODE-BUNGARD-AUX is reached; they are written only when the node is used, and the other lines of the file stay as they are.
 - **A table that is not flat:** the options of a job can carry the height map of the table, and every hole is drilled to the same depth into the board wherever the table is high or low (`plan_drill_job_levelled`); without a map nothing changes.
 ## [0.0.6] - The connection drop-down, a blinking cursor, tabs for panels, jobs that go on and the machines of the fleet
 
