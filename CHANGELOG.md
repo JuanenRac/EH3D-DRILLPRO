@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.6] - The connection drop-down, a blinking cursor, tabs for panels, jobs that go on and the machines of the fleet
+
 - **A job can go on:** the options of a job tell how many of its first holes are already done, and the job leaves them out; the desktop window opens maximized.
 - **Tabs for the outside of a panel:** a panel can carry tabs (how many on each side, how wide, spread evenly, near the ends or together in the middle) and the routing of its outside is cut into the pieces between them, so the boards stay joined to the panel until they are broken out.
 - **The connection chosen in the Config window:** a drop-down with the five ways the job reaches the machine (the simulator, the serial port, a USB adapter, the EH3D node, the EH3D server) and what each needs (a port, an address and a token, a machine of the server); it is checked, applied with OK and written into the machine file without touching its other lines. The same for EH3D-ROUTEPRO.

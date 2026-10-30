@@ -12,13 +12,13 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Version-0.0.5-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.6-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
 ---
 
-**Verifica di onestà - cosa funziona oggi:** un programma Rust con interfaccia testuale 80x25 che legge i file di foratura Excellon `.NCD`, la tabella utensili e la configurazione della macchina, ordina i fori, li mostra ed esegue tutto il lavoro **contro un simulatore** (predefinito) oppure, quando il file della macchina lo indica, **su una macchina reale** tramite la porta seriale del computer, un adattatore USB-seriale o l'EH3D-NODE-BUNGARD. 223 test girano su un computer. Su una Bungard CCD MTC reale sono stati provati il riferimento dei tre assi (Z, X e Y fino ai finecorsa, con il segnale «tutti e tre a casa» dell'unità di controllo confermato in diretta) e i movimenti di ogni asse; **un lavoro di foratura completo non è ancora stato eseguito sulla macchina**, e i passi per millimetro sono verificati solo rispetto alla configurazione dell'originale. Per impostazione predefinita si vedono le schermate classiche del programma MS-DOS, verificate cella per cella con l'originale; `--modern` avvia l'interfaccia a menu. Si usano con tastiera e mouse, la finestra si può ingrandire (lo schermo scala da 640x400 a 1080p e oltre), i file di configurazione e degli utensili si modificano e si salvano dalle finestre, e il pulsante Info elenca le macchine Bungard CCD e CCD/2 (MTC supportate, ATC non ancora). Una versione console (`drillpro-console`) disegna le stesse schermate in un terminale, con tastiera e mouse e senza sistema a finestre (SSH, console di testo, un PC vecchio). I pacchetti di ogni versione includono la configurazione base, spiegata riga per riga, e una cartella `examples` da un foro a ventimila. Il cambio utensile dei modelli ATC (cambio automatico) funziona da una registrazione dell'originale e non ha girato su una macchina reale.
+**Verifica di onestà - cosa funziona oggi:** un programma Rust con interfaccia testuale 80x25 che legge i file di foratura Excellon `.NCD`, la tabella utensili e la configurazione della macchina, ordina i fori, li mostra ed esegue tutto il lavoro **contro un simulatore** (predefinito) oppure, quando il file della macchina lo indica, **su una macchina reale** tramite la porta seriale del computer, un adattatore USB-seriale o l'EH3D-NODE-BUNGARD. 228 test girano su un computer. Su una Bungard CCD MTC reale sono stati provati il riferimento dei tre assi (Z, X e Y fino ai finecorsa, con il segnale «tutti e tre a casa» dell'unità di controllo confermato in diretta) e i movimenti di ogni asse; **un lavoro di foratura completo non è ancora stato eseguito sulla macchina**, e i passi per millimetro sono verificati solo rispetto alla configurazione dell'originale. Per impostazione predefinita si vedono le schermate classiche del programma MS-DOS, verificate cella per cella con l'originale; `--modern` avvia l'interfaccia a menu. Si usano con tastiera e mouse, la finestra si può ingrandire (lo schermo scala da 640x400 a 1080p e oltre), i file di configurazione e degli utensili si modificano e si salvano dalle finestre, e il pulsante Info elenca le macchine Bungard CCD e CCD/2 (MTC supportate, ATC non ancora). Una versione console (`drillpro-console`) disegna le stesse schermate in un terminale, con tastiera e mouse e senza sistema a finestre (SSH, console di testo, un PC vecchio). I pacchetti di ogni versione includono la configurazione base, spiegata riga per riga, e una cartella `examples` da un foro a ventimila. Il cambio utensile dei modelli ATC (cambio automatico) funziona da una registrazione dell'originale e non ha girato su una macchina reale.
 
 ---
 
@@ -28,9 +28,9 @@
 
 | | |
 |---|---|
-| Versione | `0.0.5` |
+| Versione | `0.0.6` |
 | Maturità | Impalcatura |
-| Test | 223 |
+| Test | 228 |
 | Stack tecnologico | Rust |
 | Su hardware reale | Sì, su una Bungard CCD MTC: il riferimento e i movimenti di ogni asse; un lavoro completo non è ancora stato eseguito. Senza file della macchina gira sul simulatore |
 
@@ -45,7 +45,7 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Software | 🟡 | Un programma Rust con schermo di testo 80x25 legge il file di foratura, la tabella utensili e il file della macchina, ordina i fori ed esegue l'intero lavoro su un simulatore, o su una macchina reale se il file della macchina lo indica. |
-| Test | 🟢 | 223 test passano (`cargo test --workspace`): i formati, la pianificazione del lavoro, il protocollo sul simulatore e le schermate in tutte e otto le lingue. |
+| Test | 🟢 | 228 test passano (`cargo test --workspace`): i formati, la pianificazione del lavoro, il protocollo sul simulatore e le schermate in tutte e otto le lingue. |
 | Lettori di file | 🟡 | Il file di foratura `.NCD`, la tabella utensili `DRILLPRO.DTD` e il file della macchina `DRILLPRO.DCF` vengono letti; solo con piccoli file di esempio scritti per i test, non con file di schede reali. |
 | Protocollo della macchina | 🟠 | Il protocollo di byte dell'unità di controllo è stato ricostruito per ingegneria inversa e `docs/PROTOCOL.md` elenca ancora parti che sono ipotesi; il livello di protocollo si rifiuta di muovere qualsiasi cosa finché non è armato. |
 | Interfaccia | 🟡 | Lo schermo di testo, i menu, la finestra dei file e la vista vettoriale dei fori parlano tutte e otto le lingue (testato); cinese e giapponese richiedono un font CJK nel sistema. |
@@ -73,6 +73,7 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 * **Più macchine e stazioni**: con `connection = server`, `drillpro --machines` elenca tutte le macchine del server, raggruppate per stazione, con ciò che fa ciascuna, il suo lavoro e i lavori pronti (il server risponde per tutte insieme), e `drillpro --machine ID` invia i lavori di questo programma a quella macchina invece che a quella del file di macchina; le macchine lavorano insieme, un lavoro su ciascuna.
 * **La connessione scelta nella finestra Config:** un menu a tendina con i cinque modi in cui il lavoro raggiunge la macchina (il simulatore, la porta seriale, un adattatore USB, il nodo EH3D e il server EH3D) e, sotto, ciò che serve a ciascuno: una porta, un indirizzo e un token, una macchina del server; ciò che si sceglie viene controllato, applicato con OK e scritto nel file di macchina senza toccarne le altre righe.
 * **Un cursore che lampeggia:** il cursore di un campo numerico o di testo in modifica lampeggia (mezzo secondo acceso, mezzo secondo spento), come nelle schermate che segue.
+* **Pannelli con ponticelli e lavori che continuano:** un pannello può avere ponticelli all'esterno (quanti, di che larghezza, dove) e un lavoro può escludere i fori già fatti, così continua dopo uno stop; la finestra si apre massimizzata.
 
 ### 🆚 L'originale e questa versione
 
@@ -143,7 +144,7 @@ Avvialo con `run.bat` (Windows) o `./run.sh` (Linux e macOS); entrambi compilano
 
 ## 🧪 Test
 
-La suite ha 223 test (`cargo test --workspace`). Verificano i formati di file (il file di foratura, la tabella degli utensili e il file della macchina, e la loro riscrittura), la pianificazione del lavoro, il protocollo sul simulatore (byte, movimento, la corsa di riferimento, i bit di latch, il collegamento con il nodo e il blocco di sicurezza che si rifiuta di muovere finché non è armato), le schermate classiche cella per cella e le schermate in tutte e otto le lingue. La CI esegue anche `cargo fmt --check` e `cargo clippy` con gli avvisi come errori, e `python -I tools/ci_validate.py` controlla il manifesto, le versioni, il changelog e gli otto README.
+La suite ha 228 test (`cargo test --workspace`). Verificano i formati di file (il file di foratura, la tabella degli utensili e il file della macchina, e la loro riscrittura), la pianificazione del lavoro, il protocollo sul simulatore (byte, movimento, la corsa di riferimento, i bit di latch, il collegamento con il nodo e il blocco di sicurezza che si rifiuta di muovere finché non è armato), le schermate classiche cella per cella e le schermate in tutte e otto le lingue. La CI esegue anche `cargo fmt --check` e `cargo clippy` con gli avvisi come errori, e `python -I tools/ci_validate.py` controlla il manifesto, le versioni, il changelog e gli otto README.
 
 ## 🏗️ Compilazione e rilascio
 
