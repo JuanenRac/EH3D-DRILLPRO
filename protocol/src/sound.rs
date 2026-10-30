@@ -33,6 +33,8 @@ pub enum SoundSetting {
     File(PathBuf),
     /// A sound of the catalogue of the program (see [`TONES`]): a pitch and a pattern.
     Tone(u8),
+    /// A spoken notice: the language (`en`, `es`, `it`, `de`, `fr`, `pt`, `zh` or `ja`) and a female or a male voice; the recordings are in the folder of the voices.
+    Voice { lang: String, female: bool },
 }
 
 impl SoundSetting {
@@ -43,6 +45,9 @@ impl SoundSetting {
             SoundSetting::Default => "default".into(),
             SoundSetting::File(p) => p.display().to_string(),
             SoundSetting::Tone(i) => format!("tone:{i}"),
+            SoundSetting::Voice { lang, female } => {
+                format!("voice:{lang}:{}", if *female { "f" } else { "m" })
+            }
         }
     }
 
@@ -52,6 +57,20 @@ impl SoundSetting {
         match t.to_ascii_lowercase().as_str() {
             "" | "off" | "no" | "false" | "0" => SoundSetting::Off,
             "default" | "on" | "yes" | "true" | "1" => SoundSetting::Default,
+            other if other.starts_with("voice:") => {
+                let mut it = other["voice:".len()..].split(':');
+                match (it.next(), it.next(), it.next()) {
+                    (Some(l), Some(g), None)
+                        if VOICE_LANGS.contains(&l) && (g == "f" || g == "m") =>
+                    {
+                        SoundSetting::Voice {
+                            lang: l.to_string(),
+                            female: g == "f",
+                        }
+                    }
+                    _ => SoundSetting::File(PathBuf::from(t)),
+                }
+            }
             other => match other
                 .strip_prefix("tone:")
                 .and_then(|n| n.trim().parse::<usize>().ok())
@@ -65,6 +84,58 @@ impl SoundSetting {
     pub fn is_on(&self) -> bool {
         *self != SoundSetting::Off
     }
+}
+
+/// The languages that have spoken notices, in the order of the interface.
+pub const VOICE_LANGS: [&str; 8] = ["en", "es", "it", "de", "fr", "pt", "zh", "ja"];
+
+/// Where the recordings of the spoken notices are: the folder `voices` next to the program (or up to three levels above it, when it runs from the build folder), or
+/// the folder that the variable `EH3D_VOICES` names. Inside, `LANG/f/finished.wav`, `LANG/f/tool.wav` and the same under `m` for the male voice.
+pub fn voices_dir() -> Option<PathBuf> {
+    if let Some(d) = std::env::var_os("EH3D_VOICES")
+        .map(PathBuf::from)
+        .filter(|d| d.is_dir())
+    {
+        return Some(d);
+    }
+    let exe = std::env::current_exe().ok()?;
+    let mut dir = exe.parent()?.to_path_buf();
+    for _ in 0..4 {
+        let c = dir.join("voices");
+        if c.is_dir() {
+            return Some(c);
+        }
+        dir = dir.parent()?.to_path_buf();
+    }
+    None
+}
+
+/// The recording of a spoken notice, when it is there.
+pub fn voice_file(root: &Path, lang: &str, female: bool, cue: Cue) -> Option<PathBuf> {
+    let name = match cue {
+        Cue::Finished => "finished.wav",
+        Cue::ToolChange => "tool.wav",
+    };
+    let p = root
+        .join(lang)
+        .join(if female { "f" } else { "m" })
+        .join(name);
+    p.is_file().then_some(p)
+}
+
+/// The voices that have both recordings in the folder, as (language, female), in the order of the languages and female first.
+pub fn available_voices(root: &Path) -> Vec<(&'static str, bool)> {
+    let mut v = Vec::new();
+    for l in VOICE_LANGS {
+        for female in [true, false] {
+            if voice_file(root, l, female, Cue::Finished).is_some()
+                && voice_file(root, l, female, Cue::ToolChange).is_some()
+            {
+                v.push((l, female));
+            }
+        }
+    }
+    v
 }
 
 /// The notes of a cue as (frequency in Hz, length in ms): a rising arpeggio when the job ends, two bells for a tool.
@@ -186,6 +257,13 @@ pub fn file_for(setting: &SoundSetting, cue: Cue) -> Option<PathBuf> {
     match setting {
         SoundSetting::Off => None,
         SoundSetting::File(p) if p.is_file() => Some(p.clone()),
+        // a voice that is not recorded plays the tone instead of nothing
+        SoundSetting::Voice { lang, female } => {
+            match voices_dir().and_then(|d| voice_file(&d, lang, *female, cue)) {
+                Some(p) => Some(p),
+                None => file_for(&SoundSetting::Default, cue),
+            }
+        }
         SoundSetting::Tone(i) => {
             let tag = match cue {
                 Cue::Finished => "finished",
@@ -274,6 +352,14 @@ mod tests {
             SoundSetting::Off,
             SoundSetting::Default,
             SoundSetting::File(PathBuf::from("C:\\sounds\\ding.wav")),
+            SoundSetting::Voice {
+                lang: "es".into(),
+                female: true,
+            },
+            SoundSetting::Voice {
+                lang: "ja".into(),
+                female: false,
+            },
         ] {
             assert_eq!(SoundSetting::parse(&s.to_text()), s);
         }
@@ -284,6 +370,44 @@ mod tests {
             SoundSetting::File(PathBuf::from("a b.wav"))
         );
         assert!(SoundSetting::Default.is_on() && !SoundSetting::Off.is_on());
+    }
+
+    #[test]
+    fn a_voice_is_found_in_the_folder_of_the_voices_and_a_missing_one_plays_the_tone() {
+        assert_eq!(
+            SoundSetting::parse("voice:fr:m"),
+            SoundSetting::Voice {
+                lang: "fr".into(),
+                female: false
+            }
+        );
+        // a language that is not one of the eight, or a gender that is not f or m, is a file
+        assert!(matches!(
+            SoundSetting::parse("voice:xx:f"),
+            SoundSetting::File(_)
+        ));
+        assert!(matches!(
+            SoundSetting::parse("voice:es:x"),
+            SoundSetting::File(_)
+        ));
+        let dir = std::env::temp_dir().join(format!("eh3d-voices-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        for (l, g, c) in [
+            ("es", "f", "finished"),
+            ("es", "f", "tool"),
+            ("de", "m", "finished"),
+        ] {
+            let d = dir.join(l).join(g);
+            std::fs::create_dir_all(&d).unwrap();
+            std::fs::write(d.join(format!("{c}.wav")), b"RIFF").unwrap();
+        }
+        // only the voices that have both recordings are listed
+        assert_eq!(available_voices(&dir), vec![("es", true)]);
+        assert!(
+            voice_file(&dir, "es", true, Cue::Finished).is_some()
+                && voice_file(&dir, "es", false, Cue::Finished).is_none()
+        );
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]

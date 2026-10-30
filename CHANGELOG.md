@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Spoken notices:** the sound of the end of the job and of the tool request can be a voice (`sound_finish = voice:es:f`, language and female or male), found in the folder `voices` next to the program (or the one the variable `EH3D_VOICES` names); a voice that is not recorded plays the tone, and the program can list the voices that are there.
 - **The node of the drill head in the machine file:** `head_node` (`off`, `direct` or `server`), `head_address`, `head_token` and `head_camera` say how EH3D-NODE-BUNGARD-AUX is reached; they are written only when the node is used, and the other lines of the file stay as they are.
 - **A table that is not flat:** the options of a job can carry the height map of the table, and every hole is drilled to the same depth into the board wherever the table is high or low (`plan_drill_job_levelled`); without a map nothing changes.
 ## [0.0.6] - The connection drop-down, a blinking cursor, tabs for panels, jobs that go on and the machines of the fleet
