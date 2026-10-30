@@ -441,7 +441,19 @@ impl<'a> JobBuilder<'a> {
 /// Plans a drilling job. `holes` must already be in drilling order, grouped by tool in the order
 /// the tools are used; `tools` gives the data of each tool number.
 pub fn plan_drill_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole]) -> Vec<Item> {
-    plan_job(m, tools, holes, None)
+    plan_job(m, tools, holes, None, &[])
+}
+
+/// The same job on a table that is not flat: `lifts_mm[i]` is how much higher the table is under hole `i` than at the place the Z was set (negative where it is
+/// lower), and the drill goes that much less (or more) deep there, so every hole has the same depth into the board. Holes without a lift are drilled as they are.
+pub fn plan_drill_job_levelled(
+    m: &JobMachine,
+    tools: &[JobTool],
+    holes: &[JobHole],
+    lifts_mm: &[f64],
+    rack: Option<&Rack>,
+) -> Vec<Item> {
+    plan_job(m, tools, holes, rack.cloned(), lifts_mm)
 }
 
 /// The same job on a machine with the automatic tool changer: the tools wait in the rack and the head changes them itself (the
@@ -453,10 +465,16 @@ pub fn plan_drill_job_atc(
     holes: &[JobHole],
     rack: &Rack,
 ) -> Vec<Item> {
-    plan_job(m, tools, holes, Some(rack.clone()))
+    plan_job(m, tools, holes, Some(rack.clone()), &[])
 }
 
-fn plan_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole], rack: Option<Rack>) -> Vec<Item> {
+fn plan_job(
+    m: &JobMachine,
+    tools: &[JobTool],
+    holes: &[JobHole],
+    rack: Option<Rack>,
+    lifts_mm: &[f64],
+) -> Vec<Item> {
     let mut p = Planner {
         m,
         items: Vec::new(),
@@ -494,8 +512,13 @@ fn plan_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole], rack: Option<R
                 feed_mm_min: 1000,
                 spindle_rpm: 60_000,
             });
-        let group: Vec<&JobHole> = holes.iter().filter(|h| h.tool == tool_no).collect();
-        let first = p.abs_steps(group[0]);
+        let group: Vec<(&JobHole, f64)> = holes
+            .iter()
+            .enumerate()
+            .filter(|(_, h)| h.tool == tool_no)
+            .map(|(i, h)| (h, lifts_mm.get(i).copied().unwrap_or(0.0)))
+            .collect();
+        let first = p.abs_steps(group[0].0);
         let levels = z_levels(
             &ZParams {
                 max_depth_mm: m.max_depth_mm,
@@ -538,14 +561,19 @@ fn plan_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole], rack: Option<R
             p.goto_xy(first);
         }
 
-        for (hi, h) in group.iter().enumerate() {
+        for (hi, (h, lift)) in group.iter().enumerate() {
             if hi > 0 {
                 let t = p.abs_steps(h);
                 p.goto_xy(t);
             }
-            let end = levels.end_steps;
-            let down = end.saturating_sub(p.z);
-            p.z_down(down, feed_hz);
+            // where the table is higher the hole is not as deep in steps from home, where it is lower it is deeper
+            let shift = g.z_steps(lift.abs()) as i64 * if *lift >= 0.0 { -1 } else { 1 };
+            let end = (levels.end_steps as i64 + shift).max(0) as u32;
+            if end >= p.z {
+                p.z_down(end - p.z, feed_hz);
+            } else {
+                p.z_up(p.z - end, fast_hz);
+            }
             if hi + 1 == group.len() {
                 let all = p.z;
                 p.z_up(all, fast_hz);

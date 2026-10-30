@@ -303,6 +303,8 @@ pub struct JobOptions {
     pub ask_operator: bool,
     /// How many of the first holes (or paths) of the job, in the order the machine does them, are already done: a job that went on after a stop leaves them out.
     pub skip: usize,
+    /// The height map of the table: the holes are drilled to the same depth into the board wherever the table is high or low.
+    pub table: Option<eh3d_levelling::HeightMap>,
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.

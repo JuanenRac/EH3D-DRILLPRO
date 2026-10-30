@@ -383,3 +383,49 @@ fn the_manual_plan_never_opens_the_chuck() {
     let bytes = flatten_bytes(&plan_drill_job(&machine(), &tools, &holes));
     assert!(!bytes.iter().any(|&b| (0xA0..=0xBF).contains(&b)));
 }
+
+#[test]
+fn a_table_that_is_not_flat_changes_the_depth_of_each_hole_and_nothing_else() {
+    use eh3d_drillpro_protocol::job::plan_drill_job_levelled;
+    let tools = [JobTool {
+        number: 1,
+        extra_stroke_mm: 0.0,
+        feed_mm_min: 1000,
+        spindle_rpm: 60_000,
+    }];
+    let hole = |x: f64| JobHole {
+        tool: 1,
+        x_mm: x,
+        y_mm: 10.0,
+    };
+    let holes = [hole(10.0), hole(60.0), hole(110.0)];
+    let down = |lifts: &[f64]| {
+        let plan = plan_drill_job_levelled(&machine(), &tools, &holes, lifts, None);
+        flatten_bytes(&plan)
+            .iter()
+            .filter(|&&b| b == eh3d_drillpro_protocol::bits::Z_POS)
+            .count()
+    };
+    let flat = down(&[]);
+    // no lift at all, or a flat table, is the same job
+    assert_eq!(down(&[0.0, 0.0, 0.0]), flat);
+    assert_eq!(flat, down(&[]));
+    let plain = flatten_bytes(&plan_drill_job(&machine(), &tools, &holes));
+    assert_eq!(
+        plain,
+        flatten_bytes(&plan_drill_job_levelled(
+            &machine(),
+            &tools,
+            &holes,
+            &[],
+            None
+        ))
+    );
+    // where the table is 0.3 mm higher the drill goes less deep, where it is lower it goes deeper
+    let g = machine().geometry;
+    let steps = g.z_steps(0.3) as usize;
+    // the depth is the same into the board: a hole on a higher table is shallower by what the table is higher, and the next one makes it up again
+    assert_eq!(down(&[0.0, 0.3, 0.0]), flat);
+    assert_eq!(down(&[0.3, 0.3, 0.3]) + steps, flat);
+    assert_eq!(down(&[-0.3, -0.3, -0.3]), flat + steps);
+}

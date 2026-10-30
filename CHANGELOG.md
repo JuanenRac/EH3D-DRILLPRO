@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A table that is not flat:** the options of a job can carry the height map of the table, and every hole is drilled to the same depth into the board wherever the table is high or low (`plan_drill_job_levelled`); without a map nothing changes.
 ## [0.0.6] - The connection drop-down, a blinking cursor, tabs for panels, jobs that go on and the machines of the fleet
 
 - **A job can go on:** the options of a job tell how many of its first holes are already done, and the job leaves them out; the desktop window opens maximized.

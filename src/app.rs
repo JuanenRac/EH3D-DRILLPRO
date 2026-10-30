@@ -8,7 +8,8 @@ use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
 use crate::protocol::connection::{ConnectionConfig, Kind as ConnectionKind};
 use crate::protocol::job::{
-    plan_drill_job, plan_drill_job_atc, Item, JobHole, JobMachine, JobTool, Pause, Rack,
+    plan_drill_job, plan_drill_job_atc, plan_drill_job_levelled, Item, JobHole, JobMachine,
+    JobTool, Pause, Rack,
 };
 use crate::protocol::latches::run_ops;
 use crate::protocol::{bits, connect, run_steps, Simulator};
@@ -359,6 +360,14 @@ impl App {
                 spindle_rpm: t.spindle_rpm,
             })
             .collect();
+        // on a table that was measured, each hole has the height of the table under it, from the place the work starts
+        let lifts: Option<Vec<f64>> = self.job_options.table.as_ref().and_then(|t| {
+            let reference = t.height_at(offset.0, offset.1)?;
+            job_holes
+                .iter()
+                .map(|h| Some(t.height_at(h.x_mm + offset.0, h.y_mm + offset.1)? - reference))
+                .collect()
+        });
         let items = match self.rack() {
             Some(rack) => {
                 // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
@@ -373,9 +382,23 @@ impl App {
                     ));
                     return;
                 }
-                plan_drill_job_atc(&self.job_machine(), &tools, &job_holes, &rack)
+                match &lifts {
+                    Some(l) => plan_drill_job_levelled(
+                        &self.job_machine(),
+                        &tools,
+                        &job_holes,
+                        l,
+                        Some(&rack),
+                    ),
+                    None => plan_drill_job_atc(&self.job_machine(), &tools, &job_holes, &rack),
+                }
             }
-            None => plan_drill_job(&self.job_machine(), &tools, &job_holes),
+            None => match &lifts {
+                Some(l) => {
+                    plan_drill_job_levelled(&self.job_machine(), &tools, &job_holes, l, None)
+                }
+                None => plan_drill_job(&self.job_machine(), &tools, &job_holes),
+            },
         };
         let hole_ends = Self::hole_end_indexes(&items);
         let mut sim = Simulator::default();

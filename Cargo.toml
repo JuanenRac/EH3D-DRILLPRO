@@ -24,6 +24,7 @@ eh3d-archive = { path = "../EH3D-COMMON/crates/archive" }
 eh3d-bungard-formats = { path = "../EH3D-COMMON/crates/formats" }
 # several machines and stations at once: the answer of the server for the whole fleet
 eh3d-fleet = { path = "../EH3D-COMMON/crates/fleet" }
+eh3d-levelling = { path = "../EH3D-COMMON/crates/levelling" }
 eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"], optional = true }
 
 png = { version = "0.17", optional = true }
