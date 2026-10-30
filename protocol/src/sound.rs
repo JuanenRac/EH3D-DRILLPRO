@@ -31,6 +31,8 @@ pub enum SoundSetting {
     Default,
     /// A sound file of the operator's (WAV).
     File(PathBuf),
+    /// A sound of the catalogue of the program (see [`TONES`]): a pitch and a pattern.
+    Tone(u8),
 }
 
 impl SoundSetting {
@@ -40,6 +42,7 @@ impl SoundSetting {
             SoundSetting::Off => "off".into(),
             SoundSetting::Default => "default".into(),
             SoundSetting::File(p) => p.display().to_string(),
+            SoundSetting::Tone(i) => format!("tone:{i}"),
         }
     }
 
@@ -49,7 +52,13 @@ impl SoundSetting {
         match t.to_ascii_lowercase().as_str() {
             "" | "off" | "no" | "false" | "0" => SoundSetting::Off,
             "default" | "on" | "yes" | "true" | "1" => SoundSetting::Default,
-            _ => SoundSetting::File(PathBuf::from(t)),
+            other => match other
+                .strip_prefix("tone:")
+                .and_then(|n| n.trim().parse::<usize>().ok())
+            {
+                Some(i) if i < TONES => SoundSetting::Tone(i as u8),
+                _ => SoundSetting::File(PathBuf::from(t)),
+            },
         }
     }
 
@@ -68,15 +77,77 @@ fn notes(cue: Cue) -> &'static [(f32, u32)] {
 
 /// The tone of a cue as a WAV file (16 bits, mono, 22050 Hz).
 pub fn tone_wav(cue: Cue) -> Vec<u8> {
+    wav_of(notes(cue))
+}
+
+// ---- the catalogue: sixty sounds for each cue, from the high ones to the low ones
+
+/// How many sounds each cue has in the catalogue: ten pitches, from high to low, in six patterns each.
+pub const TONES: usize = 60;
+/// How many patterns each pitch has.
+pub const PATTERNS: usize = 6;
+
+/// The ten pitches of the catalogue, from the highest to the lowest, in Hz: C7, G6, D6, A5, E5, C5, G4, D4, G3 and C3.
+pub const PITCHES: [f32; 10] = [
+    2093.00, 1567.98, 1174.66, 880.00, 659.25, 523.25, 392.00, 293.66, 196.00, 130.81,
+];
+
+/// The note names of [`PITCHES`], for the lists.
+pub const PITCH_NAMES: [&str; 10] = ["C7", "G6", "D6", "A5", "E5", "C5", "G4", "D4", "G3", "C3"];
+
+/// The pitch (0 the highest) and the pattern (0 to 5) of a sound of the catalogue. The number goes from 0 to [`TONES`] - 1: the sounds are ordered from the
+/// highest pitch to the lowest and, inside a pitch, by pattern.
+pub fn tone_parts(index: usize) -> (usize, usize) {
+    let i = index.min(TONES - 1);
+    (i / PATTERNS, i % PATTERNS)
+}
+
+/// The notes of a sound of the catalogue as (frequency in Hz, length in ms; frequency 0 is a silence). The patterns of the sound for the end of the job are
+/// the chime, the rise, the fall, the fanfare, the triple and the bell; the ones for a tool are the beep, the double, the triple beep, the alarm, the knock and
+/// the siren.
+pub fn tone_notes(cue: Cue, index: usize) -> Vec<(f32, u32)> {
+    let (p, pattern) = tone_parts(index);
+    let f = PITCHES[p];
+    match (cue, pattern) {
+        (Cue::Finished, 0) => vec![(f, 700)],
+        (Cue::Finished, 1) => vec![(f, 150), (f * 1.26, 150), (f * 1.5, 380)],
+        (Cue::Finished, 2) => vec![(f * 1.5, 150), (f * 1.26, 150), (f, 380)],
+        (Cue::Finished, 3) => vec![(f, 120), (0.0, 30), (f, 120), (0.0, 30), (f * 1.5, 420)],
+        (Cue::Finished, 4) => vec![(f, 160), (0.0, 80), (f, 160), (0.0, 80), (f, 160)],
+        (Cue::Finished, _) => vec![(f, 900), (f * 2.0, 500)],
+        (Cue::ToolChange, 0) => vec![(f, 220)],
+        (Cue::ToolChange, 1) => vec![(f, 140), (0.0, 80), (f, 140)],
+        (Cue::ToolChange, 2) => vec![(f, 110), (0.0, 70), (f, 110), (0.0, 70), (f, 110)],
+        (Cue::ToolChange, 3) => (0..4)
+            .flat_map(|k| [(if k % 2 == 0 { f } else { f * 1.5 }, 160), (0.0, 20)])
+            .collect(),
+        (Cue::ToolChange, 4) => vec![
+            (f * 0.5, 50),
+            (0.0, 90),
+            (f * 0.5, 50),
+            (0.0, 90),
+            (f * 0.5, 50),
+        ],
+        (Cue::ToolChange, _) => (0..14)
+            .map(|k| {
+                let up = if k < 7 { k } else { 13 - k } as f32;
+                (f * (1.0 + up * 0.06), 45)
+            })
+            .collect(),
+    }
+}
+
+/// The WAV file (16 bits, mono, 22050 Hz) of some notes.
+fn wav_of(notes: &[(f32, u32)]) -> Vec<u8> {
     const RATE: u32 = 22_050;
     let mut samples: Vec<i16> = Vec::new();
-    for &(freq, ms) in notes(cue) {
+    for &(freq, ms) in notes {
         let n = (RATE as u64 * ms as u64 / 1000) as usize;
         for i in 0..n {
             let t = i as f32 / RATE as f32;
             // a soft start and a long fade, so that it does not click
             let env = (i as f32 / 200.0).min(1.0) * (1.0 - i as f32 / n as f32).powf(0.6);
-            let v = if freq == 0.0 {
+            let v = if freq == 0.0 || freq > 10_000.0 {
                 0.0
             } else {
                 (t * freq * std::f32::consts::TAU).sin() * 0.55
@@ -105,11 +176,27 @@ pub fn tone_wav(cue: Cue) -> Vec<u8> {
     out
 }
 
+/// The WAV file of a sound of the catalogue.
+pub fn catalogue_wav(cue: Cue, index: usize) -> Vec<u8> {
+    wav_of(&tone_notes(cue, index))
+}
+
 /// The file to play for a setting: the operator's, or the tone written to the temporary folder. `None` when there is no sound.
 pub fn file_for(setting: &SoundSetting, cue: Cue) -> Option<PathBuf> {
     match setting {
         SoundSetting::Off => None,
         SoundSetting::File(p) if p.is_file() => Some(p.clone()),
+        SoundSetting::Tone(i) => {
+            let tag = match cue {
+                Cue::Finished => "finished",
+                Cue::ToolChange => "tool",
+            };
+            let path = std::env::temp_dir().join(format!("eh3d-sound-{tag}-{i}.wav"));
+            if !path.is_file() {
+                std::fs::write(&path, catalogue_wav(cue, *i as usize)).ok()?;
+            }
+            Some(path)
+        }
         // a file that is not there plays the tone instead of nothing
         SoundSetting::File(_) | SoundSetting::Default => {
             let name = match cue {
@@ -197,6 +284,57 @@ mod tests {
             SoundSetting::File(PathBuf::from("a b.wav"))
         );
         assert!(SoundSetting::Default.is_on() && !SoundSetting::Off.is_on());
+    }
+
+    #[test]
+    fn the_catalogue_has_sixty_different_sounds_for_each_cue_from_high_to_low() {
+        assert_eq!(PITCHES.len() * PATTERNS, TONES);
+        // the pitches go down
+        assert!(PITCHES.windows(2).all(|w| w[0] > w[1]));
+        for cue in [Cue::Finished, Cue::ToolChange] {
+            let mut seen = std::collections::HashSet::new();
+            for i in 0..TONES {
+                let notes = tone_notes(cue, i);
+                assert!(!notes.is_empty() && notes.iter().any(|n| n.0 > 0.0), "{i}");
+                let wav = catalogue_wav(cue, i);
+                assert_eq!(&wav[0..4], b"RIFF");
+                assert!(wav.len() > 8_000, "the sound {i} is too short");
+                assert!(seen.insert(wav), "the sound {i} repeats another one");
+            }
+            assert_eq!(seen.len(), TONES);
+            // the first sound of the catalogue is higher than the last
+            let top = tone_notes(cue, 0).iter().map(|n| n.0).fold(0.0, f32::max);
+            let bottom = tone_notes(cue, TONES - 1)
+                .iter()
+                .map(|n| n.0)
+                .fold(f32::MAX, |a, b| if b > 0.0 { a.min(b) } else { a });
+            assert!(top > bottom * 4.0, "{top} against {bottom}");
+        }
+        // the sounds for a tool are not the ones for the end of the job
+        assert_ne!(tone_notes(Cue::Finished, 7), tone_notes(Cue::ToolChange, 7));
+    }
+
+    #[test]
+    fn a_sound_of_the_catalogue_is_kept_in_the_machine_file_and_played_from_a_file() {
+        let s = SoundSetting::Tone(42);
+        assert_eq!(s.to_text(), "tone:42");
+        assert_eq!(SoundSetting::parse("tone:42"), s);
+        assert!(s.is_on());
+        // a number that is not in the catalogue is a file name, as any other text
+        assert_eq!(
+            SoundSetting::parse("tone:99"),
+            SoundSetting::File(PathBuf::from("tone:99"))
+        );
+        let c = crate::connection::parse(
+            "connection = demo\nsound_finish = tone:7\nsound_tool_change = tone:59\n",
+        )
+        .unwrap();
+        assert_eq!(
+            (c.sound_finish, c.sound_tool_change),
+            (SoundSetting::Tone(7), SoundSetting::Tone(59))
+        );
+        let path = file_for(&SoundSetting::Tone(3), Cue::ToolChange).unwrap();
+        assert!(path.is_file());
     }
 
     #[test]
