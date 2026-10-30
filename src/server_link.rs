@@ -7,6 +7,8 @@ use std::time::Duration;
 
 use serde_json::Value;
 
+use eh3d_fleet::Fleet;
+
 use crate::protocol::connection::ConnectionConfig;
 
 /// The server a program talks to: its address (`host:port`), the token of this program and the machine the jobs are for.
@@ -23,6 +25,15 @@ impl Client {
             token: config.server_token.clone(),
             machine: config.server_machine.clone(),
         }
+    }
+
+    /// Every machine of the server at once, in its station, with what it is doing: what a central screen shows.
+    pub fn fleet(&self) -> Result<Fleet, String> {
+        let (status, body) = self.call("GET", "/api/v1/fleet", None)?;
+        if status != 200 {
+            return Err(error_text(status, &body));
+        }
+        Fleet::from_json(&body)
     }
 
     /// One request; the answer is the status and the JSON body (`null` when the body is not JSON).
@@ -148,6 +159,57 @@ mod tests {
         assert!(parse_response(b"HTTP/1.1 200 OK\r\ncontent-le").is_err());
         let (status, body) = parse_response(b"HTTP/1.1 502 Bad Gateway\r\n\r\nnot json").unwrap();
         assert_eq!((status, body), (502, Value::Null));
+    }
+
+    /// A server that answers one request with `body` and goes away.
+    fn one_answer(status: &str, body: &str) -> String {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap().to_string();
+        let reply = format!(
+            "HTTP/1.1 {status}\r\ncontent-type: application/json\r\ncontent-length: {}\r\n\r\n{body}",
+            body.len()
+        );
+        std::thread::spawn(move || {
+            if let Ok((mut s, _)) = listener.accept() {
+                let mut buf = [0u8; 2048];
+                let n = s.read(&mut buf).unwrap_or(0);
+                let request = String::from_utf8_lossy(&buf[..n]).to_string();
+                // the request carries the path and the token of the program
+                assert!(
+                    request.starts_with("GET /api/v1/fleet HTTP/1.1"),
+                    "{request}"
+                );
+                assert!(request.contains("Authorization: Bearer secret"));
+                let _ = s.write_all(reply.as_bytes());
+            }
+        });
+        address
+    }
+
+    #[test]
+    fn the_whole_fleet_is_asked_in_one_request_and_a_refusal_is_one_line() {
+        let body = r#"{"stations":[{"id":"bench","machines":["m1","m2"]}],"machines":[
+            {"id":"m1","name":"M1","station":"bench","connection":"demo","state":"busy","job":{"id":"j","name":"board","kind":"drill","items_done":1,"items_total":4,"percent":25},"ready":0},
+            {"id":"m2","name":"M2","station":"bench","connection":"demo","state":"idle","job":null,"ready":2}]}"#;
+        let client = Client {
+            address: one_answer("200 OK", body),
+            token: "secret".into(),
+            machine: String::new(),
+        };
+        let fleet = client.fleet().unwrap();
+        assert_eq!(fleet.machines.len(), 2);
+        assert_eq!(fleet.pick_free("bench").unwrap().id, "m2");
+        assert_eq!(fleet.find("m1").unwrap().job.as_ref().unwrap().percent, 25);
+        let client = Client {
+            address: one_answer(
+                "401 Unauthorized",
+                r#"{"error":"unauthorized","detail":"no token"}"#,
+            ),
+            token: "secret".into(),
+            machine: String::new(),
+        };
+        assert_eq!(client.fleet().unwrap_err(), "unauthorized: no token");
     }
 
     #[test]

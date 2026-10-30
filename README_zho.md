@@ -70,6 +70,7 @@
 * **服务器连接**（机器文件中的 `connection = server`，配合 `server_address`、`server_token` 和 `server_machine`）：程序不再自己驱动机器，而是把作业发给 [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER)，由它按机器的常数规划、通过机器的节点执行，并告诉程序进展如何；程序照常显示进度并回答对话框，`Esc` 会停止服务器上的作业，关闭程序则不会停止它。
 * **作业压缩包、Offset 窗口和模拟**：作业可以打包成 ZIP 压缩包（Select File 窗口可进入其中，`drillpro JOB.ZIP` 会载入其中第一个钻孔文件）；文件名旁的箭头列出 `*.NCD`、`*.ZIP` 和 `*.*` 模式；刀具窗口和配置窗口的 Load 按钮用于选择要载入的文件；在真实机器上，Offset 窗口会让机器回零、跟随窗口的每一次移动并再次回零；模拟作业所用的时间与机器实际所需相同。
 * **提示音**：机器文件中的 `sound_finish` 和 `sound_tool_change` 分别可以是 off（默认）、`default`（程序自带的音调）或你自己的 WAV 文件路径；前者在作业自行结束时响起，后者在机器要求换刀时响起。
+* **多台机床和工位**：当 `connection = server` 时，`drillpro --machines` 列出服务器的所有机床，按工位分组，显示每台的状态、作业和就绪作业（服务器一次回答所有机床），`drillpro --machine ID` 把本程序的作业发给该机床，而不是机床文件中的那台；各机床同时运行，每台一个作业。
 
 ## 🧩 在 EH3D 中的角色
 

@@ -14,6 +14,9 @@ const SETTINGS: &str = "eh3d-drillpro.lang";
 
 fn main() -> eframe::Result {
     let o = cli::parse(SETTINGS, "DRILLPRO.DCF");
+    if o.machines {
+        std::process::exit(cli::print_fleet(&o));
+    }
     let capture = o.shot.clone().map(|file| gui::Capture {
         keys: gui::parse_keys(&o.keys),
         file,
@@ -23,7 +26,12 @@ fn main() -> eframe::Result {
     if o.modern {
         let mut app = App::new(o.lang, &o.data);
         match eh3d_drillpro::protocol::connection::load(o.connection.as_deref()) {
-            Ok(c) => app.set_connection(c),
+            Ok(mut c) => {
+                if let Some(m) = &o.machine {
+                    c.server_machine = m.clone();
+                }
+                app.set_connection(c)
+            }
             Err(e) => app.set_error(e),
         }
         if let Some(f) = &o.file {

@@ -33,6 +33,10 @@ pub struct Options {
     pub point: Option<(usize, usize, bool)>,
     pub shot: Option<PathBuf>,
     pub wait: u32,
+    /// Lists the machines and the stations of the server and leaves (`--machines`).
+    pub machines: bool,
+    /// The machine of the server the jobs are for, instead of the one in the machine file (`--machine ID`).
+    pub machine: Option<String>,
 }
 
 /// Reads the arguments. `settings` names the file that remembers the language; `data_file` is the configuration file
@@ -61,6 +65,8 @@ pub fn parse_from(
         point: None,
         shot: None,
         wait: 8,
+        machines: false,
+        machine: None,
     };
     let mut args = args.into_iter();
     while let Some(a) = args.next() {
@@ -77,6 +83,8 @@ pub fn parse_from(
             }
             "--connection" => o.connection = args.next().map(PathBuf::from),
             "--dump" => o.dump = true,
+            "--machines" => o.machines = true,
+            "--machine" => o.machine = args.next(),
             "--modern" => o.modern = true,
             "--classic" => o.modern = false,
             "--keys" => o.keys = args.next().unwrap_or_default(),
@@ -107,7 +115,12 @@ pub fn start_classic<E: crate::classic::engine::ClassicEngine>(
     o: &Options,
 ) -> crate::classic::ClassicApp<E> {
     match crate::protocol::connection::load(o.connection.as_deref()) {
-        Ok(c) => engine.set_connection(c),
+        Ok(mut c) => {
+            if let Some(m) = &o.machine {
+                c.server_machine = m.clone();
+            }
+            engine.set_connection(c)
+        }
         Err(e) => engine.set_error(e),
     }
     let mut app = crate::classic::ClassicApp::with_engine(engine);
@@ -126,4 +139,35 @@ pub fn dump_text(app: &impl crate::textapp::TextApp) -> String {
     let mut s = crate::screen::Screen::default();
     app.render(&mut s);
     s.to_text()
+}
+
+/// `--machines`: asks the server for the whole fleet and prints it (the stations with their machines, what each is doing and its job).
+/// Returns the code the program leaves with.
+pub fn print_fleet(o: &Options) -> i32 {
+    let config = match crate::protocol::connection::load(o.connection.as_deref()) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("{e}");
+            return 2;
+        }
+    };
+    if config.kind != crate::protocol::connection::Kind::Server {
+        eprintln!("the connection of the machine file is not `server`: there is no fleet to list");
+        return 2;
+    }
+    match crate::server_link::Client::new(&config).fleet() {
+        Ok(f) => {
+            let s = f.summary();
+            print!("{}", f.to_text());
+            println!(
+                "{} machines: {} free, {} busy, {} waiting for the operator; {} stations",
+                s.machines, s.idle, s.busy, s.waiting, s.stations
+            );
+            0
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            1
+        }
+    }
 }
