@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.5] - The machine files from a shared crate, sounds for the end of the job and the tool change, more patterns in the file window and screenshots
+
 - **The classic main screen names the program that runs:** the heading under the logo says which program it is (the routing program no longer says it is the drilling one).
 - **Screenshots in the README:** three pictures of the classic screens (the main screen, the tool data and the parameters) in all the eight languages of the README.
 - **More patterns in the file window:** an engine can add patterns after its own (the routing program adds the drawings of a board), which the arrow next to the file name lists with `*.ZIP` and `*.*`.
