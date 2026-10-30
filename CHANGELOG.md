@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The connection chosen in the Config window:** a drop-down with the five ways the job reaches the machine (the simulator, the serial port, a USB adapter, the EH3D node, the EH3D server) and what each needs (a port, an address and a token, a machine of the server); it is checked, applied with OK and written into the machine file without touching its other lines. The same for EH3D-ROUTEPRO.
+- **A blinking cursor:** the cursor of a field being edited blinks. The same for EH3D-ROUTEPRO.
+- **`--keys` takes `tab` and `backtab`:** the pictures of the windows that need them.
+- **The order of the holes:** the classic screens tell, through `hole_order`, the holes of the job in the order the machine drills them, so a window that draws the board marks the right ones.
 - **Several machines and stations at once:** with `connection = server`, `drillpro --machines` asks the server for the whole fleet in one request and lists every machine, grouped by station, with what each one is doing, its job and the jobs ready; `--machine ID` sends the jobs to that machine instead of the one in the machine file; the client reads the answer with `eh3d-fleet` (tested on a server that answers one request, and against the real server in EH3D-SERVER).
 - **The buttons answer to the pointer:** the button under the pointer lights up, and while it is pressed it sinks (it loses its shadow, goes darker and moves its letters a little); `--point COLUMN,ROW[,down]` puts the pointer there for the pictures.
 ## [0.0.5] - The machine files from a shared crate, sounds for the end of the job and the tool change, more patterns in the file window and screenshots

@@ -4,6 +4,7 @@
 //! stay in the engine; this module owns what is seen and typed. Everything can be done with the keyboard (letters,
 //! `Tab`, arrows, `Enter`, `Esc`) and with the mouse (every field, button, radio button and list entry).
 
+mod connect;
 mod dialogs;
 pub mod edit;
 pub mod engine;
@@ -241,6 +242,12 @@ pub(crate) enum Act {
     LangStep(isize),
     /// A control of the Offset Teach window.
     Teach(teach::TeachBtn),
+    /// A place of the connection window that opens over the Parameter window, by its place in the ring.
+    Conn(usize),
+    /// A way of the drop-down of the connection.
+    ConnKind(usize),
+    /// The rest of the screen while the connection window is open: it answers nothing.
+    ConnShield,
 }
 
 struct Hit {
@@ -272,6 +279,8 @@ pub struct ClassicApp<E: ClassicEngine = App> {
     /// Name of the machine shown where the original shows the licence number.
     pub machine_name: String,
     hits: RefCell<Vec<Hit>>,
+    /// The machine file the connection is written into (the one named on the command line; the shared one when there is none).
+    machine_file: Option<std::path::PathBuf>,
     /// What the Select File window is open for: a job, a tool file or a configuration file.
     file_purpose: dialogs::Purpose,
     last_click: Cell<Option<(usize, usize, Instant)>>,
@@ -307,6 +316,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             interrupted: false,
             machine_name,
             hits: RefCell::new(Vec::new()),
+            machine_file: None,
             file_purpose: dialogs::Purpose::Job,
             last_click: Cell::new(None),
         }
@@ -335,6 +345,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     fn lang(&self) -> Lang {
         self.engine.lang()
+    }
+
+    /// The machine file the connection chosen in the Parameter window is written into (the shared one when this is not called).
+    pub fn set_machine_file(&mut self, path: Option<std::path::PathBuf>) {
+        self.machine_file = path;
     }
 
     fn t(&self, k: CText) -> &'static str {
@@ -411,7 +426,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 (Some(e), true) => edit_field(s, x, y, w, e),
                 (None, true) => {
                     field(s, x, y, w, &self.form.text(f), true);
-                    s.put(x + 1, y, '\u{2595}', GREEN, BLACK);
+                    if ui::cursor_on() {
+                        s.put(x + 1, y, '\u{2595}', GREEN, BLACK);
+                    }
                 }
                 _ => field(s, x, y, w, &self.form.text(f), false),
             }

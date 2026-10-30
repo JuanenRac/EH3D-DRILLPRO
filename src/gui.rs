@@ -81,6 +81,8 @@ pub fn parse_keys(spec: &str) -> Vec<Input> {
             match t.as_str() {
                 "enter" => Some(Input::Enter),
                 "esc" => Some(Input::Esc),
+                "tab" => Some(Input::Tab),
+                "backtab" => Some(Input::BackTab),
                 "up" => Some(Input::Up),
                 "down" => Some(Input::Down),
                 "pgup" => Some(Input::PageUp),
@@ -110,6 +112,8 @@ struct Gui<A: TextApp> {
     settings: String,
     screen: Screen,
     lang_saved: Lang,
+    /// When the window opened: the cursor of a field blinks by it.
+    started: std::time::Instant,
 }
 
 impl<A: TextApp> Gui<A> {
@@ -324,6 +328,10 @@ impl<A: TextApp> eframe::App for Gui<A> {
             self.lang_saved = self.app.lang();
             let _ = std::fs::write(settings_path(&self.settings), self.app.lang().code());
         }
+        // the cursor of a field being edited blinks
+        crate::classic::ui::set_cursor_on(crate::classic::ui::cursor_phase(
+            self.started.elapsed().as_millis(),
+        ));
         self.app.render(&mut self.screen);
         let clicked = egui::Frame::NONE
             .fill(Color32::BLACK)
@@ -379,6 +387,7 @@ pub fn run_capture<A: TextApp + 'static>(
                 settings,
                 screen: Screen::default(),
                 lang_saved: lang,
+                started: std::time::Instant::now(),
             }))
         }),
     )

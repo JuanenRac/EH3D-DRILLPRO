@@ -18,7 +18,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** ein Rust-Programm mit einer 80x25-Textoberfläche, das Excellon-Bohrdateien `.NCD`, die Werkzeugtabelle und die Maschinenkonfiguration liest, die Bohrungen ordnet, anzeigt und den ganzen Auftrag entweder **gegen einen Simulator** (Standard) oder, wenn die Maschinendatei es vorgibt, **an einer echten Maschine** über die serielle Schnittstelle des Rechners, einen USB-Seriell-Adapter oder den EH3D-NODE-BUNGARD ausführt. 212 Tests laufen auf einem Rechner. An einer echten Bungard CCD MTC wurden die Referenzfahrt der drei Achsen (Z, X und Y bis zu ihren Endschaltern, mit dem Signal „alle drei in Referenz“ der Steuereinheit live bestätigt) und die Bewegungen jeder Achse erprobt; **ein vollständiger Bohrauftrag lief noch nicht an der Maschine**, und die Schritte pro Millimeter sind nur gegen die Konfiguration des Originals geprüft. Standardmäßig erscheinen die klassischen Bildschirme des MS-DOS-Programms, Zelle für Zelle mit dem Original verglichen; `--modern` startet stattdessen die menügesteuerte Oberfläche. Sie lassen sich mit Tastatur und Maus bedienen, das Fenster kann maximiert werden (der Bildschirm skaliert von 640x400 bis 1080p und mehr), die Konfigurations- und Werkzeugdateien werden in den Dialogen bearbeitet und gespeichert, und die Schaltfläche Info nennt die Bungard-Maschinen CCD und CCD/2 (MTC unterstützt, ATC noch nicht). Eine Konsolenversion (`drillpro-console`) zeigt dieselben Bildschirme im Terminal, mit Tastatur und Maus und ohne Fenstersystem (SSH, Textkonsole, alter PC). Die Pakete jeder Version enthalten die Basiskonfiguration, Zeile für Zeile erklärt, und einen Ordner `examples` von einem Loch bis zu zwanzigtausend. Der Werkzeugwechsler der ATC-Modelle (automatischer Werkzeugwechsel) arbeitet nach einer Aufzeichnung des Originals und lief noch nicht an einer echten Maschine.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** ein Rust-Programm mit einer 80x25-Textoberfläche, das Excellon-Bohrdateien `.NCD`, die Werkzeugtabelle und die Maschinenkonfiguration liest, die Bohrungen ordnet, anzeigt und den ganzen Auftrag entweder **gegen einen Simulator** (Standard) oder, wenn die Maschinendatei es vorgibt, **an einer echten Maschine** über die serielle Schnittstelle des Rechners, einen USB-Seriell-Adapter oder den EH3D-NODE-BUNGARD ausführt. 223 Tests laufen auf einem Rechner. An einer echten Bungard CCD MTC wurden die Referenzfahrt der drei Achsen (Z, X und Y bis zu ihren Endschaltern, mit dem Signal „alle drei in Referenz“ der Steuereinheit live bestätigt) und die Bewegungen jeder Achse erprobt; **ein vollständiger Bohrauftrag lief noch nicht an der Maschine**, und die Schritte pro Millimeter sind nur gegen die Konfiguration des Originals geprüft. Standardmäßig erscheinen die klassischen Bildschirme des MS-DOS-Programms, Zelle für Zelle mit dem Original verglichen; `--modern` startet stattdessen die menügesteuerte Oberfläche. Sie lassen sich mit Tastatur und Maus bedienen, das Fenster kann maximiert werden (der Bildschirm skaliert von 640x400 bis 1080p und mehr), die Konfigurations- und Werkzeugdateien werden in den Dialogen bearbeitet und gespeichert, und die Schaltfläche Info nennt die Bungard-Maschinen CCD und CCD/2 (MTC unterstützt, ATC noch nicht). Eine Konsolenversion (`drillpro-console`) zeigt dieselben Bildschirme im Terminal, mit Tastatur und Maus und ohne Fenstersystem (SSH, Textkonsole, alter PC). Die Pakete jeder Version enthalten die Basiskonfiguration, Zeile für Zeile erklärt, und einen Ordner `examples` von einem Loch bis zu zwanzigtausend. Der Werkzeugwechsler der ATC-Modelle (automatischer Werkzeugwechsel) arbeitet nach einer Aufzeichnung des Originals und lief noch nicht an einer echten Maschine.
 
 ---
 
@@ -30,7 +30,7 @@
 |---|---|
 | Version | `0.0.5` |
 | Reifegrad | Gerüst |
-| Tests | 212 |
+| Tests | 223 |
 | Technologie-Stack | Rust |
 | Auf echter Hardware | Ja, an einer Bungard CCD MTC: die Referenzfahrt und die Bewegungen jeder Achse; ein ganzer Auftrag lief noch nicht. Ohne Maschinendatei läuft es im Simulator |
 
@@ -45,7 +45,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Software | 🟡 | Ein Rust-Programm mit 80x25-Textbildschirm liest die Bohrdatei, die Werkzeugtabelle und die Maschinendatei, ordnet die Bohrungen und führt den ganzen Auftrag gegen einen Simulator aus, oder auf einer echten Maschine, wenn die Maschinendatei es sagt. |
-| Tests | 🟢 | 212 Tests bestehen (`cargo test --workspace`): die Formate, die Auftragsplanung, das Protokoll am Simulator und die Bildschirme in allen acht Sprachen. |
+| Tests | 🟢 | 223 Tests bestehen (`cargo test --workspace`): die Formate, die Auftragsplanung, das Protokoll am Simulator und die Bildschirme in allen acht Sprachen. |
 | Dateileser | 🟡 | Die Bohrdatei `.NCD`, die Werkzeugtabelle `DRILLPRO.DTD` und die Maschinendatei `DRILLPRO.DCF` werden gelesen; nur mit kleinen, für die Tests geschriebenen Beispieldateien, nicht mit Dateien echter Platinen. |
 | Maschinenprotokoll | 🟠 | Das Byte-Protokoll der Steuereinheit wurde per Reverse Engineering nachgebaut, und `docs/PROTOCOL.md` nennt noch Teile, die Hypothesen sind; die Protokollschicht bewegt nichts, bevor sie scharfgeschaltet wurde. |
 | Oberfläche | 🟡 | Der Textbildschirm, die Menüs, der Dateidialog und die Vektoransicht der Bohrungen sprechen alle acht Sprachen (getestet); Chinesisch und Japanisch brauchen eine CJK-Schrift im System. |
@@ -71,6 +71,8 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 * Die **Auftragsarchive, das Offset-Fenster und die Simulation**: ein Auftrag kann in einem ZIP-Archiv liegen (das Fenster Select File geht hinein, und `drillpro JOB.ZIP` lädt dessen erste Bohrdatei); der Pfeil neben dem Dateinamen listet die Muster `*.NCD`, `*.ZIP` und `*.*`; die Load-Tasten der Werkzeug- und Konfigurationsfenster wählen die zu ladende Datei; an einer echten Maschine fährt das Offset-Fenster sie in die Referenz, folgt jeder Bewegung des Fensters und fährt sie wieder in die Referenz; und der simulierte Auftrag dauert so lange wie auf der Maschine.
 * Die **Töne**: `sound_finish` und `sound_tool_change` in der Maschinendatei sind je off (der Standard), `default` (ein Ton des Programms) oder der Pfad einer eigenen WAV-Datei; der erste spielt, wenn ein Auftrag von selbst endet, der zweite, wenn die Maschine ein Werkzeug verlangt.
 * **Mehrere Maschinen und Stationen**: mit `connection = server` listet `drillpro --machines` alle Maschinen des Servers, nach Stationen gruppiert, mit dem, was jede tut, ihrem Auftrag und den bereiten Aufträgen (der Server antwortet für alle auf einmal), und `drillpro --machine ID` schickt die Aufträge dieses Programms an diese Maschine statt an die der Maschinendatei; die Maschinen laufen gleichzeitig, ein Auftrag auf jeder.
+* **Die im Fenster Konfig. gewählte Verbindung:** eine Auswahlliste mit den fünf Wegen, auf denen der Auftrag die Maschine erreicht (der Simulator, die serielle Schnittstelle, ein USB-Adapter, der EH3D-Knoten und der EH3D-Server), und darunter, was jeder braucht: einen Port, eine Adresse und ein Token, eine Maschine des Servers; das Gewählte wird geprüft, mit OK übernommen und in die Maschinendatei geschrieben, ohne deren übrige Zeilen anzutasten.
+* **Ein blinkender Cursor:** der Cursor eines numerischen oder Textfelds, das bearbeitet wird, blinkt (eine halbe Sekunde an, eine halbe Sekunde aus), wie auf den Bildschirmen, denen es folgt.
 
 ## 🧩 Rolle in EH3D
 
@@ -104,6 +106,12 @@ Wie die Teile dieses Repositorys zusammenpassen: wer es nutzt, was es enthält u
 
 <p align="center"><em>Die Parameter der Maschine: die Koordinaten der Dateien, die Sortierung der Löcher, die Geschwindigkeiten, die Rampen, die Korrektur und die Sprache.</em></p>
 
+<p align="center">
+  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+</p>
+
+<p align="center"><em>Die Verbindung mit der Maschine: der in der Auswahlliste gewählte Weg und was er braucht (hier der EH3D-Server).</em></p>
+
 ## 🚀 Schnellstart
 
 Du brauchst eine stabile Rust-Toolchain.
@@ -120,7 +128,7 @@ Starten Sie es mit `run.bat` (Windows) oder `./run.sh` (Linux und macOS); beide 
 
 ## 🧪 Tests
 
-Die Suite hat 212 Tests (`cargo test --workspace`). Sie prüfen die Dateiformate (die Bohrdatei, die Werkzeugtabelle und die Maschinendatei samt Zurückschreiben), die Auftragsplanung, das Protokoll im Simulator (Bytes, Bewegung, die Referenzfahrt, die Latch-Bits, die Verbindung zum Knoten und das Sicherheitstor, das ohne Scharfschalten nichts bewegt), die klassischen Bildschirme Zelle für Zelle und die Bildschirme in allen acht Sprachen. Die CI führt außerdem `cargo fmt --check` und `cargo clippy` mit Warnungen als Fehlern aus, und `python -I tools/ci_validate.py` prüft Manifest, Versionen, Changelog und die acht READMEs.
+Die Suite hat 223 Tests (`cargo test --workspace`). Sie prüfen die Dateiformate (die Bohrdatei, die Werkzeugtabelle und die Maschinendatei samt Zurückschreiben), die Auftragsplanung, das Protokoll im Simulator (Bytes, Bewegung, die Referenzfahrt, die Latch-Bits, die Verbindung zum Knoten und das Sicherheitstor, das ohne Scharfschalten nichts bewegt), die klassischen Bildschirme Zelle für Zelle und die Bildschirme in allen acht Sprachen. Die CI führt außerdem `cargo fmt --check` und `cargo clippy` mit Warnungen als Fehlern aus, und `python -I tools/ci_validate.py` prüft Manifest, Versionen, Changelog und die acht READMEs.
 
 ## 🏗️ Build und Veröffentlichung
 

@@ -124,6 +124,7 @@ pub fn start_classic<E: crate::classic::engine::ClassicEngine>(
         Err(e) => engine.set_error(e),
     }
     let mut app = crate::classic::ClassicApp::with_engine(engine);
+    app.set_machine_file(o.connection.clone());
     if let Some(f) = &o.file {
         if f.extension().is_some_and(|e| e.eq_ignore_ascii_case("zip")) {
             app.load_zip(f);

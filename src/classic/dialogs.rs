@@ -109,6 +109,8 @@ enum Ctl {
     Lang,
     /// The "AutoChg" check box of the models with a tool changer.
     Auto,
+    /// The connection with the machine: Enter or a click opens its window.
+    Conn,
     Btn(Dlg),
 }
 
@@ -124,6 +126,8 @@ pub(crate) struct ParamDlg {
     edit: Option<LineEdit>,
     error: Option<String>,
     status: Option<String>,
+    /// The connection with the machine, being chosen in the window that opens over this one.
+    conn: super::connect::ConnState,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -501,7 +505,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     fn dialog_editing(&self) -> bool {
         match &self.dialog {
-            Dialog::Parameter(d) => d.edit.is_some(),
+            Dialog::Parameter(d) => d.edit.is_some() || (d.conn.open && d.conn.edit.is_some()),
             Dialog::Tools(d) => d.edit.is_some(),
             Dialog::Panel(d) => d.edit.is_some(),
             Dialog::Files(d) => !d.list && !d.name.fresh,
@@ -1148,7 +1152,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
             s.text(19, 5, &shown, WHITE, BLUE);
             let at = 19 + d.name.cursor.saturating_sub(start).min(25);
             let ch = chars.get(d.name.cursor).copied().unwrap_or(' ');
-            s.put(at, 5, ch, BLUE, WHITE);
+            if super::ui::cursor_on() {
+                s.put(at, 5, ch, BLUE, WHITE);
+            }
         }
         s.put(46, 5, '\u{258c}', GREY, GREEN);
         s.put(47, 5, '\u{2193}', BLACK, GREEN);
@@ -1606,7 +1612,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             .iter()
             .position(|&l| l == self.engine.lang())
             .unwrap_or(0);
-        let mut ring = vec![Ctl::Text(0), Ctl::Text(1), Ctl::Unit];
+        let mut ring = vec![Ctl::Conn, Ctl::Text(0), Ctl::Text(1), Ctl::Unit];
         ring.push(if route { Ctl::Text(16) } else { Ctl::Sort });
         ring.extend((2..=15).map(Ctl::Text));
         let auto = m
@@ -1629,6 +1635,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             edit: None,
             error: None,
             status: None,
+            conn: super::connect::ConnState::from_config(&self.engine.connection()),
         })
     }
 
@@ -1751,6 +1758,16 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         self.engine.settings_changed();
         self.dirty = true;
+        // the connection chosen in its window is applied to the program and written into the machine file
+        if d.conn.dirty {
+            let config = d
+                .conn
+                .config(&self.engine.connection())
+                .map_err(|why| self.t(why).to_string())?;
+            self.engine.set_connection(config.clone());
+            crate::protocol::connection::save_connection(self.machine_file.as_deref(), &config)
+                .map_err(|_| self.t(CText::ConnNoSave).to_string())?;
+        }
         Ok(())
     }
 
@@ -1830,6 +1847,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn param_key(&mut self, d: &mut ParamDlg, input: Input) -> Flow {
+        if d.conn.open {
+            return self.conn_key(d, input);
+        }
         if let Some(e) = d.edit.as_mut() {
             if e.key(input) {
                 return Flow::Stay;
@@ -1858,6 +1878,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             Input::Enter => match cur {
                 Some(Ctl::Btn(b)) => self.param_button(d, b),
+                Some(Ctl::Conn) => {
+                    self.conn_open(d);
+                    Flow::Stay
+                }
                 Some(_) => {
                     self.param_step(d, 1);
                     Flow::Stay
@@ -1908,10 +1932,17 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn param_click(&mut self, d: &mut ParamDlg, act: Act) -> Flow {
+        if d.conn.open {
+            return self.conn_click(d, act);
+        }
         match act {
             Act::Ctl(i) => {
                 if d.focus != Some(i) {
                     self.param_focus(d, i);
+                }
+                // the connection opens its window
+                if d.ring[i] == Ctl::Conn {
+                    self.conn_open(d);
                 }
                 // the language is chosen by clicking its field: each click takes the next one
                 if matches!(d.ring[i], Ctl::Lang | Ctl::Auto) {
@@ -1957,6 +1988,24 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let route = self.engine.kind() == Kind::Route;
         let ring_at = |c: Ctl| d.ring.iter().position(|x| *x == c).unwrap_or(0);
         let focused = |c: Ctl| d.focus.map(|i| d.ring[i]) == Some(c);
+        // the connection with the machine: the way chosen, and the window with what it needs opens from it
+        caption(
+            s,
+            10,
+            3,
+            self.t(CText::ConnLabel),
+            focused(Ctl::Conn) || d.conn.open,
+        );
+        field(
+            s,
+            22,
+            3,
+            38,
+            self.t(super::connect::NAMES[d.conn.kind]),
+            focused(Ctl::Conn),
+        );
+        s.put(60, 3, '\u{25bc}', BLACK, GREEN);
+        self.hit(10, 3, 52, 1, Act::Ctl(ring_at(Ctl::Conn)));
         caption(s, 10, 4, self.t(CText::PFile), focused(Ctl::Text(0)));
         caption(s, 35, 4, self.t(CText::PCoordinates), focused(Ctl::Unit));
         caption(
@@ -2090,6 +2139,184 @@ impl<E: ClassicEngine> ClassicApp<E> {
             s.text(11, 18, e, RED, GREY);
         } else if let Some(st) = &d.status {
             s.text(11, 18, st, GREEN, GREY);
+        }
+        if d.conn.open {
+            self.render_conn(s, d);
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------ Connection
+
+    /// Opens the window of the connection over the Parameter window, starting from the connection the program has now.
+    fn conn_open(&mut self, d: &mut ParamDlg) {
+        d.conn.commit();
+        let dirty = d.conn.dirty;
+        d.conn = super::connect::ConnState::from_config(&self.engine.connection());
+        if dirty {
+            // what was chosen before in this window stays: only the program's own values are read again when nothing was chosen
+            d.conn.dirty = true;
+        }
+        d.conn.open = true;
+        d.error = None;
+    }
+
+    fn conn_close(&mut self, d: &mut ParamDlg) {
+        d.conn.commit();
+        d.conn.open = false;
+        d.conn.list = false;
+        d.conn.error = None;
+    }
+
+    /// OK of the connection window: what was typed is checked and kept for the Parameter window to apply.
+    fn conn_ok(&mut self, d: &mut ParamDlg) {
+        d.conn.commit();
+        match d.conn.config(&self.engine.connection()) {
+            Ok(_) => {
+                d.conn.dirty = true;
+                self.conn_close(d);
+            }
+            Err(why) => d.conn.error = Some(why),
+        }
+    }
+
+    fn conn_key(&mut self, d: &mut ParamDlg, input: Input) -> Flow {
+        use super::connect::Item;
+        if let Some(e) = d.conn.edit.as_mut() {
+            if e.key(input) {
+                return Flow::Stay;
+            }
+        }
+        let cur = d.conn.item();
+        match input {
+            Input::Esc => {
+                if d.conn.list {
+                    d.conn.list = false;
+                } else {
+                    // leaving with Esc drops what was typed in this window
+                    d.conn.dirty = false;
+                    d.conn.edit = None;
+                    self.conn_close(d);
+                }
+            }
+            Input::Tab => d.conn.step(1),
+            Input::BackTab => d.conn.step(-1),
+            Input::Down | Input::Right if cur == Item::Kind => {
+                d.conn
+                    .set_kind((d.conn.kind + 1) % super::connect::KINDS.len());
+            }
+            Input::Up | Input::Left if cur == Item::Kind => {
+                let n = super::connect::KINDS.len();
+                d.conn.set_kind((d.conn.kind + n - 1) % n);
+            }
+            Input::Down => d.conn.step(1),
+            Input::Up => d.conn.step(-1),
+            Input::Enter | Input::Char(' ') if cur == Item::Kind => d.conn.list = !d.conn.list,
+            Input::Enter => match cur {
+                Item::Ok => self.conn_ok(d),
+                Item::Cancel => {
+                    d.conn.dirty = false;
+                    self.conn_close(d);
+                }
+                _ => d.conn.step(1),
+            },
+            _ => {}
+        }
+        Flow::Stay
+    }
+
+    fn conn_click(&mut self, d: &mut ParamDlg, act: Act) -> Flow {
+        use super::connect::Item;
+        match act {
+            Act::Conn(i) => {
+                d.conn.go(i);
+                match d.conn.item() {
+                    Item::Kind => d.conn.list = !d.conn.list,
+                    Item::Ok => self.conn_ok(d),
+                    Item::Cancel => {
+                        d.conn.dirty = false;
+                        self.conn_close(d);
+                    }
+                    Item::Field(_) => {}
+                }
+            }
+            Act::ConnKind(k) => {
+                d.conn.set_kind(k);
+                d.conn.list = false;
+            }
+            Act::ConnShield => d.conn.list = false,
+            _ => {}
+        }
+        Flow::Stay
+    }
+
+    fn render_conn(&self, s: &mut Screen, d: &ParamDlg) {
+        use super::connect::{wrap_note, Item, NAMES, NOTES};
+        // nothing under the window answers while it is open
+        self.hit(0, 0, 80, 25, Act::ConnShield);
+        window(s, 8, 3, 64, 18, "", false);
+        let title = self.t(CText::ConnTitle);
+        label(
+            s,
+            8 + 64usize.saturating_sub(str_width(title)) / 2,
+            4,
+            title,
+        );
+        let ring = d.conn.ring();
+        let focus = d.conn.item();
+        let at = |i: Item| ring.iter().position(|x| *x == i).unwrap_or(0);
+        caption(s, 11, 6, self.t(CText::ConnType), focus == Item::Kind);
+        field(
+            s,
+            20,
+            6,
+            32,
+            self.t(NAMES[d.conn.kind]),
+            focus == Item::Kind,
+        );
+        s.put(53, 6, '\u{25bc}', BLACK, GREEN);
+        self.hit(11, 6, 44, 1, Act::Conn(at(Item::Kind)));
+        // what the way chosen is, in one or two lines
+        let (first, second) = wrap_note(self.t(NOTES[d.conn.kind]), 58);
+        label(s, 11, 8, &first);
+        label(s, 11, 9, &second);
+        for (k, (name, v)) in d.conn.fields().iter().enumerate() {
+            let y = 11 + 2 * k;
+            caption(s, 11, y, self.t(*name), focus == Item::Field(k));
+            match (&d.conn.edit, focus == Item::Field(k)) {
+                (Some(e), true) => edit_field(s, 22, y, 38, e),
+                // a token is never shown: it is as many dots as it has letters
+                _ if *name == CText::ConnToken => field(
+                    s,
+                    22,
+                    y,
+                    38,
+                    &"\u{2022}".repeat(d.conn.vals[*v].chars().count()),
+                    false,
+                ),
+                _ => field(s, 22, y, 38, &d.conn.vals[*v], false),
+            }
+            self.hit(11, y, 51, 1, Act::Conn(at(Item::Field(k))));
+        }
+        if let Some(e) = d.conn.error {
+            s.text(11, 16, self.t(e), RED, GREY);
+        }
+        for (x, it, text) in [
+            (22usize, Item::Ok, CText::BOk),
+            (40, Item::Cancel, CText::BAbort),
+        ] {
+            button(s, x, 18, 9, self.t(text), focus == it, true);
+            self.hit(x, 18, 10, 2, Act::Conn(at(it)));
+        }
+        // the list of the five ways, open over what is under the drop-down
+        if d.conn.list {
+            s.fill(20, 7, 34, 5, ' ', BLACK, CYAN);
+            for (i, n) in NAMES.iter().enumerate() {
+                let on = i == d.conn.kind;
+                let (fg, bg) = if on { (WHITE, BLUE) } else { (BLACK, CYAN) };
+                s.fill(20, 7 + i, 34, 1, ' ', fg, bg);
+                s.text(21, 7 + i, self.t(*n), fg, bg);
+                self.hit(20, 7 + i, 34, 1, Act::ConnKind(i));
+            }
         }
     }
 

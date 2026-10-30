@@ -71,6 +71,10 @@ pub trait ClassicEngine {
     fn about(&self) -> About;
     /// Chooses how the job reaches the machine (see the connection file).
     fn set_connection(&mut self, connection: crate::protocol::connection::ConnectionConfig);
+    /// The connection the engine has now (the Parameter window starts from it and changes it).
+    fn connection(&self) -> crate::protocol::connection::ConnectionConfig {
+        crate::protocol::connection::ConnectionConfig::default()
+    }
     /// Shows a problem found at start-up on the main screen.
     fn set_error(&mut self, message: String);
     /// The Offset Teach window moves the head by these steps of 1 mil (0.001 inch) in X, Y and Z (Z positive = down). The
@@ -136,6 +140,12 @@ pub trait ClassicEngine {
     fn set_job_options(&mut self, options: JobOptions);
     /// The job window's figures; `None` when no job is running.
     fn job_view(&self) -> Option<JobView>;
+    /// The holes of the job in the order the machine drills them, in mm on the table (the first `done` of them are drilled): what a window that draws the
+    /// board uses to tell which hole was drilled. The view of the job shows the hole that is next, not the one that was just drilled. An engine that does not
+    /// drill holes has none.
+    fn hole_order(&self) -> Vec<(f64, f64)> {
+        Vec::new()
+    }
     /// The dialog the job is waiting at, if any.
     fn question(&self) -> Option<Question>;
     /// Answers it: Ok goes on, Abort stops the job.
@@ -192,6 +202,10 @@ impl ClassicEngine for App {
 
     fn set_connection(&mut self, connection: crate::protocol::connection::ConnectionConfig) {
         App::set_connection(self, connection);
+    }
+
+    fn connection(&self) -> crate::protocol::connection::ConnectionConfig {
+        self.connection.clone()
     }
 
     fn set_error(&mut self, message: String) {
@@ -416,6 +430,16 @@ impl ClassicEngine for App {
 
     fn set_job_options(&mut self, options: JobOptions) {
         self.job_options = options;
+    }
+
+    fn hole_order(&self) -> Vec<(f64, f64)> {
+        let offset = self.settings.as_ref().map_or((0.0, 0.0), |m| m.offset_mm);
+        self.run.as_ref().map_or_else(Vec::new, |run| {
+            run.plan
+                .iter()
+                .map(|h| (h.x_mm + offset.0, h.y_mm + offset.1))
+                .collect()
+        })
     }
 
     fn job_view(&self) -> Option<JobView> {

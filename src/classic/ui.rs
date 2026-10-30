@@ -7,6 +7,30 @@
 use crate::i18n::{cell_width, str_width};
 use crate::screen::*;
 
+thread_local! {
+    /// Whether the cursor of a field being edited is drawn in the frame that is being built: the window turns it on and off so that it blinks. It is on
+    /// until someone says otherwise (the tests read the cursor back).
+    static CURSOR_ON: std::cell::Cell<bool> = const { std::cell::Cell::new(true) };
+}
+
+/// How long the cursor stays on and then off, in milliseconds.
+pub const BLINK_MS: u128 = 530;
+
+/// The phase of the blinking cursor after `elapsed_ms` of the program: on for the first half of each period and off for the second.
+pub fn cursor_phase(elapsed_ms: u128) -> bool {
+    (elapsed_ms / BLINK_MS) & 1 == 0
+}
+
+/// Sets whether the cursor is drawn in the frame that is going to be built (by the thread that builds it).
+pub fn set_cursor_on(on: bool) {
+    CURSOR_ON.with(|c| c.set(on));
+}
+
+/// Whether the cursor is drawn in the frame that is being built.
+pub fn cursor_on() -> bool {
+    CURSOR_ON.with(|c| c.get())
+}
+
 /// Window and desktop grey.
 pub const GREY: u8 = LIGHT_GRAY;
 /// Text of labels.
@@ -148,6 +172,9 @@ pub fn edit_field(
     e: &crate::classic::edit::LineEdit,
 ) {
     field(s, x, y, width, &e.text, true);
+    if !cursor_on() {
+        return;
+    }
     if e.fresh {
         s.put(x + 1, y, '\u{2595}', GREEN, BLACK);
     } else {
@@ -166,4 +193,42 @@ pub fn alert_strip(s: &mut Screen, x: usize, y: usize, w: usize, text: &str) {
 /// Width of a string in cells (re-exported for the dialogs).
 pub fn width(text: &str) -> usize {
     text.chars().map(cell_width).sum()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::classic::edit::{Kind, LineEdit};
+
+    #[test]
+    fn the_cursor_of_a_field_blinks() {
+        // the phase: on for half a second, off for half a second, and so on
+        assert!(cursor_phase(0));
+        assert!(cursor_phase(BLINK_MS - 1));
+        assert!(!cursor_phase(BLINK_MS));
+        assert!(!cursor_phase(2 * BLINK_MS - 1));
+        assert!(cursor_phase(2 * BLINK_MS));
+        // an edited field shows the cursor cell while it is on and the plain field while it is off
+        let mut e = LineEdit::new("12.5", Kind::Number, 8);
+        e.fresh = false;
+        e.cursor = 1;
+        let mut on = Screen::default();
+        set_cursor_on(true);
+        edit_field(&mut on, 5, 3, 8, &e);
+        let mut off = Screen::default();
+        set_cursor_on(false);
+        edit_field(&mut off, 5, 3, 8, &e);
+        set_cursor_on(true);
+        assert_ne!(on.get(7, 3), off.get(7, 3));
+        assert_eq!(on.get(6, 3), off.get(6, 3));
+        // the first cell of a field whose text is still selected blinks too
+        let fresh = LineEdit::new("12.5", Kind::Number, 8);
+        let mut a = Screen::default();
+        edit_field(&mut a, 5, 3, 8, &fresh);
+        let mut b = Screen::default();
+        set_cursor_on(false);
+        edit_field(&mut b, 5, 3, 8, &fresh);
+        set_cursor_on(true);
+        assert_ne!(a.get(6, 3), b.get(6, 3));
+    }
 }

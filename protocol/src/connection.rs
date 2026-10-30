@@ -281,3 +281,117 @@ fn open_node(_address: &str, _token: &str) -> io::Result<Box<dyn Transport + Sen
         "this build has no node support",
     ))
 }
+
+impl ConnectionConfig {
+    /// The keys of the machine file that say how the job reaches the machine, with the value this connection has for each (what the programs write
+    /// into the file when the person changes the connection). The node and the server are written only when they are used, or already have an address.
+    pub fn machine_file_pairs(&self) -> Vec<(&'static str, String)> {
+        let mut v = vec![
+            ("connection", self.kind.name().to_string()),
+            ("rs232_port", self.rs232_port.clone()),
+            ("usb_port", self.usb_port.clone()),
+            ("sound_finish", self.sound_finish.to_text()),
+            ("sound_tool_change", self.sound_tool_change.to_text()),
+        ];
+        if matches!(self.kind, Kind::Node) || !self.node_address.is_empty() {
+            v.push(("node_address", self.node_address.clone()));
+            v.push(("node_token", self.node_token.clone()));
+        }
+        if matches!(self.kind, Kind::Server) || !self.server_address.is_empty() {
+            v.push(("server_address", self.server_address.clone()));
+            v.push(("server_token", self.server_token.clone()));
+            v.push(("server_machine", self.server_machine.clone()));
+        }
+        v
+    }
+}
+
+/// The text of a machine file with the keys of `pairs` set: a line that has the key is rewritten, the other lines (the tuning of the machine, the
+/// comments) are left as they are, and a key that was not there is added at the end.
+pub fn update_machine_file(old: &str, pairs: &[(&str, String)]) -> String {
+    let mut done = vec![false; pairs.len()];
+    let mut out = Vec::new();
+    for line in old.lines() {
+        let t = line.trim();
+        let key = (!t.starts_with('#') && !t.starts_with(';'))
+            .then(|| t.split_once('='))
+            .flatten()
+            .map(|(k, _)| k.trim().to_ascii_lowercase());
+        match key.and_then(|k| pairs.iter().position(|(p, _)| *p == k)) {
+            Some(i) if !done[i] => {
+                done[i] = true;
+                out.push(format!("{} = {}", pairs[i].0, pairs[i].1));
+            }
+            Some(_) => {}
+            None => out.push(line.to_string()),
+        }
+    }
+    for (i, (k, v)) in pairs.iter().enumerate() {
+        if !done[i] {
+            out.push(format!("{k} = {v}"));
+        }
+    }
+    out.join("\n") + "\n"
+}
+
+/// Writes the connection of `config` into the machine file at `path` (the default one when `None`), keeping every other line, and makes the folder.
+pub fn save_connection(path: Option<&Path>, config: &ConnectionConfig) -> io::Result<()> {
+    let file = path.map(Path::to_path_buf).unwrap_or_else(default_path);
+    let old = std::fs::read_to_string(&file).unwrap_or_default();
+    let text = update_machine_file(&old, &config.machine_file_pairs());
+    if let Some(dir) = file.parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    std::fs::write(&file, text)
+}
+
+#[cfg(test)]
+mod machine_file_tests {
+    use super::*;
+
+    #[test]
+    fn the_keys_are_set_and_the_rest_of_the_file_is_kept() {
+        let old = "# my machine\nconnection = demo\nx_search_hz = 2700\nusb_port = COM3\n";
+        let mut c = parse(old).unwrap();
+        c.kind = Kind::Usb;
+        c.usb_port = "COM8".into();
+        let text = update_machine_file(old, &c.machine_file_pairs());
+        assert!(text.contains("# my machine") && text.contains("x_search_hz = 2700"));
+        let back = parse(&text).unwrap();
+        assert_eq!((back.kind, back.usb_port.as_str()), (Kind::Usb, "COM8"));
+        assert_eq!(back.tuning, c.tuning);
+    }
+
+    #[test]
+    fn the_node_and_the_server_are_written_only_when_they_are_used() {
+        let mut c = ConnectionConfig::default();
+        assert!(!update_machine_file("", &c.machine_file_pairs()).contains("node_address"));
+        c.kind = Kind::Server;
+        c.server_address = "192.168.0.180:18200".into();
+        c.server_machine = "bench-1".into();
+        let back = parse(&update_machine_file("", &c.machine_file_pairs())).unwrap();
+        assert_eq!(
+            (back.kind, back.server_machine.as_str()),
+            (Kind::Server, "bench-1")
+        );
+    }
+
+    #[test]
+    fn a_connection_is_saved_in_a_file_that_may_not_exist_yet() {
+        let dir = std::env::temp_dir().join(format!("eh3d-conn-save-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let file = dir.join("sub").join("machine.cfg");
+        let c = ConnectionConfig {
+            kind: Kind::Node,
+            node_address: "192.168.0.50:5800".into(),
+            ..Default::default()
+        };
+        save_connection(Some(&file), &c).unwrap();
+        let back = load(Some(&file)).unwrap();
+        assert_eq!(
+            (back.kind, back.node_address.as_str()),
+            (Kind::Node, "192.168.0.50:5800")
+        );
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+}
