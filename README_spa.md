@@ -82,6 +82,26 @@ EH3D-DRILLPRO es un programa independiente de la familia EH3D para máquinas cuy
 
 Cómo encajan las partes de este repositorio: quién lo usa, qué contiene y de qué depende. La imagen se dibuja desde `docs/architecture.json` y se comprueba contra el código.
 
+## 🖼️ Capturas de pantalla
+
+<p align="center">
+  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+</p>
+
+<p align="center"><em>La pantalla principal del programa clásico, como la dibuja el programa propio de la máquina: la escala, el desplazamiento y el recorte, los vectores del trabajo y los botones.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+</p>
+
+<p align="center"><em>Los datos de herramientas: la carrera extra, el avance y la velocidad del husillo de cada posición del cambiador, y cuánto se ha usado cada herramienta.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+</p>
+
+<p align="center"><em>Los parámetros de la máquina: las coordenadas de los ficheros, la ordenación de los agujeros, las velocidades, las rampas, la corrección y el idioma.</em></p>
+
 ## 🚀 Inicio rápido
 
 Necesitas una cadena de herramientas de Rust estable.
@@ -137,7 +157,7 @@ EH3D-DRILLPRO/
 ├── config/                                      la configuración básica, explicada línea a línea
 ├── examples/                                    ejemplos, de un agujero a 20000
 ├── tools/                                       comprobación de CI, del README y las herramientas de imágenes
-├── images/                                      banner y las imágenes de Arquitectura y Estructura del repositorio
+├── images/                                      banner, las dos imágenes y las capturas de pantalla
 ├── .github/                                     flujos de CI y de publicación, plantillas de issues y pull requests
 ├── build.sh build.bat                           scripts de compilación y pruebas
 ├── run.sh run.bat                               arrancan el programa

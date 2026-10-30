@@ -375,7 +375,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
         desktop(s);
         window(s, 1, 1, 78, 21, "", false);
         // heading
-        s.text(5, 3, self.t(CText::Project), INK, GREY);
+        // the name of the program that is running: the routing program is not the drilling one
+        s.text(5, 3, self.engine.about().name, INK, GREY);
         s.text(5, 4, self.t(CText::Licence), INK, GREY);
         box_single(s, 31, 3, 21, 3);
         s.text(33, 4, self.t(self.title()), INK, GREY);

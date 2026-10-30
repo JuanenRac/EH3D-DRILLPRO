@@ -82,6 +82,26 @@ EH3D-DRILLPRO は、制御ユニットがすべてのモーターステップを
 
 このリポジトリの各部分の関係：誰が使い、何を持ち、何に依存するか。図は `docs/architecture.json` から描かれ、コードと照合されます。
 
+## 🖼️ スクリーンショット
+
+<p align="center">
+  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+</p>
+
+<p align="center"><em>クラシック版のメイン画面。マシン付属のプログラムと同じ描き方で、倍率、オフセット、クリップ、ジョブのベクトル、ボタンを表示します。</em></p>
+
+<p align="center">
+  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+</p>
+
+<p align="center"><em>ツールデータ：ツールチェンジャーの各位置の追加ストローク、送り、主軸回転数と、各ツールの使用量。</em></p>
+
+<p align="center">
+  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+</p>
+
+<p align="center"><em>マシンのパラメーター：ファイルの座標、穴の並べ替え、速度、ランプ、補正、言語。</em></p>
+
 ## 🚀 クイックスタート
 
 安定版の Rust ツールチェーンが必要です。
@@ -137,7 +157,7 @@ EH3D-DRILLPRO/
 ├── config/                                      基本設定（1行ずつ解説）
 ├── examples/                                    例：1穴から2万穴
 ├── tools/                                       CI チェック、README チェック、図の生成ツール
-├── images/                                      バナーとアーキテクチャ・リポジトリ構成の図
+├── images/                                      バナー、2 つの図、スクリーンショット
 ├── .github/                                     CI とリリースのワークフロー、Issue と PR のテンプレート
 ├── build.sh build.bat                           ビルドとテストのスクリプト
 ├── run.sh run.bat                               プログラムを起動

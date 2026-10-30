@@ -82,6 +82,26 @@ EH3D-DRILLPRO is a stand-alone program of the EH3D family for machines whose con
 
 How the parts of this repository fit together: who uses it, what it holds and what it depends on. The picture is drawn from `docs/architecture.json` and checked against the code.
 
+## 🖼️ Screenshots
+
+<p align="center">
+  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+</p>
+
+<p align="center"><em>The main screen of the classic program, as the machine's own program draws it: the scale, the offset and the clip, the vectors of the job and the buttons.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+</p>
+
+<p align="center"><em>The tool data: the extra stroke, the feed and the spindle speed of every place of the tool changer, and how much each tool has been used.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+</p>
+
+<p align="center"><em>The parameters of the machine: the coordinates of the files, the sorting of the holes, the speeds, the ramps, the correction and the language.</em></p>
+
 ## 🚀 Quick start
 
 You need a stable Rust toolchain.
@@ -137,7 +157,7 @@ EH3D-DRILLPRO/
 ├── config/                                      the basic configuration, explained line by line
 ├── examples/                                    example files, from one hole to 20000
 ├── tools/                                       CI check, README check and the picture tools
-├── images/                                      banner and the Architecture and Repository Structure pictures
+├── images/                                      banner, the two pictures and the screenshots
 ├── .github/                                     CI and release workflows, issue and pull-request templates
 ├── build.sh build.bat                           build and test scripts
 ├── run.sh run.bat                               start the program

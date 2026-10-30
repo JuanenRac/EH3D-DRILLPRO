@@ -82,6 +82,26 @@ EH3D-DRILLPRO ist ein eigenständiges Programm der EH3D-Familie für Maschinen, 
 
 Wie die Teile dieses Repositorys zusammenpassen: wer es nutzt, was es enthält und wovon es abhängt. Das Bild wird aus `docs/architecture.json` gezeichnet und gegen den Code geprüft.
 
+## 🖼️ Screenshots
+
+<p align="center">
+  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+</p>
+
+<p align="center"><em>Die Hauptmaske des klassischen Programms, so wie das eigene Programm der Maschine sie zeichnet: Maßstab, Versatz und Beschnitt, die Vektoren des Auftrags und die Tasten.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+</p>
+
+<p align="center"><em>Die Werkzeugdaten: der Zusatzhub, der Vorschub und die Spindeldrehzahl jedes Platzes des Wechslers und wie viel jedes Werkzeug benutzt wurde.</em></p>
+
+<p align="center">
+  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+</p>
+
+<p align="center"><em>Die Parameter der Maschine: die Koordinaten der Dateien, die Sortierung der Löcher, die Geschwindigkeiten, die Rampen, die Korrektur und die Sprache.</em></p>
+
 ## 🚀 Schnellstart
 
 Du brauchst eine stabile Rust-Toolchain.
@@ -137,7 +157,7 @@ EH3D-DRILLPRO/
 ├── config/                                      die Basiskonfiguration, Zeile für Zeile erklärt
 ├── examples/                                    Beispiele, von einem Loch bis 20000
 ├── tools/                                       CI-Prüfung, README-Prüfung und die Bild-Werkzeuge
-├── images/                                      Banner und die Bilder von Architektur und Repository-Struktur
+├── images/                                      Banner, die beiden Bilder und die Screenshots
 ├── .github/                                     CI- und Release-Workflows, Vorlagen für Issues und Pull Requests
 ├── build.sh build.bat                           Build- und Testskripte
 ├── run.sh run.bat                               starten das Programm

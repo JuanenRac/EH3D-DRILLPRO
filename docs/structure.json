@@ -384,14 +384,14 @@
         {
           "name": "images/",
           "desc": {
-            "en": "banner and the Architecture and Repository Structure pictures",
-            "es": "banner y las imágenes de Arquitectura y Estructura del repositorio",
-            "de": "Banner und die Bilder von Architektur und Repository-Struktur",
-            "fr": "bannière et images d'Architecture et de Structure du dépôt",
-            "it": "banner e le immagini di Architettura e Struttura del repository",
-            "ja": "バナーとアーキテクチャ・リポジトリ構成の図",
-            "zh": "横幅图以及架构和仓库结构图片",
-            "pt": "banner e as imagens de Arquitetura e Estrutura do repositório"
+            "en": "banner, the two pictures and the screenshots",
+            "es": "banner, las dos imágenes y las capturas de pantalla",
+            "de": "Banner, die beiden Bilder und die Screenshots",
+            "fr": "bannière, les deux images et les captures d'écran",
+            "it": "banner, le due immagini e le schermate",
+            "ja": "バナー、2 つの図、スクリーンショット",
+            "zh": "横幅图、两张图片和屏幕截图",
+            "pt": "faixa, as duas imagens e as capturas de ecrã"
           }
         },
         {

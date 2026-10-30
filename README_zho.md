@@ -82,6 +82,26 @@ EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由
 
 本仓库各部分如何协作：谁在使用它、它包含什么、它依赖什么。图片由 `docs/architecture.json` 绘制，并与代码核对。
 
+## 🖼️ 屏幕截图
+
+<p align="center">
+  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+</p>
+
+<p align="center"><em>经典程序的主界面，与机器自带程序的画法一致：比例、偏移和裁剪、作业的矢量以及按钮。</em></p>
+
+<p align="center">
+  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+</p>
+
+<p align="center"><em>刀具数据：换刀器每个位置的附加行程、进给和主轴转速，以及每把刀具的使用量。</em></p>
+
+<p align="center">
+  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+</p>
+
+<p align="center"><em>机器参数：文件的坐标、孔的排序、速度、加减速、修正和语言。</em></p>
+
 ## 🚀 快速开始
 
 需要稳定版的 Rust 工具链。
@@ -137,7 +157,7 @@ EH3D-DRILLPRO/
 ├── config/                                      逐行解释的基本配置
 ├── examples/                                    示例：从1个孔到2万个孔
 ├── tools/                                       CI 检查、README 检查和图片工具
-├── images/                                      横幅图以及架构和仓库结构图片
+├── images/                                      横幅图、两张图片和屏幕截图
 ├── .github/                                     CI 与发布工作流、Issue 和 PR 模板
 ├── build.sh build.bat                           构建和测试脚本
 ├── run.sh run.bat                               启动程序

@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The classic main screen names the program that runs:** the heading under the logo says which program it is (the routing program no longer says it is the drilling one).
+- **Screenshots in the README:** three pictures of the classic screens (the main screen, the tool data and the parameters) in all the eight languages of the README.
 - **More patterns in the file window:** an engine can add patterns after its own (the routing program adds the drawings of a board), which the arrow next to the file name lists with `*.ZIP` and `*.*`.
 - **The files of the machine come from a shared crate:** the drill file, the tool table and the machine configuration are read and written by `eh3d-bungard-formats` of EH3D-COMMON (the same code that ROUTEPRO and the modern interface use); nothing changes for the operator.
 - **Sounds when the job ends and when the machine asks for a tool:** `sound_finish` and `sound_tool_change` in the machine file are each off (the default), `default` (a tone the program makes, one for each cue) or the path of a WAV file of the operator's. The sound is played by the system (PowerShell, `afplay`, `paplay`/`aplay`/`play`) in a process of its own, so it never stops a job. It is explained in the machine file and in the guide of the configuration in the eight languages.
