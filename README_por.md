@@ -74,6 +74,21 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 * **A ligação escolhida na janela Config:** uma lista pendente com as cinco formas de o trabalho chegar à máquina (o simulador, a porta série, um adaptador USB, o nó EH3D e o servidor EH3D) e, por baixo, o que cada uma precisa: uma porta, um endereço e um token, uma máquina do servidor; o que se escolhe é verificado, aplicado com OK e escrito no ficheiro de máquina sem tocar nas outras linhas.
 * **Um cursor que pisca:** o cursor de um campo numérico ou de texto que se edita pisca (meio segundo ligado, meio segundo desligado), como nos ecrãs que segue.
 
+### 🆚 O original e esta versão
+
+O original é o programa fechado para MS-DOS da Bungard que comanda as máquinas CCD. Esta versão foi escrita de novo a partir de gravações do que o original faz (os seus ecrãs, os seus ficheiros e o que envia à unidade de controlo); não tem código do original. O que é igual e o que é diferente:
+
+| Aspeto | Original (MS-DOS) | Esta versão |
+|---|---|---|
+| Computador | Só um PC com MS-DOS (ou um emulador) | Windows, Linux e macOS, 32 e 64 bits; uma versão de consola para SSH e PCs antigos |
+| Ecrãs | Modo de texto 80x25 | Por omissão os mesmos ecrãs clássicos, verificados célula a célula com o original, com rato e uma janela que se ajusta de 640x400 a 1080p e mais; `--modern` oferece uma interface com menus e o EH3D-BUNGARD-GUI uma gráfica |
+| Idiomas | O do programa | Oito: inglês, espanhol, italiano, alemão, francês, português, chinês e japonês, que se mudam no menu ou com `--lang` |
+| Painéis | Cópias da placa na mesa | Cópias da placa sobre a mesa; um trabalho interrompido a meio pode continuar no furo seguinte |
+| Ligação à máquina | A porta série do computador para a unidade de controlo | O simulador por omissão; numa máquina real a porta série, um adaptador USB série, o EH3D-NODE-BUNGARD pela rede ou o EH3D-SERVER, escolhido numa lista pendente da janela Config |
+| Extras | Nenhum destes | Um simulador que executa um trabalho inteiro, sons para o fim do trabalho e para o pedido de ferramenta, várias máquinas ao mesmo tempo através do servidor, arquivos ZIP de trabalho, contornos DXF e Gerber, um cursor intermitente e um conjunto de testes que corre a cada alteração |
+| Código e licença | Fechado, proprietário | Código aberto (GPL-3.0-or-later), escrito em Rust |
+| Maturidade | Anos de uso em máquinas reais | Muito mais jovem: o percurso de referência e os movimentos de cada eixo foram experimentados numa Bungard CCD MTC real; um trabalho inteiro ainda não correu numa máquina, e o trocador de ferramentas dos modelos ATC não funcionou numa real |
+
 ## 🧩 Papel no EH3D
 
 O EH3D-DRILLPRO é um programa independente da família EH3D para máquinas cuja unidade de controlo precisa que o PC gere cada passo do motor. O EH3D-ROUTEPRO, o seu irmão de fresagem, reutiliza o seu protocolo, o seu ecrã e o suporte de idiomas. Para os trabalhos empacotados em arquivos ZIP usa um crate do EH3D-COMMON (`eh3d-archive`), que tem de estar ao lado para compilar; o leitor Excellon do EH3D-CORE-LIBS poderá substituir o seu mais tarde. Os ficheiros da máquina (o de furação, o HP-GL, as tabelas de ferramentas e a configuração da máquina) vêm do crate `eh3d-bungard-formats` do EH3D-COMMON, que também tem de estar ao lado.

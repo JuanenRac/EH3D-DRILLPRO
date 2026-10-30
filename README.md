@@ -74,6 +74,21 @@ Each line is one part of this repository and the light says how far it is today.
 * **The connection chosen in the Config window:** a drop-down with the five ways the job reaches the machine (the simulator, the serial port, a USB adapter, the EH3D node and the EH3D server) and, under it, what each one needs: a port, an address and a token, a machine of the server; what is chosen is checked, applied with OK and written into the machine file without touching its other lines.
 * **A blinking cursor:** the cursor of a numeric or text field being edited blinks (half a second on, half a second off), as on the screens it follows.
 
+### 🆚 The original and this version
+
+The original is the closed MS-DOS program of Bungard that drives the CCD machines. This version is written again from recordings of what the original does (its screens, its files and what it sends to the control unit); no code of the original is in it. What is the same and what is different:
+
+| Aspect | Original (MS-DOS) | This version |
+|---|---|---|
+| Computer | Only an MS-DOS PC (or an emulator) | Windows, Linux and macOS, 32 and 64 bits; a console version for SSH and old PCs |
+| Screens | 80x25 text mode | The same classic screens by default, checked cell by cell against the original, with the mouse and a window that scales from 640x400 to 1080p and beyond; `--modern` offers a menu-driven interface and EH3D-BUNGARD-GUI a graphical one |
+| Languages | The language of the program | Eight: English, Spanish, Italian, German, French, Portuguese, Chinese and Japanese, changed from the menu or with `--lang` |
+| Panels | Copies of the board on the table | Copies of the board over the table; a job interrupted in the middle can go on from the next hole |
+| Link to the machine | The computer's serial port to the control unit | The simulator by default; on a real machine the serial port, a USB serial adapter, the EH3D-NODE-BUNGARD over the network or the EH3D-SERVER, chosen from a drop-down in the Config window |
+| Extras | None of these | A simulator that runs a whole job, sounds for the end of the job and for a tool request, several machines at once through the server, ZIP job archives, DXF and Gerber outlines, a blinking cursor, and a test suite that runs on every change |
+| Source and licence | Closed, proprietary | Open source (GPL-3.0-or-later), written in Rust |
+| Maturity | Years of use on real machines | Much younger: the reference run and the moves of every axis have been tried on one real Bungard CCD MTC; a whole job has not run on a machine yet, and the tool changer of the ATC models has not run on a real one |
+
 ## 🧩 Role in EH3D
 
 EH3D-DRILLPRO is a stand-alone program of the EH3D family for machines whose control unit needs the PC to generate every motor step. EH3D-ROUTEPRO, its milling sibling, reuses its protocol, screen and language support. For the jobs packed in ZIP archives it uses a crate of EH3D-COMMON (`eh3d-archive`), which has to be next to it to build; the Excellon reader of EH3D-CORE-LIBS could replace its own one later. The files of the machine (the drill file, the HP-GL file, the tool tables and the machine configuration) come from the crate `eh3d-bungard-formats` of EH3D-COMMON, which has to be next to it as well.

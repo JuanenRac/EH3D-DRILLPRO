@@ -74,6 +74,21 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 * **La connexion choisie dans la fenêtre Config :** une liste déroulante avec les cinq façons dont le travail atteint la machine (le simulateur, le port série, un adaptateur USB, le nœud EH3D et le serveur EH3D) et, dessous, ce dont chacune a besoin : un port, une adresse et un jeton, une machine du serveur ; ce qui est choisi est vérifié, appliqué avec OK et écrit dans le fichier de machine sans toucher à ses autres lignes.
 * **Un curseur qui clignote :** le curseur d'un champ numérique ou de texte en cours de modification clignote (une demi-seconde allumé, une demi-seconde éteint), comme sur les écrans qu'il suit.
 
+### 🆚 L'original et cette version
+
+L'original est le programme fermé pour MS-DOS de Bungard qui pilote les machines CCD. Cette version est réécrite à partir d'enregistrements de ce que fait l'original (ses écrans, ses fichiers et ce qu'il envoie à l'unité de commande) ; elle ne contient aucun code de l'original. Ce qui est identique et ce qui diffère :
+
+| Aspect | Original (MS-DOS) | Cette version |
+|---|---|---|
+| Ordinateur | Seulement un PC MS-DOS (ou un émulateur) | Windows, Linux et macOS, 32 et 64 bits ; une version console pour SSH et les vieux PC |
+| Écrans | Mode texte 80x25 | Par défaut les mêmes écrans classiques, vérifiés cellule par cellule avec l'original, avec la souris et une fenêtre qui s'adapte de 640x400 à 1080p et plus ; `--modern` propose une interface à menus et EH3D-BUNGARD-GUI une interface graphique |
+| Langues | Celle du programme | Huit : anglais, espagnol, italien, allemand, français, portugais, chinois et japonais, à changer depuis le menu ou avec `--lang` |
+| Panneaux | Copies de la carte sur la table | Copies de la carte sur la table ; un travail interrompu en cours peut reprendre au trou suivant |
+| Liaison avec la machine | Le port série de l'ordinateur vers l'unité de commande | Le simulateur par défaut ; sur une vraie machine le port série, un adaptateur USB série, l'EH3D-NODE-BUNGARD par le réseau ou l'EH3D-SERVER, choisi dans une liste déroulante de la fenêtre Config |
+| Ajouts | Aucun de ceux-ci | Un simulateur qui exécute un travail entier, des sons pour la fin du travail et la demande d'outil, plusieurs machines à la fois via le serveur, des archives ZIP de travail, des contours DXF et Gerber, un curseur clignotant et une suite de tests lancée à chaque modification |
+| Source et licence | Fermé, propriétaire | Open source (GPL-3.0-or-later), écrit en Rust |
+| Maturité | Des années d'usage sur de vraies machines | Bien plus jeune : la course de référence et les mouvements de chaque axe ont été essayés sur une vraie Bungard CCD MTC ; un travail entier n'a pas encore tourné sur une machine, et le changeur d'outils des modèles ATC n'a pas tourné sur une vraie |
+
 ## 🧩 Rôle dans EH3D
 
 EH3D-DRILLPRO est un programme autonome de la famille EH3D pour les machines dont l'unité de commande exige que le PC génère chaque pas de moteur. EH3D-ROUTEPRO, son frère pour le fraisage, réutilise son protocole, son écran et sa prise en charge des langues. Pour les travaux empaquetés dans des archives ZIP il utilise un crate d'EH3D-COMMON (`eh3d-archive`), qui doit se trouver à côté pour compiler ; le lecteur Excellon d'EH3D-CORE-LIBS pourrait remplacer le sien plus tard. Les fichiers de la machine (celui de perçage, le HP-GL, les tables d'outils et la configuration de la machine) viennent du crate `eh3d-bungard-formats` d'EH3D-COMMON, qui doit aussi se trouver à côté.
