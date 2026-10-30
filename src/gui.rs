@@ -369,6 +369,7 @@ pub fn run_capture<A: TextApp + 'static>(
             .with_min_inner_size([640.0, 400.0])
             .with_resizable(true)
             .with_maximize_button(true)
+            .with_maximized(capture.is_none())
             .with_title(title),
         ..Default::default()
     };

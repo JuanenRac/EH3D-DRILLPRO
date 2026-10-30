@@ -225,7 +225,9 @@ impl Tabs {
             TabPlacement::Even => (0..n).map(|k| (k + 1) as f64 / (n + 1) as f64).collect(),
             TabPlacement::Ends => match n {
                 1 => vec![0.15],
-                _ => (0..n).map(|k| 0.15 + 0.70 * k as f64 / (n - 1) as f64).collect(),
+                _ => (0..n)
+                    .map(|k| 0.15 + 0.70 * k as f64 / (n - 1) as f64)
+                    .collect(),
             },
             TabPlacement::Middle => (0..n)
                 .map(|k| 0.5 + (k as f64 - (n as f64 - 1.0) / 2.0) * 2.0 * w)
@@ -256,7 +258,10 @@ pub fn cut_tabs(points: &[(f64, f64)], tabs: &Tabs) -> Vec<Vec<(f64, f64)>> {
             for c in tabs.fractions(len) {
                 let (g0, g1) = (c * len - tabs.width_mm / 2.0, c * len + tabs.width_mm / 2.0);
                 let margin = tabs.width_mm / 2.0;
-                if g0 >= margin && g1 <= len - margin && gaps.last().is_none_or(|l| g0 >= l.1 + 1e-9) {
+                if g0 >= margin
+                    && g1 <= len - margin
+                    && gaps.last().is_none_or(|l| g0 >= l.1 + 1e-9)
+                {
                     gaps.push((g0, g1));
                 }
             }
@@ -400,12 +405,18 @@ mod tab_tests {
     }
 
     fn length(p: &[(f64, f64)]) -> f64 {
-        p.windows(2).map(|s| (s[1].0 - s[0].0).hypot(s[1].1 - s[0].1)).sum()
+        p.windows(2)
+            .map(|s| (s[1].0 - s[0].0).hypot(s[1].1 - s[0].1))
+            .sum()
     }
 
     #[test]
     fn two_tabs_on_each_side_of_a_rectangle_leave_eight_pieces_and_take_their_width_away() {
-        let tabs = Tabs { per_side: 2, width_mm: 4.0, placement: TabPlacement::Even };
+        let tabs = Tabs {
+            per_side: 2,
+            width_mm: 4.0,
+            placement: TabPlacement::Even,
+        };
         let pieces = cut_tabs(&rectangle(100.0, 50.0), &tabs);
         assert_eq!(pieces.len(), 8);
         let total: f64 = pieces.iter().map(|p| length(p)).sum();
@@ -420,28 +431,56 @@ mod tab_tests {
             }
         }
         // the pieces are in the order of the path, and the one that crosses the start is whole
-        let around = pieces.iter().find(|p| p.contains(&(0.0, 0.0))).expect("the start");
+        let around = pieces
+            .iter()
+            .find(|p| p.contains(&(0.0, 0.0)))
+            .expect("the start");
         assert!(around.len() >= 3);
     }
 
     #[test]
     fn the_tabs_are_where_the_placement_says() {
         let r = rectangle(120.0, 80.0);
-        for (placement, per_side) in [(TabPlacement::Even, 3), (TabPlacement::Ends, 2), (TabPlacement::Middle, 1), (TabPlacement::Middle, 2)] {
-            let tabs = Tabs { per_side, width_mm: 3.0, placement };
+        for (placement, per_side) in [
+            (TabPlacement::Even, 3),
+            (TabPlacement::Ends, 2),
+            (TabPlacement::Middle, 1),
+            (TabPlacement::Middle, 2),
+        ] {
+            let tabs = Tabs {
+                per_side,
+                width_mm: 3.0,
+                placement,
+            };
             let pieces = cut_tabs(&r, &tabs);
-            assert_eq!(pieces.len(), 4 * per_side as usize, "{placement:?} {per_side}");
+            assert_eq!(
+                pieces.len(),
+                4 * per_side as usize,
+                "{placement:?} {per_side}"
+            );
         }
         // near the ends: the first tab of the bottom side is at 15 % of 120 mm = 18 mm
-        let tabs = Tabs { per_side: 1, width_mm: 4.0, placement: TabPlacement::Ends };
+        let tabs = Tabs {
+            per_side: 1,
+            width_mm: 4.0,
+            placement: TabPlacement::Ends,
+        };
         let pieces = cut_tabs(&r, &tabs);
-        assert!(pieces.iter().any(|p| p.iter().any(|q| (q.0 - 16.0).abs() < 1e-6 && q.1 == 0.0)));
-        assert!(pieces.iter().any(|p| p.iter().any(|q| (q.0 - 20.0).abs() < 1e-6 && q.1 == 0.0)));
+        assert!(pieces
+            .iter()
+            .any(|p| p.iter().any(|q| (q.0 - 16.0).abs() < 1e-6 && q.1 == 0.0)));
+        assert!(pieces
+            .iter()
+            .any(|p| p.iter().any(|q| (q.0 - 20.0).abs() < 1e-6 && q.1 == 0.0)));
     }
 
     #[test]
     fn a_side_too_short_for_a_tab_and_a_path_that_is_not_closed_are_left_alone() {
-        let tabs = Tabs { per_side: 1, width_mm: 10.0, placement: TabPlacement::Even };
+        let tabs = Tabs {
+            per_side: 1,
+            width_mm: 10.0,
+            placement: TabPlacement::Even,
+        };
         // 12 mm sides cannot hold a 10 mm tab with half a tab of bridge at each end
         let small = rectangle(12.0, 12.0);
         assert_eq!(cut_tabs(&small, &tabs), vec![small.clone()]);
@@ -450,7 +489,10 @@ mod tab_tests {
         assert_eq!(cut_tabs(&long, &tabs).len(), 2);
         let open = vec![(0.0, 0.0), (50.0, 0.0), (50.0, 50.0)];
         assert_eq!(cut_tabs(&open, &tabs), vec![open.clone()]);
-        let none = Tabs { per_side: 0, ..tabs };
+        let none = Tabs {
+            per_side: 0,
+            ..tabs
+        };
         assert_eq!(cut_tabs(&long, &none), vec![long.clone()]);
     }
 }
