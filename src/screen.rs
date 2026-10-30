@@ -177,6 +177,22 @@ impl Screen {
         }
     }
 
+    /// The button under the cell `(c, r)`: the first and the end (not included) of the cells of its row that have the green of a button,
+    /// or nothing when the cell is not one of them. The window lights it when the pointer is on it and sinks it when it is pressed.
+    pub fn button_at(&self, c: usize, r: usize) -> Option<(usize, usize)> {
+        if c >= COLS || r >= ROWS || self.get(c, r).bg != GREEN {
+            return None;
+        }
+        let (mut x0, mut x1) = (c, c + 1);
+        while x0 > 0 && self.get(x0 - 1, r).bg == GREEN {
+            x0 -= 1;
+        }
+        while x1 < COLS && self.get(x1, r).bg == GREEN {
+            x1 += 1;
+        }
+        Some((x0, x1))
+    }
+
     /// The screen as plain text, one line per row (for tests and `--dump`).
     pub fn to_text(&self) -> String {
         let mut s = String::new();
@@ -189,5 +205,28 @@ impl Screen {
             s.push('\n');
         }
         s
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::classic::ui::button;
+
+    #[test]
+    fn a_button_is_found_from_any_of_its_cells_and_nothing_else_is() {
+        let mut s = Screen::default();
+        button(&mut s, 10, 5, 12, "~Start", false, true);
+        for c in 10..22 {
+            assert_eq!(s.button_at(c, 5), Some((10, 22)), "cell {c}");
+        }
+        // the shadow, the cells beside it and another row are not the button
+        assert_eq!(s.button_at(22, 5), None);
+        assert_eq!(s.button_at(12, 6), None);
+        assert_eq!(s.button_at(9, 5), None);
+        assert_eq!(s.button_at(500, 5), None);
+        // a disabled one is grey: no light for it
+        button(&mut s, 30, 8, 10, "Load", false, false);
+        assert_eq!(s.button_at(33, 8), None);
     }
 }

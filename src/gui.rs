@@ -66,6 +66,8 @@ pub struct Capture {
     pub keys: Vec<Input>,
     pub file: PathBuf,
     pub wait: u32,
+    /// The pointer of the picture: the cell it rests on and whether it is pressed (the window of a person has the real one).
+    pub point: Option<(usize, usize, bool)>,
 }
 
 /// Parses `alt+v,enter,down,esc,a` into inputs (for [`Capture`]).
@@ -178,6 +180,35 @@ impl<A: TextApp> Gui<A> {
         let origin = resp.rect.min + (resp.rect.size() - size) * 0.5;
         let (cw, ch) = (CELL_W * scale, CELL_H * scale);
         let font = FontId::monospace(FONT_SIZE * scale);
+        // the button under the pointer: it lights up, and it sinks (loses its shadow and moves a little) while it is pressed
+        let fake = self.capture.as_ref().and_then(|c| c.point);
+        let down = fake.map_or_else(|| ui.input(|i| i.pointer.primary_down()), |(_, _, d)| d);
+        let at: Option<(usize, usize)> = match fake {
+            Some((c, r, _)) => Some((c, r)),
+            None => resp.hover_pos().and_then(|p| {
+                let (dx, dy) = (p.x - origin.x, p.y - origin.y);
+                (dx >= 0.0 && dy >= 0.0).then(|| ((dx / cw) as usize, (dy / ch) as usize))
+            }),
+        };
+        let hot: Option<(usize, usize, usize)> =
+            at.and_then(|(c, r)| self.screen.button_at(c, r).map(|(x0, x1)| (r, x0, x1)));
+        let in_hot =
+            |x: usize, y: usize| hot.is_some_and(|(r, x0, x1)| y == r && x >= x0 && x < x1);
+        let in_shadow = |x: usize, y: usize| {
+            down && hot
+                .is_some_and(|(r, x0, x1)| (y == r && x == x1) || (y == r + 1 && x > x0 && x <= x1))
+        };
+        let cell_at = |x: usize, y: usize| {
+            if in_shadow(x, y) {
+                crate::screen::Cell {
+                    ch: ' ',
+                    fg: crate::classic::ui::GREY,
+                    bg: crate::classic::ui::GREY,
+                }
+            } else {
+                self.screen.get(x, y)
+            }
+        };
         let rect_of = |x: usize, y: usize| {
             Rect::from_min_size(
                 origin + Vec2::new(x as f32 * cw, y as f32 * ch),
@@ -187,8 +218,15 @@ impl<A: TextApp> Gui<A> {
         // Backgrounds first: a wide glyph must not be covered by the background of its second cell.
         for y in 0..ROWS {
             for x in 0..COLS {
-                let cell = self.screen.get(x, y);
-                let (bg, fg) = (color(cell.bg), color(cell.fg));
+                let cell = cell_at(x, y);
+                let (mut bg, fg) = (color(cell.bg), color(cell.fg));
+                if in_hot(x, y) {
+                    bg = if down {
+                        mix(bg, Color32::BLACK, 0.35)
+                    } else {
+                        mix(bg, Color32::WHITE, 0.30)
+                    };
+                }
                 let rect = rect_of(x, y);
                 painter.rect_filled(rect, 0.0, bg);
                 match cell.ch {
@@ -210,7 +248,7 @@ impl<A: TextApp> Gui<A> {
         }
         for y in 0..ROWS {
             for x in 0..COLS {
-                let cell = self.screen.get(x, y);
+                let cell = cell_at(x, y);
                 if matches!(
                     cell.ch,
                     ' ' | CONTINUATION | '\u{2588}' | '\u{2593}' | '\u{2592}' | '\u{2591}'
@@ -218,8 +256,14 @@ impl<A: TextApp> Gui<A> {
                     continue;
                 }
                 let rect = rect_of(x, y);
+                // a pressed button moves its letters a little, as if it went down
+                let sink = if down && in_hot(x, y) {
+                    1.5 * scale
+                } else {
+                    0.0
+                };
                 painter.text(
-                    Pos2::new(rect.min.x, rect.min.y + scale),
+                    Pos2::new(rect.min.x + sink, rect.min.y + scale + sink),
                     Align2::LEFT_TOP,
                     cell.ch.to_string(),
                     font.clone(),

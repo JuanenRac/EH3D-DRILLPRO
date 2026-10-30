@@ -29,6 +29,8 @@ pub struct Options {
     pub dump: bool,
     /// Keys to play before a screenshot (`--keys alt+v,enter`), the file of the screenshot and the frames to wait.
     pub keys: String,
+    /// A pointer for the pictures (`--point COLUMN,ROW` or `--point COLUMN,ROW,down`): where it rests on the screen and whether it is pressed.
+    pub point: Option<(usize, usize, bool)>,
     pub shot: Option<PathBuf>,
     pub wait: u32,
 }
@@ -56,6 +58,7 @@ pub fn parse_from(
         modern: false,
         dump: false,
         keys: String::new(),
+        point: None,
         shot: None,
         wait: 8,
     };
@@ -78,6 +81,15 @@ pub fn parse_from(
             "--classic" => o.modern = false,
             "--keys" => o.keys = args.next().unwrap_or_default(),
             "--shot" => o.shot = args.next().map(PathBuf::from),
+            "--point" => {
+                let v = args.next().unwrap_or_default();
+                let mut it = v.split(',');
+                let c = it.next().and_then(|s| s.trim().parse().ok());
+                let r = it.next().and_then(|s| s.trim().parse().ok());
+                if let (Some(c), Some(r)) = (c, r) {
+                    o.point = Some((c, r, it.next().is_some_and(|s| s.trim() == "down")));
+                }
+            }
             "--wait" => {
                 if let Some(n) = args.next().and_then(|n| n.parse().ok()) {
                     o.wait = n;

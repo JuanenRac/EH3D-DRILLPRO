@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The buttons answer to the pointer:** the button under the pointer lights up, and while it is pressed it sinks (it loses its shadow, goes darker and moves its letters a little); `--point COLUMN,ROW[,down]` puts the pointer there for the pictures.
 ## [0.0.5] - The machine files from a shared crate, sounds for the end of the job and the tool change, more patterns in the file window and screenshots
 
 - **The classic main screen names the program that runs:** the heading under the logo says which program it is (the routing program no longer says it is the drilling one).

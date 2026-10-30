@@ -18,6 +18,7 @@ fn main() -> eframe::Result {
         keys: gui::parse_keys(&o.keys),
         file,
         wait: o.wait,
+        point: o.point,
     });
     if o.modern {
         let mut app = App::new(o.lang, &o.data);
