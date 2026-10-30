@@ -301,6 +301,8 @@ pub struct JobOptions {
     pub panel: Option<Panel>,
     /// The job stops at the operator's dialogs (tool change, spindle start) even in the simulation, as the original does.
     pub ask_operator: bool,
+    /// How many of the first holes (or paths) of the job, in the order the machine does them, are already done: a job that went on after a stop leaves them out.
+    pub skip: usize,
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.
@@ -390,6 +392,7 @@ pub fn select_holes(
         }
         i = j;
     }
+    out.drain(..opts.skip.min(out.len()));
     Selection {
         holes: out,
         skipped,

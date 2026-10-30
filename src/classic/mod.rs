@@ -709,6 +709,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             clip_mm: Some(self.form.clip),
             panel: self.panel,
             ask_operator: true,
+            skip: 0,
         }
     }
 
