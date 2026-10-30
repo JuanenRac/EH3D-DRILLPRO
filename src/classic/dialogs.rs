@@ -995,7 +995,12 @@ impl<E: ClassicEngine> ClassicApp<E> {
     /// The patterns the drop-down list of the name field offers.
     fn pattern_choices(&self) -> Vec<&'static str> {
         match self.file_purpose {
-            Purpose::Job => vec![self.engine.pattern(), "*.ZIP", "*.*"],
+            Purpose::Job => {
+                let mut v = vec![self.engine.pattern()];
+                v.extend(self.engine.extra_patterns());
+                v.extend(["*.ZIP", "*.*"]);
+                v
+            }
             p => vec![self.purpose_pattern(p), "*.*"],
         }
     }

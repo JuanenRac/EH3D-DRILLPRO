@@ -113,6 +113,10 @@ pub trait ClassicEngine {
     fn set_dir(&mut self, dir: PathBuf);
     /// File name pattern of the Select File dialog, for example `*.NCD`.
     fn pattern(&self) -> &'static str;
+    /// More patterns the file window offers for a job, after the main one (the drawings of a board, for the routing program).
+    fn extra_patterns(&self) -> Vec<&'static str> {
+        Vec::new()
+    }
     /// The entries of the folder: `..` first, then folders, then files (name, is a folder).
     fn entries(&mut self) -> Vec<(String, bool)>;
     fn tool_rows(&self) -> Vec<ToolRow>;
