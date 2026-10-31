@@ -968,7 +968,13 @@ impl App {
     }
 
     fn render_run(&self, s: &mut Screen) {
-        let (x, y, w, h) = (12, 6, 56, 11);
+        // a job on the server has two more lines: the excesses of the spindle it cut and what the node of the head says
+        let h = if self.connection.kind == ConnectionKind::Server {
+            13
+        } else {
+            11
+        };
+        let (x, y, w) = (12, 6, 56);
         s.window(
             x,
             y,
@@ -1062,6 +1068,19 @@ impl App {
                     DARK_GRAY,
                     WIN_BG,
                 );
+            }
+            if let Some(notes) = r.real.as_ref().map(|x| x.server_notes()) {
+                if let Some(line) = notes.spindle_line() {
+                    let text = format!("{} {line}", tr(self.lang, Text::SpindleLimit));
+                    let shown: String = text.chars().take(w - 4).collect();
+                    s.text(x + 2, y + 10, &shown, RED, WIN_BG);
+                }
+                if let Some(line) = notes.head_line() {
+                    let label = tr(self.lang, Text::ColSpindle);
+                    let label = label.split(" (").next().unwrap_or(label);
+                    let text = format!("{label}: {line}");
+                    s.text(x + 2, y + 11, &text, BLACK, WIN_BG);
+                }
             }
         } else {
             s.text(

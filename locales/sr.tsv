@@ -240,3 +240,4 @@ CText.QWhatNext	Шта даље?
 CText.BCont	~Д~аље
 Text.StatusMain	Esc: назад   Enter: прихвати   ↑/↓: кретање
 CText.QInterrupted	ПРЕКИНУТО
+Text.SpindleLimit	Ограничење вретена:

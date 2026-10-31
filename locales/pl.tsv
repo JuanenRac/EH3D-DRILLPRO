@@ -240,3 +240,4 @@ CText.QWhatNext	Co dalej?
 CText.BCont	~D~alej
 Text.StatusMain	Esc: wstecz   Enter: zatwierdź   ↑/↓: ruch
 CText.QInterrupted	PRZERWANO
+Text.SpindleLimit	Limit wrzeciona:

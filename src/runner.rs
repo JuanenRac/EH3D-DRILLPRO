@@ -40,7 +40,66 @@ impl RunState {
     }
 }
 
+/// What the server says of a job beyond its state: the excesses of the spindle it cut (or would have refused) and the node of the drill head, when the machine has one.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct ServerNotes {
+    /// One short text per excess, for example `T1 60000>24000 rpm`.
+    pub spindle_warnings: Vec<String>,
+    /// The turns of the spindle and the temperature the node of the head reports.
+    pub head_rpm: Option<f64>,
+    pub head_temp_c: Option<f64>,
+}
+
+impl ServerNotes {
+    /// The excesses of the spindle in one line, or `None` when there are none.
+    pub fn spindle_line(&self) -> Option<String> {
+        (!self.spindle_warnings.is_empty()).then(|| self.spindle_warnings.join("; "))
+    }
+
+    /// What the head reports, in one line (`18000 rpm  35.2 °C`), or `None` while it has said nothing.
+    pub fn head_line(&self) -> Option<String> {
+        match (self.head_rpm, self.head_temp_c) {
+            (None, None) => None,
+            (rpm, temp) => Some(
+                [
+                    rpm.map(|r| format!("{r:.0} rpm")),
+                    temp.map(|t| format!("{t:.1} \u{b0}C")),
+                ]
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>()
+                .join("  "),
+            ),
+        }
+    }
+}
+
+/// The excesses of the spindle a job's view lists (`spindle_warnings`), each as a short text.
+pub fn spindle_notes(view: &serde_json::Value) -> Vec<String> {
+    view["spindle_warnings"]
+        .as_array()
+        .map(|list| {
+            list.iter()
+                .map(|w| {
+                    let (tool, value, limit) = (
+                        w["tool"].as_u64().unwrap_or(0),
+                        w["value"].as_u64().unwrap_or(0),
+                        w["limit"].as_u64().unwrap_or(0),
+                    );
+                    let (sign, unit) = match w["code"].as_str().unwrap_or("") {
+                        "rpm_above_max" => (">", "rpm"),
+                        "rpm_below_min" => ("<", "rpm"),
+                        _ => (">", "mm/min"),
+                    };
+                    format!("T{tool} {value}{sign}{limit} {unit}")
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 struct Shared {
+    notes: Mutex<ServerNotes>,
     state: Mutex<RunState>,
     next: AtomicUsize,
     total: AtomicUsize,
@@ -97,6 +156,7 @@ impl RealRun {
     /// Starts the job on the machine of `config`. Returns at once; follow it with [`RealRun::state`].
     pub fn start(config: ConnectionConfig, items: Vec<Item>) -> Self {
         let shared = Arc::new(Shared {
+            notes: Mutex::new(ServerNotes::default()),
             state: Mutex::new(RunState::Connecting),
             next: AtomicUsize::new(0),
             total: AtomicUsize::new(items.len()),
@@ -144,6 +204,7 @@ impl RealRun {
         items_total: usize,
     ) -> Self {
         let shared = Arc::new(Shared {
+            notes: Mutex::new(ServerNotes::default()),
             state: Mutex::new(RunState::Connecting),
             next: AtomicUsize::new(0),
             total: AtomicUsize::new(items_total),
@@ -171,6 +232,15 @@ impl RealRun {
             .lock()
             .map(|g| g.clone())
             .unwrap_or(RunState::Failed("internal error".into()))
+    }
+
+    /// What the server said of the job besides its state (empty for a job that runs on a machine of this computer).
+    pub fn server_notes(&self) -> ServerNotes {
+        self.shared
+            .notes
+            .lock()
+            .map(|g| g.clone())
+            .unwrap_or_default()
     }
 
     /// Index of the item being run and the number of items.
@@ -250,6 +320,9 @@ fn state_of(job: &serde_json::Value) -> RunState {
     }
 }
 
+/// The head is asked every this many turns of the loop that follows a job (a turn is a quarter of a second).
+const HEAD_EVERY: u32 = 8;
+
 fn follow_on_server(
     config: &ConnectionConfig,
     request: &serde_json::Value,
@@ -274,6 +347,9 @@ fn follow_on_server(
         .as_str()
         .ok_or("the server did not give the job an id")?
         .to_string();
+    if let Ok(mut n) = shared.notes.lock() {
+        n.spindle_warnings = spindle_notes(&job["view"]);
+    }
     let (status, answer) = client.call("POST", &format!("/api/v1/jobs/{id}/start"), None)?;
     if status != 200 {
         // a job the server kept but could not start is not left lying ready on it
@@ -282,10 +358,30 @@ fn follow_on_server(
     }
     let mut cancelled = false;
     let mut lost = 0u32;
+    // the node of the drill head, when the machine has one, is asked from time to time: a machine without one (404) or a node that does not answer is let go
+    let (mut turn, mut head_failures) = (0u32, 0u32);
     loop {
         if shared.stop_following.load(Ordering::SeqCst) {
             return Ok(());
         }
+        if head_failures < 2 && turn % HEAD_EVERY == 0 {
+            match client.call(
+                "GET",
+                &format!("/api/v1/machines/{}/head/status", client.machine),
+                None,
+            ) {
+                Ok((200, head)) => {
+                    head_failures = 0;
+                    if let Ok(mut n) = shared.notes.lock() {
+                        n.head_rpm = head["rpm"].as_f64();
+                        n.head_temp_c = head["temp_c"].as_f64();
+                    }
+                }
+                Ok((404, _)) => head_failures = 2,
+                _ => head_failures += 1,
+            }
+        }
+        turn = turn.wrapping_add(1);
         if shared.cancel.load(Ordering::SeqCst) && !cancelled {
             cancelled = true;
             let _ = client.call("POST", &format!("/api/v1/jobs/{id}/cancel"), None);
@@ -479,5 +575,46 @@ impl Drop for TeachSession {
                 let _ = h.join();
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod server_notes_tests {
+    use super::*;
+
+    #[test]
+    fn the_excesses_of_the_spindle_are_told_in_short_texts() {
+        let view = serde_json::json!({"spindle_warnings": [
+            {"code": "rpm_above_max", "tool": 1, "value": 60000, "limit": 24000},
+            {"code": "rpm_below_min", "tool": 2, "value": 3000, "limit": 6000},
+            {"code": "feed_xy_above_max", "tool": 1, "value": 2500, "limit": 1500},
+        ]});
+        assert_eq!(
+            spindle_notes(&view),
+            [
+                "T1 60000>24000 rpm",
+                "T2 3000<6000 rpm",
+                "T1 2500>1500 mm/min"
+            ]
+        );
+        assert!(spindle_notes(&serde_json::json!({})).is_empty());
+        assert!(spindle_notes(&serde_json::json!({"spindle_warnings": []})).is_empty());
+    }
+
+    #[test]
+    fn the_notes_become_lines_only_when_there_is_something_to_say() {
+        let mut n = ServerNotes::default();
+        assert_eq!((n.spindle_line(), n.head_line()), (None, None));
+        n.spindle_warnings = vec!["T1 60000>24000 rpm".into(), "T2 3000<6000 rpm".into()];
+        assert_eq!(
+            n.spindle_line().as_deref(),
+            Some("T1 60000>24000 rpm; T2 3000<6000 rpm")
+        );
+        n.head_rpm = Some(18000.4);
+        assert_eq!(n.head_line().as_deref(), Some("18000 rpm"));
+        n.head_temp_c = Some(35.25);
+        assert_eq!(n.head_line().as_deref(), Some("18000 rpm  35.2 \u{b0}C"));
+        n.head_rpm = None;
+        assert_eq!(n.head_line().as_deref(), Some("35.2 \u{b0}C"));
     }
 }

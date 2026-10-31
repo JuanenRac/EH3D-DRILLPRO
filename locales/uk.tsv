@@ -240,3 +240,4 @@ CText.QWhatNext	Що далі?
 CText.BCont	~Д~алі
 Text.StatusMain	Esc: назад   Enter: прийняти   ↑/↓: рух
 CText.QInterrupted	ПЕРЕРВАНО
+Text.SpindleLimit	Межа шпинделя:

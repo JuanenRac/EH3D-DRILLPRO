@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **What the server tells the run screen:** a job on the server shows the excesses of the spindle that the server cut (`spindle_warnings` of its view, one short text for each: the tool, the value asked for and the limit) under the progress, and, when the machine has the node of a drill head, the turns of the spindle and its temperature, asked of the server every two seconds and let go if the machine has no node or the node does not answer. The line is named in all 37 languages. 2 tests.
+
 ## [0.0.9] - No console window on Windows, hot keys in 37 languages and the tools that are off sent to the server
 
 - **No black window on Windows:** the program no longer opens a console; started from a terminal it attaches to it, so the help and the errors are printed there as before.
