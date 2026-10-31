@@ -93,7 +93,11 @@ impl SoundSetting {
 }
 
 /// The languages that have spoken notices, in the order of the interface.
-pub const VOICE_LANGS: [&str; 8] = ["en", "es", "it", "de", "fr", "pt", "zh", "ja"];
+pub const VOICE_LANGS: [&str; 36] = [
+    "en", "es", "it", "de", "fr", "pt", "zh", "ja", "bg", "hr", "cs", "da", "nl", "et", "fi", "el",
+    "hu", "ga", "lv", "lt", "mt", "pl", "ro", "sk", "sl", "sv", "no", "is", "uk", "ru", "sr", "sq",
+    "ca", "gl", "eu", "pt-br",
+];
 
 /// Where the recordings of the spoken notices are: the folder `voices` next to the program (or up to three levels above it, when it runs from the build folder), or
 /// the folder that the variable `EH3D_VOICES` names. Inside, `LANG/f/finished.wav`, `LANG/f/tool.wav` and the same under `m` for the male voice.
@@ -443,7 +447,22 @@ mod tests {
                 female: false
             }
         );
-        // a language that is not one of the eight, or a gender that is not f or m, is a file
+        // the languages that were added later are voices as well, with the dash of the Brazilian one
+        assert_eq!(
+            SoundSetting::parse("voice:pt-br:m"),
+            SoundSetting::Voice {
+                lang: "pt-br".into(),
+                female: false
+            }
+        );
+        assert_eq!(
+            SoundSetting::parse("voice:cs:f"),
+            SoundSetting::Voice {
+                lang: "cs".into(),
+                female: true
+            }
+        );
+        // a language that is not one of them, or a gender that is not f or m, is a file
         assert!(matches!(
             SoundSetting::parse("voice:xx:f"),
             SoundSetting::File(_)
