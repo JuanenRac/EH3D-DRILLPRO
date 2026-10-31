@@ -10,6 +10,8 @@
 //! # Tuning of the reference run (all optional; see docs/machine.cfg.example for every value and its default):
 //! sound_finish = default    # off | default | the path of a WAV file: a sound when the job ends
 //! sound_tool_change = off   # the same for the sound when the machine asks for a tool
+//! sound_check_ok = off      # the same for the visual check of the board (the camera of the drill head) when it is correct
+//! sound_check_bad = off     # and when it is not correct
 //! x_search_hz = 2700
 //! xy_hz_limit = 1800      # optional: the most steps per second the X and Y motors keep up with
 //! z_hz_limit = 400        # optional: the same for Z (its motor carries the spindle)
@@ -103,6 +105,9 @@ pub struct ConnectionConfig {
     /// The sound when the job ends and the sound when the machine asks for a tool (`sound_finish`, `sound_tool_change`); see [`crate::sound`].
     pub sound_finish: crate::sound::SoundSetting,
     pub sound_tool_change: crate::sound::SoundSetting,
+    /// The sounds of the visual check of the board, when it is correct and when it is not (`sound_check_ok`, `sound_check_bad`).
+    pub sound_check_ok: crate::sound::SoundSetting,
+    pub sound_check_bad: crate::sound::SoundSetting,
 }
 
 impl Default for ConnectionConfig {
@@ -131,6 +136,8 @@ impl Default for ConnectionConfig {
             tuning: crate::tuning::Tuning::default(),
             sound_finish: crate::sound::SoundSetting::Off,
             sound_tool_change: crate::sound::SoundSetting::Off,
+            sound_check_ok: crate::sound::SoundSetting::Off,
+            sound_check_bad: crate::sound::SoundSetting::Off,
         }
     }
 }
@@ -194,6 +201,8 @@ pub fn parse(text: &str) -> Result<ConnectionConfig, String> {
             }
             "sound_finish" => c.sound_finish = crate::sound::SoundSetting::parse(&value),
             "sound_tool_change" => c.sound_tool_change = crate::sound::SoundSetting::parse(&value),
+            "sound_check_ok" => c.sound_check_ok = crate::sound::SoundSetting::parse(&value),
+            "sound_check_bad" => c.sound_check_bad = crate::sound::SoundSetting::parse(&value),
             "xy_hz_limit" | "z_hz_limit" => {
                 let v: f64 = value.parse().map_err(|_| {
                     format!("line {}: {key} must be a number of steps per second", n + 1)
@@ -344,6 +353,8 @@ impl ConnectionConfig {
             ("usb_port", self.usb_port.clone()),
             ("sound_finish", self.sound_finish.to_text()),
             ("sound_tool_change", self.sound_tool_change.to_text()),
+            ("sound_check_ok", self.sound_check_ok.to_text()),
+            ("sound_check_bad", self.sound_check_bad.to_text()),
         ];
         if matches!(self.kind, Kind::Node) || !self.node_address.is_empty() {
             v.push(("node_address", self.node_address.clone()));

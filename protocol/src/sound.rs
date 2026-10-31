@@ -5,6 +5,8 @@
 //! ```text
 //! sound_finish = default                  # off | default | the path of a WAV file
 //! sound_tool_change = C:\sounds\ding.wav
+//! sound_check_ok = voice:es:f               # the visual check of the board is correct (a voice, a tone, a file)
+//! sound_check_bad = default                 # the visual check of the board is not correct
 //! ```
 //!
 //! The sound is played by the system (a short PowerShell command on Windows, `afplay` on macOS, `paplay`, `aplay` or `play` on Linux) in
@@ -19,6 +21,10 @@ pub enum Cue {
     Finished,
     /// The machine asks for a tool.
     ToolChange,
+    /// The visual check of the board (the camera of the drill head) found it correct.
+    CheckOk,
+    /// The visual check of the board found it not correct.
+    CheckNotOk,
 }
 
 /// A sound as the machine file sets it.
@@ -115,6 +121,8 @@ pub fn voice_file(root: &Path, lang: &str, female: bool, cue: Cue) -> Option<Pat
     let name = match cue {
         Cue::Finished => "finished.wav",
         Cue::ToolChange => "tool.wav",
+        Cue::CheckOk => "check_ok.wav",
+        Cue::CheckNotOk => "check_bad.wav",
     };
     let p = root
         .join(lang)
@@ -143,6 +151,15 @@ fn notes(cue: Cue) -> &'static [(f32, u32)] {
     match cue {
         Cue::Finished => &[(523.25, 140), (659.25, 140), (783.99, 140), (1046.5, 420)],
         Cue::ToolChange => &[(880.0, 160), (0.0, 60), (880.0, 160), (1174.66, 300)],
+        // correct: a short rise that ends high; not correct: three falling low notes, so the two cannot be taken for each other from across the room
+        Cue::CheckOk => &[(659.25, 110), (987.77, 110), (1318.5, 320)],
+        Cue::CheckNotOk => &[
+            (392.0, 260),
+            (0.0, 80),
+            (329.63, 260),
+            (0.0, 80),
+            (261.63, 440),
+        ],
     }
 }
 
@@ -179,6 +196,12 @@ pub fn tone_parts(index: usize) -> (usize, usize) {
 pub fn tone_notes(cue: Cue, index: usize) -> Vec<(f32, u32)> {
     let (p, pattern) = tone_parts(index);
     let f = PITCHES[p];
+    // the sounds of the check use the patterns of the other two: the ones of the end of the job for "correct", the ones of the request for a tool for "not correct"
+    let cue = match cue {
+        Cue::CheckOk => Cue::Finished,
+        Cue::CheckNotOk => Cue::ToolChange,
+        other => other,
+    };
     match (cue, pattern) {
         (Cue::Finished, 0) => vec![(f, 700)],
         (Cue::Finished, 1) => vec![(f, 150), (f * 1.26, 150), (f * 1.5, 380)],
@@ -205,6 +228,7 @@ pub fn tone_notes(cue: Cue, index: usize) -> Vec<(f32, u32)> {
                 (f * (1.0 + up * 0.06), 45)
             })
             .collect(),
+        (Cue::CheckOk | Cue::CheckNotOk, _) => unreachable!("mapped above"),
     }
 }
 
@@ -268,6 +292,8 @@ pub fn file_for(setting: &SoundSetting, cue: Cue) -> Option<PathBuf> {
             let tag = match cue {
                 Cue::Finished => "finished",
                 Cue::ToolChange => "tool",
+                Cue::CheckOk => "check-ok",
+                Cue::CheckNotOk => "check-bad",
             };
             let path = std::env::temp_dir().join(format!("eh3d-sound-{tag}-{i}.wav"));
             if !path.is_file() {
@@ -280,6 +306,8 @@ pub fn file_for(setting: &SoundSetting, cue: Cue) -> Option<PathBuf> {
             let name = match cue {
                 Cue::Finished => "eh3d-sound-finished.wav",
                 Cue::ToolChange => "eh3d-sound-tool-change.wav",
+                Cue::CheckOk => "eh3d-sound-check-ok.wav",
+                Cue::CheckNotOk => "eh3d-sound-check-bad.wav",
             };
             let path = std::env::temp_dir().join(name);
             if !path.is_file() {
@@ -345,6 +373,40 @@ pub fn play(setting: &SoundSetting, cue: Cue) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_visual_check_has_its_own_sounds_that_cannot_be_taken_for_each_other() {
+        assert_ne!(tone_wav(Cue::CheckOk), tone_wav(Cue::CheckNotOk));
+        assert_ne!(tone_wav(Cue::CheckOk), tone_wav(Cue::Finished));
+        assert_ne!(tone_wav(Cue::CheckNotOk), tone_wav(Cue::ToolChange));
+        // the catalogue answers for them too, and the files are told apart
+        for cue in [Cue::CheckOk, Cue::CheckNotOk] {
+            for i in 0..TONES {
+                assert!(!tone_notes(cue, i).is_empty());
+            }
+        }
+        let ok = file_for(&SoundSetting::Default, Cue::CheckOk).unwrap();
+        let bad = file_for(&SoundSetting::Default, Cue::CheckNotOk).unwrap();
+        assert_ne!(ok, bad);
+        assert!(ok.is_file() && bad.is_file());
+        // a voice that is not recorded plays the tone instead of nothing
+        let missing = SoundSetting::Voice {
+            lang: "ja".into(),
+            female: true,
+        };
+        assert!(file_for(&missing, Cue::CheckOk).is_some());
+        assert!(file_for(&SoundSetting::Off, Cue::CheckNotOk).is_none());
+        let dir = std::env::temp_dir().join(format!("eh3d-voices-check-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(dir.join("es").join("f"));
+        std::fs::write(
+            dir.join("es").join("f").join("check_ok.wav"),
+            tone_wav(Cue::CheckOk),
+        )
+        .unwrap();
+        assert!(voice_file(&dir, "es", true, Cue::CheckOk).is_some());
+        assert!(voice_file(&dir, "es", true, Cue::CheckNotOk).is_none());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn a_setting_comes_back_from_its_text() {
