@@ -213,7 +213,7 @@ fn the_language_is_changed_from_the_config_dialog() {
     a.handle(Input::Left);
     assert_eq!(a.engine.lang, Lang::En);
     // every language can be reached in turn
-    for _ in 0..8 {
+    for _ in 0..Lang::ALL.len() {
         a.click(67, 17);
     }
     assert_eq!(a.engine.lang, Lang::En);

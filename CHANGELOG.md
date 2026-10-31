@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Room for 37 languages:** `i18n::Lang` lists the eight languages of the program and 29 more (Europe and America, with Brazilian Portuguese and Canadian French as languages of their own), and the words of the new ones are read from the files of `locales/` (`Text.Name` or `CText.Name`, one line per text), with English, or the main language of a variant, for what a file does not have; the list of languages of the program scrolls. The hot-key marks `~X~` are not used in the new languages.
+
 - **Tools switched off:** `JobOptions::skip_tools` leaves the holes of the drills that are listed out of the job (`select_holes`), so a modern interface can drill only some of the tools. 1 test.
 
 - **Two sounds for the visual check of the board:** `sound_check_ok` and `sound_check_bad` in the machine file, with the same settings as the other two (off, `default`, `tone:N`, a WAV file or `voice:LANG:f|m`) and two new cues in the library of sounds: a short rise for a check that is correct and three low falling notes for one that is not, the sixty sounds of the catalogue for each, and the recordings `check_ok.wav` and `check_bad.wav` of the voices (a voice without them plays the beep). The program of EH3D-BUNGARD-GUI uses them.
