@@ -333,6 +333,8 @@ pub struct JobOptions {
     pub ask_operator: bool,
     /// How many of the first holes (or paths) of the job, in the order the machine does them, are already done: a job that went on after a stop leaves them out.
     pub skip: usize,
+    /// The tools (drills, or pens of the router) that are switched off: their holes and paths are left out of the job.
+    pub skip_tools: Vec<u8>,
     /// The height map of the table: the holes are drilled to the same depth into the board wherever the table is high or low.
     pub table: Option<eh3d_levelling::HeightMap>,
 }
@@ -364,6 +366,7 @@ pub fn select_holes(
         .iter()
         .enumerate()
         .filter(|(i, _)| (first..=last).contains(&(i + 1)))
+        .filter(|(_, h)| !opts.skip_tools.contains(&h.tool))
         .map(|(_, h)| h.clone())
         .collect();
     let mut tools: Vec<u8> = Vec::new();

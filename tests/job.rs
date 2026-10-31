@@ -103,3 +103,23 @@ fn none_keeps_the_file_order_inside_each_tool() {
     let h = sort_holes(&grid(), Sorting::None);
     assert_eq!(xy(&h)[..3], [(1000, 1500), (500, 500), (1500, 2000)]);
 }
+
+#[test]
+fn the_tools_switched_off_leave_their_holes_out_of_the_job() {
+    let all = select_holes(
+        &file(),
+        Sorting::XFirst,
+        &JobOptions::default(),
+        0.0254,
+        (1.0, 1.0),
+        (0.0, 0.0),
+    );
+    assert_eq!(all.holes.len(), 5);
+    let o = JobOptions {
+        skip_tools: vec![1],
+        ..Default::default()
+    };
+    let some = select_holes(&file(), Sorting::XFirst, &o, 0.0254, (1.0, 1.0), (0.0, 0.0));
+    assert_eq!(some.holes.len(), 2);
+    assert!(some.holes.iter().all(|h| h.tool == 2));
+}

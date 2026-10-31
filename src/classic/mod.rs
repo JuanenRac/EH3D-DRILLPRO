@@ -710,6 +710,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             panel: self.panel,
             ask_operator: true,
             skip: 0,
+            skip_tools: Vec::new(),
             table: None,
         }
     }

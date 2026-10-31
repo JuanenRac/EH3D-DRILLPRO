@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Tools switched off:** `JobOptions::skip_tools` leaves the holes of the drills that are listed out of the job (`select_holes`), so a modern interface can drill only some of the tools. 1 test.
+
 - **Two sounds for the visual check of the board:** `sound_check_ok` and `sound_check_bad` in the machine file, with the same settings as the other two (off, `default`, `tone:N`, a WAV file or `voice:LANG:f|m`) and two new cues in the library of sounds: a short rise for a check that is correct and three low falling notes for one that is not, the sixty sounds of the catalogue for each, and the recordings `check_ok.wav` and `check_bad.wav` of the voices (a voice without them plays the beep). The program of EH3D-BUNGARD-GUI uses them.
 
 - **Which paths are the outside of a board:** `job::outer_paths` flags the closed paths whose box does not lie inside the box of another closed path, so the tabs of a panel go only on the outside of each board and not on the pockets, slots and tracks inside it.
