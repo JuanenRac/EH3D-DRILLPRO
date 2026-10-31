@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Which paths are the outside of a board:** `job::outer_paths` flags the closed paths whose box does not lie inside the box of another closed path, so the tabs of a panel go only on the outside of each board and not on the pockets, slots and tracks inside it.
+
 ## [0.0.7] - Spoken notices, the node of the drill head and a table that is not flat
 
 - **Spoken notices:** the sound of the end of the job and of the tool request can be a voice (`sound_finish = voice:es:f`, language and female or male), found in the folder `voices` next to the program (or the one the variable `EH3D_VOICES` names); a voice that is not recorded plays the tone, and the program can list the voices that are there.

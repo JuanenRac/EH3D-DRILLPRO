@@ -290,6 +290,36 @@ pub fn cut_tabs(points: &[(f64, f64)], tabs: &Tabs) -> Vec<Vec<(f64, f64)>> {
     pieces
 }
 
+/// Which of the paths are the outside of a board: the closed ones whose box does not lie inside the box of another closed path. The tabs of a panel go only on these;
+/// the pockets, slots and tracks inside a board are routed whole.
+pub fn outer_paths(paths: &[&[(f64, f64)]]) -> Vec<bool> {
+    let boxes: Vec<Option<(f64, f64, f64, f64)>> = paths
+        .iter()
+        .map(|p| {
+            let closed = p.len() >= 4
+                && (p[0].0 - p[p.len() - 1].0).abs() < 1e-9
+                && (p[0].1 - p[p.len() - 1].1).abs() < 1e-9;
+            closed.then(|| {
+                p.iter()
+                    .fold((f64::MAX, f64::MAX, f64::MIN, f64::MIN), |b, &(x, y)| {
+                        (b.0.min(x), b.1.min(y), b.2.max(x), b.3.max(y))
+                    })
+            })
+        })
+        .collect();
+    (0..boxes.len())
+        .map(|i| {
+            let Some(b) = boxes[i] else { return false };
+            !boxes.iter().enumerate().any(|(j, other)| {
+                j != i
+                    && other.is_some_and(|c| {
+                        c != b && c.0 <= b.0 && c.1 <= b.1 && c.2 >= b.2 && c.3 >= b.3
+                    })
+            })
+        })
+        .collect()
+}
+
 /// What the main form and the Panelization dialog add to a job.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct JobOptions {
@@ -413,6 +443,26 @@ mod tab_tests {
         p.windows(2)
             .map(|s| (s[1].0 - s[0].0).hypot(s[1].1 - s[0].1))
             .sum()
+    }
+
+    #[test]
+    fn only_the_outside_of_a_board_is_an_outer_path() {
+        let outline = rectangle(100.0, 50.0);
+        let pocket: Vec<(f64, f64)> = vec![
+            (10.0, 10.0),
+            (30.0, 10.0),
+            (30.0, 20.0),
+            (10.0, 20.0),
+            (10.0, 10.0),
+        ];
+        let open = vec![(1.0, 1.0), (60.0, 2.0)];
+        let other_board: Vec<(f64, f64)> = rectangle(100.0, 50.0)
+            .into_iter()
+            .map(|(x, y)| (x + 120.0, y))
+            .collect();
+        let flags = outer_paths(&[&outline, &pocket, &open, &other_board]);
+        assert_eq!(flags, vec![true, false, false, true]);
+        assert!(outer_paths(&[]).is_empty());
     }
 
     #[test]
