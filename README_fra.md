@@ -6,19 +6,19 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | 🇫🇷 <b>Français</b> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Une réimplémentation multiplateforme en Rust du flux de perçage du logiciel DOS classique des machines Bungard CCD, avec une interface en mode texte qui rappelle l'original, en huit langues
+### Une réimplémentation multiplateforme en Rust du flux de perçage du logiciel DOS classique des machines Bungard CCD, avec une interface en mode texte qui rappelle l'original, en 37 langues
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Version-0.0.7-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.8-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
 ---
 
-**Vérification d'honnêteté - ce qui tourne aujourd'hui :** un programme Rust avec une interface texte de 80x25 qui lit les fichiers de perçage Excellon `.NCD`, la table d'outils et la configuration de la machine, ordonne les trous, les affiche et exécute tout le travail **contre un simulateur** (par défaut) ou, quand le fichier de la machine l'indique, **sur une machine réelle** par le port série de l'ordinateur, un adaptateur USB-série ou l'EH3D-NODE-BUNGARD. 237 tests s'exécutent sur un ordinateur. Sur une Bungard CCD MTC réelle, la référence des trois axes (Z, X et Y jusqu'à leurs fins de course, avec le signal « les trois en origine » de l'unité de commande confirmé en direct) et les déplacements de chaque axe ont été essayés ; **un travail de perçage complet n'a pas encore tourné sur la machine**, et les pas par millimètre ne sont vérifiés que par rapport à la configuration de l'original. Par défaut, ce sont les écrans classiques du programme MS-DOS, vérifiés cellule par cellule avec l'original ; `--modern` lance l'interface à menus. Ils se manipulent au clavier et à la souris, la fenêtre peut être agrandie (l'écran s'adapte de 640x400 à 1080p et plus), les fichiers de configuration et d'outils se modifient et s'enregistrent depuis les dialogues, et le bouton Info indique les machines Bungard CCD et CCD/2 (MTC prises en charge, ATC pas encore). Une version console (`drillpro-console`) affiche les mêmes écrans dans un terminal, au clavier et à la souris et sans système de fenêtres (SSH, console texte, vieux PC). Les paquets de chaque version contiennent la configuration de base, expliquée ligne par ligne, et un dossier `examples` d'un trou à vingt mille. Le changeur d'outils des modèles ATC (changement automatique) fonctionne d'après un enregistrement de l'original et n'a pas tourné sur une machine réelle.
+**Vérification d'honnêteté - ce qui tourne aujourd'hui :** un programme Rust avec une interface texte de 80x25 qui lit les fichiers de perçage Excellon `.NCD`, la table d'outils et la configuration de la machine, ordonne les trous, les affiche et exécute tout le travail **contre un simulateur** (par défaut) ou, quand le fichier de la machine l'indique, **sur une machine réelle** par le port série de l'ordinateur, un adaptateur USB-série ou l'EH3D-NODE-BUNGARD. 236 tests s'exécutent sur un ordinateur. Sur une Bungard CCD MTC réelle, la référence des trois axes (Z, X et Y jusqu'à leurs fins de course, avec le signal « les trois en origine » de l'unité de commande confirmé en direct) et les déplacements de chaque axe ont été essayés ; **un travail de perçage complet n'a pas encore tourné sur la machine**, et les pas par millimètre ne sont vérifiés que par rapport à la configuration de l'original. Par défaut, ce sont les écrans classiques du programme MS-DOS, vérifiés cellule par cellule avec l'original ; `--modern` lance l'interface à menus. Ils se manipulent au clavier et à la souris, la fenêtre peut être agrandie (l'écran s'adapte de 640x400 à 1080p et plus), les fichiers de configuration et d'outils se modifient et s'enregistrent depuis les dialogues, et le bouton Info indique les machines Bungard CCD et CCD/2 (MTC prises en charge, ATC pas encore). Une version console (`drillpro-console`) affiche les mêmes écrans dans un terminal, au clavier et à la souris et sans système de fenêtres (SSH, console texte, vieux PC). Les paquets de chaque version contiennent la configuration de base, expliquée ligne par ligne, et un dossier `examples` d'un trou à vingt mille. Le changeur d'outils des modèles ATC (changement automatique) fonctionne d'après un enregistrement de l'original et n'a pas tourné sur une machine réelle.
 
 ---
 
@@ -28,9 +28,9 @@
 
 | | |
 |---|---|
-| Version | `0.0.7` |
+| Version | `0.0.8` |
 | Maturité | Échafaudage |
-| Tests | 237 |
+| Tests | 236 |
 | Pile technique | Rust |
 | Sur du matériel réel | Oui, sur une Bungard CCD MTC : la référence et les déplacements de chaque axe ; un travail complet n'a pas encore tourné. Sans fichier de machine, il s'exécute sur le simulateur |
 
@@ -45,10 +45,10 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Logiciel | 🟡 | Un programme Rust à écran texte 80x25 lit le fichier de perçage, la table d'outils et le fichier de la machine, ordonne les trous et exécute tout le travail sur un simulateur, ou sur une vraie machine si le fichier de la machine le dit. |
-| Tests | 🟢 | 237 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les huit langues. |
+| Tests | 🟢 | 236 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les 37 langues. |
 | Lecteurs de fichiers | 🟡 | Le fichier de perçage `.NCD`, la table d'outils `DRILLPRO.DTD` et le fichier de la machine `DRILLPRO.DCF` sont lus ; seulement avec de petits fichiers d'exemple écrits pour les tests, pas avec des fichiers de vraies cartes. |
 | Protocole de la machine | 🟠 | Le protocole d'octets de l'unité de commande a été reconstruit par rétro-ingénierie et `docs/PROTOCOL.md` liste encore des parties qui sont des hypothèses ; la couche de protocole refuse de bouger quoi que ce soit avant d'être armée. |
-| Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les huit langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
+| Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les 37 langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
 | Matériel réel | 🟠 | Sur une Bungard CCD MTC, la prise de référence des trois axes et les déplacements de chaque axe ont été essayés ; un travail de perçage complet n'a pas tourné, les pas par millimètre ne sont comparés qu'à la configuration de l'original, et les sorties de broche et d'aspirateur n'ont pas été essayées. |
 | Sécurité d'emploi | 🟡 | `Esc` arrête le travail en une fraction de seconde et coupe les pilotes de moteurs, et l'unité de commande de la machine surveille les fins de course ; le logiciel n'a pas d'arrêt d'urgence propre. |
 | Connexion au serveur | 🟠 | Avec `connection = server`, le programme envoie le travail à EH3D-SERVER et suit sa progression ; ce chemin n'a été exercé que sur le simulateur. |
@@ -90,6 +90,7 @@ L'original est le programme fermé pour MS-DOS de Bungard qui pilote les machine
 | Ajouts | Aucun de ceux-ci | Un simulateur qui exécute un travail entier, des sons pour la fin du travail et la demande d'outil, plusieurs machines à la fois via le serveur, des archives ZIP de travail, des contours DXF et Gerber, un curseur clignotant et une suite de tests lancée à chaque modification |
 | Source et licence | Fermé, propriétaire | Open source (GPL-3.0-or-later), écrit en Rust |
 | Maturité | Des années d'usage sur de vraies machines | Bien plus jeune : la course de référence et les mouvements de chaque axe ont été essayés sur une vraie Bungard CCD MTC ; un travail entier n'a pas encore tourné sur une machine, et le changeur d'outils des modèles ATC n'a pas tourné sur une vraie |
+* **37 langues :** les écrans de texte, les menus et les dialogues parlent anglais, espagnol, italien, allemand, français, portugais, chinois, japonais, bulgare, croate, tchèque, danois, néerlandais, estonien, finnois, grec, hongrois, irlandais, letton, lituanien, maltais, polonais, roumain, slovaque, slovène, suédois, norvégien, islandais, ukrainien, russe, serbe, albanais, catalan, galicien, basque, portugais du Brésil et français du Canada. Les mots des 29 langues au-delà des huit premières sont traduits par le modèle et attendent la relecture de locuteurs natifs ; un texte qu'une langue n'a pas s'affiche en anglais.
 
 ## 🧩 Rôle dans EH3D
 
@@ -145,7 +146,7 @@ Lancez-le avec `run.bat` (Windows) ou `./run.sh` (Linux et macOS) ; les deux com
 
 ## 🧪 Tests
 
-La suite compte 237 tests (`cargo test --workspace`). Ils vérifient les formats de fichier (le fichier de perçage, la table d'outils et le fichier de la machine, et leur réécriture), la planification du travail, le protocole sur le simulateur (octets, mouvement, la prise de référence, les bits de verrouillage, le lien avec le nœud et la barrière de sécurité qui refuse de bouger tant qu'elle n'est pas armée), les écrans classiques cellule par cellule et les écrans dans les huit langues. La CI exécute aussi `cargo fmt --check` et `cargo clippy` avec les avertissements comme erreurs, et `python -I tools/ci_validate.py` contrôle le manifeste, les versions, le journal des modifications et les huit README.
+La suite compte 236 tests (`cargo test --workspace`). Ils vérifient les formats de fichier (le fichier de perçage, la table d'outils et le fichier de la machine, et leur réécriture), la planification du travail, le protocole sur le simulateur (octets, mouvement, la prise de référence, les bits de verrouillage, le lien avec le nœud et la barrière de sécurité qui refuse de bouger tant qu'elle n'est pas armée), les écrans classiques cellule par cellule et les écrans dans les huit langues. La CI exécute aussi `cargo fmt --check` et `cargo clippy` avec les avertissements comme erreurs, et `python -I tools/ci_validate.py` contrôle le manifeste, les versions, le journal des modifications et les huit README.
 
 ## 🏗️ Compilation et publication
 
@@ -168,7 +169,7 @@ EH3D-DRILLPRO/
 │   ├── classic/                                 les écrans, boîtes de dialogue et touches classiques du programme MS-DOS
 │   ├── job.rs runner.rs                         ordonner les trous et exécuter le travail dans son propre fil
 │   ├── app.rs screen.rs textapp.rs              l'écran texte de 80x25 et les menus modernes
-│   ├── i18n.rs texts.rs                         les huit langues et leurs textes
+│   ├── i18n.rs texts.rs                         les 37 langues et leurs textes
 │   ├── gui.rs console.rs bin/                   la fenêtre, la version terminal et les exécutables
 │   └── server_link.rs cli.rs                    le lien avec EH3D-SERVER et la ligne de commande
 ├── protocol/src/
@@ -183,6 +184,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    petits fichiers d'exemple écrits pour les tests
 ├── config/                                      la configuration de base, expliquée ligne par ligne
 ├── examples/                                    exemples, d'un trou à 20000
+├── locales/                                     les mots des 29 langues lues dans des fichiers, un fichier par langue
 ├── tools/                                       contrôle de CI, du README et outils d'images
 ├── images/                                      bannière, les deux images et les captures d'écran
 ├── .github/                                     workflows de CI et de publication, modèles d'issues et de pull requests

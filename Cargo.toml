@@ -1,6 +1,6 @@
 [package]
 name = "eh3d-drillpro"
-version = "0.0.7"
+version = "0.0.8"
 edition = "2021"
 description = "Open implementation of the Bungard CCD drilling workflow (file formats and machine protocol)"
 license = "GPL-3.0-or-later"

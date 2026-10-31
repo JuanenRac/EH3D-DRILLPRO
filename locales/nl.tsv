@@ -1,1 +1,242 @@
 # Nederlands (nl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Laden
+Text.MenuVectors	Vectoren
+Text.MenuTools	Gereedschap
+Text.MenuConfig	Config.
+Text.MenuSort	Sorteren
+Text.MenuStart	Start
+Text.MenuLanguage	Taal
+Text.MenuQuit	Afsluiten
+Text.TitleSelectFile	Bestand kiezen
+Text.TitleVectors	Vectoren
+Text.TitleTools	Gereedschapsdata
+Text.TitleConfig	Configuratie
+Text.TitleSort	Coördinaten sorteren
+Text.TitleLanguage	Taal
+Text.TitleDrilling	Boren
+Text.TitleQuit	Afsluiten
+Text.LblFile	Bestand
+Text.LblHoles	Gaten
+Text.LblToolsUsed	Gereedschap
+Text.LblSize	Afmeting (mm)
+Text.LblTravel	Verplaats. (mm)
+Text.LblSorting	Sorteren
+Text.LblProgress	Voortgang
+Text.LblTime	Gesimuleerde tijd (s)
+Text.LblSerial	Seriële interface
+Text.SortNone	Geen
+Text.SortX	Eerst X
+Text.SortY	Eerst Y
+Text.SortSpecial	Speciaal (kortste pad)
+Text.ColTool	Gereedschap
+Text.ColStroke	Slag (mm)
+Text.ColFeed	Voeding (mm/min)
+Text.ColSpindle	Spindel (rpm)
+Text.NoFile	Geen bestand geladen
+Text.NoToolFile	Gereedschapsbestand niet gevonden
+Text.NoConfigFile	Configbestand niet gevonden
+Text.TooManyTools	Te veel gereedschap voor de wisselaar (max.:
+Text.ErrRead	Fout bij lezen van boorbestand
+Text.SimOnly	SIMULATIE - geen machine verbonden
+Text.Uncalibrated	Machine niet gekalibreerd: alleen simulatie
+Text.Connecting	Besturingseenheid verbinden ...
+Text.Drilling	Boren ...
+Text.Done	Klaar
+Text.QuitAsk	Weet u zeker dat u wilt afsluiten?
+Text.BtnYes	Ja
+Text.BtnNo	Nee
+Text.BtnStop	Stop
+Text.Directory	Map
+Text.WaitToolChange	Plaats gereedschap {} en druk op Enter
+Text.WaitSpindle	Druk op Enter om de spindel te starten
+Text.Stopped	Gestopt (aandrijving uit)
+Text.LinkFailed	Verbinding mislukt
+Text.LblLink	Verbinding
+Text.LblItems	Stappen van de taak
+Text.KeyStop	Esc: stop
+Text.RealMachine	ECHTE MACHINE ({}) - Start beweegt hem
+Text.RealStop	Esc stopt; hand bij de hoofdschakelaar
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Machine nr.:
+CText.LblScale	Schaal
+CText.LblOffset	Offset
+CText.LblClip	Uitsnede
+CText.LblVectors	Vectoren
+CText.LblFrm	van
+CText.LblTo	tot
+CText.LblCount	Aantal
+CText.LblTotal	Totaal
+CText.LblDone	Klaar
+CText.LblFile	Bestand
+CText.LblBoard	Print
+CText.LblBase	Basis
+CText.Mm	mm
+CText.BtnConfig	Config.
+CText.BtnTools	Gereedsch.
+CText.BtnStart	Start
+CText.BtnLoad	Laden
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Offset
+CText.BtnQuit	Afsluiten
+CText.PTitle	Parameters
+CText.PFile	Bestand
+CText.PDirectory	Map
+CText.PPattern	Patroon
+CText.PCoordinates	Coördinaten
+CText.PSorting	Sorteren
+CText.PChord	Koordehoek
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Geen
+CText.PSortX	Eerst X
+CText.PSortY	Eerst Y
+CText.PSortSpecial	Speciaal
+CText.PSpeed	Snelheid (mm/min)
+CText.PXyMax	XY Max.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Helling
+CText.PZMax	Z  Max.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Helling
+CText.PRamp	Helling (dv/dt)
+CText.PCorrect	Correct.
+CText.PStroke	Slag
+CText.PLimit	Limiet
+CText.PFree	Vrij
+CText.PSpindle	Spindel
+CText.PDelay	Vertraging
+CText.PSecond	s
+CText.ConnLabel	Verbinding
+CText.ConnTitle	Verbinding met de machine
+CText.ConnType	Type
+CText.ConnNameDemo	Demo (simulator)
+CText.ConnNameRs232	RS-232 (seriële poort)
+CText.ConnNameUsb	USB (RS-232-adapter)
+CText.ConnNameNode	EH3D-node (netwerk)
+CText.ConnNameServer	EH3D-server (netwerk)
+CText.ConnNoteDemo	De taak draait op de simulator: niets beweegt.
+CText.ConnNoteRs232	De seriële poort van de computer, byte voor byte.
+CText.ConnNoteUsb	Een USB-naar-RS-232-adapter: de bewegingen gaan als één stroom.
+CText.ConnNoteNode	De EH3D-node van de machine, via Ethernet of Wi-Fi.
+CText.ConnNoteServer	De EH3D-server plant de taak en voert hem uit op een machine.
+CText.ConnPort	Poort
+CText.ConnAddress	Adres
+CText.ConnToken	Token
+CText.ConnMachine	Machine
+CText.ConnNeedPort	De poort ontbreekt.
+CText.ConnNeedAddress	Het adres moet host:poort zijn.
+CText.ConnNeedMachine	De machine van de server ontbreekt.
+CText.ConnSaved	Verbinding opgeslagen in het machinebestand.
+CText.ConnNoSave	Het machinebestand kan niet worden geschreven.
+CText.BLoad	Laden
+CText.BSave	Opslaan
+CText.BOk	Ok
+CText.BAbort	Afbreken
+CText.BYes	Ja
+CText.BNo	Nee
+CText.BOkUpper	OK
+CText.BCancel	ANNULEREN
+CText.PzTitle	Panelisatie
+CText.PzBoard	Print
+CText.PzSpacing	Afstand
+CText.PzNumber	Aantal
+CText.PzCalc	Bereken
+CText.TTitle	Gereedschapsdata
+CText.TPl	Pl.
+CText.TName	Naam
+CText.TStroke	Slag
+CText.TFeed	Voeding
+CText.TSpindle	Spindel
+CText.TStart	Start
+CText.TUsed	Gebr.
+CText.TTab	Brug
+CText.TDepth	Diepte
+CText.TIter	Iter.
+CText.TXFeed	X voeding
+CText.TZFeed	Z voeding
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vect.
+CText.FTitle	Bestand kiezen
+CText.FName	Naam
+CText.FFiles	Bestanden
+CText.QStop	STOP !!!
+CText.QAsk	Weet u zeker dat u wilt afsluiten?
+CText.HomingZ	Referentie Z-as
+CText.HomingXy	Referentie X/Y-as
+CText.PressEsc	Druk op ESC om te stoppen
+CText.SpindleStart	Spindel start
+CText.SpindleStop	Spindel stop
+CText.JTool	Gereedsch.
+CText.JNo	Nr.
+CText.JStroke	Slag
+CText.JStartPos	Startpos.
+CText.JPosition	Positie
+CText.JSpeed	Snelheid (mm/min)
+CText.JCount	Aantal
+CText.JUse	Gebruik
+CText.Drilling	Boren ...
+CText.OpAborted	Bewerking afgebroken
+CText.NoFile	Laad eerst een bestand
+CText.SimNote	Simulatie: geen machine
+CText.RealNote	ECHTE MACHINE - hij gaat bewegen
+CText.InputError	Invoerfout!
+CText.Max	Max:
+CText.Min	Min:
+CText.BackupAsk	Instellingen uit Config. en hoofdmenu opslaan in bestand?
+CText.BtnAbout	Info
+CText.PLanguage	Taal
+CText.AboutDescDrill	Open implementatie van het Bungard CCD-boorprogramma
+CText.AboutDescRoute	Open implementatie van het Bungard CCD-freesprogramma
+CText.AboutVersion	Versie
+CText.AboutLicense	Licentie
+CText.AboutAuthor	Auteur
+CText.AboutRepo	Bron
+CText.AboutMachines	Bungard-machines:
+CText.AboutMtc	CCD en CCD/2 MTC (handmatige gereedschapswissel): ondersteund
+CText.AboutAtc	CCD en CCD/2 ATC (autom. gereedschapswissel): nog niet
+CText.AboutTested	Alleen getest op een Bungard CCD MTC
+CText.AboutDisclaimer	Onafhankelijk project; niet verbonden met Bungard Elektronik
+CText.TcTitle	Gereedschapswissel
+CText.TcInsert	Plaats gereedschap:
+CText.TcRun	Looplengte  (mm)
+CText.TcSpindle	Spindel  (1/min)
+CText.TcZSpeed	Z-snelheid (mm/min)
+CText.TcStroke	Slag       (mm)
+CText.QAttention	Let op!
+CText.QSpindleAsk	Spindel starten?
+CText.QToolAsk	Plaats gereedschap {}
+CText.FNoFolder	Map kan niet worden geopend
+CText.FNotFound	Bestand niet gevonden
+CText.HintEdit	Tab: volgende  Enter: accepteren  Esc: annuleren  Klik: kiezen
+CText.QSave	OPSLAAN ?
+CText.Saved	Opgeslagen
+CText.Loaded	Geladen
+CText.ErrWrite	Schrijven mislukt
+CText.ErrRead	Lezen mislukt
+CText.TeachTitle	Offset inleren
+CText.TeachLeft	links
+CText.TeachBack	achter
+CText.TeachForw	voor
+CText.TeachRight	rechts
+CText.TeachUp	omhoog
+CText.TeachDown	omlaag
+CText.TeachMil	mil/1
+CText.BTeach	Inleren
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Wijz.
+CText.QAttentionPlain	Let op
+CText.QInfo	Info:
+CText.QOffsetDelete	Oude offset|wissen?
+CText.QTeachWrite	Inleerbestand|schrijven?
+CText.QWhatNext	Wat nu?
+CText.BCont	Verder
+Text.StatusMain	Esc: terug   Enter: accepteren   ↑/↓: verplaatsen
+CText.QInterrupted	ONDERBROKEN

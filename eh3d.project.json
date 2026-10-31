@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "ecosystem": "EH3D",
   "name": "EH3D-DRILLPRO",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "role": "tool",
   "stack": "rust",
   "technologies": [
@@ -17,7 +17,7 @@
   "family": "CNC Workflow Tools",
   "parent": null,
   "build": "cargo build --release --features gui; cargo test --workspace",
-  "notes": "Scaffolding v0.0.7: a re-implementation of the drilling workflow of the classic DOS software for Bungard CCD machines. It reads Excellon .NCD drill files, the tool table and the machine configuration, orders the holes and runs the job against a simulator, in a text-mode look-alike interface in eight languages. The serial protocol was worked out by watching how the original program talks to its control unit and has been tried on one Bungard CCD MTC: the reference run of the three axes and the moves of every axis. A whole job has not run on a machine yet, and the spindle, the vacuum output and the steps per millimetre are not confirmed.",
+  "notes": "Scaffolding v0.0.8: a re-implementation of the drilling workflow of the classic DOS software for Bungard CCD machines. It reads Excellon .NCD drill files, the tool table and the machine configuration, orders the holes and runs the job against a simulator, in a text-mode look-alike interface in eight languages. The serial protocol was worked out by watching how the original program talks to its control unit and has been tried on one Bungard CCD MTC: the reference run of the three axes and the moves of every axis. A whole job has not run on a machine yet, and the spindle, the vacuum output and the steps per millimetre are not confirmed.",
   "native_version": {
     "file": "Cargo.toml",
     "pattern": "^version\\s*=\\s*\"(\\d+\\.\\d+\\.\\d+)\""

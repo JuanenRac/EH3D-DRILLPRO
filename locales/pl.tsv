@@ -1,1 +1,242 @@
 # Polski (pl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Wczytaj
+Text.MenuVectors	Wektory
+Text.MenuTools	Narzędzia
+Text.MenuConfig	Konfig.
+Text.MenuSort	Sortowanie
+Text.MenuStart	Start
+Text.MenuLanguage	Język
+Text.MenuQuit	Koniec
+Text.TitleSelectFile	Wybierz plik
+Text.TitleVectors	Wektory
+Text.TitleTools	Dane narzędzi
+Text.TitleConfig	Konfiguracja
+Text.TitleSort	Sortowanie współrzędnych
+Text.TitleLanguage	Język
+Text.TitleDrilling	Wiercenie
+Text.TitleQuit	Koniec
+Text.LblFile	Plik
+Text.LblHoles	Otwory
+Text.LblToolsUsed	Narzędzia
+Text.LblSize	Rozmiar (mm)
+Text.LblTravel	Przejazd (mm)
+Text.LblSorting	Sortowanie
+Text.LblProgress	Postęp
+Text.LblTime	Czas symulacji (s)
+Text.LblSerial	Interfejs szeregowy
+Text.SortNone	Brak
+Text.SortX	Najpierw X
+Text.SortY	Najpierw Y
+Text.SortSpecial	Specjalne (najkrótsza droga)
+Text.ColTool	Narzędzie
+Text.ColStroke	Skok (mm)
+Text.ColFeed	Posuw (mm/min)
+Text.ColSpindle	Wrzeciono (rpm)
+Text.NoFile	Nie wczytano pliku
+Text.NoToolFile	Nie znaleziono pliku danych narzędzi
+Text.NoConfigFile	Nie znaleziono pliku konfiguracji
+Text.TooManyTools	Za dużo narzędzi dla zmieniacza (maks.:
+Text.ErrRead	Błąd odczytu pliku wierceń
+Text.SimOnly	SYMULACJA - brak podłączonej maszyny
+Text.Uncalibrated	Maszyna nieskalibrowana: ruch tylko symulowany
+Text.Connecting	Łączenie ze sterownikiem ...
+Text.Drilling	Wiercenie ...
+Text.Done	Gotowe
+Text.QuitAsk	Czy na pewno zakończyć?
+Text.BtnYes	Tak
+Text.BtnNo	Nie
+Text.BtnStop	Stop
+Text.Directory	Katalog
+Text.WaitToolChange	Włóż narzędzie {} i naciśnij Enter
+Text.WaitSpindle	Naciśnij Enter, aby uruchomić wrzeciono
+Text.Stopped	Zatrzymano (napędy wyłączone)
+Text.LinkFailed	Połączenie nieudane
+Text.LblLink	Połączenie
+Text.LblItems	Kroki zadania
+Text.KeyStop	Esc: stop
+Text.RealMachine	PRAWDZIWA MASZYNA ({}) - Start ją porusza
+Text.RealStop	Esc zatrzymuje; trzymaj rękę przy wyłączniku
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Maszyna nr:
+CText.LblScale	Skala
+CText.LblOffset	Przesun.
+CText.LblClip	Przytnij
+CText.LblVectors	Wektory
+CText.LblFrm	od
+CText.LblTo	do
+CText.LblCount	Liczba
+CText.LblTotal	Razem
+CText.LblDone	Gotowe
+CText.LblFile	Plik
+CText.LblBoard	Płytka
+CText.LblBase	Baza
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Narzędzia
+CText.BtnStart	Start
+CText.BtnLoad	Wczytaj
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Przesuń.
+CText.BtnQuit	Koniec
+CText.PTitle	Parametry
+CText.PFile	Plik
+CText.PDirectory	Katalog
+CText.PPattern	Wzorzec
+CText.PCoordinates	Współrzędne
+CText.PSorting	Sortowanie
+CText.PChord	Kąt cięciwy
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Brak
+CText.PSortX	Najpierw X
+CText.PSortY	Najpierw Y
+CText.PSortSpecial	Specjalne
+CText.PSpeed	Prędkość (mm/min)
+CText.PXyMax	XY maks.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  maks.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korekcja
+CText.PStroke	Skok
+CText.PLimit	Limit
+CText.PFree	Wolne
+CText.PSpindle	Wrzeciono
+CText.PDelay	Opóźn.
+CText.PSecond	s
+CText.ConnLabel	Połączenie
+CText.ConnTitle	Połączenie z maszyną
+CText.ConnType	Typ
+CText.ConnNameDemo	Demo (symulator)
+CText.ConnNameRs232	RS-232 (port szeregowy)
+CText.ConnNameUsb	USB (adapter RS-232)
+CText.ConnNameNode	Węzeł EH3D (sieć)
+CText.ConnNameServer	Serwer EH3D (sieć)
+CText.ConnNoteDemo	Zadanie działa w symulatorze: nic się nie rusza.
+CText.ConnNoteRs232	Port szeregowy komputera, bajt po bajcie.
+CText.ConnNoteUsb	Adapter USB-RS-232: ruchy idą jednym strumieniem.
+CText.ConnNoteNode	Węzeł EH3D maszyny, przez Ethernet lub Wi-Fi.
+CText.ConnNoteServer	Serwer EH3D planuje zadanie i uruchamia je na maszynie.
+CText.ConnPort	Port
+CText.ConnAddress	Adres
+CText.ConnToken	Token
+CText.ConnMachine	Maszyna
+CText.ConnNeedPort	Brak portu.
+CText.ConnNeedAddress	Adres musi mieć postać host:port.
+CText.ConnNeedMachine	Brak maszyny serwera.
+CText.ConnSaved	Połączenie zapisano w pliku maszyny.
+CText.ConnNoSave	Nie można zapisać pliku maszyny.
+CText.BLoad	Wczytaj
+CText.BSave	Zapisz
+CText.BOk	Ok
+CText.BAbort	Przerwij
+CText.BYes	Tak
+CText.BNo	Nie
+CText.BOkUpper	OK
+CText.BCancel	ANULUJ
+CText.PzTitle	Panelizacja
+CText.PzBoard	Płytka
+CText.PzSpacing	Odstęp
+CText.PzNumber	Liczba
+CText.PzCalc	Oblicz
+CText.TTitle	Dane narzędzi
+CText.TPl	Msc.
+CText.TName	Nazwa
+CText.TStroke	Skok
+CText.TFeed	Posuw
+CText.TSpindle	Wrzeciono
+CText.TStart	Start
+CText.TUsed	Użyte
+CText.TTab	Mostek
+CText.TDepth	Głęb.
+CText.TIter	Iter.
+CText.TXFeed	Posuw X
+CText.TZFeed	Posuw Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Wekt.
+CText.FTitle	Wybierz plik
+CText.FName	Nazwa
+CText.FFiles	Pliki
+CText.QStop	STOP !!!
+CText.QAsk	Czy na pewno zakończyć?
+CText.HomingZ	Bazowanie osi Z
+CText.HomingXy	Bazowanie osi X/Y
+CText.PressEsc	Naciśnij ESC, aby zatrzymać
+CText.SpindleStart	Start wrzeciona
+CText.SpindleStop	Stop wrzeciona
+CText.JTool	Narzędzie
+CText.JNo	Nr
+CText.JStroke	Skok
+CText.JStartPos	Poz. start.
+CText.JPosition	Pozycja
+CText.JSpeed	Prędkość (mm/min)
+CText.JCount	Liczba
+CText.JUse	Użycie
+CText.Drilling	Wiercenie ...
+CText.OpAborted	Operację przerwano
+CText.NoFile	Najpierw wczytaj plik
+CText.SimNote	Symulacja: brak maszyny
+CText.RealNote	PRAWDZIWA MASZYNA - będzie się ruszać
+CText.InputError	Błąd wprowadzania!
+CText.Max	Maks.: 
+CText.Min	Min.: 
+CText.BackupAsk	Zapisać ustawienia z Konfig. i menu głównego do pliku?
+CText.BtnAbout	O progr.
+CText.PLanguage	Język
+CText.AboutDescDrill	Otwarta implementacja programu wiercenia Bungard CCD
+CText.AboutDescRoute	Otwarta implementacja programu frezowania Bungard CCD
+CText.AboutVersion	Wersja
+CText.AboutLicense	Licencja
+CText.AboutAuthor	Autor
+CText.AboutRepo	Źródło
+CText.AboutMachines	Maszyny Bungard:
+CText.AboutMtc	CCD i CCD/2 MTC (ręczna zmiana narzędzi): obsługiwane
+CText.AboutAtc	CCD i CCD/2 ATC (automatyczny zmieniacz): jeszcze nie
+CText.AboutTested	Sprawdzono tylko na Bungard CCD MTC
+CText.AboutDisclaimer	Projekt niezależny; niepowiązany z Bungard Elektronik
+CText.TcTitle	Zmiana narzędzia
+CText.TcInsert	Włóż narzędzie:
+CText.TcRun	Długość pracy  (mm)
+CText.TcSpindle	Wrzeciono  (1/min)
+CText.TcZSpeed	Prędkość Z (mm/min)
+CText.TcStroke	Skok         (mm)
+CText.QAttention	Uwaga!
+CText.QSpindleAsk	Uruchomić wrzeciono?
+CText.QToolAsk	Włóż narzędzie {}
+CText.FNoFolder	Nie można otworzyć folderu
+CText.FNotFound	Nie znaleziono pliku
+CText.HintEdit	Tab: dalej  Enter: OK  Esc: anuluj  Klik: wybierz
+CText.QSave	ZAPISAĆ ?
+CText.Saved	Zapisano
+CText.Loaded	Wczytano
+CText.ErrWrite	Nie można zapisać
+CText.ErrRead	Nie można odczytać
+CText.TeachTitle	Uczenie przesunięcia
+CText.TeachLeft	w lewo
+CText.TeachBack	w tył
+CText.TeachForw	w przód
+CText.TeachRight	w prawo
+CText.TeachUp	w górę
+CText.TeachDown	w dół
+CText.TeachMil	mil/1
+CText.BTeach	Ucz
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Zmień
+CText.QAttentionPlain	Uwaga
+CText.QInfo	Info:
+CText.QOffsetDelete	Usunąć stare|przesunięcie?
+CText.QTeachWrite	Zapisać plik|uczenia?
+CText.QWhatNext	Co dalej?
+CText.BCont	Dalej
+Text.StatusMain	Esc: wstecz   Enter: zatwierdź   ↑/↓: ruch
+CText.QInterrupted	PRZERWANO

@@ -1,1 +1,242 @@
 # Suomi (fi): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Lataa
+Text.MenuVectors	Vektorit
+Text.MenuTools	Työkalut
+Text.MenuConfig	Asetukset
+Text.MenuSort	Lajittelu
+Text.MenuStart	Käynnistä
+Text.MenuLanguage	Kieli
+Text.MenuQuit	Lopeta
+Text.TitleSelectFile	Valitse tiedosto
+Text.TitleVectors	Vektorit
+Text.TitleTools	Työkalutiedot
+Text.TitleConfig	Asetukset
+Text.TitleSort	Koordinaattien lajittelu
+Text.TitleLanguage	Kieli
+Text.TitleDrilling	Poraus
+Text.TitleQuit	Lopetus
+Text.LblFile	Tiedosto
+Text.LblHoles	Reiät
+Text.LblToolsUsed	Työkalut
+Text.LblSize	Koko (mm)
+Text.LblTravel	Liike (mm)
+Text.LblSorting	Lajittelu
+Text.LblProgress	Eteneminen
+Text.LblTime	Simuloitu aika (s)
+Text.LblSerial	Sarjaliitäntä
+Text.SortNone	Ei mitään
+Text.SortX	X ensin
+Text.SortY	Y ensin
+Text.SortSpecial	Erikois (lyhin reitti)
+Text.ColTool	Työkalu
+Text.ColStroke	Isku (mm)
+Text.ColFeed	Syöttö (mm/min)
+Text.ColSpindle	Karan nopeus (rpm)
+Text.NoFile	Tiedostoa ei ole ladattu
+Text.NoToolFile	Työkalutiedostoa ei löydy
+Text.NoConfigFile	Asetustiedostoa ei löydy
+Text.TooManyTools	Liikaa työkaluja vaihtajalle (enint.:
+Text.ErrRead	Virhe poraustiedoston luvussa
+Text.SimOnly	SIMULAATIO - konetta ei ole kytketty
+Text.Uncalibrated	Konetta ei ole kalibroitu: liike vain simuloitu
+Text.Connecting	Yhdistetään ohjausyksikköön ...
+Text.Drilling	Porataan ...
+Text.Done	Valmis
+Text.QuitAsk	Haluatko varmasti lopettaa?
+Text.BtnYes	Kyllä
+Text.BtnNo	Ei
+Text.BtnStop	Pysäytä
+Text.Directory	Hakemisto
+Text.WaitToolChange	Aseta työkalu {} ja paina Enter
+Text.WaitSpindle	Käynnistä kara painamalla Enter
+Text.Stopped	Pysäytetty (käytöt pois)
+Text.LinkFailed	Yhteys epäonnistui
+Text.LblLink	Yhteys
+Text.LblItems	Työn vaiheet
+Text.KeyStop	Esc: pysäytä
+Text.RealMachine	OIKEA KONE ({}) - Käynnistä liikuttaa sitä
+Text.RealStop	Esc pysäyttää; pidä käsi virtakytkimellä
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Koneen nro:
+CText.LblScale	Mitta
+CText.LblOffset	Siirto
+CText.LblClip	Rajaus
+CText.LblVectors	Vektorit
+CText.LblFrm	alk.
+CText.LblTo	asti
+CText.LblCount	Määrä
+CText.LblTotal	Yht.
+CText.LblDone	Tehty
+CText.LblFile	Tiedosto
+CText.LblBoard	Piirilevy
+CText.LblBase	Alusta
+CText.Mm	mm
+CText.BtnConfig	Asetukset
+CText.BtnTools	Työkalut
+CText.BtnStart	Käynnistä
+CText.BtnLoad	Lataa
+CText.BtnPanelz	Paneloi
+CText.BtnOffset	Siirto
+CText.BtnQuit	Lopeta
+CText.PTitle	Parametri
+CText.PFile	Tiedosto
+CText.PDirectory	Hakemisto
+CText.PPattern	Maski
+CText.PCoordinates	Koordinaatit
+CText.PSorting	Lajittelu
+CText.PChord	Jänteen kulma
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0,025 mm
+CText.PUnit001	0,010 mm
+CText.PSortNone	Ei mitään
+CText.PSortX	X ensin
+CText.PSortY	Y ensin
+CText.PSortSpecial	Erikois
+CText.PSpeed	Nopeus (mm/min)
+CText.PXyMax	XY maks.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY ramppi
+CText.PZMax	Z  maks.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  ramppi
+CText.PRamp	Ramppi (dv/dt)
+CText.PCorrect	Korjaus
+CText.PStroke	Isku
+CText.PLimit	Raja
+CText.PFree	Vapaa
+CText.PSpindle	Kara
+CText.PDelay	Viive
+CText.PSecond	s
+CText.ConnLabel	Yhteys
+CText.ConnTitle	Yhteys koneeseen
+CText.ConnType	Tyyppi
+CText.ConnNameDemo	Demo (simulaattori)
+CText.ConnNameRs232	RS-232 (sarjaportti)
+CText.ConnNameUsb	USB (RS-232-sovitin)
+CText.ConnNameNode	EH3D-solmu (verkko)
+CText.ConnNameServer	EH3D-palvelin (verkko)
+CText.ConnNoteDemo	Työ ajetaan simulaattorilla: mikään ei liiku.
+CText.ConnNoteRs232	Tietokoneen sarjaportti, yksi tavu kerrallaan.
+CText.ConnNoteUsb	USB-RS-232-sovitin: liikkeet lähtevät yhtenä virtana.
+CText.ConnNoteNode	Koneen EH3D-solmu, Ethernetin tai WiFin kautta.
+CText.ConnNoteServer	EH3D-palvelin suunnittelee työn ja ajaa sen koneella.
+CText.ConnPort	Portti
+CText.ConnAddress	Osoite
+CText.ConnToken	Tunniste
+CText.ConnMachine	Kone
+CText.ConnNeedPort	Portti puuttuu.
+CText.ConnNeedAddress	Osoitteen muoto on isäntä:portti.
+CText.ConnNeedMachine	Palvelimen kone puuttuu.
+CText.ConnSaved	Yhteys tallennettu konetiedostoon.
+CText.ConnNoSave	Konetiedostoon ei voi kirjoittaa.
+CText.BLoad	Lataa
+CText.BSave	Tallenna
+CText.BOk	Ok
+CText.BAbort	Keskeytä
+CText.BYes	Kyllä
+CText.BNo	Ei
+CText.BOkUpper	OK
+CText.BCancel	PERUUTA
+CText.PzTitle	Panelointi
+CText.PzBoard	Piirilevy
+CText.PzSpacing	Väli
+CText.PzNumber	Määrä
+CText.PzCalc	Laske
+CText.TTitle	Työkalutiedot
+CText.TPl	Paik.
+CText.TName	Nimi
+CText.TStroke	Isku
+CText.TFeed	Syöttö
+CText.TSpindle	Kara
+CText.TStart	Alku
+CText.TUsed	Käytetty
+CText.TTab	Tuki
+CText.TDepth	Syvyys
+CText.TIter	Kierr.
+CText.TXFeed	X-syöttö
+CText.TZFeed	Z-syöttö
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Valitse tiedosto
+CText.FName	Nimi
+CText.FFiles	Tiedostot
+CText.QStop	STOP !!!
+CText.QAsk	Haluatko varmasti lopettaa?
+CText.HomingZ	Z-akselin referenssiajo
+CText.HomingXy	X/Y-akselin referenssiajo
+CText.PressEsc	Pysäytä painamalla ESC
+CText.SpindleStart	Karan käynnistys
+CText.SpindleStop	Karan pysäytys
+CText.JTool	Työkalu
+CText.JNo	Nro
+CText.JStroke	Isku
+CText.JStartPos	Alkupaikka
+CText.JPosition	Paikka
+CText.JSpeed	Nopeus (mm/min)
+CText.JCount	Määrä
+CText.JUse	Käyttö
+CText.Drilling	Porataan ...
+CText.OpAborted	Toiminto keskeytetty
+CText.NoFile	Lataa ensin tiedosto
+CText.SimNote	Simulaatio: ei konetta
+CText.RealNote	OIKEA KONE - se liikkuu
+CText.InputError	Syöttövirhe!
+CText.Max	Maks:
+CText.Min	Min:
+CText.BackupAsk	Tallennetaanko asetukset tiedostoon?
+CText.BtnAbout	Tietoja
+CText.PLanguage	Kieli
+CText.AboutDescDrill	Bungard CCD -porausohjelman avoin toteutus
+CText.AboutDescRoute	Bungard CCD -jyrsintäohjelman avoin toteutus
+CText.AboutVersion	Versio
+CText.AboutLicense	Lisenssi
+CText.AboutAuthor	Tekijä
+CText.AboutRepo	Lähdekoodi
+CText.AboutMachines	Bungard-koneet:
+CText.AboutMtc	CCD ja CCD/2 MTC (käsin vaihto): tuettu
+CText.AboutAtc	CCD ja CCD/2 ATC (automaattivaihto): ei vielä
+CText.AboutTested	Kokeiltu vain Bungard CCD MTC:llä
+CText.AboutDisclaimer	Riippumaton projekti; ei yhteyttä Bungard Elektronikiin
+CText.TcTitle	Työkalunvaihto
+CText.TcInsert	Aseta työkalu:
+CText.TcRun	Ajopituus   (mm)
+CText.TcSpindle	Kara     (1/min)
+CText.TcZSpeed	Z-nopeus (mm/min)
+CText.TcStroke	Isku        (mm)
+CText.QAttention	Huomio!
+CText.QSpindleAsk	Käynnistetäänkö kara?
+CText.QToolAsk	Aseta työkalu {}
+CText.FNoFolder	Kansiota ei voi avata
+CText.FNotFound	Tiedostoa ei löydy
+CText.HintEdit	Tab: seuraava  Enter: OK  Esc: peruuta  Napsauta: valitse
+CText.QSave	TALLENNA ?
+CText.Saved	Tallennettu
+CText.Loaded	Ladattu
+CText.ErrWrite	Kirjoitus epäonnistui
+CText.ErrRead	Luku epäonnistui
+CText.TeachTitle	Siirron opetus
+CText.TeachLeft	vasen
+CText.TeachBack	taakse
+CText.TeachForw	eteen
+CText.TeachRight	oikea
+CText.TeachUp	ylös
+CText.TeachDown	alas
+CText.TeachMil	mil/1
+CText.BTeach	Opeta
+CText.BPlusPos	+ Paik.
+CText.BMinusPos	- Paik.
+CText.BMod	Muuta
+CText.QAttentionPlain	Huomio
+CText.QInfo	Info:
+CText.QOffsetDelete	Poistetaanko vanha|siirto?
+CText.QTeachWrite	Kirjoitetaanko opetus-|tiedosto?
+CText.QWhatNext	Mitä seuraavaksi?
+CText.BCont	Jatka
+Text.StatusMain	Esc: takaisin   Enter: hyväksy   ↑/↓: siirry
+CText.QInterrupted	KESKEYTETTY

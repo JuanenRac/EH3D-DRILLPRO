@@ -1,1 +1,242 @@
 # Galego (gl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Cargar
+Text.MenuVectors	Vectores
+Text.MenuTools	Ferramentas
+Text.MenuConfig	Config.
+Text.MenuSort	Orde
+Text.MenuStart	Iniciar
+Text.MenuLanguage	Idioma
+Text.MenuQuit	Saír
+Text.TitleSelectFile	Seleccionar ficheiro
+Text.TitleVectors	Vectores
+Text.TitleTools	Datos das ferramentas
+Text.TitleConfig	Configuración
+Text.TitleSort	Orde das coordenadas
+Text.TitleLanguage	Idioma
+Text.TitleDrilling	Taladrado
+Text.TitleQuit	Saír
+Text.LblFile	Ficheiro
+Text.LblHoles	Furados
+Text.LblToolsUsed	Ferramentas
+Text.LblSize	Tamaño (mm)
+Text.LblTravel	Percorrido (mm)
+Text.LblSorting	Orde
+Text.LblProgress	Progreso
+Text.LblTime	Tempo simulado (s)
+Text.LblSerial	Interface serie
+Text.SortNone	Ningunha
+Text.SortX	X primeiro
+Text.SortY	Y primeiro
+Text.SortSpecial	Especial (camiño máis curto)
+Text.ColTool	Ferram.
+Text.ColStroke	Carreira (mm)
+Text.ColFeed	Avance (mm/min)
+Text.ColSpindle	Fuso (rpm)
+Text.NoFile	Ningún ficheiro cargado
+Text.NoToolFile	Ficheiro de ferramentas non atopado
+Text.NoConfigFile	Ficheiro de configuración non atopado
+Text.TooManyTools	Demasiadas ferramentas para o cambiador (máximo:
+Text.ErrRead	Erro ao ler o ficheiro de taladrado
+Text.SimOnly	SIMULACIÓN - sen máquina conectada
+Text.Uncalibrated	Máquina sen calibrar: movemento só simulado
+Text.Connecting	Conectando coa unidade de control ...
+Text.Drilling	Taladrando ...
+Text.Done	Feito
+Text.QuitAsk	Seguro que queres saír?
+Text.BtnYes	Si
+Text.BtnNo	Non
+Text.BtnStop	Parar
+Text.Directory	Directorio
+Text.WaitToolChange	Insire a ferramenta {} e preme Enter
+Text.WaitSpindle	Preme Enter para arrancar o fuso
+Text.Stopped	Parado (drivers apagados)
+Text.LinkFailed	Fallou a conexión
+Text.LblLink	Ligazón
+Text.LblItems	Pasos do traballo
+Text.KeyStop	Esc: parar
+Text.RealMachine	MÁQUINA REAL ({}) - Iniciar móvea
+Text.RealStop	Esc párea; ten unha man preto do interruptor
+CText.Title	DrillPro Clásico
+CText.TitleRoute	RoutePro Clásico
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Máquina N.º:
+CText.LblScale	Escala
+CText.LblOffset	Desprazam.
+CText.LblClip	Límite
+CText.LblVectors	Vectores
+CText.LblFrm	de
+CText.LblTo	a
+CText.LblCount	Conta
+CText.LblTotal	Total
+CText.LblDone	Feito
+CText.LblFile	Ficheiro
+CText.LblBoard	Placa
+CText.LblBase	Base
+CText.Mm	mm
+CText.BtnConfig	Config.
+CText.BtnTools	Ferram.
+CText.BtnStart	Iniciar
+CText.BtnLoad	Cargar
+CText.BtnPanelz	Panel
+CText.BtnOffset	Desprz.
+CText.BtnQuit	Saír
+CText.PTitle	Parámetros
+CText.PFile	Ficheiro
+CText.PDirectory	Directorio
+CText.PPattern	Filtro
+CText.PCoordinates	Coordenadas
+CText.PSorting	Orde
+CText.PChord	Ángulo de corda
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Ningunha
+CText.PSortX	X antes
+CText.PSortY	Y antes
+CText.PSortSpecial	Especial
+CText.PSpeed	Veloc. mm/min
+CText.PXyMax	XY Máx.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Rampa
+CText.PZMax	Z  Máx.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Correc.
+CText.PStroke	Carreira
+CText.PLimit	Límite
+CText.PFree	Libre
+CText.PSpindle	Fuso
+CText.PDelay	Espera
+CText.PSecond	s
+CText.ConnLabel	Conexión
+CText.ConnTitle	Conexión coa máquina
+CText.ConnType	Tipo
+CText.ConnNameDemo	Demo (simulador)
+CText.ConnNameRs232	RS-232 (porto serie)
+CText.ConnNameUsb	USB (adaptador RS-232)
+CText.ConnNameNode	Nodo EH3D (rede)
+CText.ConnNameServer	Servidor EH3D (rede)
+CText.ConnNoteDemo	O traballo corre no simulador: nada se move.
+CText.ConnNoteRs232	O porto serie do ordenador, byte a byte.
+CText.ConnNoteUsb	Adaptador USB a RS-232: os movementos saen nun fluxo.
+CText.ConnNoteNode	O nodo EH3D da máquina, por Ethernet ou Wi-Fi.
+CText.ConnNoteServer	O servidor EH3D planifica o traballo e execútao nunha máquina.
+CText.ConnPort	Porto
+CText.ConnAddress	Enderezo
+CText.ConnToken	Token
+CText.ConnMachine	Máquina
+CText.ConnNeedPort	Falta o porto.
+CText.ConnNeedAddress	O enderezo debe ser host:porto.
+CText.ConnNeedMachine	Falta a máquina do servidor.
+CText.ConnSaved	Conexión gardada no ficheiro da máquina.
+CText.ConnNoSave	Non se pode escribir o ficheiro da máquina.
+CText.BLoad	Cargar
+CText.BSave	Gardar
+CText.BOk	Ok
+CText.BAbort	Abortar
+CText.BYes	Si
+CText.BNo	Non
+CText.BOkUpper	OK
+CText.BCancel	CANCELAR
+CText.PzTitle	Panelización
+CText.PzBoard	Placa
+CText.PzSpacing	Separación
+CText.PzNumber	Número
+CText.PzCalc	Calc.
+CText.TTitle	Datos das ferramentas
+CText.TPl	Pos.
+CText.TName	Nome
+CText.TStroke	Carreira
+CText.TFeed	Avance
+CText.TSpindle	Fuso
+CText.TStart	Inicio
+CText.TUsed	Usado
+CText.TTab	Pte.
+CText.TDepth	Prof.
+CText.TIter	Iter.
+CText.TXFeed	Av. X
+CText.TZFeed	Av. Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vect.
+CText.FTitle	Seleccionar ficheiro
+CText.FName	Nome
+CText.FFiles	Ficheiros
+CText.QStop	STOP !!!
+CText.QAsk	Seguro que queres saír?
+CText.HomingZ	Buscando orixe do eixe Z
+CText.HomingXy	Buscando orixe dos eixes X/Y
+CText.PressEsc	Preme ESC para parar
+CText.SpindleStart	Arranque do fuso
+CText.SpindleStop	Parada do fuso
+CText.JTool	Ferramenta
+CText.JNo	N.º
+CText.JStroke	Carreira
+CText.JStartPos	Pos. inicial
+CText.JPosition	Posición
+CText.JSpeed	Velocidade (mm/min)
+CText.JCount	Conta
+CText.JUse	Uso
+CText.Drilling	Taladrando ...
+CText.OpAborted	Operación abortada
+CText.NoFile	Carga primeiro un ficheiro
+CText.SimNote	Simulación: sen máquina
+CText.RealNote	MÁQUINA REAL - vai moverse
+CText.InputError	Erro de entrada!
+CText.Max	Máx: 
+CText.Min	Mín: 
+CText.BackupAsk	Gardar os axustes de Config. e do menú principal?
+CText.BtnAbout	Acerca de
+CText.PLanguage	Idioma
+CText.AboutDescDrill	Implementación aberta do programa de taladrado Bungard CCD
+CText.AboutDescRoute	Implementación aberta do programa de fresado Bungard CCD
+CText.AboutVersion	Versión
+CText.AboutLicense	Licenza
+CText.AboutAuthor	Autor
+CText.AboutRepo	Código
+CText.AboutMachines	Máquinas Bungard:
+CText.AboutMtc	CCD e CCD/2 MTC (cambio manual de ferramenta): compatibles
+CText.AboutAtc	CCD e CCD/2 ATC (cambio automático): aínda non
+CText.AboutTested	Probado só nunha Bungard CCD MTC
+CText.AboutDisclaimer	Proxecto independente; sen vínculo con Bungard Elektronik
+CText.TcTitle	Cambio de ferramenta
+CText.TcInsert	Insire a ferramenta:
+CText.TcRun	Percorrido   (mm)
+CText.TcSpindle	Fuso     (1/min)
+CText.TcZSpeed	Vel. Z (mm/min)
+CText.TcStroke	Carreira    (mm)
+CText.QAttention	Atención!
+CText.QSpindleAsk	Arrancar o fuso?
+CText.QToolAsk	Insire a ferramenta {}
+CText.FNoFolder	Non se pode abrir o cartafol
+CText.FNotFound	Ficheiro non atopado
+CText.HintEdit	Tab: seguinte  Enter: aceptar  Esc: cancelar  Clic: elixir
+CText.QSave	GARDAR?
+CText.Saved	Gardado
+CText.Loaded	Cargado
+CText.ErrWrite	Non se pode escribir
+CText.ErrRead	Non se pode ler
+CText.TeachTitle	Aprender desprazam.
+CText.TeachLeft	esq.
+CText.TeachBack	atrás
+CText.TeachForw	adiante
+CText.TeachRight	dta.
+CText.TeachUp	arriba
+CText.TeachDown	abaixo
+CText.TeachMil	mil/1
+CText.BTeach	Teach
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Mod
+CText.QAttentionPlain	Atención
+CText.QInfo	Info:
+CText.QOffsetDelete	Borrar o desprazam.|anterior?
+CText.QTeachWrite	Escribir ficheiro|Teach-In?
+CText.QWhatNext	E agora?
+CText.BCont	Cont.
+Text.StatusMain	Esc: atrás   Enter: acepta   ↑/↓: mover
+CText.QInterrupted	INTERROMPIDO

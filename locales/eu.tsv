@@ -1,1 +1,242 @@
 # Euskara (eu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Kargatu
+Text.MenuVectors	Bektoreak
+Text.MenuTools	Erremintak
+Text.MenuConfig	Konfig.
+Text.MenuSort	Ordena
+Text.MenuStart	Hasi
+Text.MenuLanguage	Hizkuntza
+Text.MenuQuit	Irten
+Text.TitleSelectFile	Hautatu fitxategia
+Text.TitleVectors	Bektoreak
+Text.TitleTools	Erremintaren datuak
+Text.TitleConfig	Konfigurazioa
+Text.TitleSort	Koordenatuen ordena
+Text.TitleLanguage	Hizkuntza
+Text.TitleDrilling	Zulaketa
+Text.TitleQuit	Irten
+Text.LblFile	Fitxategia
+Text.LblHoles	Zuloak
+Text.LblToolsUsed	Erremintak
+Text.LblSize	Tamaina (mm)
+Text.LblTravel	Ibilbidea (mm)
+Text.LblSorting	Ordena
+Text.LblProgress	Aurrerapena
+Text.LblTime	Simulatutako denbora (s)
+Text.LblSerial	Serie interfazea
+Text.SortNone	Bat ere ez
+Text.SortX	X lehenengo
+Text.SortY	Y lehenengo
+Text.SortSpecial	Berezia (bide laburrena)
+Text.ColTool	Errem.
+Text.ColStroke	Ibilaldia (mm)
+Text.ColFeed	Aurrerapena (mm/min)
+Text.ColSpindle	Ardatza (rpm)
+Text.NoFile	Ez da fitxategirik kargatu
+Text.NoToolFile	Ez da erreminta-fitxategia aurkitu
+Text.NoConfigFile	Ez da konfigurazio fitxategia aurkitu
+Text.TooManyTools	Erreminta gehiegi aldagailurako (gehienez:
+Text.ErrRead	Errorea zulaketa fitxategia irakurtzean
+Text.SimOnly	SIMULAZIOA - ez dago makinarik konektatuta
+Text.Uncalibrated	Makina kalibratu gabe: mugimendua simulatua soilik
+Text.Connecting	Kontrol unitatera konektatzen ...
+Text.Drilling	Zulatzen ...
+Text.Done	Eginda
+Text.QuitAsk	Ziur irten nahi duzula?
+Text.BtnYes	Bai
+Text.BtnNo	Ez
+Text.BtnStop	Gelditu
+Text.Directory	Direktorioa
+Text.WaitToolChange	Sartu {} erreminta eta sakatu Enter
+Text.WaitSpindle	Sakatu Enter ardatza martxan jartzeko
+Text.Stopped	Geldituta (driverrak itzalita)
+Text.LinkFailed	Konexioak huts egin du
+Text.LblLink	Lotura
+Text.LblItems	Lanaren urratsak
+Text.KeyStop	Esc: gelditu
+Text.RealMachine	BENETAKO MAKINA ({}) - Hasteak mugitzen du
+Text.RealStop	Esc-k gelditzen du; eduki esku bat etengailuaren ondoan
+CText.Title	DrillPro Klasikoa
+CText.TitleRoute	RoutePro Klasikoa
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Makina zk.:
+CText.LblScale	Eskala
+CText.LblOffset	Desplaz.
+CText.LblClip	Muga
+CText.LblVectors	Bektoreak
+CText.LblFrm	nork
+CText.LblTo	nora
+CText.LblCount	Kopurua
+CText.LblTotal	Guzt.
+CText.LblDone	Eginda
+CText.LblFile	Fitxategia
+CText.LblBoard	Plaka
+CText.LblBase	Oinarria
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Errem.
+CText.BtnStart	Hasi
+CText.BtnLoad	Kargatu
+CText.BtnPanelz	Panela
+CText.BtnOffset	Desplaz.
+CText.BtnQuit	Irten
+CText.PTitle	Parametroak
+CText.PFile	Fitxategia
+CText.PDirectory	Direktorioa
+CText.PPattern	Iragazkia
+CText.PCoordinates	Koordenatuak
+CText.PSorting	Ordena
+CText.PChord	Sokaren angelua
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Bat ere ez
+CText.PSortX	X lehen
+CText.PSortY	Y lehen
+CText.PSortSpecial	Berezia
+CText.PSpeed	Abiad. mm/min
+CText.PXyMax	XY Gehi.
+CText.PXyRef	XY Erref.
+CText.PXyRamp	XY Aldap.
+CText.PZMax	Z  Gehi.
+CText.PZRef	Z  Erref.
+CText.PZRamp	Z  Aldap.
+CText.PRamp	Aldapa (dv/dt)
+CText.PCorrect	Zuzend.
+CText.PStroke	Ibilaldia
+CText.PLimit	Muga
+CText.PFree	Askea
+CText.PSpindle	Ardatza
+CText.PDelay	Atzerapena
+CText.PSecond	s
+CText.ConnLabel	Konexioa
+CText.ConnTitle	Makinarekiko konexioa
+CText.ConnType	Mota
+CText.ConnNameDemo	Demo (simulagailua)
+CText.ConnNameRs232	RS-232 (serie ataka)
+CText.ConnNameUsb	USB (RS-232 egokitzailea)
+CText.ConnNameNode	EH3D nodoa (sarea)
+CText.ConnNameServer	EH3D zerbitzaria (sarea)
+CText.ConnNoteDemo	Lana simulagailuan exekutatzen da: ez da ezer mugitzen.
+CText.ConnNoteRs232	Ordenagailuaren serie ataka, byte bat aldiko.
+CText.ConnNoteUsb	USB-RS-232 egokitzailea: mugimenduak jario batean irteten dira.
+CText.ConnNoteNode	Makinaren EH3D nodoa, Ethernet edo Wi-Fi bidez.
+CText.ConnNoteServer	EH3D zerbitzariak lana planifikatu eta makina batean exekutatzen du.
+CText.ConnPort	Ataka
+CText.ConnAddress	Helbidea
+CText.ConnToken	Tokena
+CText.ConnMachine	Makina
+CText.ConnNeedPort	Ataka falta da.
+CText.ConnNeedAddress	Helbidea ostalaria:ataka izan behar da.
+CText.ConnNeedMachine	Zerbitzariaren makina falta da.
+CText.ConnSaved	Konexioa makinaren fitxategian gorde da.
+CText.ConnNoSave	Ezin da makinaren fitxategia idatzi.
+CText.BLoad	Kargatu
+CText.BSave	Gorde
+CText.BOk	Ados
+CText.BAbort	Utzi
+CText.BYes	Bai
+CText.BNo	Ez
+CText.BOkUpper	ADOS
+CText.BCancel	EZEZTATU
+CText.PzTitle	Panelizazioa
+CText.PzBoard	Plaka
+CText.PzSpacing	Tartea
+CText.PzNumber	Kopurua
+CText.PzCalc	Kalk.
+CText.TTitle	Erremintaren datuak
+CText.TPl	Pos.
+CText.TName	Izena
+CText.TStroke	Ibilaldia
+CText.TFeed	Aurrer.
+CText.TSpindle	Ardatza
+CText.TStart	Hasiera
+CText.TUsed	Erabilia
+CText.TTab	Zubia
+CText.TDepth	Sak.
+CText.TIter	Iter.
+CText.TXFeed	X aurr.
+CText.TZFeed	Z aurr.
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Bekt.
+CText.FTitle	Hautatu fitxategia
+CText.FName	Izena
+CText.FFiles	Fitxategiak
+CText.QStop	STOP !!!
+CText.QAsk	Ziur irten nahi duzula?
+CText.HomingZ	Z ardatzaren jatorria bilatzen
+CText.HomingXy	X/Y ardatzen jatorria bilatzen
+CText.PressEsc	Sakatu ESC gelditzeko
+CText.SpindleStart	Ardatzaren martxa
+CText.SpindleStop	Ardatzaren geldiketa
+CText.JTool	Erreminta
+CText.JNo	Zk.
+CText.JStroke	Ibilaldia
+CText.JStartPos	Hasiera pos.
+CText.JPosition	Posizioa
+CText.JSpeed	Abiadura (mm/min)
+CText.JCount	Kopurua
+CText.JUse	Erabilera
+CText.Drilling	Zulatzen ...
+CText.OpAborted	Eragiketa utzi da
+CText.NoFile	Kargatu fitxategi bat lehenengo
+CText.SimNote	Simulazioa: makinarik gabe
+CText.RealNote	BENETAKO MAKINA - mugituko da
+CText.InputError	Sarrerako errorea!
+CText.Max	Gehi: 
+CText.Min	Gutx: 
+CText.BackupAsk	Konfig. eta menu nagusiko doikuntzak fitxategian gorde?
+CText.BtnAbout	Honi buruz
+CText.PLanguage	Hizkuntza
+CText.AboutDescDrill	Bungard CCD zulaketa programaren inplementazio irekia
+CText.AboutDescRoute	Bungard CCD fresaketa programaren inplementazio irekia
+CText.AboutVersion	Bertsioa
+CText.AboutLicense	Lizentzia
+CText.AboutAuthor	Egilea
+CText.AboutRepo	Iturburua
+CText.AboutMachines	Bungard makinak:
+CText.AboutMtc	CCD eta CCD/2 MTC (eskuzko erreminta aldaketa): bateragarriak
+CText.AboutAtc	CCD eta CCD/2 ATC (aldaketa automatikoa): oraindik ez
+CText.AboutTested	Bungard CCD MTC batean bakarrik probatua
+CText.AboutDisclaimer	Proiektu independentea; ez dago Bungard Elektronik-ekin loturarik
+CText.TcTitle	Erremintaren aldaketa
+CText.TcInsert	Sartu erreminta:
+CText.TcRun	Ibilbidea    (mm)
+CText.TcSpindle	Ardatza  (1/min)
+CText.TcZSpeed	Z abiad. (mm/min)
+CText.TcStroke	Ibilaldia   (mm)
+CText.QAttention	Kontuz!
+CText.QSpindleAsk	Ardatza martxan jarri?
+CText.QToolAsk	Sartu {} erreminta
+CText.FNoFolder	Ezin da karpeta ireki
+CText.FNotFound	Fitxategia ez da aurkitu
+CText.HintEdit	Tab: hurrengoa  Enter: onartu  Esc: utzi  Klik: aukeratu
+CText.QSave	GORDE?
+CText.Saved	Gordeta
+CText.Loaded	Kargatuta
+CText.ErrWrite	Ezin da idatzi
+CText.ErrRead	Ezin da irakurri
+CText.TeachTitle	Desplaz. ikasi
+CText.TeachLeft	ezk.
+CText.TeachBack	atzera
+CText.TeachForw	aurrera
+CText.TeachRight	esk.
+CText.TeachUp	gora
+CText.TeachDown	behera
+CText.TeachMil	mil/1
+CText.BTeach	Teach
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Mod
+CText.QAttentionPlain	Kontuz
+CText.QInfo	Info:
+CText.QOffsetDelete	Lehengo desplaz.|ezabatu?
+CText.QTeachWrite	Teach-In fitxategia|idatzi?
+CText.QWhatNext	Eta orain?
+CText.BCont	Jarr.
+Text.StatusMain	Esc: atzera   Enter: onartu   ↑/↓: mugitu
+CText.QInterrupted	ETETEN

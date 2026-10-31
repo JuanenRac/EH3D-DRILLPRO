@@ -1,1 +1,242 @@
 # Català (ca): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Carrega
+Text.MenuVectors	Vectors
+Text.MenuTools	Eines
+Text.MenuConfig	Config.
+Text.MenuSort	Ordre
+Text.MenuStart	Inicia
+Text.MenuLanguage	Idioma
+Text.MenuQuit	Surt
+Text.TitleSelectFile	Selecciona fitxer
+Text.TitleVectors	Vectors
+Text.TitleTools	Dades d'eines
+Text.TitleConfig	Configuració
+Text.TitleSort	Ordenació de coordenades
+Text.TitleLanguage	Idioma
+Text.TitleDrilling	Foradat
+Text.TitleQuit	Surt
+Text.LblFile	Fitxer
+Text.LblHoles	Forats
+Text.LblToolsUsed	Eines
+Text.LblSize	Mida (mm)
+Text.LblTravel	Recorregut (mm)
+Text.LblSorting	Ordre
+Text.LblProgress	Progrés
+Text.LblTime	Temps simulat (s)
+Text.LblSerial	Interfície sèrie
+Text.SortNone	Cap
+Text.SortX	Primer X
+Text.SortY	Primer Y
+Text.SortSpecial	Especial (camí més curt)
+Text.ColTool	Eina
+Text.ColStroke	Carrera (mm)
+Text.ColFeed	Avanç (mm/min)
+Text.ColSpindle	Eix (rpm)
+Text.NoFile	Cap fitxer carregat
+Text.NoToolFile	Fitxer d'eines no trobat
+Text.NoConfigFile	Fitxer de configuració no trobat
+Text.TooManyTools	Massa eines per al canviador (màx.:
+Text.ErrRead	Error en llegir el fitxer de foradat
+Text.SimOnly	SIMULACIÓ - cap màquina connectada
+Text.Uncalibrated	Màquina no calibrada: moviment només simulat
+Text.Connecting	Connectant la unitat de control ...
+Text.Drilling	Foradant ...
+Text.Done	Fet
+Text.QuitAsk	Segur que vols sortir?
+Text.BtnYes	Sí
+Text.BtnNo	No
+Text.BtnStop	Atura
+Text.Directory	Directori
+Text.WaitToolChange	Insereix l'eina {} i prem Enter
+Text.WaitSpindle	Prem Enter per engegar l'eix
+Text.Stopped	Aturat (motors desactivats)
+Text.LinkFailed	Ha fallat la connexió
+Text.LblLink	Enllaç
+Text.LblItems	Passos de la feina
+Text.KeyStop	Esc: atura
+Text.RealMachine	MÀQUINA REAL ({}) - Inicia la mou
+Text.RealStop	Esc l'atura; tingues la mà prop de l'interruptor
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Màquina núm.:
+CText.LblScale	Escala
+CText.LblOffset	Desplaç.
+CText.LblClip	Retall
+CText.LblVectors	Vectors
+CText.LblFrm	de
+CText.LblTo	a
+CText.LblCount	Quant.
+CText.LblTotal	Total
+CText.LblDone	Fet
+CText.LblFile	Fitxer
+CText.LblBoard	Placa
+CText.LblBase	Base
+CText.Mm	mm
+CText.BtnConfig	Config.
+CText.BtnTools	Eines
+CText.BtnStart	Inicia
+CText.BtnLoad	Carrega
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Desplaç.
+CText.BtnQuit	Surt
+CText.PTitle	Paràmetres
+CText.PFile	Fitxer
+CText.PDirectory	Directori
+CText.PPattern	Patró
+CText.PCoordinates	Coordenades
+CText.PSorting	Ordre
+CText.PChord	Angle de corda
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Cap
+CText.PSortX	Primer X
+CText.PSortY	Primer Y
+CText.PSortSpecial	Especial
+CText.PSpeed	Velocitat (mm/min)
+CText.PXyMax	XY Màx.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Rampa
+CText.PZMax	Z  Màx.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Correc.
+CText.PStroke	Carrera
+CText.PLimit	Límit
+CText.PFree	Lliure
+CText.PSpindle	Eix
+CText.PDelay	Retard
+CText.PSecond	s
+CText.ConnLabel	Connexió
+CText.ConnTitle	Connexió amb la màquina
+CText.ConnType	Tipus
+CText.ConnNameDemo	Demo (simulador)
+CText.ConnNameRs232	RS-232 (port sèrie)
+CText.ConnNameUsb	USB (adaptador RS-232)
+CText.ConnNameNode	Node EH3D (xarxa)
+CText.ConnNameServer	Servidor EH3D (xarxa)
+CText.ConnNoteDemo	La feina s'executa al simulador: res no es mou.
+CText.ConnNoteRs232	El port sèrie de l'ordinador, un byte cada cop.
+CText.ConnNoteUsb	Adaptador USB-RS-232: els moviments surten en un sol flux.
+CText.ConnNoteNode	El node EH3D de la màquina, per Ethernet o Wi-Fi.
+CText.ConnNoteServer	El servidor EH3D planifica la feina i l'executa en una màquina.
+CText.ConnPort	Port
+CText.ConnAddress	Adreça
+CText.ConnToken	Testimoni
+CText.ConnMachine	Màquina
+CText.ConnNeedPort	Falta el port.
+CText.ConnNeedAddress	L'adreça ha de ser host:port.
+CText.ConnNeedMachine	Falta la màquina del servidor.
+CText.ConnSaved	Connexió desada al fitxer de la màquina.
+CText.ConnNoSave	No es pot escriure el fitxer de la màquina.
+CText.BLoad	Carrega
+CText.BSave	Desa
+CText.BOk	Ok
+CText.BAbort	Interromp
+CText.BYes	Sí
+CText.BNo	No
+CText.BOkUpper	OK
+CText.BCancel	CANCEL·LA
+CText.PzTitle	Panelització
+CText.PzBoard	Placa
+CText.PzSpacing	Espaiat
+CText.PzNumber	Nombre
+CText.PzCalc	Calc.
+CText.TTitle	Dades d'eines
+CText.TPl	Pl.
+CText.TName	Nom
+CText.TStroke	Carrera
+CText.TFeed	Avanç
+CText.TSpindle	Eix
+CText.TStart	Inici
+CText.TUsed	Usada
+CText.TTab	Pont
+CText.TDepth	Fondària
+CText.TIter	Iter.
+CText.TXFeed	Avanç X
+CText.TZFeed	Avanç Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vect.
+CText.FTitle	Selecciona fitxer
+CText.FName	Nom
+CText.FFiles	Fitxers
+CText.QStop	ATURA !!!
+CText.QAsk	Segur que vols sortir?
+CText.HomingZ	Referència de l'eix Z
+CText.HomingXy	Referència dels eixos X/Y
+CText.PressEsc	Prem ESC per aturar
+CText.SpindleStart	Engega eix
+CText.SpindleStop	Atura eix
+CText.JTool	Eina
+CText.JNo	Núm.
+CText.JStroke	Carrera
+CText.JStartPos	Pos. inicial
+CText.JPosition	Posició
+CText.JSpeed	Velocitat (mm/min)
+CText.JCount	Quant.
+CText.JUse	Ús
+CText.Drilling	Foradant ...
+CText.OpAborted	Operació interrompuda
+CText.NoFile	Carrega primer un fitxer
+CText.SimNote	Simulació: sense màquina
+CText.RealNote	MÀQUINA REAL - es mourà
+CText.InputError	Error d'entrada!
+CText.Max	Màx.: 
+CText.Min	Mín.: 
+CText.BackupAsk	Desar la configuració de Config. i del menú principal al fitxer?
+CText.BtnAbout	Quant a
+CText.PLanguage	Idioma
+CText.AboutDescDrill	Implementació oberta del programa de foradat Bungard CCD
+CText.AboutDescRoute	Implementació oberta del programa de fresat Bungard CCD
+CText.AboutVersion	Versió
+CText.AboutLicense	Llicència
+CText.AboutAuthor	Autor
+CText.AboutRepo	Codi
+CText.AboutMachines	Màquines Bungard:
+CText.AboutMtc	CCD i CCD/2 MTC (canvi manual d'eina): compatible
+CText.AboutAtc	CCD i CCD/2 ATC (canviador automàtic): encara no
+CText.AboutTested	Provat només en una Bungard CCD MTC
+CText.AboutDisclaimer	Projecte independent; sense afiliació amb Bungard Elektronik
+CText.TcTitle	Canvi d'eina
+CText.TcInsert	Insereix l'eina:
+CText.TcRun	Longitud  (mm)
+CText.TcSpindle	Eix  (1/min)
+CText.TcZSpeed	Velocitat Z (mm/min)
+CText.TcStroke	Carrera     (mm)
+CText.QAttention	Atenció!
+CText.QSpindleAsk	Engegar l'eix?
+CText.QToolAsk	Insereix l'eina {}
+CText.FNoFolder	No es pot obrir la carpeta
+CText.FNotFound	Fitxer no trobat
+CText.HintEdit	Tab: següent  Enter: accepta  Esc: cancel·la  Clic: tria
+CText.QSave	DESAR ?
+CText.Saved	Desat
+CText.Loaded	Carregat
+CText.ErrWrite	No es pot escriure
+CText.ErrRead	No es pot llegir
+CText.TeachTitle	Aprenentatge de desplaçament
+CText.TeachLeft	esquerra
+CText.TeachBack	enrere
+CText.TeachForw	endavant
+CText.TeachRight	dreta
+CText.TeachUp	amunt
+CText.TeachDown	avall
+CText.TeachMil	mil/1
+CText.BTeach	Aprèn
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Mod
+CText.QAttentionPlain	Atenció
+CText.QInfo	Info:
+CText.QOffsetDelete	Esborrar el desplaç.|antic?
+CText.QTeachWrite	Escriure el fitxer|d'aprenentatge?
+CText.QWhatNext	I ara què?
+CText.BCont	Cont.
+Text.StatusMain	Esc: enrere   Enter: accepta   ↑/↓: mou
+CText.QInterrupted	INTERROMPUT

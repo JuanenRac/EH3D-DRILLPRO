@@ -1,1 +1,242 @@
 # Magyar (hu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Betöltés
+Text.MenuVectors	Vektorok
+Text.MenuTools	Szerszámok
+Text.MenuConfig	Beállítás
+Text.MenuSort	Rendezés
+Text.MenuStart	Indítás
+Text.MenuLanguage	Nyelv
+Text.MenuQuit	Kilépés
+Text.TitleSelectFile	Fájl kiválasztása
+Text.TitleVectors	Vektorok
+Text.TitleTools	Szerszámadatok
+Text.TitleConfig	Beállítások
+Text.TitleSort	Koordináták rendezése
+Text.TitleLanguage	Nyelv
+Text.TitleDrilling	Fúrás
+Text.TitleQuit	Kilépés
+Text.LblFile	Fájl
+Text.LblHoles	Furatok
+Text.LblToolsUsed	Szerszámok
+Text.LblSize	Méret (mm)
+Text.LblTravel	Úthossz (mm)
+Text.LblSorting	Rendezés
+Text.LblProgress	Haladás
+Text.LblTime	Szimulált idő (s)
+Text.LblSerial	Soros interfész
+Text.SortNone	Nincs
+Text.SortX	Előbb X
+Text.SortY	Előbb Y
+Text.SortSpecial	Különleges (legrövidebb út)
+Text.ColTool	Szerszám
+Text.ColStroke	Löket (mm)
+Text.ColFeed	Előtolás (mm/min)
+Text.ColSpindle	Orsó (rpm)
+Text.NoFile	Nincs betöltött fájl
+Text.NoToolFile	A szerszámfájl nem található
+Text.NoConfigFile	A beállításfájl nem található
+Text.TooManyTools	Túl sok szerszám a cserélőhöz (max.:
+Text.ErrRead	Hiba a fúrófájl olvasásakor
+Text.SimOnly	SZIMULÁCIÓ - nincs gép csatlakoztatva
+Text.Uncalibrated	A gép nincs kalibrálva: a mozgás csak szimulált
+Text.Connecting	Vezérlőegység csatlakoztatása ...
+Text.Drilling	Fúrás ...
+Text.Done	Kész
+Text.QuitAsk	Biztosan kilép?
+Text.BtnYes	Igen
+Text.BtnNo	Nem
+Text.BtnStop	Stop
+Text.Directory	Könyvtár
+Text.WaitToolChange	Helyezze be a(z) {} szerszámot, majd Enter
+Text.WaitSpindle	Az orsó indításához nyomjon Entert
+Text.Stopped	Leállítva (hajtások ki)
+Text.LinkFailed	A kapcsolat sikertelen
+Text.LblLink	Kapcsolat
+Text.LblItems	A munka lépései
+Text.KeyStop	Esc: stop
+Text.RealMachine	VALÓDI GÉP ({}) - az Indítás mozgatja
+Text.RealStop	Az Esc leállítja; tartsa a kezét a főkapcsolónál
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Gép sz.:
+CText.LblScale	Arány
+CText.LblOffset	Eltolás
+CText.LblClip	Vágás
+CText.LblVectors	Vektorok
+CText.LblFrm	-tól
+CText.LblTo	-ig
+CText.LblCount	Darab
+CText.LblTotal	Összes
+CText.LblDone	Kész
+CText.LblFile	Fájl
+CText.LblBoard	Lemez
+CText.LblBase	Alap
+CText.Mm	mm
+CText.BtnConfig	Beállít.
+CText.BtnTools	Szerszám
+CText.BtnStart	Indítás
+CText.BtnLoad	Betöltés
+CText.BtnPanelz	Panel
+CText.BtnOffset	Eltolás
+CText.BtnQuit	Kilépés
+CText.PTitle	Paraméter
+CText.PFile	Fájl
+CText.PDirectory	Könyvtár
+CText.PPattern	Minta
+CText.PCoordinates	Koordináták
+CText.PSorting	Rendezés
+CText.PChord	Húrszög
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0,025 mm
+CText.PUnit001	0,010 mm
+CText.PSortNone	Nincs
+CText.PSortX	Előbb X
+CText.PSortY	Előbb Y
+CText.PSortSpecial	Különleges
+CText.PSpeed	Sebesség (mm/min)
+CText.PXyMax	XY max.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY rámpa
+CText.PZMax	Z  max.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  rámpa
+CText.PRamp	Rámpa (dv/dt)
+CText.PCorrect	Korrekció
+CText.PStroke	Löket
+CText.PLimit	Határ
+CText.PFree	Szabad
+CText.PSpindle	Orsó
+CText.PDelay	Késleltetés
+CText.PSecond	s
+CText.ConnLabel	Kapcsolat
+CText.ConnTitle	Kapcsolat a géppel
+CText.ConnType	Típus
+CText.ConnNameDemo	Demó (szimulátor)
+CText.ConnNameRs232	RS-232 (soros port)
+CText.ConnNameUsb	USB (RS-232 adapter)
+CText.ConnNameNode	EH3D csomópont (hálózat)
+CText.ConnNameServer	EH3D szerver (hálózat)
+CText.ConnNoteDemo	A munka a szimulátoron fut: semmi sem mozog.
+CText.ConnNoteRs232	A számítógép soros portja, bájtonként.
+CText.ConnNoteUsb	USB-RS-232 adapter: a mozgások egy adatfolyamként mennek ki.
+CText.ConnNoteNode	A gép EH3D csomópontja, Etherneten vagy Wi-Fin.
+CText.ConnNoteServer	Az EH3D szerver megtervezi a munkát és egy gépen futtatja.
+CText.ConnPort	Port
+CText.ConnAddress	Cím
+CText.ConnToken	Token
+CText.ConnMachine	Gép
+CText.ConnNeedPort	Hiányzik a port.
+CText.ConnNeedAddress	A cím formátuma: host:port.
+CText.ConnNeedMachine	Hiányzik a szerver gépe.
+CText.ConnSaved	A kapcsolat mentve a gépfájlba.
+CText.ConnNoSave	A gépfájl nem írható.
+CText.BLoad	Betöltés
+CText.BSave	Mentés
+CText.BOk	Ok
+CText.BAbort	Megszak.
+CText.BYes	Igen
+CText.BNo	Nem
+CText.BOkUpper	OK
+CText.BCancel	MÉGSE
+CText.PzTitle	Panelezés
+CText.PzBoard	Lemez
+CText.PzSpacing	Távolság
+CText.PzNumber	Szám
+CText.PzCalc	Számít
+CText.TTitle	Szerszámadatok
+CText.TPl	Hely
+CText.TName	Név
+CText.TStroke	Löket
+CText.TFeed	Előtolás
+CText.TSpindle	Orsó
+CText.TStart	Kezdet
+CText.TUsed	Használt
+CText.TTab	Híd
+CText.TDepth	Mélység
+CText.TIter	Ism.
+CText.TXFeed	X előtolás
+CText.TZFeed	Z előtolás
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Fájl kiválasztása
+CText.FName	Név
+CText.FFiles	Fájlok
+CText.QStop	STOP !!!
+CText.QAsk	Biztosan kilép?
+CText.HomingZ	Z tengely referenciafutása
+CText.HomingXy	X/Y tengely referenciafutása
+CText.PressEsc	Leállításhoz nyomja az ESC-et
+CText.SpindleStart	Orsó indítás
+CText.SpindleStop	Orsó leállítás
+CText.JTool	Szerszám
+CText.JNo	Sz.
+CText.JStroke	Löket
+CText.JStartPos	Kezdőpoz.
+CText.JPosition	Pozíció
+CText.JSpeed	Sebesség (mm/min)
+CText.JCount	Darab
+CText.JUse	Haszn.
+CText.Drilling	Fúrás ...
+CText.OpAborted	A művelet megszakítva
+CText.NoFile	Először töltsön be fájlt
+CText.SimNote	Szimuláció: nincs gép
+CText.RealNote	VALÓDI GÉP - mozogni fog
+CText.InputError	Beviteli hiba!
+CText.Max	Max:
+CText.Min	Min:
+CText.BackupAsk	Menti a beállításokat fájlba?
+CText.BtnAbout	Névjegy
+CText.PLanguage	Nyelv
+CText.AboutDescDrill	A Bungard CCD fúróprogram nyílt megvalósítása
+CText.AboutDescRoute	A Bungard CCD marásprogram nyílt megvalósítása
+CText.AboutVersion	Verzió
+CText.AboutLicense	Licenc
+CText.AboutAuthor	Szerző
+CText.AboutRepo	Forráskód
+CText.AboutMachines	Bungard gépek:
+CText.AboutMtc	CCD és CCD/2 MTC (kézi szerszámcsere): támogatott
+CText.AboutAtc	CCD és CCD/2 ATC (automata csere): még nem
+CText.AboutTested	Csak Bungard CCD MTC-n kipróbálva
+CText.AboutDisclaimer	Független projekt; nem áll kapcsolatban a Bungard Elektronikkal
+CText.TcTitle	Szerszámcsere
+CText.TcInsert	Helyezze be a szerszámot:
+CText.TcRun	Futáshossz  (mm)
+CText.TcSpindle	Orsó     (1/min)
+CText.TcZSpeed	Z seb. (mm/min)
+CText.TcStroke	Löket       (mm)
+CText.QAttention	Figyelem!
+CText.QSpindleAsk	Indítja az orsót?
+CText.QToolAsk	Helyezze be: {}
+CText.FNoFolder	A mappa nem nyitható meg
+CText.FNotFound	A fájl nem található
+CText.HintEdit	Tab: köv.  Enter: OK  Esc: mégse  Kattintás: választ
+CText.QSave	MENT ?
+CText.Saved	Mentve
+CText.Loaded	Betöltve
+CText.ErrWrite	Nem írható
+CText.ErrRead	Nem olvasható
+CText.TeachTitle	Eltolás betanítása
+CText.TeachLeft	balra
+CText.TeachBack	hátra
+CText.TeachForw	előre
+CText.TeachRight	jobbra
+CText.TeachUp	fel
+CText.TeachDown	le
+CText.TeachMil	mil/1
+CText.BTeach	Betanít
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Módosít
+CText.QAttentionPlain	Figyelem
+CText.QInfo	Info:
+CText.QOffsetDelete	Törli a régi|eltolást?
+CText.QTeachWrite	Írja a betanítási|fájlt?
+CText.QWhatNext	Mi legyen most?
+CText.BCont	Tovább
+Text.StatusMain	Esc: vissza   Enter: elfogad   ↑/↓: mozgás
+CText.QInterrupted	MEGSZAKÍTVA

@@ -7,14 +7,14 @@
   "ecosystem": "eh3d",
   "svg": "en",
   "tagline": {
-    "en": "A Rust program with the classic screens of the Bungard CCD drilling software, in eight languages.",
-    "es": "Un programa en Rust con las pantallas clásicas del software de taladrado de Bungard CCD, en ocho idiomas.",
-    "de": "Ein Rust-Programm mit den klassischen Bildschirmen der Bungard-CCD-Bohr-Software, in acht Sprachen.",
-    "fr": "Un programme Rust avec les écrans classiques du logiciel de perçage Bungard CCD, en huit langues.",
-    "it": "Un programma in Rust con le schermate classiche del software di foratura Bungard CCD, in otto lingue.",
-    "ja": "Bungard CCD のドリルソフトの従来の画面を備えた、8 言語対応の Rust プログラム。",
-    "zh": "采用 Bungard CCD 钻孔软件经典界面的 Rust 程序，支持八种语言。",
-    "pt": "Um programa em Rust com os ecrãs clássicos do software de furação da Bungard CCD, em oito idiomas."
+    "en": "A Rust program with the classic screens of the Bungard CCD drilling software, in 37 languages.",
+    "es": "Un programa en Rust con las pantallas clásicas del software de taladrado de Bungard CCD, en 37 idiomas.",
+    "de": "Ein Rust-Programm mit den klassischen Bildschirmen der Bungard-CCD-Bohr-Software, in 37 Sprachen.",
+    "fr": "Un programme Rust avec les écrans classiques du logiciel de perçage Bungard CCD, en 37 langues.",
+    "it": "Un programma in Rust con le schermate classiche del software di foratura Bungard CCD, in 37 lingue.",
+    "ja": "Bungard CCD のドリルソフトの従来の画面を備えた、37 言語対応の Rust プログラム。",
+    "zh": "采用 Bungard CCD 钻孔软件经典界面的 Rust 程序，支持37 种语言。",
+    "pt": "Um programa em Rust com os ecrãs clássicos do software de furação da Bungard CCD, em 37 línguas."
   },
   "cards": [
     {
@@ -77,14 +77,14 @@
           "name": "i18n.rs  texts.rs",
           "tree_name": "i18n.rs texts.rs",
           "desc": {
-            "en": "the eight languages and their texts",
-            "es": "los ocho idiomas y sus textos",
-            "de": "die acht Sprachen und ihre Texte",
-            "fr": "les huit langues et leurs textes",
-            "it": "le otto lingue e i loro testi",
-            "ja": "8 言語とそのテキスト",
-            "zh": "八种语言及其文本",
-            "pt": "os oito idiomas e os seus textos"
+            "en": "the 37 languages and their texts",
+            "es": "los 37 idiomas y sus textos",
+            "de": "die 37 Sprachen und ihre Texte",
+            "fr": "les 37 langues et leurs textes",
+            "it": "le 37 lingue e i loro testi",
+            "ja": "37 言語とそのテキスト",
+            "zh": "37 种语言及其文本",
+            "pt": "os 37 línguas e os seus textos"
           }
         },
         {
@@ -366,6 +366,19 @@
             "ja": "例：1穴から2万穴",
             "zh": "示例：从1个孔到2万个孔",
             "pt": "exemplos, de um furo a 20000"
+          }
+        },
+        {
+          "name": "locales/",
+          "desc": {
+            "en": "the words of the 29 languages that are read from files, one file per language",
+            "es": "las palabras de los 29 idiomas que se leen de ficheros, un fichero por idioma",
+            "it": "le parole delle 29 lingue lette da file, un file per lingua",
+            "de": "die Wörter der 29 Sprachen, die aus Dateien gelesen werden, eine Datei je Sprache",
+            "fr": "les mots des 29 langues lues dans des fichiers, un fichier par langue",
+            "pt": "as palavras das 29 línguas lidas de ficheiros, um ficheiro por língua",
+            "zh": "从文件读取的 29 种语言的文字，每种语言一个文件",
+            "ja": "ファイルから読み込む 29 言語の文言（言語ごとに 1 ファイル）"
           }
         },
         {

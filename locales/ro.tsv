@@ -1,1 +1,242 @@
 # Română (ro): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Încărcare
+Text.MenuVectors	Vectori
+Text.MenuTools	Scule
+Text.MenuConfig	Config.
+Text.MenuSort	Sortare
+Text.MenuStart	Start
+Text.MenuLanguage	Limbă
+Text.MenuQuit	Ieșire
+Text.TitleSelectFile	Alegeți fișierul
+Text.TitleVectors	Vectori
+Text.TitleTools	Date scule
+Text.TitleConfig	Configurare
+Text.TitleSort	Sortarea coordonatelor
+Text.TitleLanguage	Limbă
+Text.TitleDrilling	Găurire
+Text.TitleQuit	Ieșire
+Text.LblFile	Fișier
+Text.LblHoles	Găuri
+Text.LblToolsUsed	Scule
+Text.LblSize	Dimensiune (mm)
+Text.LblTravel	Cursă (mm)
+Text.LblSorting	Sortare
+Text.LblProgress	Progres
+Text.LblTime	Timp simulat (s)
+Text.LblSerial	Interfață serială
+Text.SortNone	Fără
+Text.SortX	Întâi X
+Text.SortY	Întâi Y
+Text.SortSpecial	Special (drum minim)
+Text.ColTool	Sculă
+Text.ColStroke	Cursă (mm)
+Text.ColFeed	Avans (mm/min)
+Text.ColSpindle	Arbore (rpm)
+Text.NoFile	Niciun fișier încărcat
+Text.NoToolFile	Fișierul cu datele sculelor nu a fost găsit
+Text.NoConfigFile	Fișierul de configurare nu a fost găsit
+Text.TooManyTools	Prea multe scule pentru schimbător (max.:
+Text.ErrRead	Eroare la citirea fișierului de găurire
+Text.SimOnly	SIMULARE - nicio mașină conectată
+Text.Uncalibrated	Mașină necalibrată: mișcarea este doar simulată
+Text.Connecting	Se conectează unitatea de comandă ...
+Text.Drilling	Se găurește ...
+Text.Done	Gata
+Text.QuitAsk	Chiar doriți să ieșiți?
+Text.BtnYes	Da
+Text.BtnNo	Nu
+Text.BtnStop	Stop
+Text.Directory	Director
+Text.WaitToolChange	Introduceți scula {} și apăsați Enter
+Text.WaitSpindle	Apăsați Enter pentru pornirea arborelui
+Text.Stopped	Oprit (acționări oprite)
+Text.LinkFailed	Conexiune eșuată
+Text.LblLink	Conexiune
+Text.LblItems	Pașii lucrării
+Text.KeyStop	Esc: stop
+Text.RealMachine	MAȘINĂ REALĂ ({}) - Start o mișcă
+Text.RealStop	Esc o oprește; țineți mâna lângă întrerupător
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Mașina nr.:
+CText.LblScale	Scară
+CText.LblOffset	Decalaj
+CText.LblClip	Tăiere
+CText.LblVectors	Vectori
+CText.LblFrm	de
+CText.LblTo	la
+CText.LblCount	Număr
+CText.LblTotal	Total
+CText.LblDone	Gata
+CText.LblFile	Fișier
+CText.LblBoard	Placă
+CText.LblBase	Bază
+CText.Mm	mm
+CText.BtnConfig	Config.
+CText.BtnTools	Scule
+CText.BtnStart	Start
+CText.BtnLoad	Încărc.
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Decalaj
+CText.BtnQuit	Ieșire
+CText.PTitle	Parametri
+CText.PFile	Fișier
+CText.PDirectory	Director
+CText.PPattern	Model
+CText.PCoordinates	Coordonate
+CText.PSorting	Sortare
+CText.PChord	Unghi coardă
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Fără
+CText.PSortX	Întâi X
+CText.PSortY	Întâi Y
+CText.PSortSpecial	Special
+CText.PSpeed	Viteză (mm/min)
+CText.PXyMax	XY Max.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Rampă
+CText.PZMax	Z  Max.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Rampă
+CText.PRamp	Rampă (dv/dt)
+CText.PCorrect	Corecț.
+CText.PStroke	Cursă
+CText.PLimit	Limită
+CText.PFree	Liber
+CText.PSpindle	Arbore
+CText.PDelay	Întârz.
+CText.PSecond	s
+CText.ConnLabel	Conexiune
+CText.ConnTitle	Conexiunea cu mașina
+CText.ConnType	Tip
+CText.ConnNameDemo	Demo (simulator)
+CText.ConnNameRs232	RS-232 (port serial)
+CText.ConnNameUsb	USB (adaptor RS-232)
+CText.ConnNameNode	Nod EH3D (rețea)
+CText.ConnNameServer	Server EH3D (rețea)
+CText.ConnNoteDemo	Lucrarea rulează în simulator: nimic nu se mișcă.
+CText.ConnNoteRs232	Portul serial al calculatorului, octet cu octet.
+CText.ConnNoteUsb	Adaptor USB-RS-232: mișcările pleacă într-un flux.
+CText.ConnNoteNode	Nodul EH3D al mașinii, prin Ethernet sau Wi-Fi.
+CText.ConnNoteServer	Serverul EH3D planifică lucrarea și o rulează pe mașină.
+CText.ConnPort	Port
+CText.ConnAddress	Adresă
+CText.ConnToken	Token
+CText.ConnMachine	Mașină
+CText.ConnNeedPort	Lipsește portul.
+CText.ConnNeedAddress	Adresa trebuie să fie gazdă:port.
+CText.ConnNeedMachine	Lipsește mașina serverului.
+CText.ConnSaved	Conexiune salvată în fișierul mașinii.
+CText.ConnNoSave	Fișierul mașinii nu poate fi scris.
+CText.BLoad	Încărcare
+CText.BSave	Salvare
+CText.BOk	Ok
+CText.BAbort	Anulare
+CText.BYes	Da
+CText.BNo	Nu
+CText.BOkUpper	OK
+CText.BCancel	RENUNȚ
+CText.PzTitle	Panelizare
+CText.PzBoard	Placă
+CText.PzSpacing	Spațiere
+CText.PzNumber	Număr
+CText.PzCalc	Calc.
+CText.TTitle	Date scule
+CText.TPl	Loc
+CText.TName	Nume
+CText.TStroke	Cursă
+CText.TFeed	Avans
+CText.TSpindle	Arbore
+CText.TStart	Start
+CText.TUsed	Folosit
+CText.TTab	Punte
+CText.TDepth	Adânc.
+CText.TIter	Iter.
+CText.TXFeed	Avans X
+CText.TZFeed	Avans Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vect.
+CText.FTitle	Alegeți fișierul
+CText.FName	Nume
+CText.FFiles	Fișiere
+CText.QStop	STOP !!!
+CText.QAsk	Chiar doriți să ieșiți?
+CText.HomingZ	Referențiere axa Z
+CText.HomingXy	Referențiere axele X/Y
+CText.PressEsc	Apăsați ESC pentru oprire
+CText.SpindleStart	Pornire arbore
+CText.SpindleStop	Oprire arbore
+CText.JTool	Sculă
+CText.JNo	Nr.
+CText.JStroke	Cursă
+CText.JStartPos	Poz. start
+CText.JPosition	Poziție
+CText.JSpeed	Viteză (mm/min)
+CText.JCount	Număr
+CText.JUse	Utiliz.
+CText.Drilling	Se găurește ...
+CText.OpAborted	Operație anulată
+CText.NoFile	Încărcați întâi un fișier
+CText.SimNote	Simulare: fără mașină
+CText.RealNote	MAȘINĂ REALĂ - se va mișca
+CText.InputError	Eroare de introducere!
+CText.Max	Max.: 
+CText.Min	Min.: 
+CText.BackupAsk	Salvați setările din Config. și meniul principal în fișier?
+CText.BtnAbout	Despre
+CText.PLanguage	Limbă
+CText.AboutDescDrill	Implementare deschisă a programului de găurire Bungard CCD
+CText.AboutDescRoute	Implementare deschisă a programului de frezare Bungard CCD
+CText.AboutVersion	Versiune
+CText.AboutLicense	Licență
+CText.AboutAuthor	Autor
+CText.AboutRepo	Sursă
+CText.AboutMachines	Mașini Bungard:
+CText.AboutMtc	CCD și CCD/2 MTC (schimb manual de scule): suportat
+CText.AboutAtc	CCD și CCD/2 ATC (schimbător automat): încă nu
+CText.AboutTested	Încercat doar pe Bungard CCD MTC
+CText.AboutDisclaimer	Proiect independent; fără legătură cu Bungard Elektronik
+CText.TcTitle	Schimb de sculă
+CText.TcInsert	Introduceți scula:
+CText.TcRun	Lungime lucru  (mm)
+CText.TcSpindle	Arbore  (1/min)
+CText.TcZSpeed	Viteză Z (mm/min)
+CText.TcStroke	Cursă     (mm)
+CText.QAttention	Atenție!
+CText.QSpindleAsk	Porniți arborele?
+CText.QToolAsk	Introduceți scula {}
+CText.FNoFolder	Dosarul nu poate fi deschis
+CText.FNotFound	Fișier negăsit
+CText.HintEdit	Tab: urm.  Enter: accept  Esc: anulare  Clic: alegere
+CText.QSave	SALVARE ?
+CText.Saved	Salvat
+CText.Loaded	Încărcat
+CText.ErrWrite	Nu se poate scrie
+CText.ErrRead	Nu se poate citi
+CText.TeachTitle	Învățare decalaj
+CText.TeachLeft	stânga
+CText.TeachBack	înapoi
+CText.TeachForw	înainte
+CText.TeachRight	dreapta
+CText.TeachUp	sus
+CText.TeachDown	jos
+CText.TeachMil	mil/1
+CText.BTeach	Învață
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Modif.
+CText.QAttentionPlain	Atenție
+CText.QInfo	Info:
+CText.QOffsetDelete	Ștergeți vechiul|decalaj?
+CText.QTeachWrite	Scrieți fișierul|de învățare?
+CText.QWhatNext	Ce urmează?
+CText.BCont	Contin.
+Text.StatusMain	Esc: înapoi   Enter: acceptă   ↑/↓: mișcare
+CText.QInterrupted	ÎNTRERUPT

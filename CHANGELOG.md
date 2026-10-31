@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.8] - 37 languages and tools that can be left out of a job
+
 - **Room for 37 languages:** `i18n::Lang` lists the eight languages of the program and 29 more (Europe and America, with Brazilian Portuguese and Canadian French as languages of their own), and the words of the new ones are read from the files of `locales/` (`Text.Name` or `CText.Name`, one line per text), with English, or the main language of a variant, for what a file does not have; the list of languages of the program scrolls. The hot-key marks `~X~` are not used in the new languages.
 
 - **Tools switched off:** `JobOptions::skip_tools` leaves the holes of the drills that are listed out of the job (`select_holes`), so a modern interface can drill only some of the tools. 1 test.

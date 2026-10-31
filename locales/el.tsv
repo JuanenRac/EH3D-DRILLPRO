@@ -1,1 +1,242 @@
 # Ελληνικά (el): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Φόρτωση
+Text.MenuVectors	Διανύσματα
+Text.MenuTools	Εργαλεία
+Text.MenuConfig	Ρυθμίσεις
+Text.MenuSort	Ταξινόμηση
+Text.MenuStart	Έναρξη
+Text.MenuLanguage	Γλώσσα
+Text.MenuQuit	Έξοδος
+Text.TitleSelectFile	Επιλογή αρχείου
+Text.TitleVectors	Διανύσματα
+Text.TitleTools	Στοιχεία εργαλείων
+Text.TitleConfig	Ρυθμίσεις
+Text.TitleSort	Ταξινόμηση συντεταγμένων
+Text.TitleLanguage	Γλώσσα
+Text.TitleDrilling	Διάτρηση
+Text.TitleQuit	Έξοδος
+Text.LblFile	Αρχείο
+Text.LblHoles	Τρύπες
+Text.LblToolsUsed	Εργαλεία
+Text.LblSize	Μέγεθος (mm)
+Text.LblTravel	Διαδρομή (mm)
+Text.LblSorting	Ταξινόμηση
+Text.LblProgress	Πρόοδος
+Text.LblTime	Προσομ. χρόνος (s)
+Text.LblSerial	Σειριακή διεπαφή
+Text.SortNone	Καμία
+Text.SortX	Πρώτα X
+Text.SortY	Πρώτα Y
+Text.SortSpecial	Ειδική (συντομ. διαδρ.)
+Text.ColTool	Εργαλείο
+Text.ColStroke	Διαδρ. (mm)
+Text.ColFeed	Πρόωση (mm/min)
+Text.ColSpindle	Άτρακτος (rpm)
+Text.NoFile	Κανένα αρχείο φορτωμένο
+Text.NoToolFile	Δεν βρέθηκε αρχείο εργαλείων
+Text.NoConfigFile	Δεν βρέθηκε αρχείο ρυθμίσεων
+Text.TooManyTools	Πάρα πολλά εργαλεία για τον εναλλάκτη (μέγ.:
+Text.ErrRead	Σφάλμα ανάγνωσης αρχείου διάτρησης
+Text.SimOnly	ΠΡΟΣΟΜΟΙΩΣΗ - χωρίς συνδεδεμένο μηχάνημα
+Text.Uncalibrated	Μηχάνημα μη βαθμονομημένο: κίνηση μόνο προσομοιωμένη
+Text.Connecting	Σύνδεση μονάδας ελέγχου ...
+Text.Drilling	Διάτρηση ...
+Text.Done	Τέλος
+Text.QuitAsk	Θέλετε σίγουρα έξοδο;
+Text.BtnYes	Ναι
+Text.BtnNo	Όχι
+Text.BtnStop	Στοπ
+Text.Directory	Κατάλογος
+Text.WaitToolChange	Τοποθετήστε εργαλείο {} και πατήστε Enter
+Text.WaitSpindle	Πατήστε Enter για εκκίνηση ατράκτου
+Text.Stopped	Σταμάτησε (κινητήρες off)
+Text.LinkFailed	Η σύνδεση απέτυχε
+Text.LblLink	Σύνδεση
+Text.LblItems	Βήματα εργασίας
+Text.KeyStop	Esc: στοπ
+Text.RealMachine	ΠΡΑΓΜΑΤΙΚΟ ΜΗΧΑΝΗΜΑ ({}) - Η Έναρξη το κινεί
+Text.RealStop	Το Esc το σταματά· κρατήστε το χέρι στον διακόπτη
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Μηχ. αρ.:
+CText.LblScale	Κλίμακα
+CText.LblOffset	Μετατόπιση
+CText.LblClip	Περικοπή
+CText.LblVectors	Διανύσματα
+CText.LblFrm	από
+CText.LblTo	έως
+CText.LblCount	Πλήθος
+CText.LblTotal	Σύνολο
+CText.LblDone	Έγινε
+CText.LblFile	Αρχείο
+CText.LblBoard	Πλακέτα
+CText.LblBase	Βάση
+CText.Mm	mm
+CText.BtnConfig	Ρυθμίσεις
+CText.BtnTools	Εργαλεία
+CText.BtnStart	Έναρξη
+CText.BtnLoad	Φόρτωση
+CText.BtnPanelz	Πάνελ
+CText.BtnOffset	Μετατόπ.
+CText.BtnQuit	Έξοδος
+CText.PTitle	Παράμετρος
+CText.PFile	Αρχείο
+CText.PDirectory	Κατάλογος
+CText.PPattern	Μάσκα
+CText.PCoordinates	Συντεταγμένες
+CText.PSorting	Ταξινόμηση
+CText.PChord	Γωνία χορδής
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0,025 mm
+CText.PUnit001	0,010 mm
+CText.PSortNone	Καμία
+CText.PSortX	Πρώτα X
+CText.PSortY	Πρώτα Y
+CText.PSortSpecial	Ειδική
+CText.PSpeed	Ταχύτητα (mm/min)
+CText.PXyMax	XY μέγ.
+CText.PXyRef	XY αναφ.
+CText.PXyRamp	XY ράμπα
+CText.PZMax	Z  μέγ.
+CText.PZRef	Z  αναφ.
+CText.PZRamp	Z  ράμπα
+CText.PRamp	Ράμπα (dv/dt)
+CText.PCorrect	Διόρθ.
+CText.PStroke	Διαδρομή
+CText.PLimit	Όριο
+CText.PFree	Ελεύθερο
+CText.PSpindle	Άτρακτος
+CText.PDelay	Καθυστέρ.
+CText.PSecond	s
+CText.ConnLabel	Σύνδεση
+CText.ConnTitle	Σύνδεση με το μηχάνημα
+CText.ConnType	Τύπος
+CText.ConnNameDemo	Demo (προσομοιωτής)
+CText.ConnNameRs232	RS-232 (σειριακή θύρα)
+CText.ConnNameUsb	USB (προσαρμογέας RS-232)
+CText.ConnNameNode	Κόμβος EH3D (δίκτυο)
+CText.ConnNameServer	Διακομιστής EH3D (δίκτυο)
+CText.ConnNoteDemo	Η εργασία τρέχει στον προσομοιωτή: τίποτα δεν κινείται.
+CText.ConnNoteRs232	Η σειριακή θύρα του υπολογιστή, ένα byte τη φορά.
+CText.ConnNoteUsb	Προσαρμογέας USB σε RS-232: οι κινήσεις στέλνονται ως ροή.
+CText.ConnNoteNode	Ο κόμβος EH3D του μηχανήματος, μέσω Ethernet ή Wi-Fi.
+CText.ConnNoteServer	Ο διακομιστής EH3D σχεδιάζει την εργασία και την εκτελεί σε μηχάνημα.
+CText.ConnPort	Θύρα
+CText.ConnAddress	Διεύθυνση
+CText.ConnToken	Διακριτικό
+CText.ConnMachine	Μηχάνημα
+CText.ConnNeedPort	Λείπει η θύρα.
+CText.ConnNeedAddress	Η διεύθυνση πρέπει να είναι host:port.
+CText.ConnNeedMachine	Λείπει το μηχάνημα του διακομιστή.
+CText.ConnSaved	Η σύνδεση αποθηκεύτηκε στο αρχείο μηχανήματος.
+CText.ConnNoSave	Αδύνατη η εγγραφή του αρχείου μηχανήματος.
+CText.BLoad	Φόρτωση
+CText.BSave	Αποθήκ.
+CText.BOk	Ok
+CText.BAbort	Ακύρωση
+CText.BYes	Ναι
+CText.BNo	Όχι
+CText.BOkUpper	OK
+CText.BCancel	ΑΚΥΡΟ
+CText.PzTitle	Πάνελ πλακετών
+CText.PzBoard	Πλακέτα
+CText.PzSpacing	Απόσταση
+CText.PzNumber	Αριθμός
+CText.PzCalc	Υπολ.
+CText.TTitle	Στοιχεία εργαλείων
+CText.TPl	Θέση
+CText.TName	Όνομα
+CText.TStroke	Διαδρ.
+CText.TFeed	Πρόωση
+CText.TSpindle	Άτρακτος
+CText.TStart	Αρχή
+CText.TUsed	Χρήση
+CText.TTab	Γέφ.
+CText.TDepth	Βάθος
+CText.TIter	Επαν.
+CText.TXFeed	X πρόωση
+CText.TZFeed	Z πρόωση
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Διαν.
+CText.FTitle	Επιλογή αρχείου
+CText.FName	Όνομα
+CText.FFiles	Αρχεία
+CText.QStop	ΣΤΟΠ !!!
+CText.QAsk	Θέλετε σίγουρα έξοδο;
+CText.HomingZ	Αναφορά άξονα Z
+CText.HomingXy	Αναφορά αξόνων X/Y
+CText.PressEsc	Πατήστε ESC για στοπ
+CText.SpindleStart	Εκκίνηση ατράκτου
+CText.SpindleStop	Στάση ατράκτου
+CText.JTool	Εργαλείο
+CText.JNo	Αρ.
+CText.JStroke	Διαδρ.
+CText.JStartPos	Θέση εκκ.
+CText.JPosition	Θέση
+CText.JSpeed	Ταχύτητα (mm/min)
+CText.JCount	Πλήθος
+CText.JUse	Χρήση
+CText.Drilling	Διάτρηση ...
+CText.OpAborted	Η λειτουργία ακυρώθηκε
+CText.NoFile	Φορτώστε πρώτα αρχείο
+CText.SimNote	Προσομοίωση: χωρίς μηχάνημα
+CText.RealNote	ΠΡΑΓΜΑΤΙΚΟ ΜΗΧΑΝΗΜΑ - θα κινηθεί
+CText.InputError	Σφάλμα εισαγωγής!
+CText.Max	Μέγ:
+CText.Min	Ελάχ:
+CText.BackupAsk	Αποθήκευση ρυθμίσεων σε αρχείο;
+CText.BtnAbout	Πληροφ.
+CText.PLanguage	Γλώσσα
+CText.AboutDescDrill	Ανοιχτή υλοποίηση του προγράμματος διάτρησης Bungard CCD
+CText.AboutDescRoute	Ανοιχτή υλοποίηση του προγράμματος φρεζαρίσματος Bungard CCD
+CText.AboutVersion	Έκδοση
+CText.AboutLicense	Άδεια
+CText.AboutAuthor	Δημιουργός
+CText.AboutRepo	Πηγαίος κώδικας
+CText.AboutMachines	Μηχανήματα Bungard:
+CText.AboutMtc	CCD και CCD/2 MTC (χειροκίνητη αλλαγή): υποστηρίζεται
+CText.AboutAtc	CCD και CCD/2 ATC (αυτόματη αλλαγή): όχι ακόμη
+CText.AboutTested	Δοκιμή μόνο σε Bungard CCD MTC
+CText.AboutDisclaimer	Ανεξάρτητο έργο· χωρίς σχέση με την Bungard Elektronik
+CText.TcTitle	Αλλαγή εργαλείου
+CText.TcInsert	Τοποθετήστε εργαλείο:
+CText.TcRun	Μήκος διαδρ. (mm)
+CText.TcSpindle	Άτρακτος  (1/min)
+CText.TcZSpeed	Ταχ. Z (mm/min)
+CText.TcStroke	Διαδρομή    (mm)
+CText.QAttention	Προσοχή!
+CText.QSpindleAsk	Εκκίνηση ατράκτου;
+CText.QToolAsk	Τοποθετήστε εργαλείο {}
+CText.FNoFolder	Αδύνατο το άνοιγμα φακέλου
+CText.FNotFound	Το αρχείο δεν βρέθηκε
+CText.HintEdit	Tab: επόμενο  Enter: OK  Esc: ακύρωση  Κλικ: επιλογή
+CText.QSave	ΑΠΟΘΗΚΕΥΣΗ ;
+CText.Saved	Αποθηκεύτηκε
+CText.Loaded	Φορτώθηκε
+CText.ErrWrite	Αδύνατη η εγγραφή
+CText.ErrRead	Αδύνατη η ανάγνωση
+CText.TeachTitle	Εκμάθηση μετατόπισης
+CText.TeachLeft	αριστ.
+CText.TeachBack	πίσω
+CText.TeachForw	εμπρός
+CText.TeachRight	δεξιά
+CText.TeachUp	πάνω
+CText.TeachDown	κάτω
+CText.TeachMil	mil/1
+CText.BTeach	Εκμάθ.
+CText.BPlusPos	+ Θέση
+CText.BMinusPos	- Θέση
+CText.BMod	Αλλαγή
+CText.QAttentionPlain	Προσοχή
+CText.QInfo	Πληρ.:
+CText.QOffsetDelete	Διαγραφή παλιάς|μετατόπισης;
+CText.QTeachWrite	Εγγραφή αρχείου|εκμάθησης;
+CText.QWhatNext	Τι ακολουθεί;
+CText.BCont	Συνέχ.
+Text.StatusMain	Esc: πίσω   Enter: αποδοχή   ↑/↓: κίνηση
+CText.QInterrupted	ΔΙΑΚΟΠΗΚΕ

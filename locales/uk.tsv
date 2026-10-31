@@ -1,1 +1,242 @@
 # Українська (uk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Завант.
+Text.MenuVectors	Вектори
+Text.MenuTools	Інстр.
+Text.MenuConfig	Налашт.
+Text.MenuSort	Сортув.
+Text.MenuStart	Пуск
+Text.MenuLanguage	Мова
+Text.MenuQuit	Вихід
+Text.TitleSelectFile	Вибір файлу
+Text.TitleVectors	Вектори
+Text.TitleTools	Дані інструментів
+Text.TitleConfig	Конфігурація
+Text.TitleSort	Сортування координат
+Text.TitleLanguage	Мова
+Text.TitleDrilling	Свердління
+Text.TitleQuit	Вихід
+Text.LblFile	Файл
+Text.LblHoles	Отвори
+Text.LblToolsUsed	Інструменти
+Text.LblSize	Розмір (mm)
+Text.LblTravel	Хід (mm)
+Text.LblSorting	Сортування
+Text.LblProgress	Прогрес
+Text.LblTime	Модельований час (s)
+Text.LblSerial	Послідовний інтерфейс
+Text.SortNone	Немає
+Text.SortX	Спершу X
+Text.SortY	Спершу Y
+Text.SortSpecial	Особливе (найкоротший шлях)
+Text.ColTool	Інстр.
+Text.ColStroke	Хід (mm)
+Text.ColFeed	Подача (mm/min)
+Text.ColSpindle	Шпиндель (rpm)
+Text.NoFile	Файл не завантажено
+Text.NoToolFile	Файл інструментів не знайдено
+Text.NoConfigFile	Файл конфігурації не знайдено
+Text.TooManyTools	Забагато інструментів для змінювача (макс.:
+Text.ErrRead	Помилка читання файлу свердління
+Text.SimOnly	СИМУЛЯЦІЯ - машину не підключено
+Text.Uncalibrated	Машину не відкалібровано: рух лише симулюється
+Text.Connecting	З'єднання з блоком керування ...
+Text.Drilling	Свердління ...
+Text.Done	Готово
+Text.QuitAsk	Справді вийти?
+Text.BtnYes	Так
+Text.BtnNo	Ні
+Text.BtnStop	Стоп
+Text.Directory	Каталог
+Text.WaitToolChange	Вставте інструмент {} і натисніть Enter
+Text.WaitSpindle	Натисніть Enter для пуску шпинделя
+Text.Stopped	Зупинено (приводи вимк.)
+Text.LinkFailed	Помилка з'єднання
+Text.LblLink	Зв'язок
+Text.LblItems	Кроки завдання
+Text.KeyStop	Esc: стоп
+Text.RealMachine	РЕАЛЬНА МАШИНА ({}) - Пуск її рухає
+Text.RealStop	Esc зупиняє; тримайте руку біля вимикача
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Верстат №:
+CText.LblScale	Масштаб
+CText.LblOffset	Зсув
+CText.LblClip	Обрізка
+CText.LblVectors	Вектори
+CText.LblFrm	від
+CText.LblTo	до
+CText.LblCount	Кільк.
+CText.LblTotal	Всього
+CText.LblDone	Готово
+CText.LblFile	Файл
+CText.LblBoard	Плата
+CText.LblBase	Основа
+CText.Mm	mm
+CText.BtnConfig	Налашт.
+CText.BtnTools	Інстр.
+CText.BtnStart	Пуск
+CText.BtnLoad	Завант.
+CText.BtnPanelz	Панел.
+CText.BtnOffset	Зсув
+CText.BtnQuit	Вихід
+CText.PTitle	Параметри
+CText.PFile	Файл
+CText.PDirectory	Каталог
+CText.PPattern	Маска
+CText.PCoordinates	Координати
+CText.PSorting	Сортування
+CText.PChord	Кут хорди
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Немає
+CText.PSortX	Спершу X
+CText.PSortY	Спершу Y
+CText.PSortSpecial	Особл.
+CText.PSpeed	Швидкість (mm/min)
+CText.PXyMax	XY Макс.
+CText.PXyRef	XY Баз.
+CText.PXyRamp	XY Розгін
+CText.PZMax	Z  Макс.
+CText.PZRef	Z  Баз.
+CText.PZRamp	Z  Розгін
+CText.PRamp	Розгін (dv/dt)
+CText.PCorrect	Корекц.
+CText.PStroke	Хід
+CText.PLimit	Межа
+CText.PFree	Вільно
+CText.PSpindle	Шпиндель
+CText.PDelay	Затримка
+CText.PSecond	s
+CText.ConnLabel	З'єднання
+CText.ConnTitle	З'єднання з верстатом
+CText.ConnType	Тип
+CText.ConnNameDemo	Демо (симулятор)
+CText.ConnNameRs232	RS-232 (послідовний порт)
+CText.ConnNameUsb	USB (адаптер RS-232)
+CText.ConnNameNode	Вузол EH3D (мережа)
+CText.ConnNameServer	Сервер EH3D (мережа)
+CText.ConnNoteDemo	Завдання йде на симуляторі: нічого не рухається.
+CText.ConnNoteRs232	Послідовний порт ПК, по одному байту.
+CText.ConnNoteUsb	Адаптер USB-RS-232: рухи йдуть одним потоком.
+CText.ConnNoteNode	Вузол EH3D верстата, через Ethernet або Wi-Fi.
+CText.ConnNoteServer	Сервер EH3D планує завдання й виконує його на верстаті.
+CText.ConnPort	Порт
+CText.ConnAddress	Адреса
+CText.ConnToken	Токен
+CText.ConnMachine	Верстат
+CText.ConnNeedPort	Порт не вказано.
+CText.ConnNeedAddress	Адреса має бути host:port.
+CText.ConnNeedMachine	Не вказано верстат сервера.
+CText.ConnSaved	З'єднання збережено у файлі верстата.
+CText.ConnNoSave	Файл верстата не записується.
+CText.BLoad	Завант.
+CText.BSave	Зберегти
+CText.BOk	Ок
+CText.BAbort	Перервати
+CText.BYes	Так
+CText.BNo	Ні
+CText.BOkUpper	OK
+CText.BCancel	СКАСУВАТИ
+CText.PzTitle	Панелізація
+CText.PzBoard	Плата
+CText.PzSpacing	Крок
+CText.PzNumber	Кількість
+CText.PzCalc	Розр.
+CText.TTitle	Дані інструментів
+CText.TPl	Міс.
+CText.TName	Назва
+CText.TStroke	Хід
+CText.TFeed	Подача
+CText.TSpindle	Шпиндель
+CText.TStart	Пуск
+CText.TUsed	Викор.
+CText.TTab	Міст.
+CText.TDepth	Глибина
+CText.TIter	Ітер.
+CText.TXFeed	Подача X
+CText.TZFeed	Подача Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Вект.
+CText.FTitle	Вибір файлу
+CText.FName	Ім'я
+CText.FFiles	Файли
+CText.QStop	СТОП !!!
+CText.QAsk	Справді вийти?
+CText.HomingZ	Базування осі Z
+CText.HomingXy	Базування осей X/Y
+CText.PressEsc	Esc - зупинити
+CText.SpindleStart	Пуск шпинделя
+CText.SpindleStop	Стоп шпинделя
+CText.JTool	Інстр.
+CText.JNo	№
+CText.JStroke	Хід
+CText.JStartPos	Поч. поз.
+CText.JPosition	Позиція
+CText.JSpeed	Швидкість (mm/min)
+CText.JCount	Кільк.
+CText.JUse	Викор.
+CText.Drilling	Свердління ...
+CText.OpAborted	Операцію перервано
+CText.NoFile	Спершу завантажте файл
+CText.SimNote	Симуляція: без верстата
+CText.RealNote	РЕАЛЬНИЙ ВЕРСТАТ - буде рух
+CText.InputError	Помилка вводу!
+CText.Max	Макс.: 
+CText.Min	Мін.: 
+CText.BackupAsk	Зберегти налаштування з меню Налашт. і головного меню у файл?
+CText.BtnAbout	Про програму
+CText.PLanguage	Мова
+CText.AboutDescDrill	Відкрита реалізація програми свердління Bungard CCD
+CText.AboutDescRoute	Відкрита реалізація програми фрезерування Bungard CCD
+CText.AboutVersion	Версія
+CText.AboutLicense	Ліцензія
+CText.AboutAuthor	Автор
+CText.AboutRepo	Код
+CText.AboutMachines	Верстати Bungard:
+CText.AboutMtc	CCD і CCD/2 MTC (ручна зміна інстр.): підтримується
+CText.AboutAtc	CCD і CCD/2 ATC (автозмінювач): ще ні
+CText.AboutTested	Перевірено лише на Bungard CCD MTC
+CText.AboutDisclaimer	Незалежний проєкт; не пов'язаний з Bungard Elektronik
+CText.TcTitle	Зміна інструмента
+CText.TcInsert	Вставте інструмент:
+CText.TcRun	Довжина пробігу  (mm)
+CText.TcSpindle	Шпиндель  (1/min)
+CText.TcZSpeed	Швидкість Z (mm/min)
+CText.TcStroke	Хід         (mm)
+CText.QAttention	Увага!
+CText.QSpindleAsk	Запустити шпиндель?
+CText.QToolAsk	Вставте інструмент {}
+CText.FNoFolder	Не вдається відкрити теку
+CText.FNotFound	Файл не знайдено
+CText.HintEdit	Tab: далі  Enter: прийняти  Esc: скасув.  Клік: вибір
+CText.QSave	ЗБЕРЕГТИ ?
+CText.Saved	Збережено
+CText.Loaded	Завантажено
+CText.ErrWrite	Помилка запису
+CText.ErrRead	Помилка читання
+CText.TeachTitle	Навчання зсуву
+CText.TeachLeft	вліво
+CText.TeachBack	назад
+CText.TeachForw	вперед
+CText.TeachRight	вправо
+CText.TeachUp	вгору
+CText.TeachDown	вниз
+CText.TeachMil	mil/1
+CText.BTeach	Навч.
+CText.BPlusPos	+ Поз
+CText.BMinusPos	- Поз
+CText.BMod	Змін.
+CText.QAttentionPlain	Увага
+CText.QInfo	Інфо:
+CText.QOffsetDelete	Видалити старий|зсув?
+CText.QTeachWrite	Записати файл|навчання?
+CText.QWhatNext	Що далі?
+CText.BCont	Далі
+Text.StatusMain	Esc: назад   Enter: прийняти   ↑/↓: рух
+CText.QInterrupted	ПЕРЕРВАНО

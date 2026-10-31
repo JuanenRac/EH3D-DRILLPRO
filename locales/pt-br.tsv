@@ -1,1 +1,58 @@
 # Português (Brasil) (pt-br): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.TitleSelectFile	Selecionar arquivo
+Text.LblFile	Arquivo
+Text.LblSerial	Interface serial
+Text.NoFile	Nenhum arquivo carregado
+Text.NoToolFile	Arquivo de ferramentas não encontrado
+Text.NoConfigFile	Arquivo de configuração não encontrado
+Text.TooManyTools	Ferramentas demais para o trocador (máximo:
+Text.ErrRead	Erro ao ler o arquivo de furação
+Text.SimOnly	SIMULAÇÃO - sem máquina conectada
+Text.Connecting	Conectando à unidade de controle ...
+Text.Drilling	Furando ...
+Text.QuitAsk	Tem certeza de que quer sair?
+Text.WaitToolChange	Insira a ferramenta {} e pressione Enter
+Text.WaitSpindle	Pressione Enter para ligar o fuso
+Text.LinkFailed	Falha na conexão
+Text.LblLink	Conexão
+Text.RealMachine	MÁQUINA REAL ({}) - Iniciar a move
+Text.RealStop	Esc a para; mantenha uma mão perto do interruptor
+CText.MachineNr	Máquina nº:
+CText.LblOffset	Desloc.
+CText.LblFile	Arquivo
+CText.BtnOffset	Desloc.
+CText.ConnLabel	Conexão
+CText.ConnTitle	Conexão com a máquina
+CText.ConnNameRs232	RS-232 (porta serial)
+CText.ConnNoteDemo	O trabalho roda no simulador: nada se move.
+CText.ConnNoteRs232	A porta serial do computador, byte a byte.
+CText.ConnNoteUsb	Um adaptador USB para RS-232: os movimentos saem em um fluxo.
+CText.ConnNoteServer	O servidor EH3D planeja o trabalho e o executa em uma máquina.
+CText.ConnNeedAddress	O endereço deve ser host:porta.
+CText.ConnSaved	Conexão salva no arquivo da máquina.
+CText.ConnNoSave	Não é possível gravar o arquivo da máquina.
+CText.BSave	Salvar
+CText.FTitle	Selecionar arquivo
+CText.FFiles	Arquivos
+CText.HomingZ	Buscando a origem de Z
+CText.HomingXy	Buscando a origem de X/Y
+CText.PressEsc	Pressione ESC para parar
+CText.SpindleStart	Partida do fuso
+CText.SpindleStop	Parada do fuso
+CText.Drilling	Furando ...
+CText.NoFile	Carregue primeiro um arquivo
+CText.BackupAsk	Salvar as configurações de Config. e do menu principal?
+CText.PLanguage	Idioma
+CText.AboutDescRoute	Implementação aberta do programa de fresamento Bungard CCD
+CText.AboutTested	Testado só em uma Bungard CCD MTC
+CText.AboutDisclaimer	Projeto independente; sem vínculo com a Bungard Elektronik
+CText.FNoFolder	Não foi possível abrir a pasta
+CText.FNotFound	Arquivo não encontrado
+CText.HintEdit	Tab: próximo  Enter: aceitar  Esc: cancelar  Clique: escolher
+CText.QSave	SALVAR?
+CText.Saved	Salvo
+CText.ErrWrite	Não foi possível gravar
+CText.ErrRead	Não foi possível ler
+CText.QOffsetDelete	Apagar o desloc.|anterior?
+CText.QTeachWrite	Salvar arquivo|Teach-In?
+Text.StatusMain	Esc: voltar   Enter: aceitar   ↑/↓: mover

@@ -1,1 +1,242 @@
 # Gaeilge (ga): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Luchtaigh
+Text.MenuVectors	Veicteoirí
+Text.MenuTools	Uirlisí
+Text.MenuConfig	Cumraíocht
+Text.MenuSort	Sórtáil
+Text.MenuStart	Tosaigh
+Text.MenuLanguage	Teanga
+Text.MenuQuit	Scoir
+Text.TitleSelectFile	Roghnaigh comhad
+Text.TitleVectors	Veicteoirí
+Text.TitleTools	Sonraí uirlisí
+Text.TitleConfig	Cumraíocht
+Text.TitleSort	Sórtáil comhordanáidí
+Text.TitleLanguage	Teanga
+Text.TitleDrilling	Druileáil
+Text.TitleQuit	Scoir
+Text.LblFile	Comhad
+Text.LblHoles	Poill
+Text.LblToolsUsed	Uirlisí
+Text.LblSize	Méid (mm)
+Text.LblTravel	Taisteal (mm)
+Text.LblSorting	Sórtáil
+Text.LblProgress	Dul chun cinn
+Text.LblTime	Am insamhalta (s)
+Text.LblSerial	Comhéadan sraitheach
+Text.SortNone	Ceann ar bith
+Text.SortX	X ar dtús
+Text.SortY	Y ar dtús
+Text.SortSpecial	Speisialta (cosán is giorra)
+Text.ColTool	Uirlis
+Text.ColStroke	Buille (mm)
+Text.ColFeed	Beatha (mm/min)
+Text.ColSpindle	Fearsaid (rpm)
+Text.NoFile	Níl comhad luchtaithe
+Text.NoToolFile	Níor aimsíodh comhad na n-uirlisí
+Text.NoConfigFile	Níor aimsíodh comhad cumraíochta
+Text.TooManyTools	An iomarca uirlisí don athraitheoir (uas.:
+Text.ErrRead	Earráid agus comhad druileála á léamh
+Text.SimOnly	INSAMHLÚ - níl aon mheaisín ceangailte
+Text.Uncalibrated	Meaisín gan calabrú: gluaiseacht insamhlaithe amháin
+Text.Connecting	Aonad rialaithe á cheangal ...
+Text.Drilling	Druileáil ...
+Text.Done	Déanta
+Text.QuitAsk	An bhfuil tú cinnte go scoirfidh tú?
+Text.BtnYes	Tá
+Text.BtnNo	Níl
+Text.BtnStop	Stop
+Text.Directory	Eolaire
+Text.WaitToolChange	Cuir uirlis {} isteach agus brúigh Enter
+Text.WaitSpindle	Brúigh Enter chun an fhearsaid a thosú
+Text.Stopped	Stoptha (tiománaithe as)
+Text.LinkFailed	Theip ar an nasc
+Text.LblLink	Nasc
+Text.LblItems	Céimeanna na hoibre
+Text.KeyStop	Esc: stop
+Text.RealMachine	MEAISÍN RÉAL ({}) - gluaiseann Tosaigh é
+Text.RealStop	Stopann Esc é; coinnigh lámh ar an lasc cumhachta
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Meaisín uimh.:
+CText.LblScale	Scála
+CText.LblOffset	Fritháir.
+CText.LblClip	Gearr
+CText.LblVectors	Veicteoirí
+CText.LblFrm	ó
+CText.LblTo	go
+CText.LblCount	Líon
+CText.LblTotal	Iomlán
+CText.LblDone	Déanta
+CText.LblFile	Comhad
+CText.LblBoard	Bord
+CText.LblBase	Bunús
+CText.Mm	mm
+CText.BtnConfig	Cumraigh
+CText.BtnTools	Uirlisí
+CText.BtnStart	Tosaigh
+CText.BtnLoad	Luchtaigh
+CText.BtnPanelz	Painéal
+CText.BtnOffset	Fritháir.
+CText.BtnQuit	Scoir
+CText.PTitle	Paraiméadar
+CText.PFile	Comhad
+CText.PDirectory	Eolaire
+CText.PPattern	Patrún
+CText.PCoordinates	Comhordanáidí
+CText.PSorting	Sórtáil
+CText.PChord	Uillinn corda
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0,025 mm
+CText.PUnit001	0,010 mm
+CText.PSortNone	Ceann ar bith
+CText.PSortX	X ar dtús
+CText.PSortY	Y ar dtús
+CText.PSortSpecial	Speisialta
+CText.PSpeed	Luas (mm/min)
+CText.PXyMax	XY uas.
+CText.PXyRef	XY tag.
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  uas.
+CText.PZRef	Z  tag.
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Ceartú
+CText.PStroke	Buille
+CText.PLimit	Teorainn
+CText.PFree	Saor
+CText.PSpindle	Fearsaid
+CText.PDelay	Moill
+CText.PSecond	s
+CText.ConnLabel	Nasc
+CText.ConnTitle	Nasc leis an meaisín
+CText.ConnType	Cineál
+CText.ConnNameDemo	Taispeántas (insamhlóir)
+CText.ConnNameRs232	RS-232 (port sraitheach)
+CText.ConnNameUsb	USB (adaptóir RS-232)
+CText.ConnNameNode	Nód EH3D (líonra)
+CText.ConnNameServer	Freastalaí EH3D (líonra)
+CText.ConnNoteDemo	Ritheann an obair ar an insamhlóir: ní ghluaiseann aon rud.
+CText.ConnNoteRs232	Port sraitheach an ríomhaire, beart amháin ag an am.
+CText.ConnNoteUsb	Adaptóir USB go RS-232: téann na gluaiseachtaí amach mar shruth amháin.
+CText.ConnNoteNode	Nód EH3D an mheaisín, thar Ethernet nó Wi-Fi.
+CText.ConnNoteServer	Pleanálann an freastalaí EH3D an obair agus ritheann sé ar mheaisín í.
+CText.ConnPort	Port
+CText.ConnAddress	Seoladh
+CText.ConnToken	Comhartha
+CText.ConnMachine	Meaisín
+CText.ConnNeedPort	Tá an port ar iarraidh.
+CText.ConnNeedAddress	Ní mór don seoladh a bheith host:port.
+CText.ConnNeedMachine	Tá meaisín an fhreastalaí ar iarraidh.
+CText.ConnSaved	Nasc sábháilte i gcomhad an mheaisín.
+CText.ConnNoSave	Ní féidir comhad an mheaisín a scríobh.
+CText.BLoad	Luchtaigh
+CText.BSave	Sábháil
+CText.BOk	Ok
+CText.BAbort	Tobscoir
+CText.BYes	Tá
+CText.BNo	Níl
+CText.BOkUpper	OK
+CText.BCancel	CEALAIGH
+CText.PzTitle	Painéalú
+CText.PzBoard	Bord
+CText.PzSpacing	Spásáil
+CText.PzNumber	Líon
+CText.PzCalc	Ríomh
+CText.TTitle	Sonraí uirlisí
+CText.TPl	Áit
+CText.TName	Ainm
+CText.TStroke	Buille
+CText.TFeed	Beatha
+CText.TSpindle	Fearsaid
+CText.TStart	Tosach
+CText.TUsed	Úsáidte
+CText.TTab	Droichead
+CText.TDepth	Doimhneacht
+CText.TIter	Atha.
+CText.TXFeed	Beatha X
+CText.TZFeed	Beatha Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Veic.
+CText.FTitle	Roghnaigh comhad
+CText.FName	Ainm
+CText.FFiles	Comhaid
+CText.QStop	STOP !!!
+CText.QAsk	An bhfuil tú cinnte go scoirfidh tú?
+CText.HomingZ	Ais Z á tabhairt abhaile
+CText.HomingXy	Aiseanna X/Y á dtabhairt abhaile
+CText.PressEsc	Brúigh ESC chun stopadh
+CText.SpindleStart	Tosú fearsaide
+CText.SpindleStop	Stopadh fearsaide
+CText.JTool	Uirlis
+CText.JNo	Uimh.
+CText.JStroke	Buille
+CText.JStartPos	Pos. tosaigh
+CText.JPosition	Suíomh
+CText.JSpeed	Luas (mm/min)
+CText.JCount	Líon
+CText.JUse	Úsáid
+CText.Drilling	Druileáil ...
+CText.OpAborted	Cuireadh an oibríocht ar ceal
+CText.NoFile	Luchtaigh comhad ar dtús
+CText.SimNote	Insamhlú: gan meaisín
+CText.RealNote	MEAISÍN RÉAL - gluaisfidh sé
+CText.InputError	Earráid ionchuir!
+CText.Max	Uas:
+CText.Min	Íos:
+CText.BackupAsk	Sábháil socruithe i gcomhad?
+CText.BtnAbout	Maidir le
+CText.PLanguage	Teanga
+CText.AboutDescDrill	Cur i bhfeidhm oscailte de chlár druileála Bungard CCD
+CText.AboutDescRoute	Cur i bhfeidhm oscailte de chlár bhealaithe Bungard CCD
+CText.AboutVersion	Leagan
+CText.AboutLicense	Ceadúnas
+CText.AboutAuthor	Údar
+CText.AboutRepo	Foinse
+CText.AboutMachines	Meaisíní Bungard:
+CText.AboutMtc	CCD agus CCD/2 MTC (athrú uirlise de láimh): tacaithe
+CText.AboutAtc	CCD agus CCD/2 ATC (athrú uathoibríoch): níl fós
+CText.AboutTested	Triailte ar Bungard CCD MTC amháin
+CText.AboutDisclaimer	Tionscadal neamhspleách; gan baint le Bungard Elektronik
+CText.TcTitle	Athrú uirlise
+CText.TcInsert	Cuir uirlis isteach:
+CText.TcRun	Fad rite    (mm)
+CText.TcSpindle	Fearsaid (1/min)
+CText.TcZSpeed	Luas Z (mm/min)
+CText.TcStroke	Buille      (mm)
+CText.QAttention	Aire!
+CText.QSpindleAsk	An dtosófar an fhearsaid?
+CText.QToolAsk	Cuir uirlis {} isteach
+CText.FNoFolder	Ní féidir an fillteán sin a oscailt
+CText.FNotFound	Níor aimsíodh an comhad
+CText.HintEdit	Tab: ar aghaidh  Enter: ceart go leor  Esc: cealaigh  Cliceáil: roghnaigh
+CText.QSave	SÁBHÁIL ?
+CText.Saved	Sábháilte
+CText.Loaded	Luchtaithe
+CText.ErrWrite	Ní féidir scríobh
+CText.ErrRead	Ní féidir léamh
+CText.TeachTitle	Teagasc fritháirimh
+CText.TeachLeft	clé
+CText.TeachBack	siar
+CText.TeachForw	ar aghaidh
+CText.TeachRight	deas
+CText.TeachUp	suas
+CText.TeachDown	síos
+CText.TeachMil	mil/1
+CText.BTeach	Teagasc
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Athraigh
+CText.QAttentionPlain	Aire
+CText.QInfo	Eolas:
+CText.QOffsetDelete	Scrios an seanfhritháireamh|?
+CText.QTeachWrite	Scríobh comhad|teagaisc?
+CText.QWhatNext	Cad ina dhiaidh sin?
+CText.BCont	Lean
+Text.StatusMain	Esc: ar ais   Enter: glac   ↑/↓: bog
+CText.QInterrupted	IDIRBHRISTE

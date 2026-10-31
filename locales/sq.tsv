@@ -1,1 +1,242 @@
 # Shqip (sq): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Ngarko
+Text.MenuVectors	Vektorët
+Text.MenuTools	Mjetet
+Text.MenuConfig	Konfig.
+Text.MenuSort	Renditja
+Text.MenuStart	Nis
+Text.MenuLanguage	Gjuha
+Text.MenuQuit	Dil
+Text.TitleSelectFile	Zgjidh skedarin
+Text.TitleVectors	Vektorët
+Text.TitleTools	Të dhënat e mjeteve
+Text.TitleConfig	Konfigurimi
+Text.TitleSort	Renditja e koordinatave
+Text.TitleLanguage	Gjuha
+Text.TitleDrilling	Shpimi
+Text.TitleQuit	Dil
+Text.LblFile	Skedari
+Text.LblHoles	Vrimat
+Text.LblToolsUsed	Mjetet
+Text.LblSize	Madhësia (mm)
+Text.LblTravel	Lëvizja (mm)
+Text.LblSorting	Renditja
+Text.LblProgress	Përparimi
+Text.LblTime	Koha e simuluar (s)
+Text.LblSerial	Ndërfaqja serike
+Text.SortNone	Asnjë
+Text.SortX	Fillim X
+Text.SortY	Fillim Y
+Text.SortSpecial	E veçantë (rruga më e shkurtër)
+Text.ColTool	Mjeti
+Text.ColStroke	Kursa (mm)
+Text.ColFeed	Avancimi (mm/min)
+Text.ColSpindle	Boshti (rpm)
+Text.NoFile	Asnjë skedar i ngarkuar
+Text.NoToolFile	Skedari i mjeteve nuk u gjet
+Text.NoConfigFile	Skedari i konfigurimit nuk u gjet
+Text.TooManyTools	Shumë mjete për ndërruesin (maks.:
+Text.ErrRead	Gabim në leximin e skedarit të shpimit
+Text.SimOnly	SIMULIM - asnjë makinë e lidhur
+Text.Uncalibrated	Makina nuk është kalibruar: lëvizja simulohet vetëm
+Text.Connecting	Lidhja e njësisë së kontrollit ...
+Text.Drilling	Shpimi ...
+Text.Done	U krye
+Text.QuitAsk	Dëshironi vërtet të dilni?
+Text.BtnYes	Po
+Text.BtnNo	Jo
+Text.BtnStop	Ndalo
+Text.Directory	Dosja
+Text.WaitToolChange	Vendos mjetin {} dhe shtyp Enter
+Text.WaitSpindle	Shtyp Enter për të nisur boshtin
+Text.Stopped	Ndalur (drejtuesit të fikur)
+Text.LinkFailed	Lidhja dështoi
+Text.LblLink	Lidhja
+Text.LblItems	Hapat e punës
+Text.KeyStop	Esc: ndalo
+Text.RealMachine	MAKINË E VËRTETË ({}) - Nis e lëviz
+Text.RealStop	Esc e ndal; mbaj dorën afër çelësit
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Makina nr.:
+CText.LblScale	Shkalla
+CText.LblOffset	Zhvendos.
+CText.LblClip	Prerja
+CText.LblVectors	Vektorët
+CText.LblFrm	nga
+CText.LblTo	deri
+CText.LblCount	Numri
+CText.LblTotal	Totali
+CText.LblDone	U krye
+CText.LblFile	Skedari
+CText.LblBoard	Pllaka
+CText.LblBase	Baza
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Mjetet
+CText.BtnStart	Nis
+CText.BtnLoad	Ngarko
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Zhvendos.
+CText.BtnQuit	Dil
+CText.PTitle	Parametrat
+CText.PFile	Skedari
+CText.PDirectory	Dosja
+CText.PPattern	Modeli
+CText.PCoordinates	Koordinatat
+CText.PSorting	Renditja
+CText.PChord	Këndi i kordës
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Asnjë
+CText.PSortX	Fillim X
+CText.PSortY	Fillim Y
+CText.PSortSpecial	E veçantë
+CText.PSpeed	Shpejtësia (mm/min)
+CText.PXyMax	XY Maks.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Rampa
+CText.PZMax	Z  Maks.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korrig.
+CText.PStroke	Kursa
+CText.PLimit	Kufiri
+CText.PFree	Lirë
+CText.PSpindle	Boshti
+CText.PDelay	Vonesa
+CText.PSecond	s
+CText.ConnLabel	Lidhja
+CText.ConnTitle	Lidhja me makinën
+CText.ConnType	Lloji
+CText.ConnNameDemo	Demo (simulator)
+CText.ConnNameRs232	RS-232 (porta serike)
+CText.ConnNameUsb	USB (përshtatës RS-232)
+CText.ConnNameNode	Nyje EH3D (rrjet)
+CText.ConnNameServer	Serveri EH3D (rrjet)
+CText.ConnNoteDemo	Puna ekzekutohet në simulator: asgjë nuk lëviz.
+CText.ConnNoteRs232	Porta serike e kompjuterit, një bajt një herë.
+CText.ConnNoteUsb	Përshtatës USB-RS-232: lëvizjet dalin në një rrjedhë.
+CText.ConnNoteNode	Nyja EH3D e makinës, përmes Ethernet ose Wi-Fi.
+CText.ConnNoteServer	Serveri EH3D planifikon punën dhe e ekzekuton në makinë.
+CText.ConnPort	Porta
+CText.ConnAddress	Adresa
+CText.ConnToken	Token
+CText.ConnMachine	Makina
+CText.ConnNeedPort	Porta mungon.
+CText.ConnNeedAddress	Adresa duhet të jetë host:port.
+CText.ConnNeedMachine	Mungon makina e serverit.
+CText.ConnSaved	Lidhja u ruajt në skedarin e makinës.
+CText.ConnNoSave	Skedari i makinës nuk shkruhet.
+CText.BLoad	Ngarko
+CText.BSave	Ruaj
+CText.BOk	Ok
+CText.BAbort	Ndërpri
+CText.BYes	Po
+CText.BNo	Jo
+CText.BOkUpper	OK
+CText.BCancel	ANULO
+CText.PzTitle	Panelizimi
+CText.PzBoard	Pllaka
+CText.PzSpacing	Hapësira
+CText.PzNumber	Numri
+CText.PzCalc	Llog.
+CText.TTitle	Të dhënat e mjeteve
+CText.TPl	Pl.
+CText.TName	Emri
+CText.TStroke	Kursa
+CText.TFeed	Avancimi
+CText.TSpindle	Boshti
+CText.TStart	Nis
+CText.TUsed	Përdor.
+CText.TTab	Urë
+CText.TDepth	Thellësia
+CText.TIter	Iter.
+CText.TXFeed	Avanc. X
+CText.TZFeed	Avanc. Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Zgjidh skedarin
+CText.FName	Emri
+CText.FFiles	Skedarët
+CText.QStop	NDALO !!!
+CText.QAsk	Dëshironi vërtet të dilni?
+CText.HomingZ	Referimi i boshtit Z
+CText.HomingXy	Referimi i boshteve X/Y
+CText.PressEsc	Shtyp ESC për të ndalur
+CText.SpindleStart	Nis boshtin
+CText.SpindleStop	Ndal boshtin
+CText.JTool	Mjeti
+CText.JNo	Nr.
+CText.JStroke	Kursa
+CText.JStartPos	Pozicioni nis.
+CText.JPosition	Pozicioni
+CText.JSpeed	Shpejtësia (mm/min)
+CText.JCount	Numri
+CText.JUse	Përdor.
+CText.Drilling	Shpimi ...
+CText.OpAborted	Veprimi u ndërpre
+CText.NoFile	Ngarko fillimisht një skedar
+CText.SimNote	Simulim: pa makinë
+CText.RealNote	MAKINË E VËRTETË - do të lëvizë
+CText.InputError	Gabim hyrjeje!
+CText.Max	Maks.: 
+CText.Min	Min.: 
+CText.BackupAsk	Të ruhen cilësimet nga Konfig. dhe menyja kryesore në skedar?
+CText.BtnAbout	Rreth
+CText.PLanguage	Gjuha
+CText.AboutDescDrill	Zbatim i hapur i programit të shpimit Bungard CCD
+CText.AboutDescRoute	Zbatim i hapur i programit të frezimit Bungard CCD
+CText.AboutVersion	Versioni
+CText.AboutLicense	Licenca
+CText.AboutAuthor	Autori
+CText.AboutRepo	Burimi
+CText.AboutMachines	Makinat Bungard:
+CText.AboutMtc	CCD dhe CCD/2 MTC (ndërrim dore i mjetit): mbështetet
+CText.AboutAtc	CCD dhe CCD/2 ATC (ndërrues automatik): ende jo
+CText.AboutTested	Provuar vetëm në Bungard CCD MTC
+CText.AboutDisclaimer	Projekt i pavarur; pa lidhje me Bungard Elektronik
+CText.TcTitle	Ndërrimi i mjetit
+CText.TcInsert	Vendos mjetin:
+CText.TcRun	Gjatësia  (mm)
+CText.TcSpindle	Boshti  (1/min)
+CText.TcZSpeed	Shpejt. Z (mm/min)
+CText.TcStroke	Kursa       (mm)
+CText.QAttention	Kujdes!
+CText.QSpindleAsk	Të nisë boshti?
+CText.QToolAsk	Vendos mjetin {}
+CText.FNoFolder	Dosja nuk hapet
+CText.FNotFound	Skedari nuk u gjet
+CText.HintEdit	Tab: tjetri  Enter: prano  Esc: anulo  Klik: zgjidh
+CText.QSave	RUAJ ?
+CText.Saved	U ruajt
+CText.Loaded	U ngarkua
+CText.ErrWrite	Nuk shkruhet
+CText.ErrRead	Nuk lexohet
+CText.TeachTitle	Mësimi i zhvendosjes
+CText.TeachLeft	majtas
+CText.TeachBack	prapa
+CText.TeachForw	përpara
+CText.TeachRight	djathtas
+CText.TeachUp	lart
+CText.TeachDown	poshtë
+CText.TeachMil	mil/1
+CText.BTeach	Mëso
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Ndrysho
+CText.QAttentionPlain	Kujdes
+CText.QInfo	Info:
+CText.QOffsetDelete	Fshi zhvendosjen|e vjetër?
+CText.QTeachWrite	Shkruaj skedarin|e mësimit?
+CText.QWhatNext	Çfarë tani?
+CText.BCont	Vazhdo
+Text.StatusMain	Esc: kthehu   Enter: prano   ↑/↓: lëviz
+CText.QInterrupted	NDËRPRERË

@@ -1,1 +1,242 @@
 # Latviešu (lv): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Ielādēt
+Text.MenuVectors	Vektori
+Text.MenuTools	Rīki
+Text.MenuConfig	Konfig.
+Text.MenuSort	Kārtošana
+Text.MenuStart	Sākt
+Text.MenuLanguage	Valoda
+Text.MenuQuit	Iziet
+Text.TitleSelectFile	Izvēlēties failu
+Text.TitleVectors	Vektori
+Text.TitleTools	Rīku dati
+Text.TitleConfig	Konfigurācija
+Text.TitleSort	Koordinātu kārtošana
+Text.TitleLanguage	Valoda
+Text.TitleDrilling	Urbšana
+Text.TitleQuit	Iziet
+Text.LblFile	Fails
+Text.LblHoles	Caurumi
+Text.LblToolsUsed	Rīki
+Text.LblSize	Izmērs (mm)
+Text.LblTravel	Gājiens (mm)
+Text.LblSorting	Kārtošana
+Text.LblProgress	Progress
+Text.LblTime	Simulētais laiks (s)
+Text.LblSerial	Seriālā saskarne
+Text.SortNone	Nav
+Text.SortX	Vispirms X
+Text.SortY	Vispirms Y
+Text.SortSpecial	Īpašā (īsākais ceļš)
+Text.ColTool	Rīks
+Text.ColStroke	Gājiens (mm)
+Text.ColFeed	Padeve (mm/min)
+Text.ColSpindle	Vārpsta (rpm)
+Text.NoFile	Fails nav ielādēts
+Text.NoToolFile	Rīku datu fails nav atrasts
+Text.NoConfigFile	Konfigurācijas fails nav atrasts
+Text.TooManyTools	Pārāk daudz rīku rīku mainītājam (maks.:
+Text.ErrRead	Kļūda, lasot urbšanas failu
+Text.SimOnly	SIMULĀCIJA - iekārta nav pievienota
+Text.Uncalibrated	Iekārta nav kalibrēta: kustība tikai simulēta
+Text.Connecting	Savieno vadības bloku ...
+Text.Drilling	Urbj ...
+Text.Done	Gatavs
+Text.QuitAsk	Vai tiešām iziet?
+Text.BtnYes	Jā
+Text.BtnNo	Nē
+Text.BtnStop	Stop
+Text.Directory	Direktorija
+Text.WaitToolChange	Ievietojiet rīku {} un nospiediet Enter
+Text.WaitSpindle	Nospiediet Enter vārpstas startam
+Text.Stopped	Apturēts (piedziņas izslēgtas)
+Text.LinkFailed	Savienojums neizdevās
+Text.LblLink	Savienojums
+Text.LblItems	Darba soļi
+Text.KeyStop	Esc: stop
+Text.RealMachine	REĀLA IEKĀRTA ({}) - Sākt to kustina
+Text.RealStop	Esc aptur; turiet roku pie slēdža
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Iekārtas Nr.:
+CText.LblScale	Mērogs
+CText.LblOffset	Nobīde
+CText.LblClip	Apcirpt
+CText.LblVectors	Vektori
+CText.LblFrm	no
+CText.LblTo	līdz
+CText.LblCount	Skaits
+CText.LblTotal	Kopā
+CText.LblDone	Gatavs
+CText.LblFile	Fails
+CText.LblBoard	Plate
+CText.LblBase	Pamats
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Rīki
+CText.BtnStart	Sākt
+CText.BtnLoad	Ielādēt
+CText.BtnPanelz	Panelēt
+CText.BtnOffset	Nobīde
+CText.BtnQuit	Iziet
+CText.PTitle	Parametri
+CText.PFile	Fails
+CText.PDirectory	Direktorija
+CText.PPattern	Maska
+CText.PCoordinates	Koordinātas
+CText.PSorting	Kārtošana
+CText.PChord	Hordas leņķis
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Nav
+CText.PSortX	Vispirms X
+CText.PSortY	Vispirms Y
+CText.PSortSpecial	Īpašā
+CText.PSpeed	Ātrums (mm/min)
+CText.PXyMax	XY maks.
+CText.PXyRef	XY bāze
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  maks.
+CText.PZRef	Z  bāze
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korekc.
+CText.PStroke	Gājiens
+CText.PLimit	Limits
+CText.PFree	Brīvs
+CText.PSpindle	Vārpsta
+CText.PDelay	Aizkave
+CText.PSecond	s
+CText.ConnLabel	Savienojums
+CText.ConnTitle	Savienojums ar iekārtu
+CText.ConnType	Veids
+CText.ConnNameDemo	Demo (simulators)
+CText.ConnNameRs232	RS-232 (seriālais ports)
+CText.ConnNameUsb	USB (RS-232 adapteris)
+CText.ConnNameNode	EH3D mezgls (tīkls)
+CText.ConnNameServer	EH3D serveris (tīkls)
+CText.ConnNoteDemo	Darbs notiek simulatorā: nekas nekustas.
+CText.ConnNoteRs232	Datora seriālais ports, pa vienam baitam.
+CText.ConnNoteUsb	USB-RS-232 adapteris: kustības iet vienā plūsmā.
+CText.ConnNoteNode	Iekārtas EH3D mezgls, pa Ethernet vai Wi-Fi.
+CText.ConnNoteServer	EH3D serveris plāno darbu un izpilda to iekārtā.
+CText.ConnPort	Ports
+CText.ConnAddress	Adrese
+CText.ConnToken	Token
+CText.ConnMachine	Iekārta
+CText.ConnNeedPort	Trūkst porta.
+CText.ConnNeedAddress	Adresei jābūt resursdators:ports.
+CText.ConnNeedMachine	Trūkst servera iekārtas.
+CText.ConnSaved	Savienojums saglabāts iekārtas failā.
+CText.ConnNoSave	Iekārtas failu nevar ierakstīt.
+CText.BLoad	Ielādēt
+CText.BSave	Saglabāt
+CText.BOk	Ok
+CText.BAbort	Pārtraukt
+CText.BYes	Jā
+CText.BNo	Nē
+CText.BOkUpper	OK
+CText.BCancel	ATCELT
+CText.PzTitle	Panelēšana
+CText.PzBoard	Plate
+CText.PzSpacing	Atstarpe
+CText.PzNumber	Skaits
+CText.PzCalc	Aprēķ.
+CText.TTitle	Rīku dati
+CText.TPl	Vt.
+CText.TName	Nosaukums
+CText.TStroke	Gājiens
+CText.TFeed	Padeve
+CText.TSpindle	Vārpsta
+CText.TStart	Sākums
+CText.TUsed	Lietots
+CText.TTab	Tilt.
+CText.TDepth	Dziļums
+CText.TIter	Iter.
+CText.TXFeed	X padeve
+CText.TZFeed	Z padeve
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Izvēlēties failu
+CText.FName	Nosaukums
+CText.FFiles	Faili
+CText.QStop	STOP !!!
+CText.QAsk	Vai tiešām iziet?
+CText.HomingZ	Z ass bāzēšana
+CText.HomingXy	X/Y asu bāzēšana
+CText.PressEsc	Nospiediet ESC apturēšanai
+CText.SpindleStart	Vārpstas starts
+CText.SpindleStop	Vārpstas stop
+CText.JTool	Rīks
+CText.JNo	Nr.
+CText.JStroke	Gājiens
+CText.JStartPos	Sāk. poz.
+CText.JPosition	Pozīcija
+CText.JSpeed	Ātrums (mm/min)
+CText.JCount	Skaits
+CText.JUse	Lietots
+CText.Drilling	Urbj ...
+CText.OpAborted	Darbība pārtraukta
+CText.NoFile	Vispirms ielādējiet failu
+CText.SimNote	Simulācija: nav iekārtas
+CText.RealNote	REĀLA IEKĀRTA - kustēsies
+CText.InputError	Ievades kļūda!
+CText.Max	Maks.: 
+CText.Min	Min.: 
+CText.BackupAsk	Saglabāt iestatījumus no Konfig. un galvenās izvēlnes failā?
+CText.BtnAbout	Par
+CText.PLanguage	Valoda
+CText.AboutDescDrill	Atvērta Bungard CCD urbšanas programmas realizācija
+CText.AboutDescRoute	Atvērta Bungard CCD frēzēšanas programmas realizācija
+CText.AboutVersion	Versija
+CText.AboutLicense	Licence
+CText.AboutAuthor	Autors
+CText.AboutRepo	Pirmkods
+CText.AboutMachines	Bungard iekārtas:
+CText.AboutMtc	CCD un CCD/2 MTC (rokas rīku maiņa): atbalstīts
+CText.AboutAtc	CCD un CCD/2 ATC (auto rīku mainītājs): vēl nē
+CText.AboutTested	Pārbaudīts tikai uz Bungard CCD MTC
+CText.AboutDisclaimer	Neatkarīgs projekts; nav saistīts ar Bungard Elektronik
+CText.TcTitle	Rīka maiņa
+CText.TcInsert	Ievietojiet rīku:
+CText.TcRun	Darba garums  (mm)
+CText.TcSpindle	Vārpsta  (1/min)
+CText.TcZSpeed	Z ātrums (mm/min)
+CText.TcStroke	Gājiens      (mm)
+CText.QAttention	Uzmanību!
+CText.QSpindleAsk	Vai startēt vārpstu?
+CText.QToolAsk	Ievietojiet rīku {}
+CText.FNoFolder	Mapi nevar atvērt
+CText.FNotFound	Fails nav atrasts
+CText.HintEdit	Tab: tālāk  Enter: labi  Esc: atcelt  Klikšķis: izvēle
+CText.QSave	SAGLABĀT ?
+CText.Saved	Saglabāts
+CText.Loaded	Ielādēts
+CText.ErrWrite	Nevar ierakstīt
+CText.ErrRead	Nevar nolasīt
+CText.TeachTitle	Nobīdes apmācība
+CText.TeachLeft	pa kreisi
+CText.TeachBack	atpakaļ
+CText.TeachForw	uz priekšu
+CText.TeachRight	pa labi
+CText.TeachUp	augšup
+CText.TeachDown	lejup
+CText.TeachMil	mil/1
+CText.BTeach	Apmācīt
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Mainīt
+CText.QAttentionPlain	Uzmanību
+CText.QInfo	Info:
+CText.QOffsetDelete	Dzēst veco|nobīdi?
+CText.QTeachWrite	Ierakstīt apmācības|failu?
+CText.QWhatNext	Kas tālāk?
+CText.BCont	Turpin.
+Text.StatusMain	Esc: atpakaļ   Enter: apstiprināt   ↑/↓: pārvietot
+CText.QInterrupted	PĀRTRAUKTS

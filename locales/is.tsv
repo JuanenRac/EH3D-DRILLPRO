@@ -1,1 +1,242 @@
 # Íslenska (is): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Hlaða
+Text.MenuVectors	Vektorar
+Text.MenuTools	Verkfæri
+Text.MenuConfig	Stillingar
+Text.MenuSort	Röðun
+Text.MenuStart	Ræsa
+Text.MenuLanguage	Tungumál
+Text.MenuQuit	Hætta
+Text.TitleSelectFile	Veldu skrá
+Text.TitleVectors	Vektorar
+Text.TitleTools	Verkfæragögn
+Text.TitleConfig	Stillingar
+Text.TitleSort	Röðun hnita
+Text.TitleLanguage	Tungumál
+Text.TitleDrilling	Borun
+Text.TitleQuit	Hætta
+Text.LblFile	Skrá
+Text.LblHoles	Göt
+Text.LblToolsUsed	Verkfæri
+Text.LblSize	Stærð (mm)
+Text.LblTravel	Ferill (mm)
+Text.LblSorting	Röðun
+Text.LblProgress	Framvinda
+Text.LblTime	Hermdur tími (s)
+Text.LblSerial	Raðtengi
+Text.SortNone	Engin
+Text.SortX	X fyrst
+Text.SortY	Y fyrst
+Text.SortSpecial	Sérstök (stysta leið)
+Text.ColTool	Verkfæri
+Text.ColStroke	Slag (mm)
+Text.ColFeed	Færsla (mm/min)
+Text.ColSpindle	Spindill (rpm)
+Text.NoFile	Engin skrá hlaðin
+Text.NoToolFile	Verkfæraskrá fannst ekki
+Text.NoConfigFile	Stillingaskrá fannst ekki
+Text.TooManyTools	Of mörg verkfæri fyrir skiptarann (hám.:
+Text.ErrRead	Villa við lestur borskrár
+Text.SimOnly	HERMUN - engin vél tengd
+Text.Uncalibrated	Vélin er ekki kvörðuð: hreyfing er aðeins hermd
+Text.Connecting	Tengi stýrieiningu ...
+Text.Drilling	Bora ...
+Text.Done	Lokið
+Text.QuitAsk	Viltu í alvöru hætta?
+Text.BtnYes	Já
+Text.BtnNo	Nei
+Text.BtnStop	Stöðva
+Text.Directory	Mappa
+Text.WaitToolChange	Settu verkfæri {} í og ýttu á Enter
+Text.WaitSpindle	Ýttu á Enter til að ræsa spindil
+Text.Stopped	Stöðvað (drif af)
+Text.LinkFailed	Tenging mistókst
+Text.LblLink	Tenging
+Text.LblItems	Skref verksins
+Text.KeyStop	Esc: stöðva
+Text.RealMachine	RAUNVÉL ({}) - Ræsa hreyfir hana
+Text.RealStop	Esc stöðvar; hafðu hönd við rofann
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Vél nr.:
+CText.LblScale	Kvarði
+CText.LblOffset	Hliðrun
+CText.LblClip	Klippa
+CText.LblVectors	Vektorar
+CText.LblFrm	frá
+CText.LblTo	til
+CText.LblCount	Fjöldi
+CText.LblTotal	Alls
+CText.LblDone	Lokið
+CText.LblFile	Skrá
+CText.LblBoard	Plata
+CText.LblBase	Grunnur
+CText.Mm	mm
+CText.BtnConfig	Stillingar
+CText.BtnTools	Verkfæri
+CText.BtnStart	Ræsa
+CText.BtnLoad	Hlaða
+CText.BtnPanelz	Spjöld
+CText.BtnOffset	Hliðrun
+CText.BtnQuit	Hætta
+CText.PTitle	Breyta
+CText.PFile	Skrá
+CText.PDirectory	Mappa
+CText.PPattern	Mynstur
+CText.PCoordinates	Hnit
+CText.PSorting	Röðun
+CText.PChord	Bogahorn
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Engin
+CText.PSortX	X fyrst
+CText.PSortY	Y fyrst
+CText.PSortSpecial	Sérstök
+CText.PSpeed	Hraði (mm/min)
+CText.PXyMax	XY hám.
+CText.PXyRef	XY viðm.
+CText.PXyRamp	XY rampi
+CText.PZMax	Z  hám.
+CText.PZRef	Z  viðm.
+CText.PZRamp	Z  rampi
+CText.PRamp	Rampi (dv/dt)
+CText.PCorrect	Leiðr.
+CText.PStroke	Slag
+CText.PLimit	Mörk
+CText.PFree	Laust
+CText.PSpindle	Spindill
+CText.PDelay	Töf
+CText.PSecond	s
+CText.ConnLabel	Tenging
+CText.ConnTitle	Tenging við vélina
+CText.ConnType	Gerð
+CText.ConnNameDemo	Sýnishorn (hermir)
+CText.ConnNameRs232	RS-232 (raðtengi)
+CText.ConnNameUsb	USB (RS-232 millistykki)
+CText.ConnNameNode	EH3D hnútur (net)
+CText.ConnNameServer	EH3D þjónn (net)
+CText.ConnNoteDemo	Verkið keyrir í hermi: ekkert hreyfist.
+CText.ConnNoteRs232	Raðtengi tölvunnar, einn bæti í einu.
+CText.ConnNoteUsb	USB-RS-232 millistykki: hreyfingar fara í einum straumi.
+CText.ConnNoteNode	EH3D hnútur vélarinnar um Ethernet eða Wi-Fi.
+CText.ConnNoteServer	EH3D þjónninn skipuleggur verkið og keyrir það á vél.
+CText.ConnPort	Tengi
+CText.ConnAddress	Vistfang
+CText.ConnToken	Tóki
+CText.ConnMachine	Vél
+CText.ConnNeedPort	Tengi vantar.
+CText.ConnNeedAddress	Vistfang verður að vera hýsill:tengi.
+CText.ConnNeedMachine	Vél þjónsins vantar.
+CText.ConnSaved	Tenging vistuð í vélarskránni.
+CText.ConnNoSave	Ekki er hægt að skrifa vélarskrána.
+CText.BLoad	Hlaða
+CText.BSave	Vista
+CText.BOk	Ok
+CText.BAbort	Hætta við
+CText.BYes	Já
+CText.BNo	Nei
+CText.BOkUpper	OK
+CText.BCancel	HÆTTA VIÐ
+CText.PzTitle	Spjaldaskipting
+CText.PzBoard	Plata
+CText.PzSpacing	Bil
+CText.PzNumber	Fjöldi
+CText.PzCalc	Reikna
+CText.TTitle	Verkfæragögn
+CText.TPl	Sæti
+CText.TName	Heiti
+CText.TStroke	Slag
+CText.TFeed	Færsla
+CText.TSpindle	Spindill
+CText.TStart	Ræsa
+CText.TUsed	Notað
+CText.TTab	Brú
+CText.TDepth	Dýpt
+CText.TIter	Endurt.
+CText.TXFeed	X-færsla
+CText.TZFeed	Z-færsla
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Veldu skrá
+CText.FName	Heiti
+CText.FFiles	Skrár
+CText.QStop	STOPP !!!
+CText.QAsk	Viltu í alvöru hætta?
+CText.HomingZ	Núllstilli Z-ás
+CText.HomingXy	Núllstilli X/Y-ás
+CText.PressEsc	Ýttu á ESC til að stöðva
+CText.SpindleStart	Spindill ræstur
+CText.SpindleStop	Spindill stöðvaður
+CText.JTool	Verkfæri
+CText.JNo	Nr.
+CText.JStroke	Slag
+CText.JStartPos	Upphafsstaða
+CText.JPosition	Staða
+CText.JSpeed	Hraði (mm/min)
+CText.JCount	Fjöldi
+CText.JUse	Notkun
+CText.Drilling	Bora ...
+CText.OpAborted	Aðgerð stöðvuð
+CText.NoFile	Hladdu fyrst skrá
+CText.SimNote	Hermun: engin vél
+CText.RealNote	RAUNVÉL - hún mun hreyfast
+CText.InputError	Innsláttarvilla!
+CText.Max	Hám:
+CText.Min	Lágm:
+CText.BackupAsk	Vista stillingar úr Stillingar og aðalvalmynd í skrá?
+CText.BtnAbout	Um
+CText.PLanguage	Tungumál
+CText.AboutDescDrill	Opin útfærsla á borforriti Bungard CCD
+CText.AboutDescRoute	Opin útfærsla á fræsiforriti Bungard CCD
+CText.AboutVersion	Útgáfa
+CText.AboutLicense	Leyfi
+CText.AboutAuthor	Höfundur
+CText.AboutRepo	Frumkóði
+CText.AboutMachines	Bungard vélar:
+CText.AboutMtc	CCD og CCD/2 MTC (handvirk verkfæraskipti): studd
+CText.AboutAtc	CCD og CCD/2 ATC (sjálfvirkur skiptari): ekki enn
+CText.AboutTested	Prófað aðeins á Bungard CCD MTC
+CText.AboutDisclaimer	Óháð verkefni; ótengt Bungard Elektronik
+CText.TcTitle	Verkfæraskipti
+CText.TcInsert	Settu verkfæri í:
+CText.TcRun	Ferill      (mm)
+CText.TcSpindle	Spindill (1/min)
+CText.TcZSpeed	Z-hraði (mm/min)
+CText.TcStroke	Slag        (mm)
+CText.QAttention	Athugið!
+CText.QSpindleAsk	Ræsa spindil?
+CText.QToolAsk	Settu verkfæri {} í
+CText.FNoFolder	Ekki er hægt að opna möppuna
+CText.FNotFound	Skrá fannst ekki
+CText.HintEdit	Tab: næsta  Enter: samþ.  Esc: hætta við  Smellur: velja
+CText.QSave	VISTA ?
+CText.Saved	Vistað
+CText.Loaded	Hlaðið
+CText.ErrWrite	Ekki hægt að skrifa
+CText.ErrRead	Ekki hægt að lesa
+CText.TeachTitle	Kenna hliðrun
+CText.TeachLeft	vinstri
+CText.TeachBack	aftur
+CText.TeachForw	fram
+CText.TeachRight	hægri
+CText.TeachUp	upp
+CText.TeachDown	niður
+CText.TeachMil	mil/1
+CText.BTeach	Kenna
+CText.BPlusPos	+ Staða
+CText.BMinusPos	- Staða
+CText.BMod	Breyta
+CText.QAttentionPlain	Athugið
+CText.QInfo	Upplýs.:
+CText.QOffsetDelete	Eyða gamalli|hliðrun?
+CText.QTeachWrite	Skrifa kennslu-|skrá?
+CText.QWhatNext	Hvað næst?
+CText.BCont	Áfram
+Text.StatusMain	Esc: til baka   Enter: samþykkja   ↑/↓: færa
+CText.QInterrupted	TRUFLAÐ

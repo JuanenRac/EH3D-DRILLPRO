@@ -1,1 +1,242 @@
 # Slovenščina (sl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Naloži
+Text.MenuVectors	Vektorji
+Text.MenuTools	Orodja
+Text.MenuConfig	Nastav.
+Text.MenuSort	Razvrščanje
+Text.MenuStart	Zagon
+Text.MenuLanguage	Jezik
+Text.MenuQuit	Izhod
+Text.TitleSelectFile	Izbira datoteke
+Text.TitleVectors	Vektorji
+Text.TitleTools	Podatki o orodjih
+Text.TitleConfig	Nastavitve
+Text.TitleSort	Razvrščanje koordinat
+Text.TitleLanguage	Jezik
+Text.TitleDrilling	Vrtanje
+Text.TitleQuit	Izhod
+Text.LblFile	Datoteka
+Text.LblHoles	Luknje
+Text.LblToolsUsed	Orodja
+Text.LblSize	Velikost (mm)
+Text.LblTravel	Pot (mm)
+Text.LblSorting	Razvrščanje
+Text.LblProgress	Napredek
+Text.LblTime	Simulirani čas (s)
+Text.LblSerial	Serijski vmesnik
+Text.SortNone	Brez
+Text.SortX	Najprej X
+Text.SortY	Najprej Y
+Text.SortSpecial	Posebno (najkrajša pot)
+Text.ColTool	Orodje
+Text.ColStroke	Hod (mm)
+Text.ColFeed	Podajanje (mm/min)
+Text.ColSpindle	Vreteno (rpm)
+Text.NoFile	Nobena datoteka ni naložena
+Text.NoToolFile	Datoteka orodij ni najdena
+Text.NoConfigFile	Konfiguracijska datoteka ni najdena
+Text.TooManyTools	Preveč orodij za menjalnik (največ:
+Text.ErrRead	Napaka pri branju datoteke vrtanja
+Text.SimOnly	SIMULACIJA - stroj ni priključen
+Text.Uncalibrated	Stroj ni kalibriran: gibanje je le simulirano
+Text.Connecting	Povezovanje s krmilno enoto ...
+Text.Drilling	Vrtanje ...
+Text.Done	Končano
+Text.QuitAsk	Res želite končati?
+Text.BtnYes	Da
+Text.BtnNo	Ne
+Text.BtnStop	Stop
+Text.Directory	Imenik
+Text.WaitToolChange	Vstavite orodje {} in pritisnite Enter
+Text.WaitSpindle	Pritisnite Enter za zagon vretena
+Text.Stopped	Ustavljeno (pogoni izklopljeni)
+Text.LinkFailed	Povezava ni uspela
+Text.LblLink	Povezava
+Text.LblItems	Koraki opravila
+Text.KeyStop	Esc: stop
+Text.RealMachine	DEJANSKI STROJ ({}) - Zagon ga premakne
+Text.RealStop	Esc ga ustavi; roka naj bo ob stikalu
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Stroj št.:
+CText.LblScale	Merilo
+CText.LblOffset	Zamik
+CText.LblClip	Izrez
+CText.LblVectors	Vektorji
+CText.LblFrm	od
+CText.LblTo	do
+CText.LblCount	Število
+CText.LblTotal	Skupaj
+CText.LblDone	Konč.
+CText.LblFile	Datoteka
+CText.LblBoard	Ploščica
+CText.LblBase	Osnova
+CText.Mm	mm
+CText.BtnConfig	Nastav.
+CText.BtnTools	Orodja
+CText.BtnStart	Zagon
+CText.BtnLoad	Naloži
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Zamik
+CText.BtnQuit	Izhod
+CText.PTitle	Parameter
+CText.PFile	Datoteka
+CText.PDirectory	Imenik
+CText.PPattern	Vzorec
+CText.PCoordinates	Koordinate
+CText.PSorting	Razvrščanje
+CText.PChord	Kot tetive
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Brez
+CText.PSortX	Najprej X
+CText.PSortY	Najprej Y
+CText.PSortSpecial	Posebno
+CText.PSpeed	Hitrost (mm/min)
+CText.PXyMax	XY maks.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  maks.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Popravek
+CText.PStroke	Hod
+CText.PLimit	Meja
+CText.PFree	Prosto
+CText.PSpindle	Vreteno
+CText.PDelay	Zakasn.
+CText.PSecond	s
+CText.ConnLabel	Povezava
+CText.ConnTitle	Povezava s strojem
+CText.ConnType	Vrsta
+CText.ConnNameDemo	Demo (simulator)
+CText.ConnNameRs232	RS-232 (serijska vrata)
+CText.ConnNameUsb	USB (adapter RS-232)
+CText.ConnNameNode	Vozlišče EH3D (omrežje)
+CText.ConnNameServer	Strežnik EH3D (omrežje)
+CText.ConnNoteDemo	Opravilo teče v simulatorju: nič se ne premika.
+CText.ConnNoteRs232	Serijska vrata računalnika, bajt za bajtom.
+CText.ConnNoteUsb	Adapter USB-RS-232: gibi gredo v enem toku.
+CText.ConnNoteNode	Vozlišče EH3D stroja prek etherneta ali Wi-Fi.
+CText.ConnNoteServer	Strežnik EH3D načrtuje opravilo in ga izvede na stroju.
+CText.ConnPort	Vrata
+CText.ConnAddress	Naslov
+CText.ConnToken	Žeton
+CText.ConnMachine	Stroj
+CText.ConnNeedPort	Vrata manjkajo.
+CText.ConnNeedAddress	Naslov mora biti gostitelj:vrata.
+CText.ConnNeedMachine	Stroj strežnika manjka.
+CText.ConnSaved	Povezava shranjena v datoteki stroja.
+CText.ConnNoSave	Datoteke stroja ni mogoče zapisati.
+CText.BLoad	Naloži
+CText.BSave	Shrani
+CText.BOk	Ok
+CText.BAbort	Prekini
+CText.BYes	Da
+CText.BNo	Ne
+CText.BOkUpper	OK
+CText.BCancel	PREKLIČI
+CText.PzTitle	Panelizacija
+CText.PzBoard	Ploščica
+CText.PzSpacing	Razmik
+CText.PzNumber	Število
+CText.PzCalc	Izračun
+CText.TTitle	Podatki o orodjih
+CText.TPl	Mest.
+CText.TName	Ime
+CText.TStroke	Hod
+CText.TFeed	Podaj.
+CText.TSpindle	Vreteno
+CText.TStart	Zagon
+CText.TUsed	Uporab.
+CText.TTab	Mostiček
+CText.TDepth	Globina
+CText.TIter	Iter.
+CText.TXFeed	Podaj. X
+CText.TZFeed	Podaj. Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Izbira datoteke
+CText.FName	Ime
+CText.FFiles	Datoteke
+CText.QStop	STOP !!!
+CText.QAsk	Res želite končati?
+CText.HomingZ	Referenca osi Z
+CText.HomingXy	Referenca osi X/Y
+CText.PressEsc	Za ustavitev pritisnite ESC
+CText.SpindleStart	Zagon vretena
+CText.SpindleStop	Ustavitev vretena
+CText.JTool	Orodje
+CText.JNo	Št.
+CText.JStroke	Hod
+CText.JStartPos	Zač. poz.
+CText.JPosition	Položaj
+CText.JSpeed	Hitrost (mm/min)
+CText.JCount	Število
+CText.JUse	Uporaba
+CText.Drilling	Vrtanje ...
+CText.OpAborted	Postopek prekinjen
+CText.NoFile	Najprej naložite datoteko
+CText.SimNote	Simulacija: brez stroja
+CText.RealNote	DEJANSKI STROJ - se bo premikal
+CText.InputError	Napaka vnosa!
+CText.Max	Maks:
+CText.Min	Min:
+CText.BackupAsk	Shraniti nastavitve iz Nastav. in glavnega menija v datoteko?
+CText.BtnAbout	O programu
+CText.PLanguage	Jezik
+CText.AboutDescDrill	Odprta izvedba programa za vrtanje Bungard CCD
+CText.AboutDescRoute	Odprta izvedba programa za frezanje Bungard CCD
+CText.AboutVersion	Različica
+CText.AboutLicense	Licenca
+CText.AboutAuthor	Avtor
+CText.AboutRepo	Izvorna koda
+CText.AboutMachines	Stroji Bungard:
+CText.AboutMtc	CCD in CCD/2 MTC (ročna menjava orodja): podprto
+CText.AboutAtc	CCD in CCD/2 ATC (samodejni menjalnik): še ne
+CText.AboutTested	Preizkušeno le na Bungard CCD MTC
+CText.AboutDisclaimer	Neodvisen projekt; ni povezan z Bungard Elektronik
+CText.TcTitle	Menjava orodja
+CText.TcInsert	Vstavite orodje:
+CText.TcRun	Pot         (mm)
+CText.TcSpindle	Vreteno  (1/min)
+CText.TcZSpeed	Hitr. Z (mm/min)
+CText.TcStroke	Hod         (mm)
+CText.QAttention	Pozor!
+CText.QSpindleAsk	Zagnati vreteno?
+CText.QToolAsk	Vstavite orodje {}
+CText.FNoFolder	Mape ni mogoče odpreti
+CText.FNotFound	Datoteka ni najdena
+CText.HintEdit	Tab: naprej  Enter: sprejmi  Esc: prekliči  Klik: izbira
+CText.QSave	SHRANI ?
+CText.Saved	Shranjeno
+CText.Loaded	Naloženo
+CText.ErrWrite	Zapis ni mogoč
+CText.ErrRead	Branje ni mogoče
+CText.TeachTitle	Učenje zamika
+CText.TeachLeft	levo
+CText.TeachBack	nazaj
+CText.TeachForw	naprej
+CText.TeachRight	desno
+CText.TeachUp	gor
+CText.TeachDown	dol
+CText.TeachMil	mil/1
+CText.BTeach	Uči
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Spremeni
+CText.QAttentionPlain	Pozor
+CText.QInfo	Info:
+CText.QOffsetDelete	Izbrisati star|zamik?
+CText.QTeachWrite	Zapisati datoteko|učenja?
+CText.QWhatNext	Kaj zdaj?
+CText.BCont	Nadalj.
+Text.StatusMain	Esc: nazaj   Enter: potrdi   ↑/↓: premik
+CText.QInterrupted	PREKINJENO

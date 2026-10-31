@@ -14,7 +14,7 @@ fn every_text_exists_in_all_eight_languages() {
 fn hotkey_markers_are_balanced_and_consistent() {
     for &k in ALL_TEXTS {
         let en_has = tr(Lang::En, k).contains('~');
-        for l in Lang::ALL {
+        for l in Lang::ALL.into_iter().take(CORE_LANGS) {
             let t = tr(l, k);
             let n = t.matches('~').count();
             assert!(n == 0 || n == 2, "{k:?} {l:?}: {t}");
@@ -43,7 +43,7 @@ fn chinese_and_japanese_use_cjk() {
 #[test]
 fn menu_hotkeys_are_unique_within_a_language() {
     use eh3d_drillpro::texts::Text::*;
-    for l in Lang::ALL {
+    for l in Lang::ALL.into_iter().take(CORE_LANGS) {
         let mut seen: Vec<String> = Vec::new();
         for k in [
             MenuLoad,
@@ -72,4 +72,26 @@ fn language_codes_round_trip() {
     assert_eq!(Lang::from_locale("pt-PT"), Lang::Pt);
     assert_eq!(Lang::from_locale("xx"), Lang::En);
     assert_eq!(Lang::default(), Lang::En);
+}
+
+#[test]
+fn every_new_language_has_all_the_texts_of_the_program() {
+    use eh3d_drillpro::classic::texts::locale_coverage as classic;
+    use eh3d_drillpro::texts::locale_coverage;
+    for l in Lang::ALL.into_iter().skip(CORE_LANGS) {
+        let variant = l.fallback().is_some();
+        for (have, total) in [locale_coverage(l), classic(l)] {
+            if variant {
+                assert!(have < total, "{l:?}");
+            } else {
+                assert_eq!(have, total, "{l:?}");
+            }
+        }
+    }
+}
+
+#[test]
+fn the_files_of_the_languages_name_only_texts_that_exist() {
+    assert!(eh3d_drillpro::texts::locale_problems().is_empty());
+    assert!(eh3d_drillpro::classic::texts::locale_problems().is_empty());
 }

@@ -1,1 +1,242 @@
 # Српски (sr): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Учитај
+Text.MenuVectors	Вектори
+Text.MenuTools	Алати
+Text.MenuConfig	Подеш.
+Text.MenuSort	Сортир.
+Text.MenuStart	Старт
+Text.MenuLanguage	Језик
+Text.MenuQuit	Излаз
+Text.TitleSelectFile	Избор датотеке
+Text.TitleVectors	Вектори
+Text.TitleTools	Подаци о алатима
+Text.TitleConfig	Конфигурација
+Text.TitleSort	Сортирање координата
+Text.TitleLanguage	Језик
+Text.TitleDrilling	Бушење
+Text.TitleQuit	Излаз
+Text.LblFile	Датотека
+Text.LblHoles	Рупе
+Text.LblToolsUsed	Алати
+Text.LblSize	Величина (mm)
+Text.LblTravel	Ход (mm)
+Text.LblSorting	Сортирање
+Text.LblProgress	Напредак
+Text.LblTime	Симулирано време (s)
+Text.LblSerial	Серијски интерфејс
+Text.SortNone	Нема
+Text.SortX	Прво X
+Text.SortY	Прво Y
+Text.SortSpecial	Посебно (најкраћи пут)
+Text.ColTool	Алат
+Text.ColStroke	Ход (mm)
+Text.ColFeed	Помак (mm/min)
+Text.ColSpindle	Вретено (rpm)
+Text.NoFile	Датотека није учитана
+Text.NoToolFile	Датотека алата није пронађена
+Text.NoConfigFile	Конфигурациона датотека није пронађена
+Text.TooManyTools	Превише алата за мењач (макс.:
+Text.ErrRead	Грешка при читању датотеке за бушење
+Text.SimOnly	СИМУЛАЦИЈА - машина није повезана
+Text.Uncalibrated	Машина није калибрисана: кретање је само симулирано
+Text.Connecting	Повезивање управљачке јединице ...
+Text.Drilling	Бушење ...
+Text.Done	Готово
+Text.QuitAsk	Заиста желите да изађете?
+Text.BtnYes	Да
+Text.BtnNo	Не
+Text.BtnStop	Стоп
+Text.Directory	Директоријум
+Text.WaitToolChange	Уметните алат {} и притисните Enter
+Text.WaitSpindle	Притисните Enter за покретање вретена
+Text.Stopped	Заустављено (погони искљ.)
+Text.LinkFailed	Веза није успела
+Text.LblLink	Веза
+Text.LblItems	Кораци посла
+Text.KeyStop	Esc: стоп
+Text.RealMachine	ПРАВА МАШИНА ({}) - Старт је покреће
+Text.RealStop	Esc зауставља; држите руку уз прекидач
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Машина бр.:
+CText.LblScale	Размера
+CText.LblOffset	Померај
+CText.LblClip	Одсецање
+CText.LblVectors	Вектори
+CText.LblFrm	од
+CText.LblTo	до
+CText.LblCount	Број
+CText.LblTotal	Укупно
+CText.LblDone	Готово
+CText.LblFile	Датотека
+CText.LblBoard	Плоча
+CText.LblBase	Основа
+CText.Mm	mm
+CText.BtnConfig	Подеш.
+CText.BtnTools	Алати
+CText.BtnStart	Старт
+CText.BtnLoad	Учитај
+CText.BtnPanelz	Панел.
+CText.BtnOffset	Померај
+CText.BtnQuit	Излаз
+CText.PTitle	Параметри
+CText.PFile	Датотека
+CText.PDirectory	Директоријум
+CText.PPattern	Образац
+CText.PCoordinates	Координате
+CText.PSorting	Сортирање
+CText.PChord	Угао тетиве
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Нема
+CText.PSortX	Прво X
+CText.PSortY	Прво Y
+CText.PSortSpecial	Посебно
+CText.PSpeed	Брзина (mm/min)
+CText.PXyMax	XY Макс.
+CText.PXyRef	XY Реф.
+CText.PXyRamp	XY Рампа
+CText.PZMax	Z  Макс.
+CText.PZRef	Z  Реф.
+CText.PZRamp	Z  Рампа
+CText.PRamp	Рампа (dv/dt)
+CText.PCorrect	Корек.
+CText.PStroke	Ход
+CText.PLimit	Лимит
+CText.PFree	Слободно
+CText.PSpindle	Вретено
+CText.PDelay	Кашњење
+CText.PSecond	s
+CText.ConnLabel	Веза
+CText.ConnTitle	Веза са машином
+CText.ConnType	Тип
+CText.ConnNameDemo	Демо (симулатор)
+CText.ConnNameRs232	RS-232 (серијски порт)
+CText.ConnNameUsb	USB (RS-232 адаптер)
+CText.ConnNameNode	EH3D чвор (мрежа)
+CText.ConnNameServer	EH3D сервер (мрежа)
+CText.ConnNoteDemo	Посао се изводи на симулатору: ништа се не креће.
+CText.ConnNoteRs232	Серијски порт рачунара, по један бајт.
+CText.ConnNoteUsb	USB-RS-232 адаптер: покрети иду једним током.
+CText.ConnNoteNode	EH3D чвор машине, преко Етернета или Wi-Fi-ја.
+CText.ConnNoteServer	EH3D сервер планира посао и изводи га на машини.
+CText.ConnPort	Порт
+CText.ConnAddress	Адреса
+CText.ConnToken	Токен
+CText.ConnMachine	Машина
+CText.ConnNeedPort	Порт недостаје.
+CText.ConnNeedAddress	Адреса мора бити host:port.
+CText.ConnNeedMachine	Недостаје машина сервера.
+CText.ConnSaved	Веза је сачувана у датотеци машине.
+CText.ConnNoSave	Датотека машине се не може уписати.
+CText.BLoad	Учитај
+CText.BSave	Сачувај
+CText.BOk	Ок
+CText.BAbort	Прекини
+CText.BYes	Да
+CText.BNo	Не
+CText.BOkUpper	OK
+CText.BCancel	ОТКАЖИ
+CText.PzTitle	Панелизација
+CText.PzBoard	Плоча
+CText.PzSpacing	Размак
+CText.PzNumber	Број
+CText.PzCalc	Рач.
+CText.TTitle	Подаци о алатима
+CText.TPl	Пл.
+CText.TName	Назив
+CText.TStroke	Ход
+CText.TFeed	Помак
+CText.TSpindle	Вретено
+CText.TStart	Старт
+CText.TUsed	Кор.
+CText.TTab	Мост.
+CText.TDepth	Дубина
+CText.TIter	Итер.
+CText.TXFeed	X помак
+CText.TZFeed	Z помак
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Вект.
+CText.FTitle	Избор датотеке
+CText.FName	Назив
+CText.FFiles	Датотеке
+CText.QStop	СТОП !!!
+CText.QAsk	Заиста желите да изађете?
+CText.HomingZ	Референцирање осе Z
+CText.HomingXy	Референцирање оса X/Y
+CText.PressEsc	Притисните ESC за заустављање
+CText.SpindleStart	Старт вретена
+CText.SpindleStop	Стоп вретена
+CText.JTool	Алат
+CText.JNo	Бр.
+CText.JStroke	Ход
+CText.JStartPos	Пољ. поз.
+CText.JPosition	Позиција
+CText.JSpeed	Брзина (mm/min)
+CText.JCount	Број
+CText.JUse	Кор.
+CText.Drilling	Бушење ...
+CText.OpAborted	Операција прекинута
+CText.NoFile	Прво учитајте датотеку
+CText.SimNote	Симулација: без машине
+CText.RealNote	ПРАВА МАШИНА - кретаће се
+CText.InputError	Грешка уноса!
+CText.Max	Макс.: 
+CText.Min	Мин.: 
+CText.BackupAsk	Сачувати подешавања из Подеш. и главног менија у датотеку?
+CText.BtnAbout	О програму
+CText.PLanguage	Језик
+CText.AboutDescDrill	Отворена имплементација Bungard CCD програма за бушење
+CText.AboutDescRoute	Отворена имплементација Bungard CCD програма за глодање
+CText.AboutVersion	Верзија
+CText.AboutLicense	Лиценца
+CText.AboutAuthor	Аутор
+CText.AboutRepo	Извор
+CText.AboutMachines	Bungard машине:
+CText.AboutMtc	CCD и CCD/2 MTC (ручна замена алата): подржано
+CText.AboutAtc	CCD и CCD/2 ATC (аутом. мењач алата): још не
+CText.AboutTested	Испробано само на Bungard CCD MTC
+CText.AboutDisclaimer	Независан пројекат; није повезан са Bungard Elektronik
+CText.TcTitle	Замена алата
+CText.TcInsert	Уметните алат:
+CText.TcRun	Дужина хода  (mm)
+CText.TcSpindle	Вретено  (1/min)
+CText.TcZSpeed	Z брзина (mm/min)
+CText.TcStroke	Ход         (mm)
+CText.QAttention	Пажња!
+CText.QSpindleAsk	Покренути вретено?
+CText.QToolAsk	Уметните алат {}
+CText.FNoFolder	Фасцикла се не може отворити
+CText.FNotFound	Датотека није пронађена
+CText.HintEdit	Tab: даље  Enter: прихвати  Esc: откажи  Клик: избор
+CText.QSave	САЧУВАТИ ?
+CText.Saved	Сачувано
+CText.Loaded	Учитано
+CText.ErrWrite	Не може да се упише
+CText.ErrRead	Не може да се прочита
+CText.TeachTitle	Учење помераја
+CText.TeachLeft	лево
+CText.TeachBack	назад
+CText.TeachForw	напред
+CText.TeachRight	десно
+CText.TeachUp	горе
+CText.TeachDown	доле
+CText.TeachMil	mil/1
+CText.BTeach	Учи
+CText.BPlusPos	+ Поз
+CText.BMinusPos	- Поз
+CText.BMod	Изм.
+CText.QAttentionPlain	Пажња
+CText.QInfo	Инфо:
+CText.QOffsetDelete	Обрисати стари|померај?
+CText.QTeachWrite	Записати датотеку|учења?
+CText.QWhatNext	Шта даље?
+CText.BCont	Даље
+Text.StatusMain	Esc: назад   Enter: прихвати   ↑/↓: кретање
+CText.QInterrupted	ПРЕКИНУТО

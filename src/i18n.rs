@@ -372,6 +372,14 @@ macro_rules! translations {
             let row = match key { $($key::$name => [$en, $es, $it, $de, $fr, $pt, $zh, $ja]),* };
             $crate::i18n::pick(lang, row, key.locale_key(), locales())
         }
+        /// How many of the texts of this table a language has in its file, and how many there are (for the tests).
+        pub fn locale_coverage(lang: $crate::i18n::Lang) -> (usize, usize) {
+            let table = concat!(stringify!($key), ".");
+            let have = locales()
+                .get(lang as usize)
+                .map_or(0, |m| m.keys().filter(|k| k.starts_with(table)).count());
+            (have, $all.len())
+        }
         /// The problems of the files of the languages: a text that does not exist, an empty one (for the tests).
         pub fn locale_problems() -> Vec<String> {
             let names: std::collections::HashSet<&str> = $all.iter().map(|k| k.locale_key()).collect();

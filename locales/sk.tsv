@@ -1,1 +1,242 @@
 # Slovenčina (sk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Načítať
+Text.MenuVectors	Vektory
+Text.MenuTools	Nástroje
+Text.MenuConfig	Konfig.
+Text.MenuSort	Triedenie
+Text.MenuStart	Štart
+Text.MenuLanguage	Jazyk
+Text.MenuQuit	Koniec
+Text.TitleSelectFile	Výber súboru
+Text.TitleVectors	Vektory
+Text.TitleTools	Údaje nástrojov
+Text.TitleConfig	Konfigurácia
+Text.TitleSort	Triedenie súradníc
+Text.TitleLanguage	Jazyk
+Text.TitleDrilling	Vŕtanie
+Text.TitleQuit	Koniec
+Text.LblFile	Súbor
+Text.LblHoles	Otvory
+Text.LblToolsUsed	Nástroje
+Text.LblSize	Rozmer (mm)
+Text.LblTravel	Dráha (mm)
+Text.LblSorting	Triedenie
+Text.LblProgress	Priebeh
+Text.LblTime	Simulovaný čas (s)
+Text.LblSerial	Sériové rozhranie
+Text.SortNone	Žiadne
+Text.SortX	Najprv X
+Text.SortY	Najprv Y
+Text.SortSpecial	Špeciálne (najkratšia dráha)
+Text.ColTool	Nástroj
+Text.ColStroke	Zdvih (mm)
+Text.ColFeed	Posuv (mm/min)
+Text.ColSpindle	Vreteno (rpm)
+Text.NoFile	Žiadny súbor
+Text.NoToolFile	Súbor nástrojov sa nenašiel
+Text.NoConfigFile	Konfiguračný súbor sa nenašiel
+Text.TooManyTools	Príliš veľa nástrojov pre výmenník (max.:
+Text.ErrRead	Chyba čítania vŕtacieho súboru
+Text.SimOnly	SIMULÁCIA - stroj nie je pripojený
+Text.Uncalibrated	Stroj nie je kalibrovaný: pohyb je len simulovaný
+Text.Connecting	Pripájam riadiacu jednotku ...
+Text.Drilling	Vŕtam ...
+Text.Done	Hotovo
+Text.QuitAsk	Naozaj chcete skončiť?
+Text.BtnYes	Áno
+Text.BtnNo	Nie
+Text.BtnStop	Stop
+Text.Directory	Adresár
+Text.WaitToolChange	Vložte nástroj {} a stlačte Enter
+Text.WaitSpindle	Stlačením Enter spustíte vreteno
+Text.Stopped	Zastavené (pohony vypnuté)
+Text.LinkFailed	Pripojenie zlyhalo
+Text.LblLink	Spojenie
+Text.LblItems	Kroky úlohy
+Text.KeyStop	Esc: stop
+Text.RealMachine	SKUTOČNÝ STROJ ({}) - Štart ho pohne
+Text.RealStop	Esc ho zastaví; majte ruku pri vypínači
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Stroj č.:
+CText.LblScale	Mierka
+CText.LblOffset	Posun
+CText.LblClip	Výrez
+CText.LblVectors	Vektory
+CText.LblFrm	od
+CText.LblTo	do
+CText.LblCount	Počet
+CText.LblTotal	Spolu
+CText.LblDone	Hotovo
+CText.LblFile	Súbor
+CText.LblBoard	Doska
+CText.LblBase	Základ
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Nástroje
+CText.BtnStart	Štart
+CText.BtnLoad	Načítať
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Posun
+CText.BtnQuit	Koniec
+CText.PTitle	Parameter
+CText.PFile	Súbor
+CText.PDirectory	Adresár
+CText.PPattern	Vzor
+CText.PCoordinates	Súradnice
+CText.PSorting	Triedenie
+CText.PChord	Uhol tetivy
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Žiadne
+CText.PSortX	Najprv X
+CText.PSortY	Najprv Y
+CText.PSortSpecial	Špeciálne
+CText.PSpeed	Rýchlosť (mm/min)
+CText.PXyMax	XY max.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  max.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korekcia
+CText.PStroke	Zdvih
+CText.PLimit	Limit
+CText.PFree	Voľný
+CText.PSpindle	Vreteno
+CText.PDelay	Oneskor.
+CText.PSecond	s
+CText.ConnLabel	Spojenie
+CText.ConnTitle	Spojenie so strojom
+CText.ConnType	Typ
+CText.ConnNameDemo	Demo (simulátor)
+CText.ConnNameRs232	RS-232 (sériový port)
+CText.ConnNameUsb	USB (adaptér RS-232)
+CText.ConnNameNode	Uzol EH3D (sieť)
+CText.ConnNameServer	Server EH3D (sieť)
+CText.ConnNoteDemo	Úloha beží v simulátore: nič sa nehýbe.
+CText.ConnNoteRs232	Sériový port počítača, bajt po bajte.
+CText.ConnNoteUsb	Adaptér USB-RS-232: pohyby idú ako jeden tok.
+CText.ConnNoteNode	Uzol EH3D stroja cez Ethernet alebo Wi-Fi.
+CText.ConnNoteServer	Server EH3D plánuje úlohu a spúšťa ju na stroji.
+CText.ConnPort	Port
+CText.ConnAddress	Adresa
+CText.ConnToken	Token
+CText.ConnMachine	Stroj
+CText.ConnNeedPort	Chýba port.
+CText.ConnNeedAddress	Adresa musí byť host:port.
+CText.ConnNeedMachine	Chýba stroj servera.
+CText.ConnSaved	Spojenie uložené v súbore stroja.
+CText.ConnNoSave	Súbor stroja sa nedá zapísať.
+CText.BLoad	Načítať
+CText.BSave	Uložiť
+CText.BOk	Ok
+CText.BAbort	Zrušiť
+CText.BYes	Áno
+CText.BNo	Nie
+CText.BOkUpper	OK
+CText.BCancel	ZRUŠIŤ
+CText.PzTitle	Panelizácia
+CText.PzBoard	Doska
+CText.PzSpacing	Rozstup
+CText.PzNumber	Počet
+CText.PzCalc	Výpočet
+CText.TTitle	Údaje nástrojov
+CText.TPl	Mies.
+CText.TName	Názov
+CText.TStroke	Zdvih
+CText.TFeed	Posuv
+CText.TSpindle	Vreteno
+CText.TStart	Štart
+CText.TUsed	Použité
+CText.TTab	Mostík
+CText.TDepth	Hĺbka
+CText.TIter	Iter.
+CText.TXFeed	Posuv X
+CText.TZFeed	Posuv Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Výber súboru
+CText.FName	Názov
+CText.FFiles	Súbory
+CText.QStop	STOP !!!
+CText.QAsk	Naozaj chcete skončiť?
+CText.HomingZ	Referencia osi Z
+CText.HomingXy	Referencia osí X/Y
+CText.PressEsc	Zastavte klávesom ESC
+CText.SpindleStart	Štart vretena
+CText.SpindleStop	Stop vretena
+CText.JTool	Nástroj
+CText.JNo	Č.
+CText.JStroke	Zdvih
+CText.JStartPos	Štart pozícia
+CText.JPosition	Pozícia
+CText.JSpeed	Rýchlosť (mm/min)
+CText.JCount	Počet
+CText.JUse	Použitie
+CText.Drilling	Vŕtam ...
+CText.OpAborted	Operácia zrušená
+CText.NoFile	Najprv načítajte súbor
+CText.SimNote	Simulácia: bez stroja
+CText.RealNote	SKUTOČNÝ STROJ - bude sa hýbať
+CText.InputError	Chyba vstupu!
+CText.Max	Max:
+CText.Min	Min:
+CText.BackupAsk	Uložiť nastavenia z Konfig. a hlavného menu do súboru?
+CText.BtnAbout	O programe
+CText.PLanguage	Jazyk
+CText.AboutDescDrill	Otvorená implementácia vŕtacieho programu Bungard CCD
+CText.AboutDescRoute	Otvorená implementácia frézovacieho programu Bungard CCD
+CText.AboutVersion	Verzia
+CText.AboutLicense	Licencia
+CText.AboutAuthor	Autor
+CText.AboutRepo	Zdroj
+CText.AboutMachines	Stroje Bungard:
+CText.AboutMtc	CCD a CCD/2 MTC (ručná výmena nástroja): podporované
+CText.AboutAtc	CCD a CCD/2 ATC (automatický výmenník): zatiaľ nie
+CText.AboutTested	Vyskúšané len na Bungard CCD MTC
+CText.AboutDisclaimer	Nezávislý projekt; nie je spojený s Bungard Elektronik
+CText.TcTitle	Výmena nástroja
+CText.TcInsert	Vložte nástroj:
+CText.TcRun	Dráha       (mm)
+CText.TcSpindle	Vreteno  (1/min)
+CText.TcZSpeed	Rýchl. Z (mm/min)
+CText.TcStroke	Zdvih       (mm)
+CText.QAttention	Pozor!
+CText.QSpindleAsk	Spustiť vreteno?
+CText.QToolAsk	Vložte nástroj {}
+CText.FNoFolder	Priečinok sa nedá otvoriť
+CText.FNotFound	Súbor sa nenašiel
+CText.HintEdit	Tab: ďalší  Enter: prijať  Esc: zrušiť  Klik: výber
+CText.QSave	ULOŽIŤ ?
+CText.Saved	Uložené
+CText.Loaded	Načítané
+CText.ErrWrite	Nedá sa zapísať
+CText.ErrRead	Nedá sa čítať
+CText.TeachTitle	Učenie posunu
+CText.TeachLeft	vľavo
+CText.TeachBack	vzad
+CText.TeachForw	vpred
+CText.TeachRight	vpravo
+CText.TeachUp	hore
+CText.TeachDown	dole
+CText.TeachMil	mil/1
+CText.BTeach	Učiť
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Zmena
+CText.QAttentionPlain	Pozor
+CText.QInfo	Info:
+CText.QOffsetDelete	Zmazať starý|posun?
+CText.QTeachWrite	Zapísať súbor|učenia?
+CText.QWhatNext	Čo ďalej?
+CText.BCont	Pokrač.
+Text.StatusMain	Esc: späť   Enter: potvrdiť   ↑/↓: pohyb
+CText.QInterrupted	PRERUŠENÉ

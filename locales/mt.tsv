@@ -1,1 +1,242 @@
 # Malti (mt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Tella
+Text.MenuVectors	Vettori
+Text.MenuTools	Għodod
+Text.MenuConfig	Konfig.
+Text.MenuSort	Ordnar
+Text.MenuStart	Ibda
+Text.MenuLanguage	Lingwa
+Text.MenuQuit	Oħroġ
+Text.TitleSelectFile	Agħżel il-fajl
+Text.TitleVectors	Vettori
+Text.TitleTools	Dejta tal-għodod
+Text.TitleConfig	Konfigurazzjoni
+Text.TitleSort	Ordnar tal-koordinati
+Text.TitleLanguage	Lingwa
+Text.TitleDrilling	Titqib
+Text.TitleQuit	Oħroġ
+Text.LblFile	Fajl
+Text.LblHoles	Toqob
+Text.LblToolsUsed	Għodod
+Text.LblSize	Daqs (mm)
+Text.LblTravel	Mixja (mm)
+Text.LblSorting	Ordnar
+Text.LblProgress	Progress
+Text.LblTime	Ħin issimulat (s)
+Text.LblSerial	Interfaccja serjali
+Text.SortNone	L-ebda
+Text.SortX	X l-ewwel
+Text.SortY	Y l-ewwel
+Text.SortSpecial	Speċjali (l-iqsar triq)
+Text.ColTool	Għodda
+Text.ColStroke	Korsa (mm)
+Text.ColFeed	Avanz (mm/min)
+Text.ColSpindle	Spindle (rpm)
+Text.NoFile	L-ebda fajl mtella'
+Text.NoToolFile	Fajl tad-dejta tal-għodod ma nstabx
+Text.NoConfigFile	Fajl tal-konfigurazzjoni ma nstabx
+Text.TooManyTools	Wisq għodod għall-bdil tal-għodod (massimu:
+Text.ErrRead	Żball fil-qari tal-fajl tat-titqib
+Text.SimOnly	SIMULAZZJONI - l-ebda magna konnessa
+Text.Uncalibrated	Magna mhux ikkalibrata: il-moviment huwa simulat biss
+Text.Connecting	Qed jgħaqqad l-unità tal-kontroll ...
+Text.Drilling	Qed ittaqqab ...
+Text.Done	Lest
+Text.QuitAsk	Tassew trid toħroġ?
+Text.BtnYes	Iva
+Text.BtnNo	Le
+Text.BtnStop	Waqqaf
+Text.Directory	Direttorju
+Text.WaitToolChange	Daħħal l-għodda {} u agħfas Enter
+Text.WaitSpindle	Agħfas Enter biex tibda l-ispindle
+Text.Stopped	Mwaqqaf (drivers mitfija)
+Text.LinkFailed	Il-konnessjoni falliet
+Text.LblLink	Konnessjoni
+Text.LblItems	Passi tax-xogħol
+Text.KeyStop	Esc: waqqaf
+Text.RealMachine	MAGNA VERA ({}) - Ibda tmexxiha
+Text.RealStop	Esc iwaqqafha; żomm id ħdejn l-iswiċċ
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Magna Nru:
+CText.LblScale	Skala
+CText.LblOffset	Offset
+CText.LblClip	Aqta'
+CText.LblVectors	Vettori
+CText.LblFrm	minn
+CText.LblTo	sa
+CText.LblCount	Għadd
+CText.LblTotal	Total
+CText.LblDone	Lest
+CText.LblFile	Fajl
+CText.LblBoard	Bord
+CText.LblBase	Bażi
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Għodod
+CText.BtnStart	Ibda
+CText.BtnLoad	Tella
+CText.BtnPanelz	Panelli
+CText.BtnOffset	Offset
+CText.BtnQuit	Oħroġ
+CText.PTitle	Parametri
+CText.PFile	Fajl
+CText.PDirectory	Direttorju
+CText.PPattern	Mudell
+CText.PCoordinates	Koordinati
+CText.PSorting	Ordnar
+CText.PChord	Angolu tal-korda
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	L-ebda
+CText.PSortX	X l-ewwel
+CText.PSortY	Y l-ewwel
+CText.PSortSpecial	Speċjali
+CText.PSpeed	Veloċità (mm/min)
+CText.PXyMax	XY Mass.
+CText.PXyRef	XY Ref.
+CText.PXyRamp	XY Rampa
+CText.PZMax	Z  Mass.
+CText.PZRef	Z  Ref.
+CText.PZRamp	Z  Rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korr.
+CText.PStroke	Korsa
+CText.PLimit	Limitu
+CText.PFree	Ħieles
+CText.PSpindle	Spindle
+CText.PDelay	Dewmien
+CText.PSecond	s
+CText.ConnLabel	Konnessjoni
+CText.ConnTitle	Konnessjoni mal-magna
+CText.ConnType	Tip
+CText.ConnNameDemo	Demo (simulatur)
+CText.ConnNameRs232	RS-232 (port serjali)
+CText.ConnNameUsb	USB (adattatur RS-232)
+CText.ConnNameNode	Nodu EH3D (netwerk)
+CText.ConnNameServer	Server EH3D (netwerk)
+CText.ConnNoteDemo	Ix-xogħol jaħdem fis-simulatur: xejn ma jiċċaqlaq.
+CText.ConnNoteRs232	Il-port serjali tal-kompjuter, byte b'byte.
+CText.ConnNoteUsb	Adattatur USB-RS-232: movimenti f'fluss wieħed.
+CText.ConnNoteNode	In-nodu EH3D tal-magna, bl-Ethernet jew bil-Wi-Fi.
+CText.ConnNoteServer	Is-server EH3D jippjana x-xogħol u jmexxih fuq magna.
+CText.ConnPort	Port
+CText.ConnAddress	Indirizz
+CText.ConnToken	Token
+CText.ConnMachine	Magna
+CText.ConnNeedPort	Il-port nieqes.
+CText.ConnNeedAddress	L-indirizz irid ikun host:port.
+CText.ConnNeedMachine	Il-magna tas-server nieqsa.
+CText.ConnSaved	Il-konnessjoni nżammet fil-fajl tal-magna.
+CText.ConnNoSave	Il-fajl tal-magna ma jistax jinkiteb.
+CText.BLoad	Tella
+CText.BSave	Ħażen
+CText.BOk	Ok
+CText.BAbort	Waqqaf
+CText.BYes	Iva
+CText.BNo	Le
+CText.BOkUpper	OK
+CText.BCancel	ĊANĊELLA
+CText.PzTitle	Panellizzazzjoni
+CText.PzBoard	Bord
+CText.PzSpacing	Spazju
+CText.PzNumber	Għadd
+CText.PzCalc	Ikkalk.
+CText.TTitle	Dejta tal-għodod
+CText.TPl	Pl.
+CText.TName	Isem
+CText.TStroke	Korsa
+CText.TFeed	Avanz
+CText.TSpindle	Spindle
+CText.TStart	Bidu
+CText.TUsed	Użat
+CText.TTab	Tab.
+CText.TDepth	Fond
+CText.TIter	Iter.
+CText.TXFeed	Avanz X
+CText.TZFeed	Avanz Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vett.
+CText.FTitle	Agħżel il-fajl
+CText.FName	Isem
+CText.FFiles	Fajls
+CText.QStop	STOP !!!
+CText.QAsk	Tassew trid toħroġ?
+CText.HomingZ	Referenza tal-assi Z
+CText.HomingXy	Referenza tal-assi X/Y
+CText.PressEsc	Agħfas ESC biex twaqqaf
+CText.SpindleStart	Bidu tal-ispindle
+CText.SpindleStop	Waqfa tal-ispindle
+CText.JTool	Għodda
+CText.JNo	Nru
+CText.JStroke	Korsa
+CText.JStartPos	Pos. tal-bidu
+CText.JPosition	Pożizzjoni
+CText.JSpeed	Veloċità (mm/min)
+CText.JCount	Għadd
+CText.JUse	Użu
+CText.Drilling	Qed ittaqqab ...
+CText.OpAborted	Operazzjoni mwaqqfa
+CText.NoFile	Tella fajl l-ewwel
+CText.SimNote	Simulazzjoni: l-ebda magna
+CText.RealNote	MAGNA VERA - se tiċċaqlaq
+CText.InputError	Żball fl-input!
+CText.Max	Mass.: 
+CText.Min	Min.: 
+CText.BackupAsk	Taħżen is-settings minn Konfig. u mill-menu prinċipali fil-fajl?
+CText.BtnAbout	Dwar
+CText.PLanguage	Lingwa
+CText.AboutDescDrill	Implimentazzjoni miftuħa tal-programm tat-titqib Bungard CCD
+CText.AboutDescRoute	Implimentazzjoni miftuħa tal-programm tal-qtugħ Bungard CCD
+CText.AboutVersion	Verżjoni
+CText.AboutLicense	Liċenzja
+CText.AboutAuthor	Awtur
+CText.AboutRepo	Sors
+CText.AboutMachines	Magni Bungard:
+CText.AboutMtc	CCD u CCD/2 MTC (bdil manwali): appoġġjat
+CText.AboutAtc	CCD u CCD/2 ATC (bdil awtomatiku): għadu le
+CText.AboutTested	Ittestjat biss fuq Bungard CCD MTC
+CText.AboutDisclaimer	Proġett indipendenti; mhux affiljat ma' Bungard Elektronik
+CText.TcTitle	Bdil tal-għodda
+CText.TcInsert	Daħħal l-għodda:
+CText.TcRun	Tul tax-xogħol  (mm)
+CText.TcSpindle	Spindle  (1/min)
+CText.TcZSpeed	Veloċità Z (mm/min)
+CText.TcStroke	Korsa      (mm)
+CText.QAttention	Twissija!
+CText.QSpindleAsk	Nibda l-ispindle?
+CText.QToolAsk	Daħħal l-għodda {}
+CText.FNoFolder	Il-folder ma jistax jinfetaħ
+CText.FNotFound	Fajl ma nstabx
+CText.HintEdit	Tab: li jmiss  Enter: aċċetta  Esc: ikkanċella  Klikk: agħżel
+CText.QSave	ĦAŻEN ?
+CText.Saved	Maħżun
+CText.Loaded	Mtella'
+CText.ErrWrite	Ma jistax jinkiteb
+CText.ErrRead	Ma jistax jinqara
+CText.TeachTitle	Tagħlim tal-offset
+CText.TeachLeft	xellug
+CText.TeachBack	lura
+CText.TeachForw	'l quddiem
+CText.TeachRight	ymin
+CText.TeachUp	'il fuq
+CText.TeachDown	'l isfel
+CText.TeachMil	mil/1
+CText.BTeach	Għallem
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Biddel
+CText.QAttentionPlain	Attenzjoni
+CText.QInfo	Info:
+CText.QOffsetDelete	Tħassar l-offset|qadim?
+CText.QTeachWrite	Tikteb il-fajl|tat-tagħlim?
+CText.QWhatNext	X'jiġi wara?
+CText.BCont	Kompli
+Text.StatusMain	Esc: lura   Enter: aċċetta   ↑/↓: mexxi
+CText.QInterrupted	IMWAQQAF

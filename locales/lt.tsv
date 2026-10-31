@@ -1,1 +1,242 @@
 # Lietuvių (lt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Įkelti
+Text.MenuVectors	Vektoriai
+Text.MenuTools	Įrankiai
+Text.MenuConfig	Konfig.
+Text.MenuSort	Rūšiavimas
+Text.MenuStart	Pradėti
+Text.MenuLanguage	Kalba
+Text.MenuQuit	Išeiti
+Text.TitleSelectFile	Pasirinkti failą
+Text.TitleVectors	Vektoriai
+Text.TitleTools	Įrankių duomenys
+Text.TitleConfig	Konfigūracija
+Text.TitleSort	Koordinačių rūšiavimas
+Text.TitleLanguage	Kalba
+Text.TitleDrilling	Gręžimas
+Text.TitleQuit	Išeiti
+Text.LblFile	Failas
+Text.LblHoles	Skylės
+Text.LblToolsUsed	Įrankiai
+Text.LblSize	Dydis (mm)
+Text.LblTravel	Kelias (mm)
+Text.LblSorting	Rūšiavimas
+Text.LblProgress	Eiga
+Text.LblTime	Imituotas laikas (s)
+Text.LblSerial	Nuosekli sąsaja
+Text.SortNone	Nėra
+Text.SortX	Pirma X
+Text.SortY	Pirma Y
+Text.SortSpecial	Specialus (trumpiausias kelias)
+Text.ColTool	Įrankis
+Text.ColStroke	Eiga (mm)
+Text.ColFeed	Padava (mm/min)
+Text.ColSpindle	Suklys (rpm)
+Text.NoFile	Failas neįkeltas
+Text.NoToolFile	Įrankių duomenų failas nerastas
+Text.NoConfigFile	Konfigūracijos failas nerastas
+Text.TooManyTools	Per daug įrankių keitikliui (daugiausia:
+Text.ErrRead	Gręžimo failo skaitymo klaida
+Text.SimOnly	IMITACIJA - staklės neprijungtos
+Text.Uncalibrated	Staklės nekalibruotos: judesys tik imituojamas
+Text.Connecting	Jungiamas valdymo blokas ...
+Text.Drilling	Gręžiama ...
+Text.Done	Baigta
+Text.QuitAsk	Ar tikrai norite išeiti?
+Text.BtnYes	Taip
+Text.BtnNo	Ne
+Text.BtnStop	Stop
+Text.Directory	Katalogas
+Text.WaitToolChange	Įdėkite įrankį {} ir paspauskite Enter
+Text.WaitSpindle	Paspauskite Enter suklio paleidimui
+Text.Stopped	Sustabdyta (pavaros išjungtos)
+Text.LinkFailed	Ryšys nepavyko
+Text.LblLink	Ryšys
+Text.LblItems	Darbo žingsniai
+Text.KeyStop	Esc: stop
+Text.RealMachine	TIKROS STAKLĖS ({}) - Pradėti jas judina
+Text.RealStop	Esc sustabdo; laikykite ranką prie jungiklio
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Staklių Nr.:
+CText.LblScale	Mastelis
+CText.LblOffset	Poslinkis
+CText.LblClip	Apkirpti
+CText.LblVectors	Vektoriai
+CText.LblFrm	nuo
+CText.LblTo	iki
+CText.LblCount	Kiekis
+CText.LblTotal	Viso
+CText.LblDone	Baigta
+CText.LblFile	Failas
+CText.LblBoard	Plokštė
+CText.LblBase	Bazė
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Įrankiai
+CText.BtnStart	Pradėti
+CText.BtnLoad	Įkelti
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Poslinkis
+CText.BtnQuit	Išeiti
+CText.PTitle	Parametrai
+CText.PFile	Failas
+CText.PDirectory	Katalogas
+CText.PPattern	Šablonas
+CText.PCoordinates	Koordinatės
+CText.PSorting	Rūšiavimas
+CText.PChord	Stygos kampas
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Nėra
+CText.PSortX	Pirma X
+CText.PSortY	Pirma Y
+CText.PSortSpecial	Specialus
+CText.PSpeed	Greitis (mm/min)
+CText.PXyMax	XY maks.
+CText.PXyRef	XY bazė
+CText.PXyRamp	XY rampa
+CText.PZMax	Z  maks.
+CText.PZRef	Z  bazė
+CText.PZRamp	Z  rampa
+CText.PRamp	Rampa (dv/dt)
+CText.PCorrect	Korekc.
+CText.PStroke	Eiga
+CText.PLimit	Riba
+CText.PFree	Laisvas
+CText.PSpindle	Suklys
+CText.PDelay	Delsa
+CText.PSecond	s
+CText.ConnLabel	Ryšys
+CText.ConnTitle	Ryšys su staklėmis
+CText.ConnType	Tipas
+CText.ConnNameDemo	Demo (simuliatorius)
+CText.ConnNameRs232	RS-232 (nuosekl. prievadas)
+CText.ConnNameUsb	USB (RS-232 adapteris)
+CText.ConnNameNode	EH3D mazgas (tinklas)
+CText.ConnNameServer	EH3D serveris (tinklas)
+CText.ConnNoteDemo	Darbas vyksta simuliatoriuje: niekas nejuda.
+CText.ConnNoteRs232	Kompiuterio nuoseklus prievadas, po vieną baitą.
+CText.ConnNoteUsb	USB-RS-232 adapteris: judesiai eina vienu srautu.
+CText.ConnNoteNode	Staklių EH3D mazgas, per Ethernet ar Wi-Fi.
+CText.ConnNoteServer	EH3D serveris planuoja darbą ir vykdo jį staklėse.
+CText.ConnPort	Prievadas
+CText.ConnAddress	Adresas
+CText.ConnToken	Žetonas
+CText.ConnMachine	Staklės
+CText.ConnNeedPort	Trūksta prievado.
+CText.ConnNeedAddress	Adresas turi būti host:port.
+CText.ConnNeedMachine	Trūksta serverio staklių.
+CText.ConnSaved	Ryšys įrašytas staklių faile.
+CText.ConnNoSave	Staklių failo įrašyti negalima.
+CText.BLoad	Įkelti
+CText.BSave	Įrašyti
+CText.BOk	Gerai
+CText.BAbort	Nutraukti
+CText.BYes	Taip
+CText.BNo	Ne
+CText.BOkUpper	GERAI
+CText.BCancel	ATŠAUKTI
+CText.PzTitle	Panelizavimas
+CText.PzBoard	Plokštė
+CText.PzSpacing	Tarpas
+CText.PzNumber	Kiekis
+CText.PzCalc	Skaič.
+CText.TTitle	Įrankių duomenys
+CText.TPl	Vt.
+CText.TName	Pavadinimas
+CText.TStroke	Eiga
+CText.TFeed	Padava
+CText.TSpindle	Suklys
+CText.TStart	Pradžia
+CText.TUsed	Naudota
+CText.TTab	Tilt.
+CText.TDepth	Gylis
+CText.TIter	Iter.
+CText.TXFeed	X padava
+CText.TZFeed	Z padava
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Pasirinkti failą
+CText.FName	Pavadinimas
+CText.FFiles	Failai
+CText.QStop	STOP !!!
+CText.QAsk	Ar tikrai norite išeiti?
+CText.HomingZ	Z ašies bazavimas
+CText.HomingXy	X/Y ašių bazavimas
+CText.PressEsc	Paspauskite ESC sustabdymui
+CText.SpindleStart	Suklio paleidimas
+CText.SpindleStop	Suklio sustabdymas
+CText.JTool	Įrankis
+CText.JNo	Nr.
+CText.JStroke	Eiga
+CText.JStartPos	Pradžios poz.
+CText.JPosition	Pozicija
+CText.JSpeed	Greitis (mm/min)
+CText.JCount	Kiekis
+CText.JUse	Naudoja
+CText.Drilling	Gręžiama ...
+CText.OpAborted	Operacija nutraukta
+CText.NoFile	Pirmiausia įkelkite failą
+CText.SimNote	Imitacija: nėra staklių
+CText.RealNote	TIKROS STAKLĖS - judės
+CText.InputError	Įvesties klaida!
+CText.Max	Maks.: 
+CText.Min	Min.: 
+CText.BackupAsk	Įrašyti nustatymus iš Konfig. ir pagrindinio meniu į failą?
+CText.BtnAbout	Apie
+CText.PLanguage	Kalba
+CText.AboutDescDrill	Atvira Bungard CCD gręžimo programos realizacija
+CText.AboutDescRoute	Atvira Bungard CCD frezavimo programos realizacija
+CText.AboutVersion	Versija
+CText.AboutLicense	Licencija
+CText.AboutAuthor	Autorius
+CText.AboutRepo	Šaltinis
+CText.AboutMachines	Bungard staklės:
+CText.AboutMtc	CCD ir CCD/2 MTC (rankinis įrankių keitimas): palaikoma
+CText.AboutAtc	CCD ir CCD/2 ATC (automatinis keitiklis): dar ne
+CText.AboutTested	Išbandyta tik su Bungard CCD MTC
+CText.AboutDisclaimer	Nepriklausomas projektas; nesusijęs su Bungard Elektronik
+CText.TcTitle	Įrankio keitimas
+CText.TcInsert	Įdėkite įrankį:
+CText.TcRun	Darbo ilgis  (mm)
+CText.TcSpindle	Suklys  (1/min)
+CText.TcZSpeed	Z greitis (mm/min)
+CText.TcStroke	Eiga        (mm)
+CText.QAttention	Dėmesio!
+CText.QSpindleAsk	Paleisti suklį?
+CText.QToolAsk	Įdėkite įrankį {}
+CText.FNoFolder	Aplanko atidaryti negalima
+CText.FNotFound	Failas nerastas
+CText.HintEdit	Tab: kitas  Enter: gerai  Esc: atšaukti  Spustelėti: rinktis
+CText.QSave	ĮRAŠYTI ?
+CText.Saved	Įrašyta
+CText.Loaded	Įkelta
+CText.ErrWrite	Įrašyti negalima
+CText.ErrRead	Nuskaityti negalima
+CText.TeachTitle	Poslinkio mokymas
+CText.TeachLeft	kairėn
+CText.TeachBack	atgal
+CText.TeachForw	pirmyn
+CText.TeachRight	dešinėn
+CText.TeachUp	aukštyn
+CText.TeachDown	žemyn
+CText.TeachMil	mil/1
+CText.BTeach	Mokyti
+CText.BPlusPos	+ Poz
+CText.BMinusPos	- Poz
+CText.BMod	Keisti
+CText.QAttentionPlain	Dėmesio
+CText.QInfo	Info:
+CText.QOffsetDelete	Trinti seną|poslinkį?
+CText.QTeachWrite	Įrašyti mokymo|failą?
+CText.QWhatNext	Kas toliau?
+CText.BCont	Tęsti
+Text.StatusMain	Esc: atgal   Enter: patvirtinti   ↑/↓: judėti
+CText.QInterrupted	PERTRAUKTA

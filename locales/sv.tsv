@@ -1,1 +1,242 @@
 # Svenska (sv): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Läs in
+Text.MenuVectors	Vektorer
+Text.MenuTools	Verktyg
+Text.MenuConfig	Konfig.
+Text.MenuSort	Sortering
+Text.MenuStart	Start
+Text.MenuLanguage	Språk
+Text.MenuQuit	Avsluta
+Text.TitleSelectFile	Välj fil
+Text.TitleVectors	Vektorer
+Text.TitleTools	Verktygsdata
+Text.TitleConfig	Konfiguration
+Text.TitleSort	Koordinatsortering
+Text.TitleLanguage	Språk
+Text.TitleDrilling	Borrning
+Text.TitleQuit	Avsluta
+Text.LblFile	Fil
+Text.LblHoles	Hål
+Text.LblToolsUsed	Verktyg
+Text.LblSize	Storlek (mm)
+Text.LblTravel	Väg (mm)
+Text.LblSorting	Sortering
+Text.LblProgress	Förlopp
+Text.LblTime	Simulerad tid (s)
+Text.LblSerial	Seriellt gränssnitt
+Text.SortNone	Ingen
+Text.SortX	X först
+Text.SortY	Y först
+Text.SortSpecial	Special (kortaste väg)
+Text.ColTool	Verktyg
+Text.ColStroke	Slag (mm)
+Text.ColFeed	Matning (mm/min)
+Text.ColSpindle	Spindel (rpm)
+Text.NoFile	Ingen fil inläst
+Text.NoToolFile	Verktygsfilen hittades inte
+Text.NoConfigFile	Konfigurationsfilen hittades inte
+Text.TooManyTools	För många verktyg för växlaren (max:
+Text.ErrRead	Fel vid läsning av borrfil
+Text.SimOnly	SIMULERING - ingen maskin ansluten
+Text.Uncalibrated	Maskinen är inte kalibrerad: rörelsen simuleras bara
+Text.Connecting	Ansluter styrenheten ...
+Text.Drilling	Borrar ...
+Text.Done	Klart
+Text.QuitAsk	Vill du verkligen avsluta?
+Text.BtnYes	Ja
+Text.BtnNo	Nej
+Text.BtnStop	Stopp
+Text.Directory	Katalog
+Text.WaitToolChange	Sätt in verktyg {} och tryck Enter
+Text.WaitSpindle	Tryck Enter för att starta spindeln
+Text.Stopped	Stoppad (drivningar av)
+Text.LinkFailed	Anslutningen misslyckades
+Text.LblLink	Länk
+Text.LblItems	Jobbets steg
+Text.KeyStop	Esc: stopp
+Text.RealMachine	RIKTIG MASKIN ({}) - Start rör den
+Text.RealStop	Esc stoppar den; ha handen nära strömbrytaren
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Maskin nr:
+CText.LblScale	Skala
+CText.LblOffset	Förskjutn.
+CText.LblClip	Beskär
+CText.LblVectors	Vektorer
+CText.LblFrm	från
+CText.LblTo	till
+CText.LblCount	Antal
+CText.LblTotal	Totalt
+CText.LblDone	Klart
+CText.LblFile	Fil
+CText.LblBoard	Kort
+CText.LblBase	Bas
+CText.Mm	mm
+CText.BtnConfig	Konfig.
+CText.BtnTools	Verktyg
+CText.BtnStart	Start
+CText.BtnLoad	Läs in
+CText.BtnPanelz	Panel.
+CText.BtnOffset	Förskj.
+CText.BtnQuit	Avsluta
+CText.PTitle	Parameter
+CText.PFile	Fil
+CText.PDirectory	Katalog
+CText.PPattern	Mönster
+CText.PCoordinates	Koordinater
+CText.PSorting	Sortering
+CText.PChord	Kordavinkel
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Ingen
+CText.PSortX	X först
+CText.PSortY	Y först
+CText.PSortSpecial	Special
+CText.PSpeed	Hastighet (mm/min)
+CText.PXyMax	XY max.
+CText.PXyRef	XY ref.
+CText.PXyRamp	XY ramp
+CText.PZMax	Z  max.
+CText.PZRef	Z  ref.
+CText.PZRamp	Z  ramp
+CText.PRamp	Ramp (dv/dt)
+CText.PCorrect	Korr.
+CText.PStroke	Slag
+CText.PLimit	Gräns
+CText.PFree	Fri
+CText.PSpindle	Spindel
+CText.PDelay	Fördr.
+CText.PSecond	s
+CText.ConnLabel	Anslutning
+CText.ConnTitle	Anslutning till maskinen
+CText.ConnType	Typ
+CText.ConnNameDemo	Demo (simulator)
+CText.ConnNameRs232	RS-232 (serieport)
+CText.ConnNameUsb	USB (RS-232-adapter)
+CText.ConnNameNode	EH3D-nod (nätverk)
+CText.ConnNameServer	EH3D-server (nätverk)
+CText.ConnNoteDemo	Jobbet körs i simulatorn: inget rör sig.
+CText.ConnNoteRs232	Datorns serieport, en byte i taget.
+CText.ConnNoteUsb	USB-RS-232-adapter: rörelserna går som en ström.
+CText.ConnNoteNode	Maskinens EH3D-nod via Ethernet eller Wi-Fi.
+CText.ConnNoteServer	EH3D-servern planerar jobbet och kör det på en maskin.
+CText.ConnPort	Port
+CText.ConnAddress	Adress
+CText.ConnToken	Token
+CText.ConnMachine	Maskin
+CText.ConnNeedPort	Porten saknas.
+CText.ConnNeedAddress	Adressen måste vara värd:port.
+CText.ConnNeedMachine	Serverns maskin saknas.
+CText.ConnSaved	Anslutningen sparad i maskinfilen.
+CText.ConnNoSave	Maskinfilen kan inte skrivas.
+CText.BLoad	Läs in
+CText.BSave	Spara
+CText.BOk	Ok
+CText.BAbort	Avbryt
+CText.BYes	Ja
+CText.BNo	Nej
+CText.BOkUpper	OK
+CText.BCancel	AVBRYT
+CText.PzTitle	Panelisering
+CText.PzBoard	Kort
+CText.PzSpacing	Avstånd
+CText.PzNumber	Antal
+CText.PzCalc	Beräkna
+CText.TTitle	Verktygsdata
+CText.TPl	Pl.
+CText.TName	Namn
+CText.TStroke	Slag
+CText.TFeed	Matning
+CText.TSpindle	Spindel
+CText.TStart	Start
+CText.TUsed	Använd
+CText.TTab	Flik
+CText.TDepth	Djup
+CText.TIter	Iter.
+CText.TXFeed	X-matning
+CText.TZFeed	Z-matning
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Vekt.
+CText.FTitle	Välj fil
+CText.FName	Namn
+CText.FFiles	Filer
+CText.QStop	STOPP !!!
+CText.QAsk	Vill du verkligen avsluta?
+CText.HomingZ	Referenskörning Z-axel
+CText.HomingXy	Referenskörning X/Y-axel
+CText.PressEsc	Tryck ESC för att stoppa
+CText.SpindleStart	Spindelstart
+CText.SpindleStop	Spindelstopp
+CText.JTool	Verktyg
+CText.JNo	Nr
+CText.JStroke	Slag
+CText.JStartPos	Startpos.
+CText.JPosition	Position
+CText.JSpeed	Hastighet (mm/min)
+CText.JCount	Antal
+CText.JUse	Använd.
+CText.Drilling	Borrar ...
+CText.OpAborted	Åtgärden avbruten
+CText.NoFile	Läs in en fil först
+CText.SimNote	Simulering: ingen maskin
+CText.RealNote	RIKTIG MASKIN - den kommer att röra sig
+CText.InputError	Inmatningsfel!
+CText.Max	Max:
+CText.Min	Min:
+CText.BackupAsk	Spara inställningar från Konfig. och huvudmenyn i fil?
+CText.BtnAbout	Om
+CText.PLanguage	Språk
+CText.AboutDescDrill	Öppen implementation av borrprogrammet för Bungard CCD
+CText.AboutDescRoute	Öppen implementation av fräsprogrammet för Bungard CCD
+CText.AboutVersion	Version
+CText.AboutLicense	Licens
+CText.AboutAuthor	Författare
+CText.AboutRepo	Källkod
+CText.AboutMachines	Bungard-maskiner:
+CText.AboutMtc	CCD och CCD/2 MTC (manuellt verktygsbyte): stöds
+CText.AboutAtc	CCD och CCD/2 ATC (automatisk växlare): ännu inte
+CText.AboutTested	Provat endast på en Bungard CCD MTC
+CText.AboutDisclaimer	Oberoende projekt; ej knutet till Bungard Elektronik
+CText.TcTitle	Verktygsbyte
+CText.TcInsert	Sätt in verktyg:
+CText.TcRun	Körlängd    (mm)
+CText.TcSpindle	Spindel  (1/min)
+CText.TcZSpeed	Z-hast. (mm/min)
+CText.TcStroke	Slag        (mm)
+CText.QAttention	Varning!
+CText.QSpindleAsk	Starta spindeln?
+CText.QToolAsk	Sätt in verktyg {}
+CText.FNoFolder	Mappen kan inte öppnas
+CText.FNotFound	Filen hittades inte
+CText.HintEdit	Tab: nästa  Enter: godkänn  Esc: avbryt  Klick: välj
+CText.QSave	SPARA ?
+CText.Saved	Sparad
+CText.Loaded	Inläst
+CText.ErrWrite	Kan inte skriva
+CText.ErrRead	Kan inte läsa
+CText.TeachTitle	Inlärning förskj.
+CText.TeachLeft	vänster
+CText.TeachBack	bakåt
+CText.TeachForw	framåt
+CText.TeachRight	höger
+CText.TeachUp	upp
+CText.TeachDown	ner
+CText.TeachMil	mil/1
+CText.BTeach	Lär in
+CText.BPlusPos	+ Pos
+CText.BMinusPos	- Pos
+CText.BMod	Ändra
+CText.QAttentionPlain	Observera
+CText.QInfo	Info:
+CText.QOffsetDelete	Radera gammal|förskjutning?
+CText.QTeachWrite	Skriv inlärnings-|fil?
+CText.QWhatNext	Vad nu?
+CText.BCont	Forts.
+Text.StatusMain	Esc: tillbaka   Enter: godkänn   ↑/↓: flytta
+CText.QInterrupted	AVBRUTET

@@ -1,1 +1,242 @@
 # Русский (ru): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+Text.MenuLoad	Загрузка
+Text.MenuVectors	Векторы
+Text.MenuTools	Инстр.
+Text.MenuConfig	Настр.
+Text.MenuSort	Сортир.
+Text.MenuStart	Пуск
+Text.MenuLanguage	Язык
+Text.MenuQuit	Выход
+Text.TitleSelectFile	Выбор файла
+Text.TitleVectors	Векторы
+Text.TitleTools	Данные инструментов
+Text.TitleConfig	Конфигурация
+Text.TitleSort	Сортировка координат
+Text.TitleLanguage	Язык
+Text.TitleDrilling	Сверление
+Text.TitleQuit	Выход
+Text.LblFile	Файл
+Text.LblHoles	Отверстия
+Text.LblToolsUsed	Инструменты
+Text.LblSize	Размер (mm)
+Text.LblTravel	Ход (mm)
+Text.LblSorting	Сортировка
+Text.LblProgress	Прогресс
+Text.LblTime	Время симуляции (s)
+Text.LblSerial	Последовательный интерфейс
+Text.SortNone	Нет
+Text.SortX	Сначала X
+Text.SortY	Сначала Y
+Text.SortSpecial	Особая (кратчайший путь)
+Text.ColTool	Инстр.
+Text.ColStroke	Ход (mm)
+Text.ColFeed	Подача (mm/min)
+Text.ColSpindle	Шпиндель (rpm)
+Text.NoFile	Файл не загружен
+Text.NoToolFile	Файл инструментов не найден
+Text.NoConfigFile	Файл конфигурации не найден
+Text.TooManyTools	Слишком много инструментов для сменщика (макс.:
+Text.ErrRead	Ошибка чтения файла сверления
+Text.SimOnly	СИМУЛЯЦИЯ - станок не подключён
+Text.Uncalibrated	Станок не откалиброван: движение только имитируется
+Text.Connecting	Подключение блока управления ...
+Text.Drilling	Сверление ...
+Text.Done	Готово
+Text.QuitAsk	Действительно выйти?
+Text.BtnYes	Да
+Text.BtnNo	Нет
+Text.BtnStop	Стоп
+Text.Directory	Каталог
+Text.WaitToolChange	Вставьте инструмент {} и нажмите Enter
+Text.WaitSpindle	Нажмите Enter для пуска шпинделя
+Text.Stopped	Остановлено (приводы выкл.)
+Text.LinkFailed	Ошибка соединения
+Text.LblLink	Связь
+Text.LblItems	Шаги задания
+Text.KeyStop	Esc: стоп
+Text.RealMachine	РЕАЛЬНЫЙ СТАНОК ({}) - Пуск двигает его
+Text.RealStop	Esc останавливает; держите руку у выключателя
+CText.Title	DrillPro Classic
+CText.TitleRoute	RoutePro Classic
+CText.Project	EH3D-DRILLPRO
+CText.Licence	GPL-3.0-or-later
+CText.MachineNr	Станок №:
+CText.LblScale	Масштаб
+CText.LblOffset	Смещение
+CText.LblClip	Обрезка
+CText.LblVectors	Векторы
+CText.LblFrm	от
+CText.LblTo	до
+CText.LblCount	Кол-во
+CText.LblTotal	Всего
+CText.LblDone	Готово
+CText.LblFile	Файл
+CText.LblBoard	Плата
+CText.LblBase	Основа
+CText.Mm	mm
+CText.BtnConfig	Настр.
+CText.BtnTools	Инстр.
+CText.BtnStart	Пуск
+CText.BtnLoad	Загрузка
+CText.BtnPanelz	Панел.
+CText.BtnOffset	Смещение
+CText.BtnQuit	Выход
+CText.PTitle	Параметры
+CText.PFile	Файл
+CText.PDirectory	Каталог
+CText.PPattern	Маска
+CText.PCoordinates	Координаты
+CText.PSorting	Сортировка
+CText.PChord	Угол хорды
+CText.PUnit110	1/10 mil
+CText.PUnit1	1/1  mil
+CText.PUnit0025	0.025 mm
+CText.PUnit001	0.010 mm
+CText.PSortNone	Нет
+CText.PSortX	Сначала X
+CText.PSortY	Сначала Y
+CText.PSortSpecial	Особая
+CText.PSpeed	Скорость (mm/min)
+CText.PXyMax	XY Макс.
+CText.PXyRef	XY Баз.
+CText.PXyRamp	XY Разгон
+CText.PZMax	Z  Макс.
+CText.PZRef	Z  Баз.
+CText.PZRamp	Z  Разгон
+CText.PRamp	Разгон (dv/dt)
+CText.PCorrect	Коррект.
+CText.PStroke	Ход
+CText.PLimit	Предел
+CText.PFree	Свободно
+CText.PSpindle	Шпиндель
+CText.PDelay	Задержка
+CText.PSecond	s
+CText.ConnLabel	Соединение
+CText.ConnTitle	Соединение со станком
+CText.ConnType	Тип
+CText.ConnNameDemo	Демо (симулятор)
+CText.ConnNameRs232	RS-232 (последовательный порт)
+CText.ConnNameUsb	USB (адаптер RS-232)
+CText.ConnNameNode	Узел EH3D (сеть)
+CText.ConnNameServer	Сервер EH3D (сеть)
+CText.ConnNoteDemo	Задание идёт на симуляторе: ничего не движется.
+CText.ConnNoteRs232	Последовательный порт ПК, по одному байту.
+CText.ConnNoteUsb	Адаптер USB-RS-232: движения идут одним потоком.
+CText.ConnNoteNode	Узел EH3D станка, по Ethernet или Wi-Fi.
+CText.ConnNoteServer	Сервер EH3D планирует задание и выполняет его на станке.
+CText.ConnPort	Порт
+CText.ConnAddress	Адрес
+CText.ConnToken	Токен
+CText.ConnMachine	Станок
+CText.ConnNeedPort	Порт не указан.
+CText.ConnNeedAddress	Адрес должен быть host:port.
+CText.ConnNeedMachine	Не указан станок сервера.
+CText.ConnSaved	Соединение сохранено в файле станка.
+CText.ConnNoSave	Файл станка не записывается.
+CText.BLoad	Загрузка
+CText.BSave	Сохранить
+CText.BOk	Ок
+CText.BAbort	Прервать
+CText.BYes	Да
+CText.BNo	Нет
+CText.BOkUpper	OK
+CText.BCancel	ОТМЕНА
+CText.PzTitle	Панелизация
+CText.PzBoard	Плата
+CText.PzSpacing	Шаг
+CText.PzNumber	Число
+CText.PzCalc	Расч.
+CText.TTitle	Данные инструментов
+CText.TPl	Поз.
+CText.TName	Имя
+CText.TStroke	Ход
+CText.TFeed	Подача
+CText.TSpindle	Шпиндель
+CText.TStart	Пуск
+CText.TUsed	Исп.
+CText.TTab	Перем.
+CText.TDepth	Глубина
+CText.TIter	Итер.
+CText.TXFeed	Подача X
+CText.TZFeed	Подача Z
+CText.TStrokeUnit	+ mm
+CText.TFeedUnit	mm/min
+CText.TSpindleUnit	1/min
+CText.TStartUnit	Вект.
+CText.FTitle	Выбор файла
+CText.FName	Имя
+CText.FFiles	Файлы
+CText.QStop	СТОП !!!
+CText.QAsk	Действительно выйти?
+CText.HomingZ	Базирование оси Z
+CText.HomingXy	Базирование осей X/Y
+CText.PressEsc	Esc - остановить
+CText.SpindleStart	Пуск шпинделя
+CText.SpindleStop	Стоп шпинделя
+CText.JTool	Инстр.
+CText.JNo	№
+CText.JStroke	Ход
+CText.JStartPos	Нач. поз.
+CText.JPosition	Позиция
+CText.JSpeed	Скорость (mm/min)
+CText.JCount	Кол-во
+CText.JUse	Исп.
+CText.Drilling	Сверление ...
+CText.OpAborted	Операция прервана
+CText.NoFile	Сначала загрузите файл
+CText.SimNote	Симуляция: без станка
+CText.RealNote	РЕАЛЬНЫЙ СТАНОК - будет движение
+CText.InputError	Ошибка ввода!
+CText.Max	Макс.: 
+CText.Min	Мин.: 
+CText.BackupAsk	Сохранить настройки из меню Настр. и главного меню в файл?
+CText.BtnAbout	О программе
+CText.PLanguage	Язык
+CText.AboutDescDrill	Открытая реализация программы сверления Bungard CCD
+CText.AboutDescRoute	Открытая реализация программы фрезеровки Bungard CCD
+CText.AboutVersion	Версия
+CText.AboutLicense	Лицензия
+CText.AboutAuthor	Автор
+CText.AboutRepo	Исходник
+CText.AboutMachines	Станки Bungard:
+CText.AboutMtc	CCD и CCD/2 MTC (ручная смена инстр.): поддерживается
+CText.AboutAtc	CCD и CCD/2 ATC (автосменщик): пока нет
+CText.AboutTested	Проверено только на Bungard CCD MTC
+CText.AboutDisclaimer	Независимый проект; не связан с Bungard Elektronik
+CText.TcTitle	Смена инструмента
+CText.TcInsert	Вставьте инструмент:
+CText.TcRun	Длина пробега  (mm)
+CText.TcSpindle	Шпиндель  (1/min)
+CText.TcZSpeed	Скорость Z (mm/min)
+CText.TcStroke	Ход         (mm)
+CText.QAttention	Внимание!
+CText.QSpindleAsk	Запустить шпиндель?
+CText.QToolAsk	Вставьте инструмент {}
+CText.FNoFolder	Не удаётся открыть папку
+CText.FNotFound	Файл не найден
+CText.HintEdit	Tab: далее  Enter: принять  Esc: отмена  Клик: выбор
+CText.QSave	СОХРАНИТЬ ?
+CText.Saved	Сохранено
+CText.Loaded	Загружено
+CText.ErrWrite	Ошибка записи
+CText.ErrRead	Ошибка чтения
+CText.TeachTitle	Обучение смещения
+CText.TeachLeft	влево
+CText.TeachBack	назад
+CText.TeachForw	вперёд
+CText.TeachRight	вправо
+CText.TeachUp	вверх
+CText.TeachDown	вниз
+CText.TeachMil	mil/1
+CText.BTeach	Обуч.
+CText.BPlusPos	+ Поз
+CText.BMinusPos	- Поз
+CText.BMod	Изм.
+CText.QAttentionPlain	Внимание
+CText.QInfo	Инфо:
+CText.QOffsetDelete	Удалить старое|смещение?
+CText.QTeachWrite	Записать файл|обучения?
+CText.QWhatNext	Что дальше?
+CText.BCont	Далее
+Text.StatusMain	Esc: назад   Enter: принять   ↑/↓: перемещение
+CText.QInterrupted	ПРЕРВАНО

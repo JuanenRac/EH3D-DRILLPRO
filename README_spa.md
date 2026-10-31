@@ -6,19 +6,19 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | 🇪🇸 <b>Español</b> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Una reimplementación multiplataforma en Rust del flujo de taladrado del clásico software DOS para máquinas Bungard CCD, con una interfaz de modo texto parecida a la original en ocho idiomas
+### Una reimplementación multiplataforma en Rust del flujo de taladrado del clásico software DOS para máquinas Bungard CCD, con una interfaz de modo texto parecida a la original en 37 idiomas
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Rust-DEA584.svg" alt="Rust">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Version-0.0.7-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.8-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
 ---
 
-**Comprobación de honestidad - lo que se ejecuta hoy:** un programa en Rust con interfaz de texto de 80x25 que lee ficheros de taladrado Excellon `.NCD`, la tabla de herramientas y la configuración de la máquina, ordena los agujeros, los muestra y ejecuta todo el trabajo **contra un simulador** (por defecto) o, cuando el fichero de la máquina lo indica, **en una máquina real** por el puerto serie del ordenador, un adaptador USB-serie o el EH3D-NODE-BUNGARD. 237 pruebas se ejecutan en un ordenador. En una Bungard CCD MTC real se han probado la referencia de los tres ejes (Z, X e Y hasta sus finales de carrera, con la señal de «los tres en home» de la unidad de control confirmada en directo) y los movimientos de cada eje; **un trabajo de taladrado completo todavía no se ha ejecutado en la máquina**, y los pasos por milímetro solo se han contrastado con la configuración del original. Por defecto se muestran las pantallas clásicas del programa MS-DOS, comprobadas celda a celda contra el original; `--modern` inicia la interfaz de menús. Se manejan con teclado y ratón, la ventana se puede maximizar (la pantalla escala de 640x400 a 1080p y más), los ficheros de configuración y de herramientas se editan y se guardan desde los diálogos, y el botón Info lista las máquinas Bungard CCD y CCD/2 (MTC soportadas, ATC todavía no). Una versión de consola (`drillpro-console`) dibuja las mismas pantallas en un terminal, con teclado y ratón y sin sistema de ventanas (SSH, consola de texto, un PC antiguo). Los paquetes de cada release incluyen la configuración básica, explicada línea a línea, y una carpeta `examples` desde un agujero hasta veinte mil. El cambiador de herramienta de los modelos ATC (cambio automático) funciona a partir de una grabación del original y no se ha probado en una máquina real.
+**Comprobación de honestidad - lo que se ejecuta hoy:** un programa en Rust con interfaz de texto de 80x25 que lee ficheros de taladrado Excellon `.NCD`, la tabla de herramientas y la configuración de la máquina, ordena los agujeros, los muestra y ejecuta todo el trabajo **contra un simulador** (por defecto) o, cuando el fichero de la máquina lo indica, **en una máquina real** por el puerto serie del ordenador, un adaptador USB-serie o el EH3D-NODE-BUNGARD. 236 pruebas se ejecutan en un ordenador. En una Bungard CCD MTC real se han probado la referencia de los tres ejes (Z, X e Y hasta sus finales de carrera, con la señal de «los tres en home» de la unidad de control confirmada en directo) y los movimientos de cada eje; **un trabajo de taladrado completo todavía no se ha ejecutado en la máquina**, y los pasos por milímetro solo se han contrastado con la configuración del original. Por defecto se muestran las pantallas clásicas del programa MS-DOS, comprobadas celda a celda contra el original; `--modern` inicia la interfaz de menús. Se manejan con teclado y ratón, la ventana se puede maximizar (la pantalla escala de 640x400 a 1080p y más), los ficheros de configuración y de herramientas se editan y se guardan desde los diálogos, y el botón Info lista las máquinas Bungard CCD y CCD/2 (MTC soportadas, ATC todavía no). Una versión de consola (`drillpro-console`) dibuja las mismas pantallas en un terminal, con teclado y ratón y sin sistema de ventanas (SSH, consola de texto, un PC antiguo). Los paquetes de cada release incluyen la configuración básica, explicada línea a línea, y una carpeta `examples` desde un agujero hasta veinte mil. El cambiador de herramienta de los modelos ATC (cambio automático) funciona a partir de una grabación del original y no se ha probado en una máquina real.
 
 ---
 
@@ -28,9 +28,9 @@
 
 | | |
 |---|---|
-| Versión | `0.0.7` |
+| Versión | `0.0.8` |
 | Madurez | Andamiaje |
-| Pruebas | 237 |
+| Pruebas | 236 |
 | Pila tecnológica | Rust |
 | En hardware real | Sí, en una Bungard CCD MTC: la referencia y los movimientos de cada eje; un trabajo completo todavía no se ha ejecutado. Sin fichero de máquina se ejecuta en el simulador |
 
@@ -45,10 +45,10 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Software | 🟡 | Un programa en Rust con pantalla de texto de 80x25 lee el fichero de taladros, la tabla de herramientas y el fichero de la máquina, ordena los agujeros y ejecuta el trabajo entero contra un simulador, o en una máquina real si el fichero de la máquina lo indica. |
-| Pruebas | 🟢 | Pasan 237 pruebas (`cargo test --workspace`): los formatos, la planificación del trabajo, el protocolo en el simulador y las pantallas en los ocho idiomas. |
+| Pruebas | 🟢 | Pasan 236 pruebas (`cargo test --workspace`): los formatos, la planificación del trabajo, el protocolo en el simulador y las pantallas en los 37 idiomas. |
 | Lectores de ficheros | 🟡 | Se leen el fichero de taladros `.NCD`, la tabla de herramientas `DRILLPRO.DTD` y el fichero de la máquina `DRILLPRO.DCF`; solo con pequeños ficheros de muestra escritos para las pruebas, no con ficheros de placas reales. |
 | Protocolo de la máquina | 🟠 | El protocolo de bytes de la unidad de control se reconstruyó por ingeniería inversa y `docs/PROTOCOL.md` aún lista partes que son hipótesis; la capa de protocolo se niega a mover nada hasta que se arma. |
-| Interfaz | 🟡 | La pantalla de texto, los menús, el diálogo de ficheros y la vista vectorial de los agujeros hablan los ocho idiomas (probado); el chino y el japonés necesitan una fuente CJK en el sistema. |
+| Interfaz | 🟡 | La pantalla de texto, los menús, el diálogo de ficheros y la vista vectorial de los agujeros hablan los 37 idiomas (probado); el chino y el japonés necesitan una fuente CJK en el sistema. |
 | Hardware real | 🟠 | En una Bungard CCD MTC se han probado la marcha de referencia de los tres ejes y los movimientos de cada eje; no se ha ejecutado un trabajo de taladrado completo, los pasos por milímetro solo se han cotejado con la configuración del original y las salidas del husillo y del aspirador no se han probado. |
 | Seguridad de uso | 🟡 | `Esc` detiene el trabajo en una fracción de segundo y apaga los drivers de los motores, y la propia unidad de control de la máquina vigila los finales de carrera; el software no tiene parada de emergencia propia. |
 | Conexión con el servidor | 🟠 | Con `connection = server` el programa envía el trabajo a EH3D-SERVER y sigue su avance; este camino solo se ha ejercitado contra el simulador. |
@@ -90,6 +90,7 @@ El original es el programa cerrado para MS-DOS de Bungard que maneja las máquin
 | Añadidos | Ninguno de estos | Un simulador que ejecuta un trabajo entero, sonidos para el fin del trabajo y para la petición de herramienta, varias máquinas a la vez con el servidor, archivos ZIP de trabajo, contornos DXF y Gerber, un cursor parpadeante y un conjunto de pruebas que corre en cada cambio |
 | Código y licencia | Cerrado, propietario | Código abierto (GPL-3.0-or-later), escrito en Rust |
 | Madurez | Años de uso en máquinas reales | Mucho más joven: el recorrido de referencia y los movimientos de cada eje se han probado en una Bungard CCD MTC real; un trabajo entero aún no se ha ejecutado en una máquina, y el cambiador de herramientas de los modelos ATC no ha funcionado en una real |
+* **37 idiomas:** las pantallas de texto, los menús y los diálogos hablan inglés, español, italiano, alemán, francés, portugués, chino, japonés, búlgaro, croata, checo, danés, neerlandés, estonio, finés, griego, húngaro, irlandés, letón, lituano, maltés, polaco, rumano, eslovaco, esloveno, sueco, noruego, islandés, ucraniano, ruso, serbio, albanés, catalán, gallego, euskera, portugués de Brasil y francés de Canadá. Las palabras de los 29 idiomas posteriores a los ocho primeros están traducidas por el modelo y esperan la revisión de hablantes nativos; un texto que a un idioma le falta se muestra en inglés.
 
 ## 🧩 Papel en EH3D
 
@@ -145,7 +146,7 @@ Ejecútalo con `run.bat` (Windows) o `./run.sh` (Linux y macOS); ambos compilan 
 
 ## 🧪 Pruebas
 
-La suite tiene 237 pruebas (`cargo test --workspace`). Comprueban los formatos de fichero (el fichero de taladros, la tabla de herramientas y el fichero de la máquina, y su escritura de vuelta), la planificación del trabajo, el protocolo en el simulador (bytes, movimiento, la marcha de referencia, los bits de enclavamiento, el enlace con el nodo y la compuerta de seguridad que se niega a mover hasta que se arma), las pantallas clásicas celda a celda y las pantallas en los ocho idiomas. La CI también ejecuta `cargo fmt --check` y `cargo clippy` con las advertencias como errores, y `python -I tools/ci_validate.py` comprueba el manifiesto, las versiones, el registro de cambios y los ocho README.
+La suite tiene 236 pruebas (`cargo test --workspace`). Comprueban los formatos de fichero (el fichero de taladros, la tabla de herramientas y el fichero de la máquina, y su escritura de vuelta), la planificación del trabajo, el protocolo en el simulador (bytes, movimiento, la marcha de referencia, los bits de enclavamiento, el enlace con el nodo y la compuerta de seguridad que se niega a mover hasta que se arma), las pantallas clásicas celda a celda y las pantallas en los ocho idiomas. La CI también ejecuta `cargo fmt --check` y `cargo clippy` con las advertencias como errores, y `python -I tools/ci_validate.py` comprueba el manifiesto, las versiones, el registro de cambios y los ocho README.
 
 ## 🏗️ Compilación y publicación
 
@@ -168,7 +169,7 @@ EH3D-DRILLPRO/
 │   ├── classic/                                 las pantallas, diálogos y teclas clásicos del programa de MS-DOS
 │   ├── job.rs runner.rs                         ordenar los taladros y ejecutar el trabajo en su propio hilo
 │   ├── app.rs screen.rs textapp.rs              la pantalla de texto de 80x25 y los menús modernos
-│   ├── i18n.rs texts.rs                         los ocho idiomas y sus textos
+│   ├── i18n.rs texts.rs                         los 37 idiomas y sus textos
 │   ├── gui.rs console.rs bin/                   la ventana, la versión de terminal y los ejecutables
 │   └── server_link.rs cli.rs                    el enlace con EH3D-SERVER y la línea de órdenes
 ├── protocol/src/
@@ -183,6 +184,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    pequeños archivos de muestra escritos para las pruebas
 ├── config/                                      la configuración básica, explicada línea a línea
 ├── examples/                                    ejemplos, de un agujero a 20000
+├── locales/                                     las palabras de los 29 idiomas que se leen de ficheros, un fichero por idioma
 ├── tools/                                       comprobación de CI, del README y las herramientas de imágenes
 ├── images/                                      banner, las dos imágenes y las capturas de pantalla
 ├── .github/                                     flujos de CI y de publicación, plantillas de issues y pull requests
