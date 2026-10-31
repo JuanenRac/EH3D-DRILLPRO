@@ -18,7 +18,7 @@
 
 ---
 
-**Verificação de honestidade - o que funciona hoje:** um programa em Rust com interface de texto de 80x25 que lê ficheiros de furação Excellon `.NCD`, a tabela de ferramentas e a configuração da máquina, ordena os furos, mostra-os e executa todo o trabalho **contra um simulador** (por omissão) ou, quando o ficheiro da máquina o indica, **numa máquina real** pela porta série do computador, um adaptador USB-série ou o EH3D-NODE-BUNGARD. 236 testes correm num computador. Numa Bungard CCD MTC real foram experimentados a referência dos três eixos (Z, X e Y até aos fins de curso, com o sinal «os três em origem» da unidade de controlo confirmado em direto) e os movimentos de cada eixo; **um trabalho de furação completo ainda não correu na máquina**, e os passos por milímetro só foram confrontados com a configuração do original. Por predefinição, aparecem os ecrãs clássicos do programa MS-DOS, verificados célula a célula com o original; `--modern` inicia a interface de menus. Funcionam com teclado e rato, a janela pode ser maximizada (o ecrã ajusta-se de 640x400 a 1080p e mais), os ficheiros de configuração e de ferramentas editam-se e gravam-se nos diálogos, e o botão Sobre indica as máquinas Bungard CCD e CCD/2 (MTC suportadas, ATC ainda não). Uma versão de consola (`drillpro-console`) desenha os mesmos ecrãs num terminal, com teclado e rato e sem sistema de janelas (SSH, consola de texto, um PC antigo). Os pacotes de cada versão incluem a configuração básica, explicada linha a linha, e uma pasta `examples` desde um furo até vinte mil. O trocador de ferramenta dos modelos ATC (troca automática) funciona a partir de uma gravação do original e não foi experimentado numa máquina real.
+**Verificação de honestidade - o que funciona hoje:** um programa em Rust com interface de texto de 80x25 que lê ficheiros de furação Excellon `.NCD`, a tabela de ferramentas e a configuração da máquina, ordena os furos, mostra-os e executa todo o trabalho **contra um simulador** (por omissão) ou, quando o ficheiro da máquina o indica, **numa máquina real** pela porta série do computador, um adaptador USB-série ou o EH3D-NODE-BUNGARD. 237 testes correm num computador. Numa Bungard CCD MTC real foram experimentados a referência dos três eixos (Z, X e Y até aos fins de curso, com o sinal «os três em origem» da unidade de controlo confirmado em direto) e os movimentos de cada eixo; **um trabalho de furação completo ainda não correu na máquina**, e os passos por milímetro só foram confrontados com a configuração do original. Por predefinição, aparecem os ecrãs clássicos do programa MS-DOS, verificados célula a célula com o original; `--modern` inicia a interface de menus. Funcionam com teclado e rato, a janela pode ser maximizada (o ecrã ajusta-se de 640x400 a 1080p e mais), os ficheiros de configuração e de ferramentas editam-se e gravam-se nos diálogos, e o botão Sobre indica as máquinas Bungard CCD e CCD/2 (MTC suportadas, ATC ainda não). Uma versão de consola (`drillpro-console`) desenha os mesmos ecrãs num terminal, com teclado e rato e sem sistema de janelas (SSH, consola de texto, um PC antigo). Os pacotes de cada versão incluem a configuração básica, explicada linha a linha, e uma pasta `examples` desde um furo até vinte mil. O trocador de ferramenta dos modelos ATC (troca automática) funciona a partir de uma gravação do original e não foi experimentado numa máquina real.
 
 ---
 
@@ -30,7 +30,7 @@
 |---|---|
 | Versão | `0.0.8` |
 | Maturidade | Estrutura inicial |
-| Testes | 236 |
+| Testes | 237 |
 | Tecnologias | Rust |
 | Em hardware real | Sim, numa Bungard CCD MTC: a referência e os movimentos de cada eixo; um trabalho completo ainda não correu. Sem ficheiro da máquina corre no simulador |
 
@@ -45,7 +45,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Software | 🟡 | Um programa Rust com ecrã de texto de 80x25 lê o ficheiro de furação, a tabela de ferramentas e o ficheiro da máquina, ordena os furos e executa o trabalho inteiro num simulador, ou numa máquina real se o ficheiro da máquina o indicar. |
-| Testes | 🟢 | Passam 236 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos 37 línguas. |
+| Testes | 🟢 | Passam 237 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos 37 línguas. |
 | Leitores de ficheiros | 🟡 | Leem-se o ficheiro de furação `.NCD`, a tabela de ferramentas `DRILLPRO.DTD` e o ficheiro da máquina `DRILLPRO.DCF`; só com pequenos ficheiros de exemplo escritos para os testes, não com ficheiros de placas reais. |
 | Protocolo da máquina | 🟠 | O protocolo de bytes da unidade de controlo foi reconstruído por engenharia inversa e o `docs/PROTOCOL.md` ainda lista partes que são hipóteses; a camada de protocolo recusa mover o que quer que seja até ser armada. |
 | Interface | 🟡 | O ecrã de texto, os menus, o diálogo de ficheiros e a vista vetorial dos furos falam os 37 línguas (testado); o chinês e o japonês precisam de um tipo de letra CJK no sistema. |
@@ -146,7 +146,7 @@ Execute-o com `run.bat` (Windows) ou `./run.sh` (Linux e macOS); ambos compilam 
 
 ## 🧪 Testes
 
-A suite tem 236 testes (`cargo test --workspace`). Verificam os formatos de ficheiro (o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina, e a sua escrita de volta), o planeamento do trabalho, o protocolo no simulador (bytes, movimento, a referência dos eixos, os bits de latch, a ligação ao nó e a barreira de segurança que se recusa a mover até estar armada), os ecrãs clássicos célula a célula e os ecrãs nos oito idiomas. A CI também executa `cargo fmt --check` e `cargo clippy` com os avisos como erros, e `python -I tools/ci_validate.py` verifica o manifesto, as versões, o registo de alterações e os oito README.
+A suite tem 237 testes (`cargo test --workspace`). Verificam os formatos de ficheiro (o ficheiro de furos, a tabela de ferramentas e o ficheiro da máquina, e a sua escrita de volta), o planeamento do trabalho, o protocolo no simulador (bytes, movimento, a referência dos eixos, os bits de latch, a ligação ao nó e a barreira de segurança que se recusa a mover até estar armada), os ecrãs clássicos célula a célula e os ecrãs nos oito idiomas. A CI também executa `cargo fmt --check` e `cargo clippy` com os avisos como erros, e `python -I tools/ci_validate.py` verifica o manifesto, as versões, o registo de alterações e os oito README.
 
 ## 🏗️ Compilação e publicação
 

@@ -18,7 +18,7 @@
 
 ---
 
-**Honesty check - what actually runs today:** a Rust program with an 80x25 text-mode interface that reads Excellon `.NCD` drill files, the tool table and the machine configuration, orders the holes, shows them and runs the whole job either **against a simulator** (the default) or, when the machine file says so, **on a real machine** through the computer's serial port, a USB serial adapter or the EH3D-NODE-BUNGARD. 236 tests run on a computer. On one real Bungard CCD MTC the reference run of the three axes (Z, X and Y to their limit switches, with the control unit's "all three home" signal confirmed live) and the moves of every axis have been tried; **a whole drilling job has not run on the machine yet**, and the steps per millimetre are only checked against the original's configuration. The screens you get by default are the classic ones of the MS-DOS program, checked cell by cell against the original; `--modern` starts the menu-driven interface instead. They work with the keyboard and the mouse, the window can be maximized (the screen scales from 640x400 up to 1080p and beyond), the configuration and tool table files are edited and saved from the dialogs, and the About button lists the Bungard CCD and CCD/2 machines (MTC supported, ATC not yet). A console version (`drillpro-console`) draws the same screens in a terminal, with the keyboard and the mouse and no window system (SSH, a text console, an old PC). The release packages carry the basic configuration, explained line by line, and an `examples` folder from one hole to twenty thousand. The tool changer of the ATC models (automatic tool change) works from a recording of the original and has not run on a real machine.
+**Honesty check - what actually runs today:** a Rust program with an 80x25 text-mode interface that reads Excellon `.NCD` drill files, the tool table and the machine configuration, orders the holes, shows them and runs the whole job either **against a simulator** (the default) or, when the machine file says so, **on a real machine** through the computer's serial port, a USB serial adapter or the EH3D-NODE-BUNGARD. 237 tests run on a computer. On one real Bungard CCD MTC the reference run of the three axes (Z, X and Y to their limit switches, with the control unit's "all three home" signal confirmed live) and the moves of every axis have been tried; **a whole drilling job has not run on the machine yet**, and the steps per millimetre are only checked against the original's configuration. The screens you get by default are the classic ones of the MS-DOS program, checked cell by cell against the original; `--modern` starts the menu-driven interface instead. They work with the keyboard and the mouse, the window can be maximized (the screen scales from 640x400 up to 1080p and beyond), the configuration and tool table files are edited and saved from the dialogs, and the About button lists the Bungard CCD and CCD/2 machines (MTC supported, ATC not yet). A console version (`drillpro-console`) draws the same screens in a terminal, with the keyboard and the mouse and no window system (SSH, a text console, an old PC). The release packages carry the basic configuration, explained line by line, and an `examples` folder from one hole to twenty thousand. The tool changer of the ATC models (automatic tool change) works from a recording of the original and has not run on a real machine.
 
 ---
 
@@ -30,7 +30,7 @@
 |---|---|
 | Version | `0.0.8` |
 | Maturity | Scaffolding |
-| Tests | 236 |
+| Tests | 237 |
 | Stack | Rust |
 | On real hardware | Yes, on one Bungard CCD MTC: the reference run and the moves of every axis; a whole job has not run yet. Without a machine file it runs on the simulator |
 
@@ -45,7 +45,7 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Software | 🟡 | A Rust program with an 80x25 text-mode screen reads the drill file, the tool table and the machine file, orders the holes and runs the whole job against a simulator, or on a real machine when the machine file says so. |
-| Tests | 🟢 | 236 tests pass (`cargo test --workspace`): the formats, the job planning, the protocol on the simulator and the screens in all 37 languages. |
+| Tests | 🟢 | 237 tests pass (`cargo test --workspace`): the formats, the job planning, the protocol on the simulator and the screens in all 37 languages. |
 | File readers | 🟡 | The `.NCD` drill file, the tool table `DRILLPRO.DTD` and the machine file `DRILLPRO.DCF` are read; only with small sample files written for the tests, not with files from real boards. |
 | Machine protocol | 🟠 | The byte protocol of the control unit was rebuilt by reverse engineering and `docs/PROTOCOL.md` still lists parts that are hypotheses; the protocol layer refuses to move anything until it has been armed. |
 | Interface | 🟡 | The text-mode screen, the menus, the file dialog and the vector view of the holes speak all 37 languages (tested); Chinese and Japanese need a CJK font in the system. |
@@ -146,7 +146,7 @@ Run it with `run.bat` (Windows) or `./run.sh` (Linux and macOS); both build the 
 
 ## 🧪 Testing
 
-The suite has 236 tests (`cargo test --workspace`). They check the file formats (the drill file, the tool table and the machine file, and writing them back), the job planning, the protocol on the simulator (bytes, motion, the reference run, the latch bits, the link to the node and the safety gate that refuses to move until armed), the classic screens cell by cell and the screens in all eight languages. The CI also runs `cargo fmt --check` and `cargo clippy` with warnings as errors, and `python -I tools/ci_validate.py` checks the manifest, the versions, the changelog and the eight READMEs.
+The suite has 237 tests (`cargo test --workspace`). They check the file formats (the drill file, the tool table and the machine file, and writing them back), the job planning, the protocol on the simulator (bytes, motion, the reference run, the latch bits, the link to the node and the safety gate that refuses to move until armed), the classic screens cell by cell and the screens in all eight languages. The CI also runs `cargo fmt --check` and `cargo clippy` with warnings as errors, and `python -I tools/ci_validate.py` checks the manifest, the versions, the changelog and the eight READMEs.
 
 ## 🏗️ Build & Release
 

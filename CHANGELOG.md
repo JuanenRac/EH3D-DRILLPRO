@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The tools that are off go to the server too:** a job sent to the EH3D server (`connection = server`) carries `skip_tools` along with the holes the program chose, so the server leaves the same tools out and never asks the operator for them (`app::server_drill_request`). 1 test.
+
 ## [0.0.8] - 37 languages and tools that can be left out of a job
 
 - **Room for 37 languages:** `i18n::Lang` lists the eight languages of the program and 29 more (Europe and America, with Brazilian Portuguese and Canadian French as languages of their own), and the words of the new ones are read from the files of `locales/` (`Text.Name` or `CText.Name`, one line per text), with English, or the main language of a variant, for what a file does not have; the list of languages of the program scrolls. The hot-key marks `~X~` are not used in the new languages.

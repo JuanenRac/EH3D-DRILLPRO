@@ -409,20 +409,13 @@ impl App {
                 .file_name()
                 .map(|n| n.to_string_lossy().to_string())
                 .unwrap_or_default();
-            let request = serde_json::json!({
-                "kind": "drill",
-                "name": name,
-                "board_mm": self.board_mm,
-                "tools": tools.iter().map(|t| serde_json::json!({
-                    "number": t.number,
-                    "extra_stroke_mm": t.extra_stroke_mm,
-                    "feed_mm_min": t.feed_mm_min,
-                    "spindle_rpm": t.spindle_rpm,
-                })).collect::<Vec<_>>(),
-                "holes": job_holes.iter().map(|h| serde_json::json!({
-                    "tool": h.tool, "x_mm": h.x_mm, "y_mm": h.y_mm,
-                })).collect::<Vec<_>>(),
-            });
+            let request = server_drill_request(
+                &name,
+                self.board_mm,
+                &tools,
+                &job_holes,
+                &self.job_options.skip_tools,
+            );
             (
                 true,
                 Some(RealRun::start_on_server(
@@ -1125,5 +1118,58 @@ impl TextApp for App {
     }
     fn wants_quit(&self) -> bool {
         self.quit
+    }
+}
+
+/// The job as the server's interface takes it. The holes are those the program chose (the tools that are switched off and the holes already done are
+/// left out of them); the switched-off tools go along too, so the server leaves them out by itself and shows them in the view of the job.
+pub fn server_drill_request(
+    name: &str,
+    board_mm: f64,
+    tools: &[JobTool],
+    holes: &[JobHole],
+    skip_tools: &[u8],
+) -> serde_json::Value {
+    serde_json::json!({
+        "kind": "drill",
+        "name": name,
+        "board_mm": board_mm,
+        "tools": tools.iter().map(|t| serde_json::json!({
+            "number": t.number,
+            "extra_stroke_mm": t.extra_stroke_mm,
+            "feed_mm_min": t.feed_mm_min,
+            "spindle_rpm": t.spindle_rpm,
+        })).collect::<Vec<_>>(),
+        "holes": holes.iter().map(|h| serde_json::json!({
+            "tool": h.tool, "x_mm": h.x_mm, "y_mm": h.y_mm,
+        })).collect::<Vec<_>>(),
+        "skip_tools": skip_tools,
+    })
+}
+
+#[cfg(test)]
+mod server_request_tests {
+    use super::*;
+
+    #[test]
+    fn the_job_sent_to_the_server_carries_the_tools_that_are_switched_off() {
+        let tools = [JobTool {
+            number: 1,
+            extra_stroke_mm: 0.0,
+            feed_mm_min: 1000,
+            spindle_rpm: 24000,
+        }];
+        let holes = [JobHole {
+            tool: 1,
+            x_mm: 5.0,
+            y_mm: 6.0,
+        }];
+        let r = server_drill_request("a.ncd", 1.6, &tools, &holes, &[2, 3]);
+        assert_eq!(r["kind"], "drill");
+        assert_eq!(r["skip_tools"], serde_json::json!([2, 3]));
+        assert_eq!(r["holes"].as_array().unwrap().len(), 1);
+        assert_eq!(r["tools"][0]["spindle_rpm"], 24000);
+        let none = server_drill_request("a.ncd", 1.6, &tools, &holes, &[]);
+        assert_eq!(none["skip_tools"], serde_json::json!([]));
     }
 }
