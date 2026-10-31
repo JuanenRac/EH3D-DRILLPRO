@@ -1,12 +1,12 @@
-# Català (ca): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Carrega
-Text.MenuVectors	Vectors
-Text.MenuTools	Eines
-Text.MenuConfig	Config.
-Text.MenuSort	Ordre
-Text.MenuStart	Inicia
-Text.MenuLanguage	Idioma
-Text.MenuQuit	Surt
+# Català (ca): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	C~a~rrega
+Text.MenuVectors	~V~ectors
+Text.MenuTools	~E~ines
+Text.MenuConfig	~C~onfig.
+Text.MenuSort	~O~rdre
+Text.MenuStart	I~n~icia
+Text.MenuLanguage	~I~dioma
+Text.MenuQuit	~S~urt
 Text.TitleSelectFile	Selecciona fitxer
 Text.TitleVectors	Vectors
 Text.TitleTools	Dades d'eines
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Màquina núm.:
-CText.LblScale	Escala
-CText.LblOffset	Desplaç.
-CText.LblClip	Retall
-CText.LblVectors	Vectors
+CText.LblScale	Esc~a~la
+CText.LblOffset	Despla~ç~.
+CText.LblClip	~R~etall
+CText.LblVectors	~V~ectors
 CText.LblFrm	de
 CText.LblTo	a
 CText.LblCount	Quant.
 CText.LblTotal	Total
 CText.LblDone	Fet
 CText.LblFile	Fitxer
-CText.LblBoard	Placa
-CText.LblBase	Base
+CText.LblBoard	P~l~aca
+CText.LblBase	~B~ase
 CText.Mm	mm
-CText.BtnConfig	Config.
-CText.BtnTools	Eines
-CText.BtnStart	Inicia
-CText.BtnLoad	Carrega
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Desplaç.
-CText.BtnQuit	Surt
+CText.BtnConfig	~C~onfig.
+CText.BtnTools	~E~ines
+CText.BtnStart	~I~nicia
+CText.BtnLoad	Carre~g~a
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	~D~esplaç.
+CText.BtnQuit	~S~urt
 CText.PTitle	Paràmetres
-CText.PFile	Fitxer
+CText.PFile	~F~itxer
 CText.PDirectory	Directori
 CText.PPattern	Patró
-CText.PCoordinates	Coordenades
-CText.PSorting	Ordre
-CText.PChord	Angle de corda
+CText.PCoordinates	Coorde~n~ades
+CText.PSorting	O~r~dre
+CText.PChord	Ang~l~e de corda
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Cap
 CText.PSortX	Primer X
 CText.PSortY	Primer Y
 CText.PSortSpecial	Especial
-CText.PSpeed	Velocitat (mm/min)
+CText.PSpeed	~V~elocitat (mm/min)
 CText.PXyMax	XY Màx.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Rampa
 CText.PZMax	Z  Màx.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Correc.
-CText.PStroke	Carrera
+CText.PRamp	Ra~m~pa (dv/dt)
+CText.PCorrect	~C~orrec.
+CText.PStroke	C~a~rrera
 CText.PLimit	Límit
 CText.PFree	Lliure
-CText.PSpindle	Eix
+CText.PSpindle	~E~ix
 CText.PDelay	Retard
 CText.PSecond	s
 CText.ConnLabel	Connexió
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	L'adreça ha de ser host:port.
 CText.ConnNeedMachine	Falta la màquina del servidor.
 CText.ConnSaved	Connexió desada al fitxer de la màquina.
 CText.ConnNoSave	No es pot escriure el fitxer de la màquina.
-CText.BLoad	Carrega
+CText.BLoad	Carre~g~a
 CText.BSave	Desa
-CText.BOk	Ok
-CText.BAbort	Interromp
-CText.BYes	Sí
-CText.BNo	No
-CText.BOkUpper	OK
-CText.BCancel	CANCEL·LA
+CText.BOk	~O~k
+CText.BAbort	~I~nterromp
+CText.BYes	~S~í
+CText.BNo	~N~o
+CText.BOkUpper	~O~K
+CText.BCancel	~C~ANCEL·LA
 CText.PzTitle	Panelització
 CText.PzBoard	Placa
 CText.PzSpacing	Espaiat
 CText.PzNumber	Nombre
-CText.PzCalc	Calc.
+CText.PzCalc	~C~alc.
 CText.TTitle	Dades d'eines
 CText.TPl	Pl.
 CText.TName	Nom
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vect.
 CText.FTitle	Selecciona fitxer
-CText.FName	Nom
-CText.FFiles	Fitxers
+CText.FName	~N~om
+CText.FFiles	~F~itxers
 CText.QStop	ATURA !!!
 CText.QAsk	Segur que vols sortir?
 CText.HomingZ	Referència de l'eix Z
@@ -190,8 +190,8 @@ CText.InputError	Error d'entrada!
 CText.Max	Màx.: 
 CText.Min	Mín.: 
 CText.BackupAsk	Desar la configuració de Config. i del menú principal al fitxer?
-CText.BtnAbout	Quant a
-CText.PLanguage	Idioma
+CText.BtnAbout	~Q~uant a
+CText.PLanguage	I~d~ioma
 CText.AboutDescDrill	Implementació oberta del programa de foradat Bungard CCD
 CText.AboutDescRoute	Implementació oberta del programa de fresat Bungard CCD
 CText.AboutVersion	Versió
@@ -227,16 +227,16 @@ CText.TeachForw	endavant
 CText.TeachRight	dreta
 CText.TeachUp	amunt
 CText.TeachDown	avall
-CText.TeachMil	mil/1
-CText.BTeach	Aprèn
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Mod
+CText.TeachMil	~m~il/1
+CText.BTeach	~A~prèn
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	~M~od
 CText.QAttentionPlain	Atenció
 CText.QInfo	Info:
 CText.QOffsetDelete	Esborrar el desplaç.|antic?
 CText.QTeachWrite	Escriure el fitxer|d'aprenentatge?
 CText.QWhatNext	I ara què?
-CText.BCont	Cont.
+CText.BCont	~C~ont.
 Text.StatusMain	Esc: enrere   Enter: accepta   ↑/↓: mou
 CText.QInterrupted	INTERROMPUT

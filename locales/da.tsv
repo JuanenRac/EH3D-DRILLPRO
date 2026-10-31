@@ -1,12 +1,12 @@
-# Dansk (da): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Indlæs
-Text.MenuVectors	Vektorer
-Text.MenuTools	Værktøj
-Text.MenuConfig	Opsætn.
-Text.MenuSort	Sortering
-Text.MenuStart	Start
-Text.MenuLanguage	Sprog
-Text.MenuQuit	Afslut
+# Dansk (da): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~I~ndlæs
+Text.MenuVectors	V~e~ktorer
+Text.MenuTools	~V~ærktøj
+Text.MenuConfig	~O~psætn.
+Text.MenuSort	So~r~tering
+Text.MenuStart	S~t~art
+Text.MenuLanguage	~S~prog
+Text.MenuQuit	~A~fslut
 Text.TitleSelectFile	Vælg fil
 Text.TitleVectors	Vektorer
 Text.TitleTools	Værktøjsdata
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Maskine nr.:
-CText.LblScale	Skala
-CText.LblOffset	Forskydn.
-CText.LblClip	Beskær
-CText.LblVectors	Vektorer
+CText.LblScale	S~k~ala
+CText.LblOffset	Forsk~y~dn.
+CText.LblClip	B~e~skær
+CText.LblVectors	~V~ektorer
 CText.LblFrm	fra
 CText.LblTo	til
 CText.LblCount	Antal
 CText.LblTotal	Total
 CText.LblDone	Færdig
 CText.LblFile	Fil
-CText.LblBoard	Print
-CText.LblBase	Base
+CText.LblBoard	P~r~int
+CText.LblBase	~B~ase
 CText.Mm	mm
-CText.BtnConfig	Opsætn.
-CText.BtnTools	Værktøj
-CText.BtnStart	Start
-CText.BtnLoad	Indlæs
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Forskyd.
-CText.BtnQuit	Afslut
+CText.BtnConfig	Opsæ~t~n.
+CText.BtnTools	Værktø~j~
+CText.BtnStart	~S~tart
+CText.BtnLoad	~I~ndlæs
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	~F~orskyd.
+CText.BtnQuit	~A~fslut
 CText.PTitle	Parametre
-CText.PFile	Fil
+CText.PFile	~F~il
 CText.PDirectory	Mappe
 CText.PPattern	Mønster
-CText.PCoordinates	Koordinater
-CText.PSorting	Sortering
-CText.PChord	Korde-vinkel
+CText.PCoordinates	Koor~d~inater
+CText.PSorting	Sor~t~ering
+CText.PChord	Kord~e~-vinkel
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Ingen
 CText.PSortX	X først
 CText.PSortY	Y først
 CText.PSortSpecial	Special
-CText.PSpeed	Hastighed (mm/min)
+CText.PSpeed	~H~astighed (mm/min)
 CText.PXyMax	XY Maks.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Rampe
 CText.PZMax	Z  Maks.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Rampe
-CText.PRamp	Rampe (dv/dt)
-CText.PCorrect	Korrekt.
-CText.PStroke	Slag
+CText.PRamp	~R~ampe (dv/dt)
+CText.PCorrect	~K~orrekt.
+CText.PStroke	~S~lag
 CText.PLimit	Grænse
 CText.PFree	Fri
-CText.PSpindle	Spindel
+CText.PSpindle	Spi~n~del
 CText.PDelay	Forsinkelse
 CText.PSecond	s
 CText.ConnLabel	Forbindelse
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adressen skal være vært:port.
 CText.ConnNeedMachine	Serverens maskine mangler.
 CText.ConnSaved	Forbindelsen er gemt i maskinfilen.
 CText.ConnNoSave	Maskinfilen kan ikke skrives.
-CText.BLoad	Indlæs
+CText.BLoad	~I~ndlæs
 CText.BSave	Gem
-CText.BOk	Ok
-CText.BAbort	Afbryd
-CText.BYes	Ja
-CText.BNo	Nej
-CText.BOkUpper	OK
-CText.BCancel	ANNULLER
+CText.BOk	~O~k
+CText.BAbort	~A~fbryd
+CText.BYes	~J~a
+CText.BNo	~N~ej
+CText.BOkUpper	~O~K
+CText.BCancel	~A~NNULLER
 CText.PzTitle	Panelisering
 CText.PzBoard	Print
 CText.PzSpacing	Afstand
 CText.PzNumber	Antal
-CText.PzCalc	Bereg.
+CText.PzCalc	~B~ereg.
 CText.TTitle	Værktøjsdata
 CText.TPl	Pl.
 CText.TName	Navn
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Vælg fil
-CText.FName	Navn
-CText.FFiles	Filer
+CText.FName	~N~avn
+CText.FFiles	~F~iler
 CText.QStop	STOP !!!
 CText.QAsk	Vil du virkelig afslutte?
 CText.HomingZ	Referencekører Z-akse
@@ -190,8 +190,8 @@ CText.InputError	Indtastningsfejl!
 CText.Max	Maks:
 CText.Min	Min:
 CText.BackupAsk	Gem indstillinger fra Opsætn. og hovedmenu i fil?
-CText.BtnAbout	Om
-CText.PLanguage	Sprog
+CText.BtnAbout	~O~m
+CText.PLanguage	S~p~rog
 CText.AboutDescDrill	Åben implementering af Bungard CCD-borprogrammet
 CText.AboutDescRoute	Åben implementering af Bungard CCD-fræseprogrammet
 CText.AboutVersion	Version
@@ -227,16 +227,16 @@ CText.TeachForw	frem
 CText.TeachRight	højre
 CText.TeachUp	op
 CText.TeachDown	ned
-CText.TeachMil	mil/1
-CText.BTeach	Indlær
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Ændr
+CText.TeachMil	~m~il/1
+CText.BTeach	~I~ndlær
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	Æ~n~dr
 CText.QAttentionPlain	Obs
 CText.QInfo	Info:
 CText.QOffsetDelete	Slet gammel|forskydning?
 CText.QTeachWrite	Skriv indlærings-|fil?
 CText.QWhatNext	Hvad nu?
-CText.BCont	Fortsæt
+CText.BCont	~F~ortsæt
 Text.StatusMain	Esc: tilbage   Enter: acceptér   ↑/↓: flyt
 CText.QInterrupted	AFBRUDT

@@ -16,7 +16,7 @@ use std::cell::{Cell, RefCell};
 use std::time::Instant;
 
 use crate::app::{App, Input};
-use crate::i18n::{str_width, Lang};
+use crate::i18n::{fold_key, str_width, Lang};
 use crate::screen::*;
 use crate::textapp::TextApp;
 use edit::{Kind as EditKind, LineEdit};
@@ -343,6 +343,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
     }
 
+    /// The hot key of a label, as the keyboard of the language types it.
+    fn hot(&self, k: CText) -> Option<char> {
+        hot_letter(self.t(k)).map(|h| self.lang().hot_key(h))
+    }
+
     fn lang(&self) -> Lang {
         self.engine.lang()
     }
@@ -592,14 +597,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn button_for_char(&self, c: char) -> Option<Button> {
-        let c = c.to_ascii_lowercase();
+        let c = self.lang().hot_key(c);
         Button::ALL
             .into_iter()
-            .find(|b| hot_letter(self.t(b.text())) == Some(c))
+            .find(|b| self.hot(b.text()) == Some(c))
     }
 
     fn field_for_char(&self, c: char) -> Option<Field> {
-        let c = c.to_ascii_lowercase();
+        let c = self.lang().hot_key(c);
         let caps = [
             (CText::LblScale, Field::ScaleX),
             (CText::LblOffset, Field::OffsetX),
@@ -609,7 +614,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             (CText::LblBase, Field::Base),
         ];
         caps.into_iter()
-            .find(|(k, _)| hot_letter(self.t(*k)) == Some(c))
+            .find(|(k, _)| self.hot(*k) == Some(c))
             .map(|(_, f)| f)
     }
 
@@ -731,7 +736,7 @@ pub fn hot_letter(label: &str) -> Option<char> {
     let mut it = label.chars();
     while let Some(c) = it.next() {
         if c == '~' {
-            return it.next().map(|c| c.to_ascii_lowercase());
+            return it.next().map(fold_key);
         }
     }
     None

@@ -22,8 +22,10 @@ rows). Texts are ours, in eight languages; the heading lines and the machine num
 
 ## How it is checked
 
-* `tests/classic.rs`: the hot letters of every screen are unique in every language, the labels fit the room the layout
-  gives them, and the keyboard flow (load a file, edit a field with its range check, quit) works.
+* `tests/classic.rs`: the hot letters of every screen are unique in all 37 languages (the 29 read from files get theirs
+  from `tools/make_hotkeys.py`; a Cyrillic or Greek letter is typed on that alphabet's keyboard, and Russian, Ukrainian and
+  Greek also take the Latin key at the same place), the labels fit the room the layout gives them, and the keyboard flow
+  (load a file, edit a field with its range check, quit) works.
 * `tests/classic_golden.rs`: every screen against a reference screen captured from the original. The reference
   screens are not in the repository: set `EH3D_ORIGINAL_UI` to a folder that holds them (`drill_main.txt`, ...: a
   `# chars`, `# fg` and `# bg` block of 24 rows of 80 cells). Without it these tests pass without comparing.

@@ -1,12 +1,12 @@
-# Ελληνικά (el): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Φόρτωση
-Text.MenuVectors	Διανύσματα
-Text.MenuTools	Εργαλεία
-Text.MenuConfig	Ρυθμίσεις
-Text.MenuSort	Ταξινόμηση
-Text.MenuStart	Έναρξη
-Text.MenuLanguage	Γλώσσα
-Text.MenuQuit	Έξοδος
+# Ελληνικά (el): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~Φ~όρτωση
+Text.MenuVectors	~Δ~ιανύσματα
+Text.MenuTools	Ε~ρ~γαλεία
+Text.MenuConfig	Ρ~υ~θμίσεις
+Text.MenuSort	~Τ~αξινόμηση
+Text.MenuStart	Έ~ν~αρξη
+Text.MenuLanguage	~Γ~λώσσα
+Text.MenuQuit	~Έ~ξοδος
 Text.TitleSelectFile	Επιλογή αρχείου
 Text.TitleVectors	Διανύσματα
 Text.TitleTools	Στοιχεία εργαλείων
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Μηχ. αρ.:
-CText.LblScale	Κλίμακα
-CText.LblOffset	Μετατόπιση
-CText.LblClip	Περικοπή
-CText.LblVectors	Διανύσματα
+CText.LblScale	~Κ~λίμακα
+CText.LblOffset	Με~τ~ατόπιση
+CText.LblClip	Περ~ι~κοπή
+CText.LblVectors	~Δ~ιανύσματα
 CText.LblFrm	από
 CText.LblTo	έως
 CText.LblCount	Πλήθος
 CText.LblTotal	Σύνολο
 CText.LblDone	Έγινε
 CText.LblFile	Αρχείο
-CText.LblBoard	Πλακέτα
-CText.LblBase	Βάση
+CText.LblBoard	Πλ~α~κέτα
+CText.LblBase	~Β~άση
 CText.Mm	mm
-CText.BtnConfig	Ρυθμίσεις
-CText.BtnTools	Εργαλεία
-CText.BtnStart	Έναρξη
-CText.BtnLoad	Φόρτωση
-CText.BtnPanelz	Πάνελ
-CText.BtnOffset	Μετατόπ.
-CText.BtnQuit	Έξοδος
+CText.BtnConfig	Ρ~υ~θμίσεις
+CText.BtnTools	Ε~ρ~γαλεία
+CText.BtnStart	Έ~ν~αρξη
+CText.BtnLoad	~Φ~όρτωση
+CText.BtnPanelz	~Π~άνελ
+CText.BtnOffset	~Μ~ετατόπ.
+CText.BtnQuit	~Έ~ξοδος
 CText.PTitle	Παράμετρος
-CText.PFile	Αρχείο
+CText.PFile	Αρ~χ~είο
 CText.PDirectory	Κατάλογος
 CText.PPattern	Μάσκα
-CText.PCoordinates	Συντεταγμένες
-CText.PSorting	Ταξινόμηση
-CText.PChord	Γωνία χορδής
+CText.PCoordinates	~Σ~υντεταγμένες
+CText.PSorting	Τα~ξ~ινόμηση
+CText.PChord	Γ~ω~νία χορδής
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0,025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Καμία
 CText.PSortX	Πρώτα X
 CText.PSortY	Πρώτα Y
 CText.PSortSpecial	Ειδική
-CText.PSpeed	Ταχύτητα (mm/min)
+CText.PSpeed	~Τ~αχύτητα (mm/min)
 CText.PXyMax	XY μέγ.
 CText.PXyRef	XY αναφ.
 CText.PXyRamp	XY ράμπα
 CText.PZMax	Z  μέγ.
 CText.PZRef	Z  αναφ.
 CText.PZRamp	Z  ράμπα
-CText.PRamp	Ράμπα (dv/dt)
-CText.PCorrect	Διόρθ.
-CText.PStroke	Διαδρομή
+CText.PRamp	~Ρ~άμπα (dv/dt)
+CText.PCorrect	~Δ~ιόρθ.
+CText.PStroke	Δ~ι~αδρομή
 CText.PLimit	Όριο
 CText.PFree	Ελεύθερο
-CText.PSpindle	Άτρακτος
+CText.PSpindle	Άτρα~κ~τος
 CText.PDelay	Καθυστέρ.
 CText.PSecond	s
 CText.ConnLabel	Σύνδεση
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Η διεύθυνση πρέπει να είναι host:po
 CText.ConnNeedMachine	Λείπει το μηχάνημα του διακομιστή.
 CText.ConnSaved	Η σύνδεση αποθηκεύτηκε στο αρχείο μηχανήματος.
 CText.ConnNoSave	Αδύνατη η εγγραφή του αρχείου μηχανήματος.
-CText.BLoad	Φόρτωση
+CText.BLoad	~Φ~όρτωση
 CText.BSave	Αποθήκ.
-CText.BOk	Ok
-CText.BAbort	Ακύρωση
-CText.BYes	Ναι
-CText.BNo	Όχι
-CText.BOkUpper	OK
-CText.BCancel	ΑΚΥΡΟ
+CText.BOk	~O~k
+CText.BAbort	~Α~κύρωση
+CText.BYes	~Ν~αι
+CText.BNo	~Ό~χι
+CText.BOkUpper	~O~K
+CText.BCancel	~Α~ΚΥΡΟ
 CText.PzTitle	Πάνελ πλακετών
 CText.PzBoard	Πλακέτα
 CText.PzSpacing	Απόσταση
 CText.PzNumber	Αριθμός
-CText.PzCalc	Υπολ.
+CText.PzCalc	~Υ~πολ.
 CText.TTitle	Στοιχεία εργαλείων
 CText.TPl	Θέση
 CText.TName	Όνομα
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Διαν.
 CText.FTitle	Επιλογή αρχείου
-CText.FName	Όνομα
-CText.FFiles	Αρχεία
+CText.FName	Ό~ν~ομα
+CText.FFiles	Α~ρ~χεία
 CText.QStop	ΣΤΟΠ !!!
 CText.QAsk	Θέλετε σίγουρα έξοδο;
 CText.HomingZ	Αναφορά άξονα Z
@@ -190,8 +190,8 @@ CText.InputError	Σφάλμα εισαγωγής!
 CText.Max	Μέγ:
 CText.Min	Ελάχ:
 CText.BackupAsk	Αποθήκευση ρυθμίσεων σε αρχείο;
-CText.BtnAbout	Πληροφ.
-CText.PLanguage	Γλώσσα
+CText.BtnAbout	Π~λ~ηροφ.
+CText.PLanguage	~Γ~λώσσα
 CText.AboutDescDrill	Ανοιχτή υλοποίηση του προγράμματος διάτρησης Bungard CCD
 CText.AboutDescRoute	Ανοιχτή υλοποίηση του προγράμματος φρεζαρίσματος Bungard CCD
 CText.AboutVersion	Έκδοση
@@ -227,16 +227,16 @@ CText.TeachForw	εμπρός
 CText.TeachRight	δεξιά
 CText.TeachUp	πάνω
 CText.TeachDown	κάτω
-CText.TeachMil	mil/1
-CText.BTeach	Εκμάθ.
-CText.BPlusPos	+ Θέση
-CText.BMinusPos	- Θέση
-CText.BMod	Αλλαγή
+CText.TeachMil	~m~il/1
+CText.BTeach	Ε~κ~μάθ.
+CText.BPlusPos	~+~ Θέση
+CText.BMinusPos	~-~ Θέση
+CText.BMod	Α~λ~λαγή
 CText.QAttentionPlain	Προσοχή
 CText.QInfo	Πληρ.:
 CText.QOffsetDelete	Διαγραφή παλιάς|μετατόπισης;
 CText.QTeachWrite	Εγγραφή αρχείου|εκμάθησης;
 CText.QWhatNext	Τι ακολουθεί;
-CText.BCont	Συνέχ.
+CText.BCont	~Σ~υνέχ.
 Text.StatusMain	Esc: πίσω   Enter: αποδοχή   ↑/↓: κίνηση
 CText.QInterrupted	ΔΙΑΚΟΠΗΚΕ

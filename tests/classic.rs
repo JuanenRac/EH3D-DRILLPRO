@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 use eh3d_drillpro::app::Input;
-use eh3d_drillpro::classic::texts::{ctr, CText};
+use eh3d_drillpro::classic::texts::{ctr, CText, ALL_CTEXTS};
 use eh3d_drillpro::classic::{hot_letter, ClassicApp};
 use eh3d_drillpro::i18n::{str_width, Lang, CORE_LANGS};
 use eh3d_drillpro::screen::Screen;
@@ -34,13 +34,28 @@ fn plain(label: &str) -> String {
     label.chars().filter(|&c| c != '~').collect()
 }
 
-/// Controls that share a screen must have different hot letters in every language.
-#[test]
-fn hot_letters_are_unique_on_every_screen() {
-    let screens: [(&str, &[CText]); 5] = [
+/// The controls that share a screen: no two of them may need the same key, in any of the 37 languages.
+fn screens() -> Vec<(&'static str, Vec<CText>)> {
+    let parameter = |first: CText| {
+        vec![
+            CText::PFile,
+            CText::PCoordinates,
+            first,
+            CText::PSpeed,
+            CText::PRamp,
+            CText::PStroke,
+            CText::PCorrect,
+            CText::PSpindle,
+            CText::PLanguage,
+            CText::BLoad,
+            CText::BOk,
+            CText::BAbort,
+        ]
+    };
+    vec![
         (
             "main",
-            &[
+            vec![
                 CText::LblScale,
                 CText::LblOffset,
                 CText::LblClip,
@@ -54,45 +69,99 @@ fn hot_letters_are_unique_on_every_screen() {
                 CText::BtnPanelz,
                 CText::BtnOffset,
                 CText::BtnQuit,
+                CText::BtnAbout,
             ],
         ),
-        (
-            "parameter",
-            &[
-                CText::PFile,
-                CText::PCoordinates,
-                CText::PSorting,
-                CText::PSpeed,
-                CText::PRamp,
-                CText::PStroke,
-                CText::PCorrect,
-                CText::PSpindle,
-                CText::BLoad,
-                CText::BOk,
-                CText::BAbort,
-            ],
-        ),
-        ("tools", &[CText::BLoad, CText::BOk, CText::BAbort]),
+        ("parameter", parameter(CText::PSorting)),
+        ("parameter of the routing program", parameter(CText::PChord)),
+        ("tools", vec![CText::BLoad, CText::BOk, CText::BAbort]),
+        ("panel", vec![CText::PzCalc, CText::BOk, CText::BAbort]),
         (
             "files",
-            &[CText::FName, CText::FFiles, CText::BOkUpper, CText::BCancel],
+            vec![CText::FName, CText::FFiles, CText::BOkUpper, CText::BCancel],
         ),
-        ("quit", &[CText::BYes, CText::BNo]),
-    ];
-    // the other languages have no hot letters (their texts carry no ~ marks); the screens are reached with the arrows and the Tab key
-    for lang in Lang::ALL.into_iter().take(CORE_LANGS) {
-        for (screen, keys) in screens {
+        ("quit", vec![CText::BYes, CText::BNo]),
+        ("interrupted", vec![CText::BCont, CText::BAbort]),
+        (
+            "teach",
+            vec![CText::BTeach, CText::BAbort, CText::BOk, CText::BMod],
+        ),
+    ]
+}
+
+/// Controls that share a screen must have different hot letters in every language (the letter a key types, so a Latin O and a Cyrillic O
+/// of a Russian screen count as the keys they are).
+#[test]
+fn hot_letters_are_unique_on_every_screen() {
+    for lang in Lang::ALL {
+        for (screen, keys) in screens() {
             let mut seen = HashSet::new();
             for k in keys {
-                let label = ctr(lang, *k);
+                let label = ctr(lang, k);
                 let hot = hot_letter(label)
                     .unwrap_or_else(|| panic!("{lang:?} {screen}: no hot letter in {label:?}"));
+                let typed = lang.hot_key(hot);
                 assert!(
-                    seen.insert(hot),
+                    seen.insert(typed),
                     "{lang:?} {screen}: the hot letter {hot:?} of {label:?} is used twice"
                 );
             }
         }
+    }
+}
+
+/// Every text of every language has no mark or one pair, and has the pair when the English text has it.
+#[test]
+fn every_classic_text_has_its_hot_letter_in_every_language() {
+    for &k in ALL_CTEXTS {
+        let en = ctr(Lang::En, k).contains('~');
+        for lang in Lang::ALL {
+            let t = ctr(lang, k);
+            let n = t.matches('~').count();
+            assert!(n == 0 || n == 2, "{lang:?} {k:?}: {t:?}");
+            // the Chinese and Japanese texts of the original have no mark on a few labels
+            if lang as usize >= CORE_LANGS {
+                assert_eq!(en, n > 0, "{lang:?} {k:?}: {t:?}");
+            }
+        }
+    }
+}
+
+/// The teach window keeps six keys for the arrows: no hot letter of its buttons may be one of them (in the layout of the language).
+#[test]
+fn teach_buttons_leave_the_arrow_keys_free() {
+    for lang in Lang::ALL {
+        for k in [CText::BTeach, CText::BAbort, CText::BOk, CText::BMod] {
+            let hot = lang.hot_key(hot_letter(ctr(lang, k)).unwrap());
+            for fixed in "esdxrc".chars() {
+                assert_ne!(
+                    hot,
+                    lang.hot_key(fixed),
+                    "{lang:?} {k:?} takes the key of an arrow"
+                );
+            }
+        }
+    }
+}
+
+/// A letter of the Cyrillic or Greek alphabet works when it is typed, in either case, and so does the Latin key that sits where it is.
+#[test]
+fn a_cyrillic_or_greek_hot_letter_works_when_typed() {
+    // Russian: Quit is the "В" of "Выход"; "d" is the key of "в" in the Russian layout
+    for typed in ['в', 'В', 'd', 'D'] {
+        let mut a = app(Lang::Ru);
+        a.handle(Input::Char(typed));
+        let q = ctr(Lang::Ru, CText::QAsk);
+        let first: String = q.chars().take(8).collect();
+        assert!(text(&a).contains(&first), "{typed:?}");
+    }
+    // Greek: Quit is the "Έ" of "Έξοδος"; the accent does not have to be typed and "e" is the key of "ε"
+    for typed in ['Έ', 'έ', 'ε', 'e'] {
+        let mut a = app(Lang::El);
+        a.handle(Input::Char(typed));
+        let q = ctr(Lang::El, CText::QAsk);
+        let first: String = q.chars().take(8).collect();
+        assert!(text(&a).contains(&first), "{typed:?}");
     }
 }
 
@@ -138,9 +207,6 @@ fn every_language_draws_every_screen() {
         let mut a = app(lang);
         assert!(!text(&a).trim().is_empty());
         for keys in ["c", "t", "l", "q"] {
-            if lang as usize >= CORE_LANGS {
-                break;
-            }
             let mut b = app(lang);
             // the first letter of the language's own label for the button
             let c = match keys {

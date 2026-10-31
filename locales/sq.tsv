@@ -1,12 +1,12 @@
-# Shqip (sq): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Ngarko
-Text.MenuVectors	Vektorët
-Text.MenuTools	Mjetet
-Text.MenuConfig	Konfig.
-Text.MenuSort	Renditja
-Text.MenuStart	Nis
-Text.MenuLanguage	Gjuha
-Text.MenuQuit	Dil
+# Shqip (sq): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	Ng~a~rko
+Text.MenuVectors	~V~ektorët
+Text.MenuTools	~M~jetet
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	~R~enditja
+Text.MenuStart	~N~is
+Text.MenuLanguage	~G~juha
+Text.MenuQuit	~D~il
 Text.TitleSelectFile	Zgjidh skedarin
 Text.TitleVectors	Vektorët
 Text.TitleTools	Të dhënat e mjeteve
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Makina nr.:
-CText.LblScale	Shkalla
-CText.LblOffset	Zhvendos.
-CText.LblClip	Prerja
-CText.LblVectors	Vektorët
+CText.LblScale	~S~hkalla
+CText.LblOffset	Z~h~vendos.
+CText.LblClip	Pr~e~rja
+CText.LblVectors	~V~ektorët
 CText.LblFrm	nga
 CText.LblTo	deri
 CText.LblCount	Numri
 CText.LblTotal	Totali
 CText.LblDone	U krye
 CText.LblFile	Skedari
-CText.LblBoard	Pllaka
-CText.LblBase	Baza
+CText.LblBoard	P~l~laka
+CText.LblBase	~B~aza
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Mjetet
-CText.BtnStart	Nis
-CText.BtnLoad	Ngarko
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Zhvendos.
-CText.BtnQuit	Dil
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	~M~jetet
+CText.BtnStart	~N~is
+CText.BtnLoad	N~g~arko
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	~Z~hvendos.
+CText.BtnQuit	~D~il
 CText.PTitle	Parametrat
-CText.PFile	Skedari
+CText.PFile	~S~kedari
 CText.PDirectory	Dosja
 CText.PPattern	Modeli
-CText.PCoordinates	Koordinatat
-CText.PSorting	Renditja
-CText.PChord	Këndi i kordës
+CText.PCoordinates	Koor~d~inatat
+CText.PSorting	R~e~nditja
+CText.PChord	Kënd~i~ i kordës
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Asnjë
 CText.PSortX	Fillim X
 CText.PSortY	Fillim Y
 CText.PSortSpecial	E veçantë
-CText.PSpeed	Shpejtësia (mm/min)
+CText.PSpeed	S~h~pejtësia (mm/min)
 CText.PXyMax	XY Maks.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Rampa
 CText.PZMax	Z  Maks.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korrig.
-CText.PStroke	Kursa
+CText.PRamp	Ra~m~pa (dv/dt)
+CText.PCorrect	Ko~r~rig.
+CText.PStroke	~K~ursa
 CText.PLimit	Kufiri
 CText.PFree	Lirë
-CText.PSpindle	Boshti
+CText.PSpindle	~B~oshti
 CText.PDelay	Vonesa
 CText.PSecond	s
 CText.ConnLabel	Lidhja
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adresa duhet të jetë host:port.
 CText.ConnNeedMachine	Mungon makina e serverit.
 CText.ConnSaved	Lidhja u ruajt në skedarin e makinës.
 CText.ConnNoSave	Skedari i makinës nuk shkruhet.
-CText.BLoad	Ngarko
+CText.BLoad	Ng~a~rko
 CText.BSave	Ruaj
-CText.BOk	Ok
-CText.BAbort	Ndërpri
-CText.BYes	Po
-CText.BNo	Jo
-CText.BOkUpper	OK
-CText.BCancel	ANULO
+CText.BOk	~O~k
+CText.BAbort	~N~dërpri
+CText.BYes	~P~o
+CText.BNo	~J~o
+CText.BOkUpper	~O~K
+CText.BCancel	~A~NULO
 CText.PzTitle	Panelizimi
 CText.PzBoard	Pllaka
 CText.PzSpacing	Hapësira
 CText.PzNumber	Numri
-CText.PzCalc	Llog.
+CText.PzCalc	~L~log.
 CText.TTitle	Të dhënat e mjeteve
 CText.TPl	Pl.
 CText.TName	Emri
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Zgjidh skedarin
-CText.FName	Emri
-CText.FFiles	Skedarët
+CText.FName	~E~mri
+CText.FFiles	~S~kedarët
 CText.QStop	NDALO !!!
 CText.QAsk	Dëshironi vërtet të dilni?
 CText.HomingZ	Referimi i boshtit Z
@@ -190,8 +190,8 @@ CText.InputError	Gabim hyrjeje!
 CText.Max	Maks.: 
 CText.Min	Min.: 
 CText.BackupAsk	Të ruhen cilësimet nga Konfig. dhe menyja kryesore në skedar?
-CText.BtnAbout	Rreth
-CText.PLanguage	Gjuha
+CText.BtnAbout	~R~reth
+CText.PLanguage	~G~juha
 CText.AboutDescDrill	Zbatim i hapur i programit të shpimit Bungard CCD
 CText.AboutDescRoute	Zbatim i hapur i programit të frezimit Bungard CCD
 CText.AboutVersion	Versioni
@@ -227,16 +227,16 @@ CText.TeachForw	përpara
 CText.TeachRight	djathtas
 CText.TeachUp	lart
 CText.TeachDown	poshtë
-CText.TeachMil	mil/1
-CText.BTeach	Mëso
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Ndrysho
+CText.TeachMil	~m~il/1
+CText.BTeach	~M~ëso
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	Ndr~y~sho
 CText.QAttentionPlain	Kujdes
 CText.QInfo	Info:
 CText.QOffsetDelete	Fshi zhvendosjen|e vjetër?
 CText.QTeachWrite	Shkruaj skedarin|e mësimit?
 CText.QWhatNext	Çfarë tani?
-CText.BCont	Vazhdo
+CText.BCont	~V~azhdo
 Text.StatusMain	Esc: kthehu   Enter: prano   ↑/↓: lëviz
 CText.QInterrupted	NDËRPRERË

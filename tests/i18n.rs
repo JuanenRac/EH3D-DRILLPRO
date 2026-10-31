@@ -14,7 +14,7 @@ fn every_text_exists_in_all_eight_languages() {
 fn hotkey_markers_are_balanced_and_consistent() {
     for &k in ALL_TEXTS {
         let en_has = tr(Lang::En, k).contains('~');
-        for l in Lang::ALL.into_iter().take(CORE_LANGS) {
+        for l in Lang::ALL {
             let t = tr(l, k);
             let n = t.matches('~').count();
             assert!(n == 0 || n == 2, "{k:?} {l:?}: {t}");
@@ -43,8 +43,8 @@ fn chinese_and_japanese_use_cjk() {
 #[test]
 fn menu_hotkeys_are_unique_within_a_language() {
     use eh3d_drillpro::texts::Text::*;
-    for l in Lang::ALL.into_iter().take(CORE_LANGS) {
-        let mut seen: Vec<String> = Vec::new();
+    for l in Lang::ALL {
+        let mut seen: Vec<char> = Vec::new();
         for k in [
             MenuLoad,
             MenuVectors,
@@ -56,7 +56,7 @@ fn menu_hotkeys_are_unique_within_a_language() {
             MenuQuit,
         ] {
             let t = tr(l, k);
-            let hot = t.split('~').nth(1).unwrap().to_ascii_lowercase();
+            let hot = l.hot_key(t.split('~').nth(1).unwrap().chars().next().unwrap());
             assert!(!seen.contains(&hot), "{l:?}: hotkey {hot} repeated");
             seen.push(hot);
         }
@@ -94,4 +94,24 @@ fn every_new_language_has_all_the_texts_of_the_program() {
 fn the_files_of_the_languages_name_only_texts_that_exist() {
     assert!(eh3d_drillpro::texts::locale_problems().is_empty());
     assert!(eh3d_drillpro::classic::texts::locale_problems().is_empty());
+}
+
+#[test]
+fn typed_letters_are_folded_to_the_hot_letter() {
+    // case, the Greek accent and the final sigma do not matter
+    assert_eq!(fold_key('Ж'), 'ж');
+    assert_eq!(fold_key('Ł'), 'ł');
+    assert_eq!(fold_key('Έ'), 'ε');
+    assert_eq!(fold_key('ς'), 'σ');
+    // a Latin key stands for the letter on it in the layout of Russian, Ukrainian and Greek, and nowhere else
+    assert_eq!(Lang::Ru.hot_key('D'), 'в');
+    assert_eq!(Lang::Uk.hot_key('s'), 'і');
+    assert_eq!(Lang::Ru.hot_key('s'), 'ы');
+    assert_eq!(Lang::El.hot_key('a'), 'α');
+    assert_eq!(Lang::Pl.hot_key('a'), 'a');
+    assert_eq!(Lang::Bg.hot_key('a'), 'a');
+    // and back, for the keys that stand for a place
+    assert_eq!(Lang::Ru.latin_key('в'), 'd');
+    assert_eq!(Lang::El.latin_key('ε'), 'e');
+    assert_eq!(Lang::En.latin_key('x'), 'x');
 }

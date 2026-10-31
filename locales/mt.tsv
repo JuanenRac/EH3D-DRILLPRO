@@ -1,12 +1,12 @@
-# Malti (mt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Tella
-Text.MenuVectors	Vettori
-Text.MenuTools	Għodod
-Text.MenuConfig	Konfig.
-Text.MenuSort	Ordnar
-Text.MenuStart	Ibda
-Text.MenuLanguage	Lingwa
-Text.MenuQuit	Oħroġ
+# Malti (mt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~T~ella
+Text.MenuVectors	~V~ettori
+Text.MenuTools	~G~ħodod
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	O~r~dnar
+Text.MenuStart	~I~bda
+Text.MenuLanguage	~L~ingwa
+Text.MenuQuit	~O~ħroġ
 Text.TitleSelectFile	Agħżel il-fajl
 Text.TitleVectors	Vettori
 Text.TitleTools	Dejta tal-għodod
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Magna Nru:
-CText.LblScale	Skala
-CText.LblOffset	Offset
-CText.LblClip	Aqta'
-CText.LblVectors	Vettori
+CText.LblScale	~S~kala
+CText.LblOffset	Offs~e~t
+CText.LblClip	~A~qta'
+CText.LblVectors	~V~ettori
 CText.LblFrm	minn
 CText.LblTo	sa
 CText.LblCount	Għadd
 CText.LblTotal	Total
 CText.LblDone	Lest
 CText.LblFile	Fajl
-CText.LblBoard	Bord
-CText.LblBase	Bażi
+CText.LblBoard	B~o~rd
+CText.LblBase	~B~ażi
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Għodod
-CText.BtnStart	Ibda
-CText.BtnLoad	Tella
-CText.BtnPanelz	Panelli
-CText.BtnOffset	Offset
-CText.BtnQuit	Oħroġ
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	~G~ħodod
+CText.BtnStart	~I~bda
+CText.BtnLoad	~T~ella
+CText.BtnPanelz	~P~anelli
+CText.BtnOffset	O~f~fset
+CText.BtnQuit	Oħ~r~oġ
 CText.PTitle	Parametri
-CText.PFile	Fajl
+CText.PFile	~F~ajl
 CText.PDirectory	Direttorju
 CText.PPattern	Mudell
-CText.PCoordinates	Koordinati
-CText.PSorting	Ordnar
-CText.PChord	Angolu tal-korda
+CText.PCoordinates	Koor~d~inati
+CText.PSorting	Ord~n~ar
+CText.PChord	A~n~golu tal-korda
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	L-ebda
 CText.PSortX	X l-ewwel
 CText.PSortY	Y l-ewwel
 CText.PSortSpecial	Speċjali
-CText.PSpeed	Veloċità (mm/min)
+CText.PSpeed	~V~eloċità (mm/min)
 CText.PXyMax	XY Mass.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Rampa
 CText.PZMax	Z  Mass.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korr.
-CText.PStroke	Korsa
+CText.PRamp	R~a~mpa (dv/dt)
+CText.PCorrect	~K~orr.
+CText.PStroke	Ko~r~sa
 CText.PLimit	Limitu
 CText.PFree	Ħieles
-CText.PSpindle	Spindle
+CText.PSpindle	~S~pindle
 CText.PDelay	Dewmien
 CText.PSecond	s
 CText.ConnLabel	Konnessjoni
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	L-indirizz irid ikun host:port.
 CText.ConnNeedMachine	Il-magna tas-server nieqsa.
 CText.ConnSaved	Il-konnessjoni nżammet fil-fajl tal-magna.
 CText.ConnNoSave	Il-fajl tal-magna ma jistax jinkiteb.
-CText.BLoad	Tella
+CText.BLoad	~T~ella
 CText.BSave	Ħażen
-CText.BOk	Ok
-CText.BAbort	Waqqaf
-CText.BYes	Iva
-CText.BNo	Le
-CText.BOkUpper	OK
-CText.BCancel	ĊANĊELLA
+CText.BOk	~O~k
+CText.BAbort	~W~aqqaf
+CText.BYes	~I~va
+CText.BNo	~L~e
+CText.BOkUpper	~O~K
+CText.BCancel	Ċ~A~NĊELLA
 CText.PzTitle	Panellizzazzjoni
 CText.PzBoard	Bord
 CText.PzSpacing	Spazju
 CText.PzNumber	Għadd
-CText.PzCalc	Ikkalk.
+CText.PzCalc	~I~kkalk.
 CText.TTitle	Dejta tal-għodod
 CText.TPl	Pl.
 CText.TName	Isem
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vett.
 CText.FTitle	Agħżel il-fajl
-CText.FName	Isem
-CText.FFiles	Fajls
+CText.FName	~I~sem
+CText.FFiles	~F~ajls
 CText.QStop	STOP !!!
 CText.QAsk	Tassew trid toħroġ?
 CText.HomingZ	Referenza tal-assi Z
@@ -190,8 +190,8 @@ CText.InputError	Żball fl-input!
 CText.Max	Mass.: 
 CText.Min	Min.: 
 CText.BackupAsk	Taħżen is-settings minn Konfig. u mill-menu prinċipali fil-fajl?
-CText.BtnAbout	Dwar
-CText.PLanguage	Lingwa
+CText.BtnAbout	~D~war
+CText.PLanguage	~L~ingwa
 CText.AboutDescDrill	Implimentazzjoni miftuħa tal-programm tat-titqib Bungard CCD
 CText.AboutDescRoute	Implimentazzjoni miftuħa tal-programm tal-qtugħ Bungard CCD
 CText.AboutVersion	Verżjoni
@@ -227,16 +227,16 @@ CText.TeachForw	'l quddiem
 CText.TeachRight	ymin
 CText.TeachUp	'il fuq
 CText.TeachDown	'l isfel
-CText.TeachMil	mil/1
-CText.BTeach	Għallem
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Biddel
+CText.TeachMil	~m~il/1
+CText.BTeach	~G~ħallem
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	~B~iddel
 CText.QAttentionPlain	Attenzjoni
 CText.QInfo	Info:
 CText.QOffsetDelete	Tħassar l-offset|qadim?
 CText.QTeachWrite	Tikteb il-fajl|tat-tagħlim?
 CText.QWhatNext	X'jiġi wara?
-CText.BCont	Kompli
+CText.BCont	~K~ompli
 Text.StatusMain	Esc: lura   Enter: aċċetta   ↑/↓: mexxi
 CText.QInterrupted	IMWAQQAF

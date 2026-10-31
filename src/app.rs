@@ -245,7 +245,7 @@ impl App {
             .split('~')
             .nth(1)
             .and_then(|s| s.chars().next())
-            .map_or('\0', |c| c.to_ascii_lowercase())
+            .map_or('\0', |c| self.lang.hot_key(c))
     }
 
     /// Menu bar positions: `(x, width, text)` for each item.
@@ -595,7 +595,7 @@ impl App {
 
     pub fn handle(&mut self, input: Input) {
         if let Input::Alt(c) = input {
-            let c = c.to_ascii_lowercase();
+            let c = self.lang.hot_key(c);
             let hit = self
                 .menu_items()
                 .into_iter()

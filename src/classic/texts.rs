@@ -40,7 +40,7 @@ translations! { CText, ctr, ALL_CTEXTS;
     PPattern => ["Pattern", "Patrón", "Filtro", "Muster", "Masque", "Filtro", "筛选", "パターン"],
     PCoordinates => ["~C~oordinates", "~C~oordenadas", "~C~oordinate", "~K~oordinaten", "~C~oordonnées", "~C~oordenadas", "坐标(~C~)", "座標(~C~)"],
     PSorting => ["~S~orting", "Or~d~en", "Or~d~ine", "~S~ortierung", "~T~ri", "Or~d~em", "排序(~S~)", "並替(~S~)"],
-    PChord => ["C~h~ord angle", "Án~g~ulo cuerda", "Ango~l~o corda", "Seh~n~enwinkel", "Angle de ~c~orde", "Â~n~gulo de corda", "弦角(~H~)", "弦角度(~H~)"],
+    PChord => ["C~h~ord angle", "Á~n~gulo cuerda", "An~g~olo corda", "Seh~n~enwinkel", "A~n~gle de corde", "Â~n~gulo de corda", "弦角(~H~)", "弦角度(~H~)"],
     PUnit110 => ["1/10 mil", "1/10 mil", "1/10 mil", "1/10 mil", "1/10 mil", "1/10 mil", "1/10 mil", "1/10 mil"],
     PUnit1 => ["1/1  mil", "1/1  mil", "1/1  mil", "1/1  mil", "1/1  mil", "1/1  mil", "1/1  mil", "1/1  mil"],
     PUnit0025 => ["0.025 mm", "0.025 mm", "0.025 mm", "0.025 mm", "0.025 mm", "0.025 mm", "0.025 mm", "0.025 mm"],

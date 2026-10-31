@@ -1,12 +1,12 @@
-# Polski (pl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Wczytaj
-Text.MenuVectors	Wektory
-Text.MenuTools	Narzędzia
-Text.MenuConfig	Konfig.
-Text.MenuSort	Sortowanie
-Text.MenuStart	Start
-Text.MenuLanguage	Język
-Text.MenuQuit	Koniec
+# Polski (pl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~W~czytaj
+Text.MenuVectors	W~e~ktory
+Text.MenuTools	~N~arzędzia
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	So~r~towanie
+Text.MenuStart	~S~tart
+Text.MenuLanguage	~J~ęzyk
+Text.MenuQuit	K~o~niec
 Text.TitleSelectFile	Wybierz plik
 Text.TitleVectors	Wektory
 Text.TitleTools	Dane narzędzi
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Maszyna nr:
-CText.LblScale	Skala
-CText.LblOffset	Przesun.
-CText.LblClip	Przytnij
-CText.LblVectors	Wektory
+CText.LblScale	S~k~ala
+CText.LblOffset	Pr~z~esun.
+CText.LblClip	Przy~t~nij
+CText.LblVectors	W~e~ktory
 CText.LblFrm	od
 CText.LblTo	do
 CText.LblCount	Liczba
 CText.LblTotal	Razem
 CText.LblDone	Gotowe
 CText.LblFile	Plik
-CText.LblBoard	Płytka
-CText.LblBase	Baza
+CText.LblBoard	Pł~y~tka
+CText.LblBase	~B~aza
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Narzędzia
-CText.BtnStart	Start
-CText.BtnLoad	Wczytaj
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Przesuń.
-CText.BtnQuit	Koniec
+CText.BtnConfig	Ko~n~fig.
+CText.BtnTools	N~a~rzędzia
+CText.BtnStart	~S~tart
+CText.BtnLoad	~W~czytaj
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	P~r~zesuń.
+CText.BtnQuit	Kon~i~ec
 CText.PTitle	Parametry
-CText.PFile	Plik
+CText.PFile	P~l~ik
 CText.PDirectory	Katalog
 CText.PPattern	Wzorzec
-CText.PCoordinates	Współrzędne
-CText.PSorting	Sortowanie
-CText.PChord	Kąt cięciwy
+CText.PCoordinates	Współrzę~d~ne
+CText.PSorting	Sor~t~owanie
+CText.PChord	Ką~t~ cięciwy
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Brak
 CText.PSortX	Najpierw X
 CText.PSortY	Najpierw Y
 CText.PSortSpecial	Specjalne
-CText.PSpeed	Prędkość (mm/min)
+CText.PSpeed	Prędkość (~m~m/min)
 CText.PXyMax	XY maks.
 CText.PXyRef	XY ref.
 CText.PXyRamp	XY rampa
 CText.PZMax	Z  maks.
 CText.PZRef	Z  ref.
 CText.PZRamp	Z  rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korekcja
-CText.PStroke	Skok
+CText.PRamp	~R~ampa (dv/dt)
+CText.PCorrect	~K~orekcja
+CText.PStroke	~S~kok
 CText.PLimit	Limit
 CText.PFree	Wolne
-CText.PSpindle	Wrzeciono
+CText.PSpindle	Wr~z~eciono
 CText.PDelay	Opóźn.
 CText.PSecond	s
 CText.ConnLabel	Połączenie
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adres musi mieć postać host:port.
 CText.ConnNeedMachine	Brak maszyny serwera.
 CText.ConnSaved	Połączenie zapisano w pliku maszyny.
 CText.ConnNoSave	Nie można zapisać pliku maszyny.
-CText.BLoad	Wczytaj
+CText.BLoad	~W~czytaj
 CText.BSave	Zapisz
-CText.BOk	Ok
-CText.BAbort	Przerwij
-CText.BYes	Tak
-CText.BNo	Nie
-CText.BOkUpper	OK
-CText.BCancel	ANULUJ
+CText.BOk	~O~k
+CText.BAbort	~P~rzerwij
+CText.BYes	~T~ak
+CText.BNo	~N~ie
+CText.BOkUpper	~O~K
+CText.BCancel	~A~NULUJ
 CText.PzTitle	Panelizacja
 CText.PzBoard	Płytka
 CText.PzSpacing	Odstęp
 CText.PzNumber	Liczba
-CText.PzCalc	Oblicz
+CText.PzCalc	O~b~licz
 CText.TTitle	Dane narzędzi
 CText.TPl	Msc.
 CText.TName	Nazwa
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Wekt.
 CText.FTitle	Wybierz plik
-CText.FName	Nazwa
-CText.FFiles	Pliki
+CText.FName	~N~azwa
+CText.FFiles	~P~liki
 CText.QStop	STOP !!!
 CText.QAsk	Czy na pewno zakończyć?
 CText.HomingZ	Bazowanie osi Z
@@ -190,8 +190,8 @@ CText.InputError	Błąd wprowadzania!
 CText.Max	Maks.: 
 CText.Min	Min.: 
 CText.BackupAsk	Zapisać ustawienia z Konfig. i menu głównego do pliku?
-CText.BtnAbout	O progr.
-CText.PLanguage	Język
+CText.BtnAbout	~O~ progr.
+CText.PLanguage	~J~ęzyk
 CText.AboutDescDrill	Otwarta implementacja programu wiercenia Bungard CCD
 CText.AboutDescRoute	Otwarta implementacja programu frezowania Bungard CCD
 CText.AboutVersion	Wersja
@@ -227,16 +227,16 @@ CText.TeachForw	w przód
 CText.TeachRight	w prawo
 CText.TeachUp	w górę
 CText.TeachDown	w dół
-CText.TeachMil	mil/1
-CText.BTeach	Ucz
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Zmień
+CText.TeachMil	~m~il/1
+CText.BTeach	~U~cz
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	~Z~mień
 CText.QAttentionPlain	Uwaga
 CText.QInfo	Info:
 CText.QOffsetDelete	Usunąć stare|przesunięcie?
 CText.QTeachWrite	Zapisać plik|uczenia?
 CText.QWhatNext	Co dalej?
-CText.BCont	Dalej
+CText.BCont	~D~alej
 Text.StatusMain	Esc: wstecz   Enter: zatwierdź   ↑/↓: ruch
 CText.QInterrupted	PRZERWANO

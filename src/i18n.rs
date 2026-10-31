@@ -414,6 +414,65 @@ pub fn cell_width(c: char) -> usize {
     }
 }
 
+/// The letter a typed character stands for in a hot key: lower case, a Greek letter without its accent, the final sigma as the sigma.
+pub fn fold_key(c: char) -> char {
+    let l = c.to_lowercase().next().unwrap_or(c);
+    match l {
+        'ά' => 'α',
+        'έ' => 'ε',
+        'ή' => 'η',
+        'ί' | 'ϊ' | 'ΐ' => 'ι',
+        'ό' => 'ο',
+        'ύ' | 'ϋ' | 'ΰ' => 'υ',
+        'ώ' => 'ω',
+        'ς' => 'σ',
+        _ => l,
+    }
+}
+
+/// The Latin keys of a keyboard and the letters the standard layout of a language puts on the same places (key, letter, key, letter...).
+const RU_LAYOUT: &str = "qйwцeуrкtеyнuгiшoщpзaфsыdвfаgпhрjоkлlдzяxчcсvмbиnтmь";
+const UK_LAYOUT: &str = "qйwцeуrкtеyнuгiшoщpзaфsіdвfаgпhрjоkлlдzяxчcсvмbиnтmь";
+const EL_LAYOUT: &str = "eεrρtτyυuθiιoοpπaασsσdδfφgγhηjξkκlλzζxχcψvωbβnνmμ";
+
+impl Lang {
+    fn layout(self) -> &'static str {
+        match self {
+            Lang::Ru => RU_LAYOUT,
+            Lang::Uk => UK_LAYOUT,
+            Lang::El => EL_LAYOUT,
+            _ => "",
+        }
+    }
+
+    /// The hot letter a typed character means in this language. A Latin letter typed with a Latin keyboard stands for the letter that sits on that
+    /// key in the standard Russian, Ukrainian or Greek layout (the other Cyrillic languages need their own layout); anything else is only folded.
+    pub fn hot_key(self, c: char) -> char {
+        let f = fold_key(c);
+        if f.is_ascii_lowercase() {
+            let mut it = self.layout().chars();
+            while let (Some(k), Some(v)) = (it.next(), it.next()) {
+                if k == f {
+                    return v;
+                }
+            }
+        }
+        f
+    }
+
+    /// The Latin key a typed character sits on in the layout of this language (the keys that stand for a place, like the arrows of the teach window).
+    pub fn latin_key(self, c: char) -> char {
+        let f = fold_key(c);
+        let mut it = self.layout().chars();
+        while let (Some(k), Some(v)) = (it.next(), it.next()) {
+            if v == f {
+                return k;
+            }
+        }
+        f
+    }
+}
+
 /// Display width of a string in cells, ignoring `~` hot-key markers.
 pub fn str_width(s: &str) -> usize {
     s.chars().filter(|&c| c != '~').map(cell_width).sum()

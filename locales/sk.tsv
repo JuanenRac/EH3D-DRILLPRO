@@ -1,12 +1,12 @@
-# Slovenčina (sk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Načítať
-Text.MenuVectors	Vektory
-Text.MenuTools	Nástroje
-Text.MenuConfig	Konfig.
-Text.MenuSort	Triedenie
-Text.MenuStart	Štart
-Text.MenuLanguage	Jazyk
-Text.MenuQuit	Koniec
+# Slovenčina (sk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~N~ačítať
+Text.MenuVectors	~V~ektory
+Text.MenuTools	Ná~s~troje
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	T~r~iedenie
+Text.MenuStart	Š~t~art
+Text.MenuLanguage	~J~azyk
+Text.MenuQuit	K~o~niec
 Text.TitleSelectFile	Výber súboru
 Text.TitleVectors	Vektory
 Text.TitleTools	Údaje nástrojov
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Stroj č.:
-CText.LblScale	Mierka
-CText.LblOffset	Posun
-CText.LblClip	Výrez
-CText.LblVectors	Vektory
+CText.LblScale	~M~ierka
+CText.LblOffset	P~o~sun
+CText.LblClip	~V~ýrez
+CText.LblVectors	V~e~ktory
 CText.LblFrm	od
 CText.LblTo	do
 CText.LblCount	Počet
 CText.LblTotal	Spolu
 CText.LblDone	Hotovo
 CText.LblFile	Súbor
-CText.LblBoard	Doska
-CText.LblBase	Základ
+CText.LblBoard	~D~oska
+CText.LblBase	~Z~áklad
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Nástroje
-CText.BtnStart	Štart
-CText.BtnLoad	Načítať
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Posun
-CText.BtnQuit	Koniec
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	Ná~s~troje
+CText.BtnStart	Š~t~art
+CText.BtnLoad	Na~č~ítať
+CText.BtnPanelz	P~a~nel.
+CText.BtnOffset	~P~osun
+CText.BtnQuit	Ko~n~iec
 CText.PTitle	Parameter
-CText.PFile	Súbor
+CText.PFile	~S~úbor
 CText.PDirectory	Adresár
 CText.PPattern	Vzor
-CText.PCoordinates	Súradnice
-CText.PSorting	Triedenie
-CText.PChord	Uhol tetivy
+CText.PCoordinates	Sú~r~adnice
+CText.PSorting	~T~riedenie
+CText.PChord	~U~hol tetivy
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Žiadne
 CText.PSortX	Najprv X
 CText.PSortY	Najprv Y
 CText.PSortSpecial	Špeciálne
-CText.PSpeed	Rýchlosť (mm/min)
+CText.PSpeed	Rý~c~hlosť (mm/min)
 CText.PXyMax	XY max.
 CText.PXyRef	XY ref.
 CText.PXyRamp	XY rampa
 CText.PZMax	Z  max.
 CText.PZRef	Z  ref.
 CText.PZRamp	Z  rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korekcia
-CText.PStroke	Zdvih
+CText.PRamp	R~a~mpa (dv/dt)
+CText.PCorrect	~K~orekcia
+CText.PStroke	Z~d~vih
 CText.PLimit	Limit
 CText.PFree	Voľný
-CText.PSpindle	Vreteno
+CText.PSpindle	~V~reteno
 CText.PDelay	Oneskor.
 CText.PSecond	s
 CText.ConnLabel	Spojenie
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adresa musí byť host:port.
 CText.ConnNeedMachine	Chýba stroj servera.
 CText.ConnSaved	Spojenie uložené v súbore stroja.
 CText.ConnNoSave	Súbor stroja sa nedá zapísať.
-CText.BLoad	Načítať
+CText.BLoad	~N~ačítať
 CText.BSave	Uložiť
-CText.BOk	Ok
-CText.BAbort	Zrušiť
-CText.BYes	Áno
-CText.BNo	Nie
-CText.BOkUpper	OK
-CText.BCancel	ZRUŠIŤ
+CText.BOk	~O~k
+CText.BAbort	~Z~rušiť
+CText.BYes	Án~o~
+CText.BNo	~N~ie
+CText.BOkUpper	~O~K
+CText.BCancel	~Z~RUŠIŤ
 CText.PzTitle	Panelizácia
 CText.PzBoard	Doska
 CText.PzSpacing	Rozstup
 CText.PzNumber	Počet
-CText.PzCalc	Výpočet
+CText.PzCalc	~V~ýpočet
 CText.TTitle	Údaje nástrojov
 CText.TPl	Mies.
 CText.TName	Názov
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Výber súboru
-CText.FName	Názov
-CText.FFiles	Súbory
+CText.FName	~N~ázov
+CText.FFiles	~S~úbory
 CText.QStop	STOP !!!
 CText.QAsk	Naozaj chcete skončiť?
 CText.HomingZ	Referencia osi Z
@@ -190,8 +190,8 @@ CText.InputError	Chyba vstupu!
 CText.Max	Max:
 CText.Min	Min:
 CText.BackupAsk	Uložiť nastavenia z Konfig. a hlavného menu do súboru?
-CText.BtnAbout	O programe
-CText.PLanguage	Jazyk
+CText.BtnAbout	O p~r~ograme
+CText.PLanguage	~J~azyk
 CText.AboutDescDrill	Otvorená implementácia vŕtacieho programu Bungard CCD
 CText.AboutDescRoute	Otvorená implementácia frézovacieho programu Bungard CCD
 CText.AboutVersion	Verzia
@@ -227,16 +227,16 @@ CText.TeachForw	vpred
 CText.TeachRight	vpravo
 CText.TeachUp	hore
 CText.TeachDown	dole
-CText.TeachMil	mil/1
-CText.BTeach	Učiť
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Zmena
+CText.TeachMil	~m~il/1
+CText.BTeach	~U~čiť
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	Z~m~ena
 CText.QAttentionPlain	Pozor
 CText.QInfo	Info:
 CText.QOffsetDelete	Zmazať starý|posun?
 CText.QTeachWrite	Zapísať súbor|učenia?
 CText.QWhatNext	Čo ďalej?
-CText.BCont	Pokrač.
+CText.BCont	~P~okrač.
 Text.StatusMain	Esc: späť   Enter: potvrdiť   ↑/↓: pohyb
 CText.QInterrupted	PRERUŠENÉ

@@ -1,12 +1,12 @@
-# Latviešu (lv): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Ielādēt
-Text.MenuVectors	Vektori
-Text.MenuTools	Rīki
-Text.MenuConfig	Konfig.
-Text.MenuSort	Kārtošana
-Text.MenuStart	Sākt
-Text.MenuLanguage	Valoda
-Text.MenuQuit	Iziet
+# Latviešu (lv): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	I~e~lādēt
+Text.MenuVectors	Vek~t~ori
+Text.MenuTools	~R~īki
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	Kārt~o~šana
+Text.MenuStart	~S~ākt
+Text.MenuLanguage	~V~aloda
+Text.MenuQuit	~I~ziet
 Text.TitleSelectFile	Izvēlēties failu
 Text.TitleVectors	Vektori
 Text.TitleTools	Rīku dati
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Iekārtas Nr.:
-CText.LblScale	Mērogs
-CText.LblOffset	Nobīde
-CText.LblClip	Apcirpt
-CText.LblVectors	Vektori
+CText.LblScale	~M~ērogs
+CText.LblOffset	N~o~bīde
+CText.LblClip	Ap~c~irpt
+CText.LblVectors	~V~ektori
 CText.LblFrm	no
 CText.LblTo	līdz
 CText.LblCount	Skaits
 CText.LblTotal	Kopā
 CText.LblDone	Gatavs
 CText.LblFile	Fails
-CText.LblBoard	Plate
-CText.LblBase	Pamats
+CText.LblBoard	P~l~ate
+CText.LblBase	P~a~mats
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Rīki
-CText.BtnStart	Sākt
-CText.BtnLoad	Ielādēt
-CText.BtnPanelz	Panelēt
-CText.BtnOffset	Nobīde
-CText.BtnQuit	Iziet
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	~R~īki
+CText.BtnStart	~S~ākt
+CText.BtnLoad	I~e~lādēt
+CText.BtnPanelz	Panelē~t~
+CText.BtnOffset	~N~obīde
+CText.BtnQuit	~I~ziet
 CText.PTitle	Parametri
-CText.PFile	Fails
+CText.PFile	~F~ails
 CText.PDirectory	Direktorija
 CText.PPattern	Maska
-CText.PCoordinates	Koordinātas
-CText.PSorting	Kārtošana
-CText.PChord	Hordas leņķis
+CText.PCoordinates	Koor~d~inātas
+CText.PSorting	Kārtoša~n~a
+CText.PChord	~H~ordas leņķis
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Nav
 CText.PSortX	Vispirms X
 CText.PSortY	Vispirms Y
 CText.PSortSpecial	Īpašā
-CText.PSpeed	Ātrums (mm/min)
+CText.PSpeed	Ā~t~rums (mm/min)
 CText.PXyMax	XY maks.
 CText.PXyRef	XY bāze
 CText.PXyRamp	XY rampa
 CText.PZMax	Z  maks.
 CText.PZRef	Z  bāze
 CText.PZRamp	Z  rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korekc.
-CText.PStroke	Gājiens
+CText.PRamp	R~a~mpa (dv/dt)
+CText.PCorrect	~K~orekc.
+CText.PStroke	~G~ājiens
 CText.PLimit	Limits
 CText.PFree	Brīvs
-CText.PSpindle	Vārpsta
+CText.PSpindle	Vā~r~psta
 CText.PDelay	Aizkave
 CText.PSecond	s
 CText.ConnLabel	Savienojums
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adresei jābūt resursdators:ports.
 CText.ConnNeedMachine	Trūkst servera iekārtas.
 CText.ConnSaved	Savienojums saglabāts iekārtas failā.
 CText.ConnNoSave	Iekārtas failu nevar ierakstīt.
-CText.BLoad	Ielādēt
+CText.BLoad	~I~elādēt
 CText.BSave	Saglabāt
-CText.BOk	Ok
-CText.BAbort	Pārtraukt
-CText.BYes	Jā
-CText.BNo	Nē
-CText.BOkUpper	OK
-CText.BCancel	ATCELT
+CText.BOk	~O~k
+CText.BAbort	~P~ārtraukt
+CText.BYes	~J~ā
+CText.BNo	~N~ē
+CText.BOkUpper	~O~K
+CText.BCancel	~A~TCELT
 CText.PzTitle	Panelēšana
 CText.PzBoard	Plate
 CText.PzSpacing	Atstarpe
 CText.PzNumber	Skaits
-CText.PzCalc	Aprēķ.
+CText.PzCalc	~A~prēķ.
 CText.TTitle	Rīku dati
 CText.TPl	Vt.
 CText.TName	Nosaukums
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Izvēlēties failu
-CText.FName	Nosaukums
-CText.FFiles	Faili
+CText.FName	~N~osaukums
+CText.FFiles	~F~aili
 CText.QStop	STOP !!!
 CText.QAsk	Vai tiešām iziet?
 CText.HomingZ	Z ass bāzēšana
@@ -190,8 +190,8 @@ CText.InputError	Ievades kļūda!
 CText.Max	Maks.: 
 CText.Min	Min.: 
 CText.BackupAsk	Saglabāt iestatījumus no Konfig. un galvenās izvēlnes failā?
-CText.BtnAbout	Par
-CText.PLanguage	Valoda
+CText.BtnAbout	~P~ar
+CText.PLanguage	~V~aloda
 CText.AboutDescDrill	Atvērta Bungard CCD urbšanas programmas realizācija
 CText.AboutDescRoute	Atvērta Bungard CCD frēzēšanas programmas realizācija
 CText.AboutVersion	Versija
@@ -227,16 +227,16 @@ CText.TeachForw	uz priekšu
 CText.TeachRight	pa labi
 CText.TeachUp	augšup
 CText.TeachDown	lejup
-CText.TeachMil	mil/1
-CText.BTeach	Apmācīt
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Mainīt
+CText.TeachMil	~m~il/1
+CText.BTeach	~A~pmācīt
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	~M~ainīt
 CText.QAttentionPlain	Uzmanību
 CText.QInfo	Info:
 CText.QOffsetDelete	Dzēst veco|nobīdi?
 CText.QTeachWrite	Ierakstīt apmācības|failu?
 CText.QWhatNext	Kas tālāk?
-CText.BCont	Turpin.
+CText.BCont	~T~urpin.
 Text.StatusMain	Esc: atpakaļ   Enter: apstiprināt   ↑/↓: pārvietot
 CText.QInterrupted	PĀRTRAUKTS

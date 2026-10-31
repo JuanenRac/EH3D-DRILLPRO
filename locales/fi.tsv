@@ -1,12 +1,12 @@
-# Suomi (fi): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Lataa
-Text.MenuVectors	Vektorit
-Text.MenuTools	Työkalut
-Text.MenuConfig	Asetukset
-Text.MenuSort	Lajittelu
-Text.MenuStart	Käynnistä
-Text.MenuLanguage	Kieli
-Text.MenuQuit	Lopeta
+# Suomi (fi): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~L~ataa
+Text.MenuVectors	~V~ektorit
+Text.MenuTools	~T~yökalut
+Text.MenuConfig	~A~setukset
+Text.MenuSort	La~j~ittelu
+Text.MenuStart	Kä~y~nnistä
+Text.MenuLanguage	~K~ieli
+Text.MenuQuit	L~o~peta
 Text.TitleSelectFile	Valitse tiedosto
 Text.TitleVectors	Vektorit
 Text.TitleTools	Työkalutiedot
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Koneen nro:
-CText.LblScale	Mitta
-CText.LblOffset	Siirto
-CText.LblClip	Rajaus
-CText.LblVectors	Vektorit
+CText.LblScale	~M~itta
+CText.LblOffset	S~i~irto
+CText.LblClip	~R~ajaus
+CText.LblVectors	~V~ektorit
 CText.LblFrm	alk.
 CText.LblTo	asti
 CText.LblCount	Määrä
 CText.LblTotal	Yht.
 CText.LblDone	Tehty
 CText.LblFile	Tiedosto
-CText.LblBoard	Piirilevy
-CText.LblBase	Alusta
+CText.LblBoard	Piiril~e~vy
+CText.LblBase	~A~lusta
 CText.Mm	mm
-CText.BtnConfig	Asetukset
-CText.BtnTools	Työkalut
-CText.BtnStart	Käynnistä
-CText.BtnLoad	Lataa
-CText.BtnPanelz	Paneloi
-CText.BtnOffset	Siirto
-CText.BtnQuit	Lopeta
+CText.BtnConfig	Aset~u~kset
+CText.BtnTools	T~y~ökalut
+CText.BtnStart	~K~äynnistä
+CText.BtnLoad	~L~ataa
+CText.BtnPanelz	~P~aneloi
+CText.BtnOffset	~S~iirto
+CText.BtnQuit	L~o~peta
 CText.PTitle	Parametri
-CText.PFile	Tiedosto
+CText.PFile	~T~iedosto
 CText.PDirectory	Hakemisto
 CText.PPattern	Maski
-CText.PCoordinates	Koordinaatit
-CText.PSorting	Lajittelu
-CText.PChord	Jänteen kulma
+CText.PCoordinates	Koor~d~inaatit
+CText.PSorting	La~j~ittelu
+CText.PChord	~J~änteen kulma
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0,025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Ei mitään
 CText.PSortX	X ensin
 CText.PSortY	Y ensin
 CText.PSortSpecial	Erikois
-CText.PSpeed	Nopeus (mm/min)
+CText.PSpeed	~N~opeus (mm/min)
 CText.PXyMax	XY maks.
 CText.PXyRef	XY ref.
 CText.PXyRamp	XY ramppi
 CText.PZMax	Z  maks.
 CText.PZRef	Z  ref.
 CText.PZRamp	Z  ramppi
-CText.PRamp	Ramppi (dv/dt)
-CText.PCorrect	Korjaus
-CText.PStroke	Isku
+CText.PRamp	Ra~m~ppi (dv/dt)
+CText.PCorrect	Ko~r~jaus
+CText.PStroke	~I~sku
 CText.PLimit	Raja
 CText.PFree	Vapaa
-CText.PSpindle	Kara
+CText.PSpindle	K~a~ra
 CText.PDelay	Viive
 CText.PSecond	s
 CText.ConnLabel	Yhteys
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Osoitteen muoto on isäntä:portti.
 CText.ConnNeedMachine	Palvelimen kone puuttuu.
 CText.ConnSaved	Yhteys tallennettu konetiedostoon.
 CText.ConnNoSave	Konetiedostoon ei voi kirjoittaa.
-CText.BLoad	Lataa
+CText.BLoad	~L~ataa
 CText.BSave	Tallenna
-CText.BOk	Ok
-CText.BAbort	Keskeytä
-CText.BYes	Kyllä
-CText.BNo	Ei
-CText.BOkUpper	OK
-CText.BCancel	PERUUTA
+CText.BOk	~O~k
+CText.BAbort	~K~eskeytä
+CText.BYes	~K~yllä
+CText.BNo	~E~i
+CText.BOkUpper	~O~K
+CText.BCancel	~P~ERUUTA
 CText.PzTitle	Panelointi
 CText.PzBoard	Piirilevy
 CText.PzSpacing	Väli
 CText.PzNumber	Määrä
-CText.PzCalc	Laske
+CText.PzCalc	~L~aske
 CText.TTitle	Työkalutiedot
 CText.TPl	Paik.
 CText.TName	Nimi
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Valitse tiedosto
-CText.FName	Nimi
-CText.FFiles	Tiedostot
+CText.FName	~N~imi
+CText.FFiles	~T~iedostot
 CText.QStop	STOP !!!
 CText.QAsk	Haluatko varmasti lopettaa?
 CText.HomingZ	Z-akselin referenssiajo
@@ -190,8 +190,8 @@ CText.InputError	Syöttövirhe!
 CText.Max	Maks:
 CText.Min	Min:
 CText.BackupAsk	Tallennetaanko asetukset tiedostoon?
-CText.BtnAbout	Tietoja
-CText.PLanguage	Kieli
+CText.BtnAbout	~T~ietoja
+CText.PLanguage	Ki~e~li
 CText.AboutDescDrill	Bungard CCD -porausohjelman avoin toteutus
 CText.AboutDescRoute	Bungard CCD -jyrsintäohjelman avoin toteutus
 CText.AboutVersion	Versio
@@ -227,16 +227,16 @@ CText.TeachForw	eteen
 CText.TeachRight	oikea
 CText.TeachUp	ylös
 CText.TeachDown	alas
-CText.TeachMil	mil/1
-CText.BTeach	Opeta
-CText.BPlusPos	+ Paik.
-CText.BMinusPos	- Paik.
-CText.BMod	Muuta
+CText.TeachMil	~m~il/1
+CText.BTeach	O~p~eta
+CText.BPlusPos	~+~ Paik.
+CText.BMinusPos	~-~ Paik.
+CText.BMod	~M~uuta
 CText.QAttentionPlain	Huomio
 CText.QInfo	Info:
 CText.QOffsetDelete	Poistetaanko vanha|siirto?
 CText.QTeachWrite	Kirjoitetaanko opetus-|tiedosto?
 CText.QWhatNext	Mitä seuraavaksi?
-CText.BCont	Jatka
+CText.BCont	~J~atka
 Text.StatusMain	Esc: takaisin   Enter: hyväksy   ↑/↓: siirry
 CText.QInterrupted	KESKEYTETTY

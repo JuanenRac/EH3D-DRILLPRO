@@ -1,12 +1,12 @@
-# Română (ro): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Încărcare
-Text.MenuVectors	Vectori
-Text.MenuTools	Scule
-Text.MenuConfig	Config.
-Text.MenuSort	Sortare
-Text.MenuStart	Start
-Text.MenuLanguage	Limbă
-Text.MenuQuit	Ieșire
+# Română (ro): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	Î~n~cărcare
+Text.MenuVectors	~V~ectori
+Text.MenuTools	S~c~ule
+Text.MenuConfig	C~o~nfig.
+Text.MenuSort	So~r~tare
+Text.MenuStart	~S~tart
+Text.MenuLanguage	~L~imbă
+Text.MenuQuit	~I~eșire
 Text.TitleSelectFile	Alegeți fișierul
 Text.TitleVectors	Vectori
 Text.TitleTools	Date scule
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Mașina nr.:
-CText.LblScale	Scară
-CText.LblOffset	Decalaj
-CText.LblClip	Tăiere
-CText.LblVectors	Vectori
+CText.LblScale	Sc~a~ră
+CText.LblOffset	Decala~j~
+CText.LblClip	~T~ăiere
+CText.LblVectors	~V~ectori
 CText.LblFrm	de
 CText.LblTo	la
 CText.LblCount	Număr
 CText.LblTotal	Total
 CText.LblDone	Gata
 CText.LblFile	Fișier
-CText.LblBoard	Placă
-CText.LblBase	Bază
+CText.LblBoard	P~l~acă
+CText.LblBase	~B~ază
 CText.Mm	mm
-CText.BtnConfig	Config.
-CText.BtnTools	Scule
-CText.BtnStart	Start
-CText.BtnLoad	Încărc.
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Decalaj
-CText.BtnQuit	Ieșire
+CText.BtnConfig	C~o~nfig.
+CText.BtnTools	S~c~ule
+CText.BtnStart	~S~tart
+CText.BtnLoad	Î~n~cărc.
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	D~e~calaj
+CText.BtnQuit	~I~eșire
 CText.PTitle	Parametri
-CText.PFile	Fișier
+CText.PFile	~F~ișier
 CText.PDirectory	Director
 CText.PPattern	Model
-CText.PCoordinates	Coordonate
-CText.PSorting	Sortare
-CText.PChord	Unghi coardă
+CText.PCoordinates	Coor~d~onate
+CText.PSorting	~S~ortare
+CText.PChord	~U~nghi coardă
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Fără
 CText.PSortX	Întâi X
 CText.PSortY	Întâi Y
 CText.PSortSpecial	Special
-CText.PSpeed	Viteză (mm/min)
+CText.PSpeed	~V~iteză (mm/min)
 CText.PXyMax	XY Max.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Rampă
 CText.PZMax	Z  Max.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Rampă
-CText.PRamp	Rampă (dv/dt)
-CText.PCorrect	Corecț.
-CText.PStroke	Cursă
+CText.PRamp	Ra~m~pă (dv/dt)
+CText.PCorrect	Co~r~ecț.
+CText.PStroke	~C~ursă
 CText.PLimit	Limită
 CText.PFree	Liber
-CText.PSpindle	Arbore
+CText.PSpindle	Ar~b~ore
 CText.PDelay	Întârz.
 CText.PSecond	s
 CText.ConnLabel	Conexiune
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adresa trebuie să fie gazdă:port.
 CText.ConnNeedMachine	Lipsește mașina serverului.
 CText.ConnSaved	Conexiune salvată în fișierul mașinii.
 CText.ConnNoSave	Fișierul mașinii nu poate fi scris.
-CText.BLoad	Încărcare
+CText.BLoad	Î~n~cărcare
 CText.BSave	Salvare
-CText.BOk	Ok
-CText.BAbort	Anulare
-CText.BYes	Da
-CText.BNo	Nu
-CText.BOkUpper	OK
-CText.BCancel	RENUNȚ
+CText.BOk	~O~k
+CText.BAbort	~A~nulare
+CText.BYes	~D~a
+CText.BNo	~N~u
+CText.BOkUpper	~O~K
+CText.BCancel	~R~ENUNȚ
 CText.PzTitle	Panelizare
 CText.PzBoard	Placă
 CText.PzSpacing	Spațiere
 CText.PzNumber	Număr
-CText.PzCalc	Calc.
+CText.PzCalc	~C~alc.
 CText.TTitle	Date scule
 CText.TPl	Loc
 CText.TName	Nume
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vect.
 CText.FTitle	Alegeți fișierul
-CText.FName	Nume
-CText.FFiles	Fișiere
+CText.FName	~N~ume
+CText.FFiles	~F~ișiere
 CText.QStop	STOP !!!
 CText.QAsk	Chiar doriți să ieșiți?
 CText.HomingZ	Referențiere axa Z
@@ -190,8 +190,8 @@ CText.InputError	Eroare de introducere!
 CText.Max	Max.: 
 CText.Min	Min.: 
 CText.BackupAsk	Salvați setările din Config. și meniul principal în fișier?
-CText.BtnAbout	Despre
-CText.PLanguage	Limbă
+CText.BtnAbout	~D~espre
+CText.PLanguage	~L~imbă
 CText.AboutDescDrill	Implementare deschisă a programului de găurire Bungard CCD
 CText.AboutDescRoute	Implementare deschisă a programului de frezare Bungard CCD
 CText.AboutVersion	Versiune
@@ -227,16 +227,16 @@ CText.TeachForw	înainte
 CText.TeachRight	dreapta
 CText.TeachUp	sus
 CText.TeachDown	jos
-CText.TeachMil	mil/1
-CText.BTeach	Învață
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Modif.
+CText.TeachMil	~m~il/1
+CText.BTeach	Î~n~vață
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	~M~odif.
 CText.QAttentionPlain	Atenție
 CText.QInfo	Info:
 CText.QOffsetDelete	Ștergeți vechiul|decalaj?
 CText.QTeachWrite	Scrieți fișierul|de învățare?
 CText.QWhatNext	Ce urmează?
-CText.BCont	Contin.
+CText.BCont	~C~ontin.
 Text.StatusMain	Esc: înapoi   Enter: acceptă   ↑/↓: mișcare
 CText.QInterrupted	ÎNTRERUPT

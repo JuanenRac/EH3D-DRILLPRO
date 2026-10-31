@@ -384,14 +384,14 @@
         {
           "name": "tools/",
           "desc": {
-            "en": "CI check, README check and the picture tools",
-            "es": "comprobación de CI, del README y las herramientas de imágenes",
-            "de": "CI-Prüfung, README-Prüfung und die Bild-Werkzeuge",
-            "fr": "contrôle de CI, du README et outils d'images",
-            "it": "controllo di CI, del README e strumenti per le immagini",
-            "ja": "CI チェック、README チェック、図の生成ツール",
-            "zh": "CI 检查、README 检查和图片工具",
-            "pt": "verificação de CI, do README e ferramentas de imagens"
+            "en": "CI check, README check, hot-key writer and the picture tools",
+            "es": "comprobación de CI, del README, escritor de teclas rápidas y herramientas de imágenes",
+            "de": "CI-Prüfung, README-Prüfung, Kurztasten-Schreiber und Bild-Werkzeuge",
+            "fr": "contrôle de CI, du README, écriture des raccourcis et outils d'images",
+            "it": "controllo di CI, del README, scrittura dei tasti rapidi e strumenti per le immagini",
+            "ja": "CI チェック、README チェック、ショートカットキーの書き込み、図の生成ツール",
+            "zh": "CI 检查、README 检查、快捷键写入和图片工具",
+            "pt": "verificação de CI, do README, escrita das teclas de atalho e ferramentas de imagens"
           }
         },
         {

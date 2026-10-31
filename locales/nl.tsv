@@ -1,12 +1,12 @@
-# Nederlands (nl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Laden
-Text.MenuVectors	Vectoren
-Text.MenuTools	Gereedschap
-Text.MenuConfig	Config.
-Text.MenuSort	Sorteren
-Text.MenuStart	Start
-Text.MenuLanguage	Taal
-Text.MenuQuit	Afsluiten
+# Nederlands (nl): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~L~aden
+Text.MenuVectors	~V~ectoren
+Text.MenuTools	~G~ereedschap
+Text.MenuConfig	~C~onfig.
+Text.MenuSort	S~o~rteren
+Text.MenuStart	~S~tart
+Text.MenuLanguage	~T~aal
+Text.MenuQuit	~A~fsluiten
 Text.TitleSelectFile	Bestand kiezen
 Text.TitleVectors	Vectoren
 Text.TitleTools	Gereedschapsdata
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Machine nr.:
-CText.LblScale	Schaal
-CText.LblOffset	Offset
-CText.LblClip	Uitsnede
-CText.LblVectors	Vectoren
+CText.LblScale	Sc~h~aal
+CText.LblOffset	O~f~fset
+CText.LblClip	~U~itsnede
+CText.LblVectors	~V~ectoren
 CText.LblFrm	van
 CText.LblTo	tot
 CText.LblCount	Aantal
 CText.LblTotal	Totaal
 CText.LblDone	Klaar
 CText.LblFile	Bestand
-CText.LblBoard	Print
-CText.LblBase	Basis
+CText.LblBoard	P~r~int
+CText.LblBase	~B~asis
 CText.Mm	mm
-CText.BtnConfig	Config.
-CText.BtnTools	Gereedsch.
-CText.BtnStart	Start
-CText.BtnLoad	Laden
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Offset
-CText.BtnQuit	Afsluiten
+CText.BtnConfig	~C~onfig.
+CText.BtnTools	~G~ereedsch.
+CText.BtnStart	~S~tart
+CText.BtnLoad	~L~aden
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	~O~ffset
+CText.BtnQuit	~A~fsluiten
 CText.PTitle	Parameters
-CText.PFile	Bestand
+CText.PFile	~B~estand
 CText.PDirectory	Map
 CText.PPattern	Patroon
-CText.PCoordinates	Coördinaten
-CText.PSorting	Sorteren
-CText.PChord	Koordehoek
+CText.PCoordinates	Coö~r~dinaten
+CText.PSorting	Sort~e~ren
+CText.PChord	~K~oordehoek
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Geen
 CText.PSortX	Eerst X
 CText.PSortY	Eerst Y
 CText.PSortSpecial	Speciaal
-CText.PSpeed	Snelheid (mm/min)
+CText.PSpeed	S~n~elheid (mm/min)
 CText.PXyMax	XY Max.
 CText.PXyRef	XY Ref.
 CText.PXyRamp	XY Helling
 CText.PZMax	Z  Max.
 CText.PZRef	Z  Ref.
 CText.PZRamp	Z  Helling
-CText.PRamp	Helling (dv/dt)
-CText.PCorrect	Correct.
-CText.PStroke	Slag
+CText.PRamp	~H~elling (dv/dt)
+CText.PCorrect	~C~orrect.
+CText.PStroke	~S~lag
 CText.PLimit	Limiet
 CText.PFree	Vrij
-CText.PSpindle	Spindel
+CText.PSpindle	S~p~indel
 CText.PDelay	Vertraging
 CText.PSecond	s
 CText.ConnLabel	Verbinding
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Het adres moet host:poort zijn.
 CText.ConnNeedMachine	De machine van de server ontbreekt.
 CText.ConnSaved	Verbinding opgeslagen in het machinebestand.
 CText.ConnNoSave	Het machinebestand kan niet worden geschreven.
-CText.BLoad	Laden
+CText.BLoad	~L~aden
 CText.BSave	Opslaan
-CText.BOk	Ok
-CText.BAbort	Afbreken
-CText.BYes	Ja
-CText.BNo	Nee
-CText.BOkUpper	OK
-CText.BCancel	ANNULEREN
+CText.BOk	~O~k
+CText.BAbort	~A~fbreken
+CText.BYes	~J~a
+CText.BNo	~N~ee
+CText.BOkUpper	~O~K
+CText.BCancel	~A~NNULEREN
 CText.PzTitle	Panelisatie
 CText.PzBoard	Print
 CText.PzSpacing	Afstand
 CText.PzNumber	Aantal
-CText.PzCalc	Bereken
+CText.PzCalc	~B~ereken
 CText.TTitle	Gereedschapsdata
 CText.TPl	Pl.
 CText.TName	Naam
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vect.
 CText.FTitle	Bestand kiezen
-CText.FName	Naam
-CText.FFiles	Bestanden
+CText.FName	~N~aam
+CText.FFiles	~B~estanden
 CText.QStop	STOP !!!
 CText.QAsk	Weet u zeker dat u wilt afsluiten?
 CText.HomingZ	Referentie Z-as
@@ -190,8 +190,8 @@ CText.InputError	Invoerfout!
 CText.Max	Max:
 CText.Min	Min:
 CText.BackupAsk	Instellingen uit Config. en hoofdmenu opslaan in bestand?
-CText.BtnAbout	Info
-CText.PLanguage	Taal
+CText.BtnAbout	~I~nfo
+CText.PLanguage	~T~aal
 CText.AboutDescDrill	Open implementatie van het Bungard CCD-boorprogramma
 CText.AboutDescRoute	Open implementatie van het Bungard CCD-freesprogramma
 CText.AboutVersion	Versie
@@ -227,16 +227,16 @@ CText.TeachForw	voor
 CText.TeachRight	rechts
 CText.TeachUp	omhoog
 CText.TeachDown	omlaag
-CText.TeachMil	mil/1
-CText.BTeach	Inleren
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Wijz.
+CText.TeachMil	~m~il/1
+CText.BTeach	~I~nleren
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	~W~ijz.
 CText.QAttentionPlain	Let op
 CText.QInfo	Info:
 CText.QOffsetDelete	Oude offset|wissen?
 CText.QTeachWrite	Inleerbestand|schrijven?
 CText.QWhatNext	Wat nu?
-CText.BCont	Verder
+CText.BCont	~V~erder
 Text.StatusMain	Esc: terug   Enter: accepteren   ↑/↓: verplaatsen
 CText.QInterrupted	ONDERBROKEN

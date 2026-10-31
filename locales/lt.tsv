@@ -1,12 +1,12 @@
-# Lietuvių (lt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Įkelti
-Text.MenuVectors	Vektoriai
-Text.MenuTools	Įrankiai
-Text.MenuConfig	Konfig.
-Text.MenuSort	Rūšiavimas
-Text.MenuStart	Pradėti
-Text.MenuLanguage	Kalba
-Text.MenuQuit	Išeiti
+# Lietuvių (lt): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	Įk~e~lti
+Text.MenuVectors	~V~ektoriai
+Text.MenuTools	Į~r~ankiai
+Text.MenuConfig	K~o~nfig.
+Text.MenuSort	Rūši~a~vimas
+Text.MenuStart	~P~radėti
+Text.MenuLanguage	~K~alba
+Text.MenuQuit	~I~šeiti
 Text.TitleSelectFile	Pasirinkti failą
 Text.TitleVectors	Vektoriai
 Text.TitleTools	Įrankių duomenys
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Staklių Nr.:
-CText.LblScale	Mastelis
-CText.LblOffset	Poslinkis
-CText.LblClip	Apkirpti
-CText.LblVectors	Vektoriai
+CText.LblScale	~M~astelis
+CText.LblOffset	Po~s~linkis
+CText.LblClip	Apkirp~t~i
+CText.LblVectors	~V~ektoriai
 CText.LblFrm	nuo
 CText.LblTo	iki
 CText.LblCount	Kiekis
 CText.LblTotal	Viso
 CText.LblDone	Baigta
 CText.LblFile	Failas
-CText.LblBoard	Plokštė
-CText.LblBase	Bazė
+CText.LblBoard	P~l~okštė
+CText.LblBase	~B~azė
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Įrankiai
-CText.BtnStart	Pradėti
-CText.BtnLoad	Įkelti
-CText.BtnPanelz	Panel.
-CText.BtnOffset	Poslinkis
-CText.BtnQuit	Išeiti
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	Įra~n~kiai
+CText.BtnStart	P~r~adėti
+CText.BtnLoad	Įk~e~lti
+CText.BtnPanelz	~P~anel.
+CText.BtnOffset	P~o~slinkis
+CText.BtnQuit	~I~šeiti
 CText.PTitle	Parametrai
-CText.PFile	Failas
+CText.PFile	~F~ailas
 CText.PDirectory	Katalogas
 CText.PPattern	Šablonas
-CText.PCoordinates	Koordinatės
-CText.PSorting	Rūšiavimas
-CText.PChord	Stygos kampas
+CText.PCoordinates	Koor~d~inatės
+CText.PSorting	Rūši~a~vimas
+CText.PChord	S~t~ygos kampas
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Nėra
 CText.PSortX	Pirma X
 CText.PSortY	Pirma Y
 CText.PSortSpecial	Specialus
-CText.PSpeed	Greitis (mm/min)
+CText.PSpeed	Gre~i~tis (mm/min)
 CText.PXyMax	XY maks.
 CText.PXyRef	XY bazė
 CText.PXyRamp	XY rampa
 CText.PZMax	Z  maks.
 CText.PZRef	Z  bazė
 CText.PZRamp	Z  rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Korekc.
-CText.PStroke	Eiga
+CText.PRamp	~R~ampa (dv/dt)
+CText.PCorrect	K~o~rekc.
+CText.PStroke	~E~iga
 CText.PLimit	Riba
 CText.PFree	Laisvas
-CText.PSpindle	Suklys
+CText.PSpindle	~S~uklys
 CText.PDelay	Delsa
 CText.PSecond	s
 CText.ConnLabel	Ryšys
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Adresas turi būti host:port.
 CText.ConnNeedMachine	Trūksta serverio staklių.
 CText.ConnSaved	Ryšys įrašytas staklių faile.
 CText.ConnNoSave	Staklių failo įrašyti negalima.
-CText.BLoad	Įkelti
+CText.BLoad	Įke~l~ti
 CText.BSave	Įrašyti
-CText.BOk	Gerai
-CText.BAbort	Nutraukti
-CText.BYes	Taip
-CText.BNo	Ne
-CText.BOkUpper	GERAI
-CText.BCancel	ATŠAUKTI
+CText.BOk	~G~erai
+CText.BAbort	~N~utraukti
+CText.BYes	~T~aip
+CText.BNo	~N~e
+CText.BOkUpper	~G~ERAI
+CText.BCancel	~A~TŠAUKTI
 CText.PzTitle	Panelizavimas
 CText.PzBoard	Plokštė
 CText.PzSpacing	Tarpas
 CText.PzNumber	Kiekis
-CText.PzCalc	Skaič.
+CText.PzCalc	~S~kaič.
 CText.TTitle	Įrankių duomenys
 CText.TPl	Vt.
 CText.TName	Pavadinimas
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Pasirinkti failą
-CText.FName	Pavadinimas
-CText.FFiles	Failai
+CText.FName	~P~avadinimas
+CText.FFiles	~F~ailai
 CText.QStop	STOP !!!
 CText.QAsk	Ar tikrai norite išeiti?
 CText.HomingZ	Z ašies bazavimas
@@ -190,8 +190,8 @@ CText.InputError	Įvesties klaida!
 CText.Max	Maks.: 
 CText.Min	Min.: 
 CText.BackupAsk	Įrašyti nustatymus iš Konfig. ir pagrindinio meniu į failą?
-CText.BtnAbout	Apie
-CText.PLanguage	Kalba
+CText.BtnAbout	~A~pie
+CText.PLanguage	~K~alba
 CText.AboutDescDrill	Atvira Bungard CCD gręžimo programos realizacija
 CText.AboutDescRoute	Atvira Bungard CCD frezavimo programos realizacija
 CText.AboutVersion	Versija
@@ -227,16 +227,16 @@ CText.TeachForw	pirmyn
 CText.TeachRight	dešinėn
 CText.TeachUp	aukštyn
 CText.TeachDown	žemyn
-CText.TeachMil	mil/1
-CText.BTeach	Mokyti
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Keisti
+CText.TeachMil	~m~il/1
+CText.BTeach	~M~okyti
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	~K~eisti
 CText.QAttentionPlain	Dėmesio
 CText.QInfo	Info:
 CText.QOffsetDelete	Trinti seną|poslinkį?
 CText.QTeachWrite	Įrašyti mokymo|failą?
 CText.QWhatNext	Kas toliau?
-CText.BCont	Tęsti
+CText.BCont	~T~ęsti
 Text.StatusMain	Esc: atgal   Enter: patvirtinti   ↑/↓: judėti
 CText.QInterrupted	PERTRAUKTA

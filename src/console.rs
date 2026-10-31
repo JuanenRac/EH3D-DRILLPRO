@@ -17,6 +17,7 @@ use crossterm::terminal::{
 };
 
 use crate::app::Input;
+use crate::i18n::fold_key;
 use crate::screen::{Screen, COLS, CONTINUATION, ROWS};
 use crate::textapp::TextApp;
 
@@ -56,7 +57,7 @@ pub fn map_key(k: KeyEvent) -> Option<Input> {
     }
     let alt = k.modifiers.contains(KeyModifiers::ALT);
     Some(match k.code {
-        KeyCode::Char(c) if alt => Input::Alt(c.to_ascii_lowercase()),
+        KeyCode::Char(c) if alt => Input::Alt(fold_key(c)),
         KeyCode::Char(c) => Input::Char(c),
         KeyCode::Enter => Input::Enter,
         KeyCode::Esc => Input::Esc,

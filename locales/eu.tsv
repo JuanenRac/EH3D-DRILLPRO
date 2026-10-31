@@ -1,12 +1,12 @@
-# Euskara (eu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Kargatu
-Text.MenuVectors	Bektoreak
-Text.MenuTools	Erremintak
-Text.MenuConfig	Konfig.
-Text.MenuSort	Ordena
-Text.MenuStart	Hasi
-Text.MenuLanguage	Hizkuntza
-Text.MenuQuit	Irten
+# Euskara (eu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	K~a~rgatu
+Text.MenuVectors	~B~ektoreak
+Text.MenuTools	~E~rremintak
+Text.MenuConfig	~K~onfig.
+Text.MenuSort	~O~rdena
+Text.MenuStart	~H~asi
+Text.MenuLanguage	Hi~z~kuntza
+Text.MenuQuit	~I~rten
 Text.TitleSelectFile	Hautatu fitxategia
 Text.TitleVectors	Bektoreak
 Text.TitleTools	Erremintaren datuak
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Klasikoa
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Makina zk.:
-CText.LblScale	Eskala
-CText.LblOffset	Desplaz.
-CText.LblClip	Muga
-CText.LblVectors	Bektoreak
+CText.LblScale	E~s~kala
+CText.LblOffset	Desp~l~az.
+CText.LblClip	~M~uga
+CText.LblVectors	~B~ektoreak
 CText.LblFrm	nork
 CText.LblTo	nora
 CText.LblCount	Kopurua
 CText.LblTotal	Guzt.
 CText.LblDone	Eginda
 CText.LblFile	Fitxategia
-CText.LblBoard	Plaka
-CText.LblBase	Oinarria
+CText.LblBoard	~P~laka
+CText.LblBase	~O~inarria
 CText.Mm	mm
-CText.BtnConfig	Konfig.
-CText.BtnTools	Errem.
-CText.BtnStart	Hasi
-CText.BtnLoad	Kargatu
-CText.BtnPanelz	Panela
-CText.BtnOffset	Desplaz.
-CText.BtnQuit	Irten
+CText.BtnConfig	~K~onfig.
+CText.BtnTools	~E~rrem.
+CText.BtnStart	~H~asi
+CText.BtnLoad	Ka~r~gatu
+CText.BtnPanelz	P~a~nela
+CText.BtnOffset	~D~esplaz.
+CText.BtnQuit	~I~rten
 CText.PTitle	Parametroak
-CText.PFile	Fitxategia
+CText.PFile	~F~itxategia
 CText.PDirectory	Direktorioa
 CText.PPattern	Iragazkia
-CText.PCoordinates	Koordenatuak
-CText.PSorting	Ordena
-CText.PChord	Sokaren angelua
+CText.PCoordinates	K~o~ordenatuak
+CText.PSorting	Or~d~ena
+CText.PChord	~S~okaren angelua
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Bat ere ez
 CText.PSortX	X lehen
 CText.PSortY	Y lehen
 CText.PSortSpecial	Berezia
-CText.PSpeed	Abiad. mm/min
+CText.PSpeed	A~b~iad. mm/min
 CText.PXyMax	XY Gehi.
 CText.PXyRef	XY Erref.
 CText.PXyRamp	XY Aldap.
 CText.PZMax	Z  Gehi.
 CText.PZRef	Z  Erref.
 CText.PZRamp	Z  Aldap.
-CText.PRamp	Aldapa (dv/dt)
-CText.PCorrect	Zuzend.
-CText.PStroke	Ibilaldia
+CText.PRamp	A~l~dapa (dv/dt)
+CText.PCorrect	~Z~uzend.
+CText.PStroke	~I~bilaldia
 CText.PLimit	Muga
 CText.PFree	Askea
-CText.PSpindle	Ardatza
+CText.PSpindle	A~r~datza
 CText.PDelay	Atzerapena
 CText.PSecond	s
 CText.ConnLabel	Konexioa
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Helbidea ostalaria:ataka izan behar da.
 CText.ConnNeedMachine	Zerbitzariaren makina falta da.
 CText.ConnSaved	Konexioa makinaren fitxategian gorde da.
 CText.ConnNoSave	Ezin da makinaren fitxategia idatzi.
-CText.BLoad	Kargatu
+CText.BLoad	~K~argatu
 CText.BSave	Gorde
-CText.BOk	Ados
-CText.BAbort	Utzi
-CText.BYes	Bai
-CText.BNo	Ez
-CText.BOkUpper	ADOS
-CText.BCancel	EZEZTATU
+CText.BOk	~A~dos
+CText.BAbort	~U~tzi
+CText.BYes	~B~ai
+CText.BNo	~E~z
+CText.BOkUpper	~A~DOS
+CText.BCancel	~E~ZEZTATU
 CText.PzTitle	Panelizazioa
 CText.PzBoard	Plaka
 CText.PzSpacing	Tartea
 CText.PzNumber	Kopurua
-CText.PzCalc	Kalk.
+CText.PzCalc	~K~alk.
 CText.TTitle	Erremintaren datuak
 CText.TPl	Pos.
 CText.TName	Izena
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Bekt.
 CText.FTitle	Hautatu fitxategia
-CText.FName	Izena
-CText.FFiles	Fitxategiak
+CText.FName	~I~zena
+CText.FFiles	~F~itxategiak
 CText.QStop	STOP !!!
 CText.QAsk	Ziur irten nahi duzula?
 CText.HomingZ	Z ardatzaren jatorria bilatzen
@@ -190,8 +190,8 @@ CText.InputError	Sarrerako errorea!
 CText.Max	Gehi: 
 CText.Min	Gutx: 
 CText.BackupAsk	Konfig. eta menu nagusiko doikuntzak fitxategian gorde?
-CText.BtnAbout	Honi buruz
-CText.PLanguage	Hizkuntza
+CText.BtnAbout	Ho~n~i buruz
+CText.PLanguage	~H~izkuntza
 CText.AboutDescDrill	Bungard CCD zulaketa programaren inplementazio irekia
 CText.AboutDescRoute	Bungard CCD fresaketa programaren inplementazio irekia
 CText.AboutVersion	Bertsioa
@@ -227,16 +227,16 @@ CText.TeachForw	aurrera
 CText.TeachRight	esk.
 CText.TeachUp	gora
 CText.TeachDown	behera
-CText.TeachMil	mil/1
-CText.BTeach	Teach
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Mod
+CText.TeachMil	~m~il/1
+CText.BTeach	~T~each
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	~M~od
 CText.QAttentionPlain	Kontuz
 CText.QInfo	Info:
 CText.QOffsetDelete	Lehengo desplaz.|ezabatu?
 CText.QTeachWrite	Teach-In fitxategia|idatzi?
 CText.QWhatNext	Eta orain?
-CText.BCont	Jarr.
+CText.BCont	~J~arr.
 Text.StatusMain	Esc: atzera   Enter: onartu   ↑/↓: mugitu
 CText.QInterrupted	ETETEN

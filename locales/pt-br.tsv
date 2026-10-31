@@ -1,4 +1,4 @@
-# Português (Brasil) (pt-br): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
+# Português (Brasil) (pt-br): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
 Text.TitleSelectFile	Selecionar arquivo
 Text.LblFile	Arquivo
 Text.LblSerial	Interface serial
@@ -18,9 +18,9 @@ Text.LblLink	Conexão
 Text.RealMachine	MÁQUINA REAL ({}) - Iniciar a move
 Text.RealStop	Esc a para; mantenha uma mão perto do interruptor
 CText.MachineNr	Máquina nº:
-CText.LblOffset	Desloc.
+CText.LblOffset	De~s~loc.
 CText.LblFile	Arquivo
-CText.BtnOffset	Desloc.
+CText.BtnOffset	~D~esloc.
 CText.ConnLabel	Conexão
 CText.ConnTitle	Conexão com a máquina
 CText.ConnNameRs232	RS-232 (porta serial)
@@ -33,7 +33,7 @@ CText.ConnSaved	Conexão salva no arquivo da máquina.
 CText.ConnNoSave	Não é possível gravar o arquivo da máquina.
 CText.BSave	Salvar
 CText.FTitle	Selecionar arquivo
-CText.FFiles	Arquivos
+CText.FFiles	~A~rquivos
 CText.HomingZ	Buscando a origem de Z
 CText.HomingXy	Buscando a origem de X/Y
 CText.PressEsc	Pressione ESC para parar
@@ -42,7 +42,7 @@ CText.SpindleStop	Parada do fuso
 CText.Drilling	Furando ...
 CText.NoFile	Carregue primeiro um arquivo
 CText.BackupAsk	Salvar as configurações de Config. e do menu principal?
-CText.PLanguage	Idioma
+CText.PLanguage	~I~dioma
 CText.AboutDescRoute	Implementação aberta do programa de fresamento Bungard CCD
 CText.AboutTested	Testado só em uma Bungard CCD MTC
 CText.AboutDisclaimer	Projeto independente; sem vínculo com a Bungard Elektronik

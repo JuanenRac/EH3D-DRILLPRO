@@ -1,12 +1,12 @@
-# Gaeilge (ga): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Luchtaigh
-Text.MenuVectors	Veicteoirí
-Text.MenuTools	Uirlisí
-Text.MenuConfig	Cumraíocht
-Text.MenuSort	Sórtáil
-Text.MenuStart	Tosaigh
-Text.MenuLanguage	Teanga
-Text.MenuQuit	Scoir
+# Gaeilge (ga): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~L~uchtaigh
+Text.MenuVectors	~V~eicteoirí
+Text.MenuTools	~U~irlisí
+Text.MenuConfig	~C~umraíocht
+Text.MenuSort	Só~r~táil
+Text.MenuStart	T~o~saigh
+Text.MenuLanguage	~T~eanga
+Text.MenuQuit	~S~coir
 Text.TitleSelectFile	Roghnaigh comhad
 Text.TitleVectors	Veicteoirí
 Text.TitleTools	Sonraí uirlisí
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Meaisín uimh.:
-CText.LblScale	Scála
-CText.LblOffset	Fritháir.
-CText.LblClip	Gearr
-CText.LblVectors	Veicteoirí
+CText.LblScale	S~c~ála
+CText.LblOffset	Frit~h~áir.
+CText.LblClip	~G~earr
+CText.LblVectors	~V~eicteoirí
 CText.LblFrm	ó
 CText.LblTo	go
 CText.LblCount	Líon
 CText.LblTotal	Iomlán
 CText.LblDone	Déanta
 CText.LblFile	Comhad
-CText.LblBoard	Bord
-CText.LblBase	Bunús
+CText.LblBoard	~B~ord
+CText.LblBase	B~u~nús
 CText.Mm	mm
-CText.BtnConfig	Cumraigh
-CText.BtnTools	Uirlisí
-CText.BtnStart	Tosaigh
-CText.BtnLoad	Luchtaigh
-CText.BtnPanelz	Painéal
-CText.BtnOffset	Fritháir.
-CText.BtnQuit	Scoir
+CText.BtnConfig	Cum~r~aigh
+CText.BtnTools	U~i~rlisí
+CText.BtnStart	~T~osaigh
+CText.BtnLoad	~L~uchtaigh
+CText.BtnPanelz	~P~ainéal
+CText.BtnOffset	~F~ritháir.
+CText.BtnQuit	~S~coir
 CText.PTitle	Paraiméadar
-CText.PFile	Comhad
+CText.PFile	Co~m~had
 CText.PDirectory	Eolaire
 CText.PPattern	Patrún
-CText.PCoordinates	Comhordanáidí
-CText.PSorting	Sórtáil
-CText.PChord	Uillinn corda
+CText.PCoordinates	Com~h~ordanáidí
+CText.PSorting	~S~órtáil
+CText.PChord	U~i~llinn corda
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0,025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Ceann ar bith
 CText.PSortX	X ar dtús
 CText.PSortY	Y ar dtús
 CText.PSortSpecial	Speisialta
-CText.PSpeed	Luas (mm/min)
+CText.PSpeed	L~u~as (mm/min)
 CText.PXyMax	XY uas.
 CText.PXyRef	XY tag.
 CText.PXyRamp	XY rampa
 CText.PZMax	Z  uas.
 CText.PZRef	Z  tag.
 CText.PZRamp	Z  rampa
-CText.PRamp	Rampa (dv/dt)
-CText.PCorrect	Ceartú
-CText.PStroke	Buille
+CText.PRamp	~R~ampa (dv/dt)
+CText.PCorrect	~C~eartú
+CText.PStroke	~B~uille
 CText.PLimit	Teorainn
 CText.PFree	Saor
-CText.PSpindle	Fearsaid
+CText.PSpindle	~F~earsaid
 CText.PDelay	Moill
 CText.PSecond	s
 CText.ConnLabel	Nasc
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Ní mór don seoladh a bheith host:port.
 CText.ConnNeedMachine	Tá meaisín an fhreastalaí ar iarraidh.
 CText.ConnSaved	Nasc sábháilte i gcomhad an mheaisín.
 CText.ConnNoSave	Ní féidir comhad an mheaisín a scríobh.
-CText.BLoad	Luchtaigh
+CText.BLoad	~L~uchtaigh
 CText.BSave	Sábháil
-CText.BOk	Ok
-CText.BAbort	Tobscoir
-CText.BYes	Tá
-CText.BNo	Níl
-CText.BOkUpper	OK
-CText.BCancel	CEALAIGH
+CText.BOk	~O~k
+CText.BAbort	~T~obscoir
+CText.BYes	~T~á
+CText.BNo	~N~íl
+CText.BOkUpper	~O~K
+CText.BCancel	C~E~ALAIGH
 CText.PzTitle	Painéalú
 CText.PzBoard	Bord
 CText.PzSpacing	Spásáil
 CText.PzNumber	Líon
-CText.PzCalc	Ríomh
+CText.PzCalc	~R~íomh
 CText.TTitle	Sonraí uirlisí
 CText.TPl	Áit
 CText.TName	Ainm
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Veic.
 CText.FTitle	Roghnaigh comhad
-CText.FName	Ainm
-CText.FFiles	Comhaid
+CText.FName	~A~inm
+CText.FFiles	~C~omhaid
 CText.QStop	STOP !!!
 CText.QAsk	An bhfuil tú cinnte go scoirfidh tú?
 CText.HomingZ	Ais Z á tabhairt abhaile
@@ -190,8 +190,8 @@ CText.InputError	Earráid ionchuir!
 CText.Max	Uas:
 CText.Min	Íos:
 CText.BackupAsk	Sábháil socruithe i gcomhad?
-CText.BtnAbout	Maidir le
-CText.PLanguage	Teanga
+CText.BtnAbout	~M~aidir le
+CText.PLanguage	T~e~anga
 CText.AboutDescDrill	Cur i bhfeidhm oscailte de chlár druileála Bungard CCD
 CText.AboutDescRoute	Cur i bhfeidhm oscailte de chlár bhealaithe Bungard CCD
 CText.AboutVersion	Leagan
@@ -227,16 +227,16 @@ CText.TeachForw	ar aghaidh
 CText.TeachRight	deas
 CText.TeachUp	suas
 CText.TeachDown	síos
-CText.TeachMil	mil/1
-CText.BTeach	Teagasc
-CText.BPlusPos	+ Pos
-CText.BMinusPos	- Pos
-CText.BMod	Athraigh
+CText.TeachMil	~m~il/1
+CText.BTeach	Te~a~gasc
+CText.BPlusPos	~+~ Pos
+CText.BMinusPos	~-~ Pos
+CText.BMod	At~h~raigh
 CText.QAttentionPlain	Aire
 CText.QInfo	Eolas:
 CText.QOffsetDelete	Scrios an seanfhritháireamh|?
 CText.QTeachWrite	Scríobh comhad|teagaisc?
 CText.QWhatNext	Cad ina dhiaidh sin?
-CText.BCont	Lean
+CText.BCont	~L~ean
 Text.StatusMain	Esc: ar ais   Enter: glac   ↑/↓: bog
 CText.QInterrupted	IDIRBHRISTE

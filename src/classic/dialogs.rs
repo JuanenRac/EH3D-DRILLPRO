@@ -260,13 +260,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
     /// (or the letter of Abort) stops the job.
     fn running_key(&mut self, input: Input) {
         if self.interrupted {
-            let cont = hot_letter(self.t(CText::BCont));
-            let abort = hot_letter(self.t(CText::BAbort));
+            let cont = self.hot(CText::BCont);
+            let abort = self.hot(CText::BAbort);
             match input {
                 Input::Enter => self.interrupted = false,
                 Input::Esc => self.abort_job(),
                 Input::Char(c) | Input::Alt(c) => {
-                    let c = c.to_ascii_lowercase();
+                    let c = self.lang().hot_key(c);
                     if Some(c) == cont {
                         self.interrupted = false;
                     } else if Some(c) == abort {
@@ -288,8 +288,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             return;
         }
-        let hot_ok = hot_letter(self.t(CText::BOk));
-        let hot_abort = hot_letter(self.t(CText::BAbort));
+        let hot_ok = self.hot(CText::BOk);
+        let hot_abort = self.hot(CText::BAbort);
         let abort = match input {
             Input::Enter => {
                 self.engine.answer(true);
@@ -297,7 +297,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             Input::Esc => true,
             Input::Char(c) | Input::Alt(c) => {
-                let c = c.to_ascii_lowercase();
+                let c = self.lang().hot_key(c);
                 if Some(c) == hot_ok {
                     self.engine.answer(true);
                     return;
@@ -516,8 +516,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
     // ------------------------------------------------------------------------------------------ Quit and save
 
     fn yes_no_key(&mut self, yes: &mut bool, input: Input, save: bool) -> Flow {
-        let hot_yes = hot_letter(self.t(CText::BYes));
-        let hot_no = hot_letter(self.t(CText::BNo));
+        let hot_yes = self.hot(CText::BYes);
+        let hot_no = self.hot(CText::BNo);
         match input {
             Input::Enter => {
                 if *yes {
@@ -535,7 +535,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 Flow::Stay
             }
             Input::Char(c) | Input::Alt(c) => {
-                let c = c.to_ascii_lowercase();
+                let c = self.lang().hot_key(c);
                 if Some(c) == hot_yes {
                     self.confirm(save)
                 } else if Some(c) == hot_no {
@@ -1443,14 +1443,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn tool_hot(&mut self, d: &mut ToolDlg, c: char) -> Flow {
-        let c = c.to_ascii_lowercase();
+        let c = self.lang().hot_key(c);
         let b = [
             (CText::BLoad, Dlg::Load),
             (CText::BOk, Dlg::Ok),
             (CText::BAbort, Dlg::Abort),
         ]
         .into_iter()
-        .find(|(k, _)| hot_letter(self.t(*k)) == Some(c))
+        .find(|(k, _)| self.hot(*k) == Some(c))
         .map(|(_, b)| b);
         match b {
             Some(b) => self.tool_button(d, b),
@@ -1808,7 +1808,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     /// The control a hot letter leads to.
     fn param_hot(&self, c: char) -> Option<Ctl> {
-        let c = c.to_ascii_lowercase();
+        let c = self.lang().hot_key(c);
         let route = self.engine.kind() == Kind::Route;
         let list = [
             (CText::PFile, Ctl::Text(0)),
@@ -1832,7 +1832,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             (CText::BAbort, Ctl::Btn(Dlg::Abort)),
         ];
         list.into_iter()
-            .find(|(k, _)| hot_letter(self.t(*k)) == Some(c))
+            .find(|(k, _)| self.hot(*k) == Some(c))
             .map(|(_, ctl)| ctl)
     }
 
@@ -2467,14 +2467,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let cur = d.focus.map(|i| d.ring[i]);
         let editing = d.edit.is_some();
         let hot = |app: &Self, c: char| -> Option<Dlg> {
-            let c = c.to_ascii_lowercase();
+            let c = app.lang().hot_key(c);
             [
                 (CText::PzCalc, Dlg::Calc),
                 (CText::BOk, Dlg::Ok),
                 (CText::BAbort, Dlg::Abort),
             ]
             .into_iter()
-            .find(|(k, _)| hot_letter(app.t(*k)) == Some(c))
+            .find(|(k, _)| app.hot(*k) == Some(c))
             .map(|(_, b)| b)
         };
         match input {

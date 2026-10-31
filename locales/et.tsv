@@ -1,12 +1,12 @@
-# Eesti (et): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Laadi
-Text.MenuVectors	Vektorid
-Text.MenuTools	Tööriistad
-Text.MenuConfig	Seaded
-Text.MenuSort	Sortimine
-Text.MenuStart	Start
-Text.MenuLanguage	Keel
-Text.MenuQuit	Välju
+# Eesti (et): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~L~aadi
+Text.MenuVectors	Vek~t~orid
+Text.MenuTools	Töö~r~iistad
+Text.MenuConfig	S~e~aded
+Text.MenuSort	S~o~rtimine
+Text.MenuStart	~S~tart
+Text.MenuLanguage	~K~eel
+Text.MenuQuit	~V~älju
 Text.TitleSelectFile	Vali fail
 Text.TitleVectors	Vektorid
 Text.TitleTools	Tööriistade andmed
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Masina nr:
-CText.LblScale	Mõõtkava
-CText.LblOffset	Nihe
-CText.LblClip	Piire
-CText.LblVectors	Vektorid
+CText.LblScale	~M~õõtkava
+CText.LblOffset	N~i~he
+CText.LblClip	Pii~r~e
+CText.LblVectors	Ve~k~torid
 CText.LblFrm	alg.
 CText.LblTo	kuni
 CText.LblCount	Arv
 CText.LblTotal	Kokku
 CText.LblDone	Tehtud
 CText.LblFile	Fail
-CText.LblBoard	Plaat
-CText.LblBase	Alus
+CText.LblBoard	~P~laat
+CText.LblBase	~A~lus
 CText.Mm	mm
-CText.BtnConfig	Seaded
-CText.BtnTools	Tööriist.
-CText.BtnStart	Start
-CText.BtnLoad	Laadi
-CText.BtnPanelz	Paneel.
-CText.BtnOffset	Nihe
-CText.BtnQuit	Välju
+CText.BtnConfig	Sea~d~ed
+CText.BtnTools	T~ö~öriist.
+CText.BtnStart	~S~tart
+CText.BtnLoad	~L~aadi
+CText.BtnPanelz	Pan~e~el.
+CText.BtnOffset	~N~ihe
+CText.BtnQuit	~V~älju
 CText.PTitle	Parameeter
-CText.PFile	Fail
+CText.PFile	~F~ail
 CText.PDirectory	Kataloog
 CText.PPattern	Muster
-CText.PCoordinates	Koordinaadid
-CText.PSorting	Sortimine
-CText.PChord	Kõõlunurk
+CText.PCoordinates	Koor~d~inaadid
+CText.PSorting	Sorti~m~ine
+CText.PChord	Kõõlu~n~urk
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0,025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Puudub
 CText.PSortX	Esmalt X
 CText.PSortY	Esmalt Y
 CText.PSortSpecial	Eri
-CText.PSpeed	Kiirus (mm/min)
+CText.PSpeed	Kiir~u~s (mm/min)
 CText.PXyMax	XY maks.
 CText.PXyRef	XY viide
 CText.PXyRamp	XY tõus
 CText.PZMax	Z  maks.
 CText.PZRef	Z  viide
 CText.PZRamp	Z  tõus
-CText.PRamp	Tõus (dv/dt)
-CText.PCorrect	Korrig.
-CText.PStroke	Käik
+CText.PRamp	~T~õus (dv/dt)
+CText.PCorrect	Ko~r~rig.
+CText.PStroke	Kä~i~k
 CText.PLimit	Piir
 CText.PFree	Vaba
-CText.PSpindle	Spindel
+CText.PSpindle	~S~pindel
 CText.PDelay	Viivitus
 CText.PSecond	s
 CText.ConnLabel	Ühendus
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Aadress peab olema host:port.
 CText.ConnNeedMachine	Serveri masin puudub.
 CText.ConnSaved	Ühendus salvestatud masinafaili.
 CText.ConnNoSave	Masinafaili ei saa kirjutada.
-CText.BLoad	Laadi
+CText.BLoad	~L~aadi
 CText.BSave	Salvesta
-CText.BOk	Ok
-CText.BAbort	Katkesta
-CText.BYes	Jah
-CText.BNo	Ei
-CText.BOkUpper	OK
-CText.BCancel	TÜHISTA
+CText.BOk	~O~k
+CText.BAbort	~K~atkesta
+CText.BYes	~J~ah
+CText.BNo	~E~i
+CText.BOkUpper	~O~K
+CText.BCancel	~T~ÜHISTA
 CText.PzTitle	Paneelimine
 CText.PzBoard	Plaat
 CText.PzSpacing	Samm
 CText.PzNumber	Arv
-CText.PzCalc	Arvuta
+CText.PzCalc	~A~rvuta
 CText.TTitle	Tööriistade andmed
 CText.TPl	Koh.
 CText.TName	Nimi
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Vali fail
-CText.FName	Nimi
-CText.FFiles	Failid
+CText.FName	~N~imi
+CText.FFiles	~F~ailid
 CText.QStop	STOPP !!!
 CText.QAsk	Kas tõesti väljuda?
 CText.HomingZ	Z-telje referentsimine
@@ -190,8 +190,8 @@ CText.InputError	Sisestusviga!
 CText.Max	Maks:
 CText.Min	Min:
 CText.BackupAsk	Salvestada seaded failiks?
-CText.BtnAbout	Teave
-CText.PLanguage	Keel
+CText.BtnAbout	~T~eave
+CText.PLanguage	K~e~el
 CText.AboutDescDrill	Bungard CCD puurimisprogrammi avatud teostus
 CText.AboutDescRoute	Bungard CCD freesimisprogrammi avatud teostus
 CText.AboutVersion	Versioon
@@ -227,16 +227,16 @@ CText.TeachForw	ette
 CText.TeachRight	parem
 CText.TeachUp	üles
 CText.TeachDown	alla
-CText.TeachMil	mil/1
-CText.BTeach	Õpeta
-CText.BPlusPos	+ Asend
-CText.BMinusPos	- Asend
-CText.BMod	Muuda
+CText.TeachMil	~m~il/1
+CText.BTeach	Õ~p~eta
+CText.BPlusPos	~+~ Asend
+CText.BMinusPos	~-~ Asend
+CText.BMod	~M~uuda
 CText.QAttentionPlain	Tähelepanu
 CText.QInfo	Info:
 CText.QOffsetDelete	Kustuta vana|nihe?
 CText.QTeachWrite	Kirjuta õppe-|fail?
 CText.QWhatNext	Mis edasi?
-CText.BCont	Jätka
+CText.BCont	~J~ätka
 Text.StatusMain	Esc: tagasi   Enter: kinnita   ↑/↓: liigu
 CText.QInterrupted	KATKESTATUD

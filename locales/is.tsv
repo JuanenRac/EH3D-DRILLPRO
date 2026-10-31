@@ -1,12 +1,12 @@
-# Íslenska (is): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Hlaða
-Text.MenuVectors	Vektorar
-Text.MenuTools	Verkfæri
-Text.MenuConfig	Stillingar
-Text.MenuSort	Röðun
-Text.MenuStart	Ræsa
-Text.MenuLanguage	Tungumál
-Text.MenuQuit	Hætta
+# Íslenska (is): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~H~laða
+Text.MenuVectors	V~e~ktorar
+Text.MenuTools	~V~erkfæri
+Text.MenuConfig	~S~tillingar
+Text.MenuSort	Röð~u~n
+Text.MenuStart	~R~æsa
+Text.MenuLanguage	Tu~n~gumál
+Text.MenuQuit	Hæ~t~ta
 Text.TitleSelectFile	Veldu skrá
 Text.TitleVectors	Vektorar
 Text.TitleTools	Verkfæragögn
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Vél nr.:
-CText.LblScale	Kvarði
-CText.LblOffset	Hliðrun
-CText.LblClip	Klippa
-CText.LblVectors	Vektorar
+CText.LblScale	K~v~arði
+CText.LblOffset	Hl~i~ðrun
+CText.LblClip	~K~lippa
+CText.LblVectors	Vekt~o~rar
 CText.LblFrm	frá
 CText.LblTo	til
 CText.LblCount	Fjöldi
 CText.LblTotal	Alls
 CText.LblDone	Lokið
 CText.LblFile	Skrá
-CText.LblBoard	Plata
-CText.LblBase	Grunnur
+CText.LblBoard	~P~lata
+CText.LblBase	~G~runnur
 CText.Mm	mm
-CText.BtnConfig	Stillingar
-CText.BtnTools	Verkfæri
-CText.BtnStart	Ræsa
-CText.BtnLoad	Hlaða
-CText.BtnPanelz	Spjöld
-CText.BtnOffset	Hliðrun
-CText.BtnQuit	Hætta
+CText.BtnConfig	Stilli~n~gar
+CText.BtnTools	V~e~rkfæri
+CText.BtnStart	~R~æsa
+CText.BtnLoad	~H~laða
+CText.BtnPanelz	~S~pjöld
+CText.BtnOffset	H~l~iðrun
+CText.BtnQuit	Hæ~t~ta
 CText.PTitle	Breyta
-CText.PFile	Skrá
+CText.PFile	~S~krá
 CText.PDirectory	Mappa
 CText.PPattern	Mynstur
-CText.PCoordinates	Hnit
-CText.PSorting	Röðun
-CText.PChord	Bogahorn
+CText.PCoordinates	H~n~it
+CText.PSorting	Röð~u~n
+CText.PChord	~B~ogahorn
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Engin
 CText.PSortX	X fyrst
 CText.PSortY	Y fyrst
 CText.PSortSpecial	Sérstök
-CText.PSpeed	Hraði (mm/min)
+CText.PSpeed	Hrað~i~ (mm/min)
 CText.PXyMax	XY hám.
 CText.PXyRef	XY viðm.
 CText.PXyRamp	XY rampi
 CText.PZMax	Z  hám.
 CText.PZRef	Z  viðm.
 CText.PZRamp	Z  rampi
-CText.PRamp	Rampi (dv/dt)
-CText.PCorrect	Leiðr.
-CText.PStroke	Slag
+CText.PRamp	~R~ampi (dv/dt)
+CText.PCorrect	L~e~iðr.
+CText.PStroke	S~l~ag
 CText.PLimit	Mörk
 CText.PFree	Laust
-CText.PSpindle	Spindill
+CText.PSpindle	S~p~indill
 CText.PDelay	Töf
 CText.PSecond	s
 CText.ConnLabel	Tenging
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Vistfang verður að vera hýsill:tengi.
 CText.ConnNeedMachine	Vél þjónsins vantar.
 CText.ConnSaved	Tenging vistuð í vélarskránni.
 CText.ConnNoSave	Ekki er hægt að skrifa vélarskrána.
-CText.BLoad	Hlaða
+CText.BLoad	Hl~a~ða
 CText.BSave	Vista
-CText.BOk	Ok
-CText.BAbort	Hætta við
-CText.BYes	Já
-CText.BNo	Nei
-CText.BOkUpper	OK
-CText.BCancel	HÆTTA VIÐ
+CText.BOk	~O~k
+CText.BAbort	~H~ætta við
+CText.BYes	~J~á
+CText.BNo	~N~ei
+CText.BOkUpper	~O~K
+CText.BCancel	HÆ~T~TA VIÐ
 CText.PzTitle	Spjaldaskipting
 CText.PzBoard	Plata
 CText.PzSpacing	Bil
 CText.PzNumber	Fjöldi
-CText.PzCalc	Reikna
+CText.PzCalc	~R~eikna
 CText.TTitle	Verkfæragögn
 CText.TPl	Sæti
 CText.TName	Heiti
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Veldu skrá
-CText.FName	Heiti
-CText.FFiles	Skrár
+CText.FName	~H~eiti
+CText.FFiles	~S~krár
 CText.QStop	STOPP !!!
 CText.QAsk	Viltu í alvöru hætta?
 CText.HomingZ	Núllstilli Z-ás
@@ -190,8 +190,8 @@ CText.InputError	Innsláttarvilla!
 CText.Max	Hám:
 CText.Min	Lágm:
 CText.BackupAsk	Vista stillingar úr Stillingar og aðalvalmynd í skrá?
-CText.BtnAbout	Um
-CText.PLanguage	Tungumál
+CText.BtnAbout	~U~m
+CText.PLanguage	~T~ungumál
 CText.AboutDescDrill	Opin útfærsla á borforriti Bungard CCD
 CText.AboutDescRoute	Opin útfærsla á fræsiforriti Bungard CCD
 CText.AboutVersion	Útgáfa
@@ -227,16 +227,16 @@ CText.TeachForw	fram
 CText.TeachRight	hægri
 CText.TeachUp	upp
 CText.TeachDown	niður
-CText.TeachMil	mil/1
-CText.BTeach	Kenna
-CText.BPlusPos	+ Staða
-CText.BMinusPos	- Staða
-CText.BMod	Breyta
+CText.TeachMil	~m~il/1
+CText.BTeach	~K~enna
+CText.BPlusPos	~+~ Staða
+CText.BMinusPos	~-~ Staða
+CText.BMod	~B~reyta
 CText.QAttentionPlain	Athugið
 CText.QInfo	Upplýs.:
 CText.QOffsetDelete	Eyða gamalli|hliðrun?
 CText.QTeachWrite	Skrifa kennslu-|skrá?
 CText.QWhatNext	Hvað næst?
-CText.BCont	Áfram
+CText.BCont	Á~f~ram
 Text.StatusMain	Esc: til baka   Enter: samþykkja   ↑/↓: færa
 CText.QInterrupted	TRUFLAÐ

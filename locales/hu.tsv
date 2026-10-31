@@ -1,12 +1,12 @@
-# Magyar (hu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Betöltés
-Text.MenuVectors	Vektorok
-Text.MenuTools	Szerszámok
-Text.MenuConfig	Beállítás
-Text.MenuSort	Rendezés
-Text.MenuStart	Indítás
-Text.MenuLanguage	Nyelv
-Text.MenuQuit	Kilépés
+# Magyar (hu): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~B~etöltés
+Text.MenuVectors	~V~ektorok
+Text.MenuTools	~S~zerszámok
+Text.MenuConfig	B~e~állítás
+Text.MenuSort	~R~endezés
+Text.MenuStart	~I~ndítás
+Text.MenuLanguage	~N~yelv
+Text.MenuQuit	~K~ilépés
 Text.TitleSelectFile	Fájl kiválasztása
 Text.TitleVectors	Vektorok
 Text.TitleTools	Szerszámadatok
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Gép sz.:
-CText.LblScale	Arány
-CText.LblOffset	Eltolás
-CText.LblClip	Vágás
-CText.LblVectors	Vektorok
+CText.LblScale	A~r~ány
+CText.LblOffset	El~t~olás
+CText.LblClip	~V~ágás
+CText.LblVectors	Vekt~o~rok
 CText.LblFrm	-tól
 CText.LblTo	-ig
 CText.LblCount	Darab
 CText.LblTotal	Összes
 CText.LblDone	Kész
 CText.LblFile	Fájl
-CText.LblBoard	Lemez
-CText.LblBase	Alap
+CText.LblBoard	~L~emez
+CText.LblBase	~A~lap
 CText.Mm	mm
-CText.BtnConfig	Beállít.
-CText.BtnTools	Szerszám
-CText.BtnStart	Indítás
-CText.BtnLoad	Betöltés
-CText.BtnPanelz	Panel
-CText.BtnOffset	Eltolás
-CText.BtnQuit	Kilépés
+CText.BtnConfig	~B~eállít.
+CText.BtnTools	S~z~erszám
+CText.BtnStart	~I~ndítás
+CText.BtnLoad	Betölté~s~
+CText.BtnPanelz	~P~anel
+CText.BtnOffset	~E~ltolás
+CText.BtnQuit	~K~ilépés
 CText.PTitle	Paraméter
-CText.PFile	Fájl
+CText.PFile	~F~ájl
 CText.PDirectory	Könyvtár
 CText.PPattern	Minta
-CText.PCoordinates	Koordináták
-CText.PSorting	Rendezés
-CText.PChord	Húrszög
+CText.PCoordinates	Koor~d~ináták
+CText.PSorting	R~e~ndezés
+CText.PChord	~H~úrszög
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0,025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Nincs
 CText.PSortX	Előbb X
 CText.PSortY	Előbb Y
 CText.PSortSpecial	Különleges
-CText.PSpeed	Sebesség (mm/min)
+CText.PSpeed	~S~ebesség (mm/min)
 CText.PXyMax	XY max.
 CText.PXyRef	XY ref.
 CText.PXyRamp	XY rámpa
 CText.PZMax	Z  max.
 CText.PZRef	Z  ref.
 CText.PZRamp	Z  rámpa
-CText.PRamp	Rámpa (dv/dt)
-CText.PCorrect	Korrekció
-CText.PStroke	Löket
+CText.PRamp	Rám~p~a (dv/dt)
+CText.PCorrect	~K~orrekció
+CText.PStroke	~L~öket
 CText.PLimit	Határ
 CText.PFree	Szabad
-CText.PSpindle	Orsó
+CText.PSpindle	O~r~só
 CText.PDelay	Késleltetés
 CText.PSecond	s
 CText.ConnLabel	Kapcsolat
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	A cím formátuma: host:port.
 CText.ConnNeedMachine	Hiányzik a szerver gépe.
 CText.ConnSaved	A kapcsolat mentve a gépfájlba.
 CText.ConnNoSave	A gépfájl nem írható.
-CText.BLoad	Betöltés
+CText.BLoad	~B~etöltés
 CText.BSave	Mentés
-CText.BOk	Ok
-CText.BAbort	Megszak.
-CText.BYes	Igen
-CText.BNo	Nem
-CText.BOkUpper	OK
-CText.BCancel	MÉGSE
+CText.BOk	~O~k
+CText.BAbort	~M~egszak.
+CText.BYes	~I~gen
+CText.BNo	~N~em
+CText.BOkUpper	~O~K
+CText.BCancel	~M~ÉGSE
 CText.PzTitle	Panelezés
 CText.PzBoard	Lemez
 CText.PzSpacing	Távolság
 CText.PzNumber	Szám
-CText.PzCalc	Számít
+CText.PzCalc	~S~zámít
 CText.TTitle	Szerszámadatok
 CText.TPl	Hely
 CText.TName	Név
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Vekt.
 CText.FTitle	Fájl kiválasztása
-CText.FName	Név
-CText.FFiles	Fájlok
+CText.FName	~N~év
+CText.FFiles	~F~ájlok
 CText.QStop	STOP !!!
 CText.QAsk	Biztosan kilép?
 CText.HomingZ	Z tengely referenciafutása
@@ -190,8 +190,8 @@ CText.InputError	Beviteli hiba!
 CText.Max	Max:
 CText.Min	Min:
 CText.BackupAsk	Menti a beállításokat fájlba?
-CText.BtnAbout	Névjegy
-CText.PLanguage	Nyelv
+CText.BtnAbout	~N~évjegy
+CText.PLanguage	~N~yelv
 CText.AboutDescDrill	A Bungard CCD fúróprogram nyílt megvalósítása
 CText.AboutDescRoute	A Bungard CCD marásprogram nyílt megvalósítása
 CText.AboutVersion	Verzió
@@ -227,16 +227,16 @@ CText.TeachForw	előre
 CText.TeachRight	jobbra
 CText.TeachUp	fel
 CText.TeachDown	le
-CText.TeachMil	mil/1
-CText.BTeach	Betanít
-CText.BPlusPos	+ Poz
-CText.BMinusPos	- Poz
-CText.BMod	Módosít
+CText.TeachMil	~m~il/1
+CText.BTeach	~B~etanít
+CText.BPlusPos	~+~ Poz
+CText.BMinusPos	~-~ Poz
+CText.BMod	Módosí~t~
 CText.QAttentionPlain	Figyelem
 CText.QInfo	Info:
 CText.QOffsetDelete	Törli a régi|eltolást?
 CText.QTeachWrite	Írja a betanítási|fájlt?
 CText.QWhatNext	Mi legyen most?
-CText.BCont	Tovább
+CText.BCont	~T~ovább
 Text.StatusMain	Esc: vissza   Enter: elfogad   ↑/↓: mozgás
 CText.QInterrupted	MEGSZAKÍTVA

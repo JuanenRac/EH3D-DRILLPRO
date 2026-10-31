@@ -84,8 +84,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     pub(crate) fn offset_ask_key(&mut self, yes: &mut bool, input: Input) -> Flow {
-        let hot_yes = hot_letter(self.t(CText::BYes));
-        let hot_no = hot_letter(self.t(CText::BNo));
+        let hot_yes = self.hot(CText::BYes);
+        let hot_no = self.hot(CText::BNo);
         match input {
             Input::Enter => self.offset_answer(*yes),
             Input::Esc => Flow::Close,
@@ -94,7 +94,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 Flow::Stay
             }
             Input::Char(c) | Input::Alt(c) => {
-                let c = c.to_ascii_lowercase();
+                let c = self.lang().hot_key(c);
                 if Some(c) == hot_yes {
                     self.offset_answer(true)
                 } else if Some(c) == hot_no {
@@ -163,12 +163,15 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn teach_char(&self, t: &TeachDlg, c: char) -> Option<TeachBtn> {
-        let c = c.to_ascii_lowercase();
-        if let Some(d) = c.to_digit(10) {
+        // the keys of the arrows are places on the keyboard: a Cyrillic or Greek layout types the letter that sits there
+        let lang = self.lang();
+        let key = lang.latin_key(c);
+        let c = lang.hot_key(c);
+        if let Some(d) = key.to_digit(10) {
             return (1..=4).contains(&d).then(|| TeachBtn::Step(d as usize - 1));
         }
-        let hot = |k: CText| hot_letter(self.t(k)) == Some(c);
-        Some(match c {
+        let hot = |k: CText| self.hot(k) == Some(c);
+        Some(match key {
             'e' => TeachBtn::Left,
             's' => TeachBtn::Back,
             'd' => TeachBtn::Forw,
@@ -261,8 +264,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
         teach: &TeachDlg,
         input: Input,
     ) -> Flow {
-        let hot_yes = hot_letter(self.t(CText::BYes));
-        let hot_no = hot_letter(self.t(CText::BNo));
+        let hot_yes = self.hot(CText::BYes);
+        let hot_no = self.hot(CText::BNo);
         match input {
             Input::Enter => self.teach_write_answer(*yes, teach),
             Input::Esc => Flow::Close,
@@ -271,7 +274,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 Flow::Stay
             }
             Input::Char(c) | Input::Alt(c) => {
-                let c = c.to_ascii_lowercase();
+                let c = self.lang().hot_key(c);
                 if Some(c) == hot_yes {
                     self.teach_write_answer(true, teach)
                 } else if Some(c) == hot_no {

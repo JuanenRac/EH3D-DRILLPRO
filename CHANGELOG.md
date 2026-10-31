@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Hot keys in the 29 languages read from files:** every label that has a highlighted letter in English now has one in each of them (`~X~` in `locales/*.tsv`), written by the new `tools/make_hotkeys.py`: the first letter of the word that no other control of the same screen uses, in the alphabet of the text (Latin, Cyrillic or Greek), keeping free the six keys the teach window keeps for its arrows and not repeating a Latin and a Cyrillic letter that look alike. `--check` fails when a file would change. A variant (Brazilian Portuguese, Canadian French) keeps the letters of its main language for the words it does not change.
+- **Cyrillic and Greek letters can be typed:** `Lang::hot_key` reads a typed letter in either case, ignores the Greek accent, and takes a Latin key as the letter that sits there in the standard Russian, Ukrainian or Greek layout, so both keyboards reach the same control; the keys of the arrows of the teach window follow the same places. Bulgarian and Serbian need their own Cyrillic layout. The console, the window and the menu bar use the same rule.
+- **Tests on 37 languages:** the hot letters of every screen (main, parameters of both programs, tools, panels, files, quit, interrupted job and teach window) are unique in all 37 languages, every text has no mark or one pair and has it when the English one has it, the teach buttons leave the arrow keys free, and a Russian and a Greek letter work when typed. Three letters of the routing window of the Spanish, Italian and French texts that clashed with another control were changed (`Án~g~ulo cuerda` is now `Á~n~gulo cuerda`).
+
 - **The tools that are off go to the server too:** a job sent to the EH3D server (`connection = server`) carries `skip_tools` along with the holes the program chose, so the server leaves the same tools out and never asks the operator for them (`app::server_drill_request`). 1 test.
 
 ## [0.0.8] - 37 languages and tools that can be left out of a job

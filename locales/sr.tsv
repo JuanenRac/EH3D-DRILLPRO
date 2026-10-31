@@ -1,12 +1,12 @@
-# Српски (sr): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Учитај
-Text.MenuVectors	Вектори
-Text.MenuTools	Алати
-Text.MenuConfig	Подеш.
-Text.MenuSort	Сортир.
-Text.MenuStart	Старт
-Text.MenuLanguage	Језик
-Text.MenuQuit	Излаз
+# Српски (sr): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~У~читај
+Text.MenuVectors	~В~ектори
+Text.MenuTools	~А~лати
+Text.MenuConfig	~П~одеш.
+Text.MenuSort	С~о~ртир.
+Text.MenuStart	~С~тарт
+Text.MenuLanguage	~Ј~език
+Text.MenuQuit	~И~злаз
 Text.TitleSelectFile	Избор датотеке
 Text.TitleVectors	Вектори
 Text.TitleTools	Подаци о алатима
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Машина бр.:
-CText.LblScale	Размера
-CText.LblOffset	Померај
-CText.LblClip	Одсецање
-CText.LblVectors	Вектори
+CText.LblScale	~Р~азмера
+CText.LblOffset	Пом~е~рај
+CText.LblClip	О~д~сецање
+CText.LblVectors	~В~ектори
 CText.LblFrm	од
 CText.LblTo	до
 CText.LblCount	Број
 CText.LblTotal	Укупно
 CText.LblDone	Готово
 CText.LblFile	Датотека
-CText.LblBoard	Плоча
-CText.LblBase	Основа
+CText.LblBoard	Пл~о~ча
+CText.LblBase	Ос~н~ова
 CText.Mm	mm
-CText.BtnConfig	Подеш.
-CText.BtnTools	Алати
-CText.BtnStart	Старт
-CText.BtnLoad	Учитај
-CText.BtnPanelz	Панел.
-CText.BtnOffset	Померај
-CText.BtnQuit	Излаз
+CText.BtnConfig	~П~одеш.
+CText.BtnTools	А~л~ати
+CText.BtnStart	~С~тарт
+CText.BtnLoad	~У~читај
+CText.BtnPanelz	П~а~нел.
+CText.BtnOffset	По~м~ерај
+CText.BtnQuit	~И~злаз
 CText.PTitle	Параметри
-CText.PFile	Датотека
+CText.PFile	~Д~атотека
 CText.PDirectory	Директоријум
 CText.PPattern	Образац
-CText.PCoordinates	Координате
-CText.PSorting	Сортирање
-CText.PChord	Угао тетиве
+CText.PCoordinates	Коорд~и~нате
+CText.PSorting	~С~ортирање
+CText.PChord	У~г~ао тетиве
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Нема
 CText.PSortX	Прво X
 CText.PSortY	Прво Y
 CText.PSortSpecial	Посебно
-CText.PSpeed	Брзина (mm/min)
+CText.PSpeed	~Б~рзина (mm/min)
 CText.PXyMax	XY Макс.
 CText.PXyRef	XY Реф.
 CText.PXyRamp	XY Рампа
 CText.PZMax	Z  Макс.
 CText.PZRef	Z  Реф.
 CText.PZRamp	Z  Рампа
-CText.PRamp	Рампа (dv/dt)
-CText.PCorrect	Корек.
-CText.PStroke	Ход
+CText.PRamp	~Р~ампа (dv/dt)
+CText.PCorrect	~К~орек.
+CText.PStroke	~Х~од
 CText.PLimit	Лимит
 CText.PFree	Слободно
-CText.PSpindle	Вретено
+CText.PSpindle	~В~ретено
 CText.PDelay	Кашњење
 CText.PSecond	s
 CText.ConnLabel	Веза
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Адреса мора бити host:port.
 CText.ConnNeedMachine	Недостаје машина сервера.
 CText.ConnSaved	Веза је сачувана у датотеци машине.
 CText.ConnNoSave	Датотека машине се не може уписати.
-CText.BLoad	Учитај
+CText.BLoad	~У~читај
 CText.BSave	Сачувај
-CText.BOk	Ок
-CText.BAbort	Прекини
-CText.BYes	Да
-CText.BNo	Не
-CText.BOkUpper	OK
-CText.BCancel	ОТКАЖИ
+CText.BOk	~О~к
+CText.BAbort	~П~рекини
+CText.BYes	~Д~а
+CText.BNo	~Н~е
+CText.BOkUpper	~O~K
+CText.BCancel	О~Т~КАЖИ
 CText.PzTitle	Панелизација
 CText.PzBoard	Плоча
 CText.PzSpacing	Размак
 CText.PzNumber	Број
-CText.PzCalc	Рач.
+CText.PzCalc	~Р~ач.
 CText.TTitle	Подаци о алатима
 CText.TPl	Пл.
 CText.TName	Назив
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Вект.
 CText.FTitle	Избор датотеке
-CText.FName	Назив
-CText.FFiles	Датотеке
+CText.FName	~Н~азив
+CText.FFiles	~Д~атотеке
 CText.QStop	СТОП !!!
 CText.QAsk	Заиста желите да изађете?
 CText.HomingZ	Референцирање осе Z
@@ -190,8 +190,8 @@ CText.InputError	Грешка уноса!
 CText.Max	Макс.: 
 CText.Min	Мин.: 
 CText.BackupAsk	Сачувати подешавања из Подеш. и главног менија у датотеку?
-CText.BtnAbout	О програму
-CText.PLanguage	Језик
+CText.BtnAbout	О про~г~раму
+CText.PLanguage	~Ј~език
 CText.AboutDescDrill	Отворена имплементација Bungard CCD програма за бушење
 CText.AboutDescRoute	Отворена имплементација Bungard CCD програма за глодање
 CText.AboutVersion	Верзија
@@ -227,16 +227,16 @@ CText.TeachForw	напред
 CText.TeachRight	десно
 CText.TeachUp	горе
 CText.TeachDown	доле
-CText.TeachMil	mil/1
-CText.BTeach	Учи
-CText.BPlusPos	+ Поз
-CText.BMinusPos	- Поз
-CText.BMod	Изм.
+CText.TeachMil	~m~il/1
+CText.BTeach	~У~чи
+CText.BPlusPos	~+~ Поз
+CText.BMinusPos	~-~ Поз
+CText.BMod	~И~зм.
 CText.QAttentionPlain	Пажња
 CText.QInfo	Инфо:
 CText.QOffsetDelete	Обрисати стари|померај?
 CText.QTeachWrite	Записати датотеку|учења?
 CText.QWhatNext	Шта даље?
-CText.BCont	Даље
+CText.BCont	~Д~аље
 Text.StatusMain	Esc: назад   Enter: прихвати   ↑/↓: кретање
 CText.QInterrupted	ПРЕКИНУТО

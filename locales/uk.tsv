@@ -1,12 +1,12 @@
-# Українська (uk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). The hot-key markers ~X~ are not used in these languages.
-Text.MenuLoad	Завант.
-Text.MenuVectors	Вектори
-Text.MenuTools	Інстр.
-Text.MenuConfig	Налашт.
-Text.MenuSort	Сортув.
-Text.MenuStart	Пуск
-Text.MenuLanguage	Мова
-Text.MenuQuit	Вихід
+# Українська (uk): Table.Name<TAB>text, one per line (Text.* and CText.*); a text that is missing is taken from English (or from the main language of a variant). A ~X~ marks the hot key of a text (written by tools/make_hotkeys.py).
+Text.MenuLoad	~З~авант.
+Text.MenuVectors	В~е~ктори
+Text.MenuTools	~І~нстр.
+Text.MenuConfig	~Н~алашт.
+Text.MenuSort	~С~ортув.
+Text.MenuStart	~П~уск
+Text.MenuLanguage	~М~ова
+Text.MenuQuit	~В~ихід
 Text.TitleSelectFile	Вибір файлу
 Text.TitleVectors	Вектори
 Text.TitleTools	Дані інструментів
@@ -61,33 +61,33 @@ CText.TitleRoute	RoutePro Classic
 CText.Project	EH3D-DRILLPRO
 CText.Licence	GPL-3.0-or-later
 CText.MachineNr	Верстат №:
-CText.LblScale	Масштаб
-CText.LblOffset	Зсув
-CText.LblClip	Обрізка
-CText.LblVectors	Вектори
+CText.LblScale	~М~асштаб
+CText.LblOffset	З~с~ув
+CText.LblClip	О~б~різка
+CText.LblVectors	В~е~ктори
 CText.LblFrm	від
 CText.LblTo	до
 CText.LblCount	Кільк.
 CText.LblTotal	Всього
 CText.LblDone	Готово
 CText.LblFile	Файл
-CText.LblBoard	Плата
-CText.LblBase	Основа
+CText.LblBoard	П~л~ата
+CText.LblBase	~О~снова
 CText.Mm	mm
-CText.BtnConfig	Налашт.
-CText.BtnTools	Інстр.
-CText.BtnStart	Пуск
-CText.BtnLoad	Завант.
-CText.BtnPanelz	Панел.
-CText.BtnOffset	Зсув
-CText.BtnQuit	Вихід
+CText.BtnConfig	~Н~алашт.
+CText.BtnTools	~І~нстр.
+CText.BtnStart	~П~уск
+CText.BtnLoad	Заван~т~.
+CText.BtnPanelz	П~а~нел.
+CText.BtnOffset	~З~сув
+CText.BtnQuit	~В~ихід
 CText.PTitle	Параметри
-CText.PFile	Файл
+CText.PFile	~Ф~айл
 CText.PDirectory	Каталог
 CText.PPattern	Маска
-CText.PCoordinates	Координати
-CText.PSorting	Сортування
-CText.PChord	Кут хорди
+CText.PCoordinates	Коор~д~инати
+CText.PSorting	~С~ортування
+CText.PChord	К~у~т хорди
 CText.PUnit110	1/10 mil
 CText.PUnit1	1/1  mil
 CText.PUnit0025	0.025 mm
@@ -96,19 +96,19 @@ CText.PSortNone	Немає
 CText.PSortX	Спершу X
 CText.PSortY	Спершу Y
 CText.PSortSpecial	Особл.
-CText.PSpeed	Швидкість (mm/min)
+CText.PSpeed	Ш~в~идкість (mm/min)
 CText.PXyMax	XY Макс.
 CText.PXyRef	XY Баз.
 CText.PXyRamp	XY Розгін
 CText.PZMax	Z  Макс.
 CText.PZRef	Z  Баз.
 CText.PZRamp	Z  Розгін
-CText.PRamp	Розгін (dv/dt)
-CText.PCorrect	Корекц.
-CText.PStroke	Хід
+CText.PRamp	~Р~озгін (dv/dt)
+CText.PCorrect	~К~орекц.
+CText.PStroke	~Х~ід
 CText.PLimit	Межа
 CText.PFree	Вільно
-CText.PSpindle	Шпиндель
+CText.PSpindle	~Ш~пиндель
 CText.PDelay	Затримка
 CText.PSecond	s
 CText.ConnLabel	З'єднання
@@ -133,19 +133,19 @@ CText.ConnNeedAddress	Адреса має бути host:port.
 CText.ConnNeedMachine	Не вказано верстат сервера.
 CText.ConnSaved	З'єднання збережено у файлі верстата.
 CText.ConnNoSave	Файл верстата не записується.
-CText.BLoad	Завант.
+CText.BLoad	~З~авант.
 CText.BSave	Зберегти
-CText.BOk	Ок
-CText.BAbort	Перервати
-CText.BYes	Так
-CText.BNo	Ні
-CText.BOkUpper	OK
-CText.BCancel	СКАСУВАТИ
+CText.BOk	~О~к
+CText.BAbort	~П~ерервати
+CText.BYes	~Т~ак
+CText.BNo	~Н~і
+CText.BOkUpper	~O~K
+CText.BCancel	~С~КАСУВАТИ
 CText.PzTitle	Панелізація
 CText.PzBoard	Плата
 CText.PzSpacing	Крок
 CText.PzNumber	Кількість
-CText.PzCalc	Розр.
+CText.PzCalc	~Р~озр.
 CText.TTitle	Дані інструментів
 CText.TPl	Міс.
 CText.TName	Назва
@@ -164,8 +164,8 @@ CText.TFeedUnit	mm/min
 CText.TSpindleUnit	1/min
 CText.TStartUnit	Вект.
 CText.FTitle	Вибір файлу
-CText.FName	Ім'я
-CText.FFiles	Файли
+CText.FName	~І~м'я
+CText.FFiles	~Ф~айли
 CText.QStop	СТОП !!!
 CText.QAsk	Справді вийти?
 CText.HomingZ	Базування осі Z
@@ -190,8 +190,8 @@ CText.InputError	Помилка вводу!
 CText.Max	Макс.: 
 CText.Min	Мін.: 
 CText.BackupAsk	Зберегти налаштування з меню Налашт. і головного меню у файл?
-CText.BtnAbout	Про програму
-CText.PLanguage	Мова
+CText.BtnAbout	П~р~о програму
+CText.PLanguage	~М~ова
 CText.AboutDescDrill	Відкрита реалізація програми свердління Bungard CCD
 CText.AboutDescRoute	Відкрита реалізація програми фрезерування Bungard CCD
 CText.AboutVersion	Версія
@@ -227,16 +227,16 @@ CText.TeachForw	вперед
 CText.TeachRight	вправо
 CText.TeachUp	вгору
 CText.TeachDown	вниз
-CText.TeachMil	mil/1
-CText.BTeach	Навч.
-CText.BPlusPos	+ Поз
-CText.BMinusPos	- Поз
-CText.BMod	Змін.
+CText.TeachMil	~m~il/1
+CText.BTeach	~Н~авч.
+CText.BPlusPos	~+~ Поз
+CText.BMinusPos	~-~ Поз
+CText.BMod	~З~мін.
 CText.QAttentionPlain	Увага
 CText.QInfo	Інфо:
 CText.QOffsetDelete	Видалити старий|зсув?
 CText.QTeachWrite	Записати файл|навчання?
 CText.QWhatNext	Що далі?
-CText.BCont	Далі
+CText.BCont	~Д~алі
 Text.StatusMain	Esc: назад   Enter: прийняти   ↑/↓: рух
 CText.QInterrupted	ПЕРЕРВАНО
