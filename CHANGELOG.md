@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.9] - No console window on Windows, hot keys in 37 languages and the tools that are off sent to the server
+
 - **No black window on Windows:** the program no longer opens a console; started from a terminal it attaches to it, so the help and the errors are printed there as before.
 
 - **`voice:LANG:f|m` accepts the 36 languages with a folder of voices:** the list of languages with spoken notices grows from the first eight to every language of the interface that has a code (including `pt-br`), so a folder of voices with a language added is offered in the lists of sounds. 1 test.
