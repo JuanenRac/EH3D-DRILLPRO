@@ -6,6 +6,8 @@
 //! Without `--data` the files are looked for in the current folder, the folder of the program and the user's
 //! configuration folder.
 
+#![cfg_attr(windows, windows_subsystem = "windows")]
+
 use eh3d_drillpro::app::App;
 use eh3d_drillpro::cli;
 use eh3d_drillpro::gui;
@@ -13,6 +15,7 @@ use eh3d_drillpro::gui;
 const SETTINGS: &str = "eh3d-drillpro.lang";
 
 fn main() -> eframe::Result {
+    attach_console();
     let o = cli::parse(SETTINGS, "DRILLPRO.DCF");
     if o.machines {
         std::process::exit(cli::print_fleet(&o));
@@ -52,3 +55,20 @@ fn main() -> eframe::Result {
     }
     gui::run_capture("DRILLPRO", SETTINGS, app, capture)
 }
+
+/// A program with a window has no console of its own on Windows (no black window); when it was started from a terminal, what it prints (the help, a mistake in the options) goes to that terminal.
+#[cfg(windows)]
+fn attach_console() {
+    #[link(name = "kernel32")]
+    extern "system" {
+        fn AttachConsole(process_id: u32) -> i32;
+    }
+    const ATTACH_PARENT_PROCESS: u32 = u32::MAX;
+    // SAFETY: a call of the system with a constant; if there is no parent console it does nothing.
+    unsafe {
+        AttachConsole(ATTACH_PARENT_PROCESS);
+    }
+}
+
+#[cfg(not(windows))]
+fn attach_console() {}

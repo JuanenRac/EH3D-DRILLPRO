@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **No black window on Windows:** the program no longer opens a console; started from a terminal it attaches to it, so the help and the errors are printed there as before.
+
 - **`voice:LANG:f|m` accepts the 36 languages with a folder of voices:** the list of languages with spoken notices grows from the first eight to every language of the interface that has a code (including `pt-br`), so a folder of voices with a language added is offered in the lists of sounds. 1 test.
 
 - **Hot keys in the 29 languages read from files:** every label that has a highlighted letter in English now has one in each of them (`~X~` in `locales/*.tsv`), written by the new `tools/make_hotkeys.py`: the first letter of the word that no other control of the same screen uses, in the alphabet of the text (Latin, Cyrillic or Greek), keeping free the six keys the teach window keeps for its arrows and not repeating a Latin and a Cyrillic letter that look alike. `--check` fails when a file would change. A variant (Brazilian Portuguese, Canadian French) keeps the letters of its main language for the words it does not change.
