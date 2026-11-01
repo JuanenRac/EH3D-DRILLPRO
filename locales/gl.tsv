@@ -241,7 +241,7 @@ CText.BCont	~C~ont.
 Text.StatusMain	Esc: atrás   Enter: acepta   ↑/↓: mover
 CText.QInterrupted	INTERROMPIDO
 Text.SpindleLimit	Límite do fuso:
-Text.ToolTable	A táboa de ferramentas non ten a ferramenta
+Text.ToolDefaults	Non está na táboa de ferramentas; úsanse valores prudentes para a ferramenta
 Text.RackGap	Un posto do cambiador non ten posición no ficheiro da máquina
 Text.LevelServer	O mapa de alturas non se pode usar cando o traballo pasa polo servidor
 Text.IgnoredLines	O ficheiro ten ranuras ou movementos de fresado que non se len

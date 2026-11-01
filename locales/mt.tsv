@@ -241,7 +241,7 @@ CText.BCont	~K~ompli
 Text.StatusMain	Esc: lura   Enter: aċċetta   ↑/↓: mexxi
 CText.QInterrupted	IMWAQQAF
 Text.SpindleLimit	Limitu tal-ispindle:
-Text.ToolTable	It-tabella tal-għodod ma tagħtix l-għodda
+Text.ToolDefaults	Mhux fit-tabella tal-għodod; jintużaw valuri kawti għall-għodda
 Text.RackGap	Post tal-bdiel tal-għodda m'għandux pożizzjoni fil-fajl tal-magna
 Text.LevelServer	Il-mappa tal-għoli ma tistax tintuża meta x-xogħol jgħaddi mis-server
 Text.IgnoredLines	Il-fajl fih sloti jew movimenti ta' tħaffir li ma jinqrawx

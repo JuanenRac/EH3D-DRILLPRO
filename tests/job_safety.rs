@@ -24,25 +24,62 @@ fn scratch(tag: &str, table: &str, file: &str) -> PathBuf {
 const THREE: &str = "%\nT01\nX500Y500\nT02\nX1000Y2500\nT03\nX2500Y3000\nM30\n";
 
 #[test]
-fn a_tool_whose_line_cannot_be_read_stops_the_job_and_the_line_is_named() {
+fn a_tool_whose_line_cannot_be_read_runs_with_the_cautious_values_and_the_person_is_told_which() {
     let dir = scratch(
         "tools",
-        "01 0.5 1200 24000\r\n02 0,5 1200 24000\r\n03 0.5 abc 24000\r\n",
+        "01 0.5 1200 24000
+02 0,5 1200 24000
+03 0.5 abc 24000
+",
         THREE,
     );
     let mut app = App::new(Lang::En, &dir);
     app.load_file(&dir.join("JOB.NCD"));
     ClassicEngine::start(&mut app);
-    let error = ClassicEngine::error(&app)
-        .expect("the job is refused")
+    // the job is not refused
+    assert!(ClassicEngine::error(&app).is_none());
+    let warning = ClassicEngine::warning(&app)
+        .expect("the person is told")
         .to_string();
-    // the decimal comma of tool 2 is read; the bad line of tool 3 is named
-    assert!(!error.contains("02 0,5"), "{error}");
+    // the decimal comma of tool 2 is read, so only tool 3 is named, with the line that could not be read
     assert!(
-        error.contains("line 22") && error.contains("03 0.5 abc 24000"),
-        "{error}"
+        warning.contains("line 22") && warning.contains("03 0.5 abc 24000"),
+        "{warning}"
     );
-    assert!(!ClassicEngine::started(&app));
+    assert!(!warning.contains("02 0,5"), "{warning}");
+}
+
+#[test]
+fn a_tool_with_no_line_at_all_is_named_too_and_a_complete_table_says_nothing() {
+    let dir = scratch(
+        "missing",
+        "01 0.5 1200 24000
+03 0.5 900 24000
+",
+        THREE,
+    );
+    let mut app = App::new(Lang::En, &dir);
+    app.load_file(&dir.join("JOB.NCD"));
+    ClassicEngine::start(&mut app);
+    let warning = ClassicEngine::warning(&app)
+        .expect("tool 2 has no line")
+        .to_string();
+    assert!(
+        warning.ends_with(" 2") && !warning.contains("line"),
+        "{warning}"
+    );
+    let dir = scratch(
+        "whole",
+        "01 0.5 1200 24000
+02 0.5 1200 24000
+03 0.5 900 24000
+",
+        THREE,
+    );
+    let mut app = App::new(Lang::En, &dir);
+    app.load_file(&dir.join("JOB.NCD"));
+    ClassicEngine::start(&mut app);
+    assert!(ClassicEngine::warning(&app).is_none());
 }
 
 #[test]

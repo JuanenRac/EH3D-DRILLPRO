@@ -107,6 +107,8 @@ pub struct App {
     pub(crate) sel: usize,
     pub(crate) loaded: Option<Loaded>,
     pub(crate) error: Option<String>,
+    /// What the last start found that the person should know but that does not stop the job (tools that run with the cautious defaults).
+    pub(crate) warning: Option<String>,
     pub(crate) tools: Vec<Tool>,
     pub(crate) tools_found: bool,
     pub(crate) config: Option<Config>,
@@ -160,6 +162,7 @@ impl App {
             sel: 0,
             loaded: None,
             error: None,
+            warning: None,
             tools_found: tool_text.is_some(),
             tools: tool_text.as_deref().map(tools::parse).unwrap_or_default(),
             data_dir: data_dir.to_path_buf(),
@@ -340,7 +343,8 @@ impl App {
     }
 
     pub(crate) fn start(&mut self) {
-        // a refusal of an earlier start is not the answer to this one
+        // a refusal or a warning of an earlier start is not the answer to this one
+        self.warning = None;
         if self.loaded.is_some() {
             self.error = None;
         }
@@ -378,8 +382,8 @@ impl App {
                 spindle_rpm: t.spindle_rpm,
             })
             .collect();
-        // a tool the job uses whose line could not be read would be drilled with a made-up feed and speed: the job does not start, and the line is named. (A tool that
-        // has no line at all, and no line that failed to read, is the person's choice and keeps the cautious defaults.)
+        // the tools of the job that the table does not give run with the cautious defaults (60000 rpm, 1000 mm/min, no extra stroke); the person is told which, and
+        // the line that could not be read, if that is why
         if self.tools_found {
             let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
             used.sort_unstable();
@@ -388,23 +392,19 @@ impl App {
                 .into_iter()
                 .filter(|u| !self.tools.iter().any(|t| t.number == *u))
                 .collect();
-            let bad = self
-                .tools_text
-                .as_deref()
-                .map(|t| tools::parse_report(t).1)
-                .unwrap_or_default();
-            // the unreadable line of a tool the job needs (its first word is the number of the tool)
-            let lost = bad.iter().find(|b| {
-                b.text
-                    .split_whitespace()
-                    .next()
-                    .and_then(|w| w.parse::<u8>().ok())
-                    .is_some_and(|n| missing.contains(&n))
-            });
-            if let Some(b) = lost {
-                let detail = format!("line {}: {}", b.line, b.text);
-                self.error = Some(format!("{}: {detail}", tr(self.lang, Text::ToolTable)));
-                return;
+            if !missing.is_empty() {
+                let bad = self
+                    .tools_text
+                    .as_deref()
+                    .map(|t| tools::parse_report(t).1)
+                    .unwrap_or_default();
+                let bad: Vec<(usize, String)> =
+                    bad.iter().map(|b| (b.line, b.text.clone())).collect();
+                self.warning = Some(crate::job::tool_defaults_message(
+                    tr(self.lang, Text::ToolDefaults),
+                    &missing,
+                    &bad,
+                ));
             }
         }
         // the height map is not sent to the server, which plans the job on a flat table: the job would not be as deep as the screen shows

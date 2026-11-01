@@ -139,6 +139,9 @@ pub fn job_machine(
             geometry.search_y_steps = geometry.y_steps(m.clip_mm.1 * margin).unsigned_abs();
         }
     }
+    if let Some(m) = settings {
+        apply_machine_file(&mut geometry, m);
+    }
     match settings {
         Some(m) => JobMachine {
             geometry,
@@ -158,6 +161,44 @@ pub fn job_machine(
             distance_tool_board_mm: 16.0,
             xy_search_steps: 26_613,
         },
+    }
+}
+
+/// The warning for tools that run with the cautious defaults: the text of the language, the numbers of the tools and, for each whose line of the table could not be
+/// read, that line.
+pub fn tool_defaults_message(text: &str, missing: &[u8], bad: &[(usize, String)]) -> String {
+    let list = missing
+        .iter()
+        .map(|t| t.to_string())
+        .collect::<Vec<_>>()
+        .join(", ");
+    let mut out = format!("{text} {list}");
+    for (line, text) in bad {
+        let tool = text
+            .split_whitespace()
+            .next()
+            .and_then(|w| w.parse::<u8>().ok());
+        if tool.is_some_and(|n| missing.contains(&n)) {
+            out.push_str(&format!(" (line {line}: {text})"));
+        }
+    }
+    out
+}
+
+/// What the machine file says about how gently the motors start and how long the spindle takes: `ACCELERATION` (10 for X and Y and 20 for Z in the file as it ships;
+/// higher is a harder start, lower is gentler: "if the motors stall at the start of a move, try 5") scales the length of the ramps - with the shipped values the ramps are
+/// the ones they were, 5 makes them twice as long - and `SPINDLE START TIME` is the seconds to wait for each 10000 rpm. Not tried on a real machine.
+pub fn apply_machine_file(geometry: &mut Geometry, m: &MachineSettings) {
+    let scaled = |steps: u32, shipped: u32, accel: u32| -> u32 {
+        if accel == 0 {
+            return steps;
+        }
+        ((steps as f64 * shipped as f64 / accel as f64).round() as u32).max(1)
+    };
+    geometry.ramp_steps = scaled(geometry.ramp_steps, 10, m.accel.0);
+    geometry.tuning.z_ramp_steps = scaled(geometry.tuning.z_ramp_steps, 20, m.accel.1);
+    if m.spindle_start_time > 0.0 {
+        geometry.tuning.spindle_start_ms_per_10000 = (m.spindle_start_time * 1000.0).round() as u32;
     }
 }
 

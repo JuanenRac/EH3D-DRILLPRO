@@ -241,7 +241,7 @@ CText.BCont	~C~ont.
 Text.StatusMain	Esc: enrere   Enter: accepta   ↑/↓: mou
 CText.QInterrupted	INTERROMPUT
 Text.SpindleLimit	Límit de l'eix:
-Text.ToolTable	La taula d'eines no dona l'eina
+Text.ToolDefaults	No és a la taula d'eines; s'usen valors prudents per a l'eina
 Text.RackGap	Un lloc del canviador no té posició al fitxer de la màquina
 Text.LevelServer	El mapa d'alçades no es pot usar quan la feina passa pel servidor
 Text.IgnoredLines	El fitxer té ranures o moviments de fresat que no es llegeixen

@@ -241,7 +241,7 @@ CText.BCont	~Д~аље
 Text.StatusMain	Esc: назад   Enter: прихвати   ↑/↓: кретање
 CText.QInterrupted	ПРЕКИНУТО
 Text.SpindleLimit	Ограничење вретена:
-Text.ToolTable	Табела алата не садржи алат
+Text.ToolDefaults	Није у табели алата; за алат се користе опрезне вредности
 Text.RackGap	Место мењача алата нема положај у датотеци машине
 Text.LevelServer	Мапа висина се не може користити када посао иде преко сервера
 Text.IgnoredLines	Датотека има жлебове или глодалачке покрете који се не читају

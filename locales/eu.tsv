@@ -241,7 +241,7 @@ CText.BCont	~J~arr.
 Text.StatusMain	Esc: atzera   Enter: onartu   ↑/↓: mugitu
 CText.QInterrupted	ETETEN
 Text.SpindleLimit	Ardatzaren muga:
-Text.ToolTable	Erreminta-taulak ez du erreminta ematen
+Text.ToolDefaults	Ez dago erreminta-taulan; kontuz hartutako balioak erabiltzen dira erreminta honetarako
 Text.RackGap	Erreminta-aldatzailearen leku batek ez du posiziorik makinaren fitxategian
 Text.LevelServer	Altuera-mapa ezin da erabili lana zerbitzaritik pasatzen denean
 Text.IgnoredLines	Fitxategiak irakurtzen ez diren zirrikituak edo fresatze-mugimenduak ditu

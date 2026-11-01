@@ -241,7 +241,7 @@ CText.BCont	~F~orts.
 Text.StatusMain	Esc: tilbake   Enter: godta   ↑/↓: flytt
 CText.QInterrupted	AVBRUTT
 Text.SpindleLimit	Spindelgrense:
-Text.ToolTable	Verktøytabellen har ikke verktøyet
+Text.ToolDefaults	Finnes ikke i verktøytabellen; det brukes forsiktige verdier for verktøy
 Text.RackGap	En plass i verktøyskifteren har ingen posisjon i maskinfilen
 Text.LevelServer	Høydekartet kan ikke brukes når jobben går via serveren
 Text.IgnoredLines	Filen har spor eller frese-bevegelser som ikke leses

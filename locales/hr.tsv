@@ -241,7 +241,7 @@ CText.BCont	~N~ast.
 Text.StatusMain	Esc: natrag   Enter: prihvati   ↑/↓: kretanje
 CText.QInterrupted	PREKINUTO
 Text.SpindleLimit	Ograničenje vretena:
-Text.ToolTable	Tablica alata ne sadrži taj alat
+Text.ToolDefaults	Nije u tablici alata; za alat se koriste oprezne vrijednosti
 Text.RackGap	Mjesto izmjenjivača alata nema položaj u datoteci stroja
 Text.LevelServer	Karta visina ne može se koristiti kada posao ide preko poslužitelja
 Text.IgnoredLines	Datoteka ima utore ili glodalačke pokrete koji se ne čitaju

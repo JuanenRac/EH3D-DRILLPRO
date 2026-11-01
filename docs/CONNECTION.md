@@ -38,6 +38,8 @@ Any other path can be given with `--connection FILE`. A missing default file mea
 | `node` | the [EH3D-NODE-BUNGARD](https://github.com/JuanenRac/EH3D-NODE-BUNGARD) in the machine's box, over Ethernet or Wi-Fi (`node_address` and `node_token`: the token is the one set in the node's own panel, page Machine). The node also gives the spindle (`spindle = node`) and the machine's lamps |
 | `server` | the [EH3D-SERVER](https://github.com/JuanenRac/EH3D-SERVER): the program does not drive the machine, it sends the job (`server_address` as `host:port`, `server_token` of this program and `server_machine`, the id of the machine on the server). The server plans it again with the constants and the tuning of that machine, runs it through the machine's node and tells the program how it goes. `Esc` stops the job on the server; closing the program does not. The run screen also shows the excesses of the spindle that the server cut (when the spindle switch of the machine on the server is on `warn`; with `reject` the server refuses the job and the screen says why) and, when the machine has the node of a drill head, the turns of the spindle and its temperature |
 
+The link to the server is plain HTTP: the token of the program travels in the clear, and whoever can read the network can use it to start and confirm jobs. Use it on a network that can be trusted (the workshop's own, behind its router) or through a tunnel (SSH, a VPN). The program refuses to send a path, an address or a token that has a space, a control character or a line break, and writes the names of the machine and of the jobs into the path as safe segments.
+
 With `server` the tuning values below belong to the machine on the server (they are set there, in the machine's `cfg`), not to this file. With any value but `demo` the main screen says, in red, which connection it is and that **Start moves the machine**. Keep the tool out, keep a hand on the machine's power switch and be ready to press `Esc`: it stops the job at once and switches the stepper drivers off.
 
 ## How the machine reports its limit switches
@@ -80,7 +82,7 @@ Speeds are in steps per second: the control unit takes one byte per step, and th
 | `home_check_piece_steps` | 100 | steps between two readings of the home line on `rs232` |
 | `home_watch_chunk_bytes` | 0 | on `usb` and `node`: 0 sends the last search as one unbroken stream and reads the home line once, at the end (every reading in the middle is a gap in the stream that made the Y motor lose steps on the CH340); a value of 50 to 4000 reads the line every that many bytes instead |
 | `home_watch_seek` | off | also watch the home line during the first long searches (it costs small gaps in the stream) |
-| `spindle_start_wait_ms`, `spindle_stop_wait_ms` | 1680, 1000 | how long the job waits for the spindle to reach speed and to stop |
+| `spindle_start_wait_ms`, `spindle_stop_wait_ms` | 1680, 1000 | how long the job waits for the spindle to reach speed and to stop (the start wait is used only when there is no machine file: with one, `SPINDLE START TIME` of the file, seconds for each 10000 rpm, decides it) |
 | `spindle` | central | `central`: the spindle of the control unit (its latch bits, up to 60000 rpm); `node`: the spindle of the EH3D-NODE-BUNGARD (a variable-frequency drive on the node's own outputs, any speed up to the node's maximum). Only a `node` connection (or the server in front of one) has it |
 
 ## Trying a machine step by step

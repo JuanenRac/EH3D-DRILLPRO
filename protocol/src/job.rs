@@ -174,12 +174,12 @@ impl Planner<'_> {
         if t.spindle_node {
             self.items.push(Item::Spindle {
                 rpm,
-                wait_ms: t.spindle_start_wait_ms,
+                wait_ms: t.spindle_start_wait(rpm),
             });
         } else {
             let s = self
                 .latches
-                .spindle_on(spindle_level(rpm), t.spindle_start_wait_ms as u64 * 1000);
+                .spindle_on(spindle_level(rpm), t.spindle_start_wait(rpm) as u64 * 1000);
             self.latch(s);
             if t.vacuum_aux {
                 let v = self.latches.vacuum_on(spindle_level(rpm));

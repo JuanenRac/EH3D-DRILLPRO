@@ -16,6 +16,7 @@ use crate::protocol::execute::{run_items, Hooks, Outcome};
 use crate::protocol::job::{Item, JobBuilder, JobMachine, Pause};
 use crate::protocol::motion::{rapid_xy, z_move};
 use crate::protocol::safety::{Machine, Verified};
+use crate::server_link::path_segment;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RunState {
@@ -337,7 +338,7 @@ fn follow_on_server(
     }
     let (status, job) = client.call(
         "POST",
-        &format!("/api/v1/machines/{}/jobs", client.machine),
+        &format!("/api/v1/machines/{}/jobs", path_segment(&client.machine)),
         Some(request),
     )?;
     if status != 200 {
@@ -350,10 +351,18 @@ fn follow_on_server(
     if let Ok(mut n) = shared.notes.lock() {
         n.spindle_warnings = spindle_notes(&job["view"]);
     }
-    let (status, answer) = client.call("POST", &format!("/api/v1/jobs/{id}/start"), None)?;
+    let (status, answer) = client.call(
+        "POST",
+        &format!("/api/v1/jobs/{}/start", path_segment(&id)),
+        None,
+    )?;
     if status != 200 {
         // a job the server kept but could not start is not left lying ready on it
-        let _ = client.call("POST", &format!("/api/v1/jobs/{id}/cancel"), None);
+        let _ = client.call(
+            "POST",
+            &format!("/api/v1/jobs/{}/cancel", path_segment(&id)),
+            None,
+        );
         return Err(error_text(status, &answer));
     }
     let mut cancelled = false;
@@ -367,7 +376,10 @@ fn follow_on_server(
         if head_failures < 2 && turn % HEAD_EVERY == 0 {
             match client.call(
                 "GET",
-                &format!("/api/v1/machines/{}/head/status", client.machine),
+                &format!(
+                    "/api/v1/machines/{}/head/status",
+                    path_segment(&client.machine)
+                ),
                 None,
             ) {
                 Ok((200, head)) => {
@@ -384,15 +396,23 @@ fn follow_on_server(
         turn = turn.wrapping_add(1);
         if shared.cancel.load(Ordering::SeqCst) && !cancelled {
             // the stop is asked again at every turn until the server has taken it (or says the job is already over)
-            match client.call("POST", &format!("/api/v1/jobs/{id}/cancel"), None) {
+            match client.call(
+                "POST",
+                &format!("/api/v1/jobs/{}/cancel", path_segment(&id)),
+                None,
+            ) {
                 Ok((200..=299, _)) | Ok((404 | 409, _)) => cancelled = true,
                 _ => {}
             }
         }
         if shared.confirmed.swap(false, Ordering::SeqCst) {
-            let _ = client.call("POST", &format!("/api/v1/jobs/{id}/confirm"), None);
+            let _ = client.call(
+                "POST",
+                &format!("/api/v1/jobs/{}/confirm", path_segment(&id)),
+                None,
+            );
         }
-        match client.call("GET", &format!("/api/v1/jobs/{id}"), None) {
+        match client.call("GET", &format!("/api/v1/jobs/{}", path_segment(&id)), None) {
             Ok((200, job)) => {
                 lost = 0;
                 shared

@@ -241,7 +241,7 @@ CText.BCont	~T~ovább
 Text.StatusMain	Esc: vissza   Enter: elfogad   ↑/↓: mozgás
 CText.QInterrupted	MEGSZAKÍTVA
 Text.SpindleLimit	Az orsó határa:
-Text.ToolTable	Az szerszámtáblázat nem tartalmazza a szerszámot
+Text.ToolDefaults	Nincs a szerszámtáblázatban; a szerszámhoz óvatos értékek lesznek használva
 Text.RackGap	A szerszámcserélő egyik helyének nincs pozíciója a gépfájlban
 Text.LevelServer	A magassági térkép nem használható, ha a munka a szerveren megy át
 Text.IgnoredLines	A fájlban olyan hornyok vagy marási mozgások vannak, amelyeket nem olvas be

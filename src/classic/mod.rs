@@ -480,6 +480,9 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if let Some(e) = self.engine.error() {
             let shown: String = e.chars().take(70).collect();
             s.text(5, 21, &shown, RED, GREY);
+        } else if let Some(w) = self.engine.warning() {
+            let shown: String = w.chars().take(70).collect();
+            s.text(5, 21, &shown, BROWN, GREY);
         }
     }
 

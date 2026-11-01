@@ -241,7 +241,7 @@ CText.BCont	~J~ätka
 Text.StatusMain	Esc: tagasi   Enter: kinnita   ↑/↓: liigu
 CText.QInterrupted	KATKESTATUD
 Text.SpindleLimit	Spindli piirang:
-Text.ToolTable	Tööriistatabel ei sisalda seda tööriista
+Text.ToolDefaults	Pole tööriistatabelis; tööriista jaoks kasutatakse ettevaatlikke väärtusi
 Text.RackGap	Tööriistavahetaja kohal pole masinafailis asukohta
 Text.LevelServer	Kõrguskaarti ei saa kasutada, kui töö käib läbi serveri
 Text.IgnoredLines	Failis on piludeid või freesimisliigutusi, mida ei loeta

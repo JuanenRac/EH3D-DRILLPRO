@@ -123,3 +123,84 @@ fn the_tools_switched_off_leave_their_holes_out_of_the_job() {
     assert_eq!(some.holes.len(), 2);
     assert!(some.holes.iter().all(|h| h.tool == 2));
 }
+
+fn shipped_machine() -> eh3d_drillpro::config::MachineSettings {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("config/DRILLPRO.DCF");
+    let text = eh3d_drillpro::config::bytes_to_text(&std::fs::read(path).unwrap());
+    eh3d_drillpro::config::parse(&text)
+        .unwrap()
+        .settings()
+        .unwrap()
+}
+
+#[test]
+fn the_acceleration_of_the_machine_file_sets_the_length_of_the_ramps() {
+    use eh3d_drillpro::protocol::connection::ConnectionConfig;
+    let mut m = shipped_machine();
+    assert_eq!((m.accel.0, m.accel.1), (10, 20), "the file as it ships");
+    let plain = Geometry::default();
+    let shipped = job_machine(Some(&m), plain, &ConnectionConfig::default(), 1.6);
+    // the values that ship leave the ramps as they were
+    assert_eq!(
+        (
+            shipped.geometry.ramp_steps,
+            shipped.geometry.tuning.z_ramp_steps
+        ),
+        (plain.ramp_steps, plain.tuning.z_ramp_steps)
+    );
+    // "if the motors stall at the start of a move, try 5": the ramp is twice as long; a harder start is a shorter ramp
+    m.accel = (5, 10);
+    let gentle = job_machine(Some(&m), plain, &ConnectionConfig::default(), 1.6);
+    assert_eq!(
+        (
+            gentle.geometry.ramp_steps,
+            gentle.geometry.tuning.z_ramp_steps
+        ),
+        (80, 400)
+    );
+    m.accel = (20, 40);
+    let hard = job_machine(Some(&m), plain, &ConnectionConfig::default(), 1.6);
+    assert_eq!(
+        (hard.geometry.ramp_steps, hard.geometry.tuning.z_ramp_steps),
+        (20, 100)
+    );
+}
+
+#[test]
+fn the_spindle_start_time_of_the_machine_file_is_the_wait_for_each_ten_thousand_rpm() {
+    use eh3d_drillpro::protocol::connection::ConnectionConfig;
+    let mut m = shipped_machine();
+    assert!((m.spindle_start_time - 0.5).abs() < 1e-9);
+    let t = job_machine(
+        Some(&m),
+        Geometry::default(),
+        &ConnectionConfig::default(),
+        1.6,
+    )
+    .geometry
+    .tuning;
+    assert_eq!(
+        (
+            t.spindle_start_wait(10_000),
+            t.spindle_start_wait(24_000),
+            t.spindle_start_wait(60_000)
+        ),
+        (500, 1200, 3000)
+    );
+    // the measured 1680 ms of a machine at 60000 rpm is 0.28 s for each 10000
+    m.spindle_start_time = 0.28;
+    let t = job_machine(
+        Some(&m),
+        Geometry::default(),
+        &ConnectionConfig::default(),
+        1.6,
+    )
+    .geometry
+    .tuning;
+    assert_eq!(t.spindle_start_wait(60_000), 1680);
+    // with no machine file the fixed wait stays
+    let none = job_machine(None, Geometry::default(), &ConnectionConfig::default(), 1.6)
+        .geometry
+        .tuning;
+    assert_eq!(none.spindle_start_wait(60_000), 1680);
+}

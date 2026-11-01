@@ -36,13 +36,18 @@ impl Client {
         Fleet::from_json(&body)
     }
 
-    /// One request; the answer is the status and the JSON body (`null` when the body is not JSON).
+    /// One request; the answer is the status and the JSON body (`null` when the body is not JSON). The request goes in plain HTTP, so the token of the program travels
+    /// in the clear: use it on a network that can be trusted or through a tunnel (SSH, VPN). What is written into the lines of the request (the path, the address and the
+    /// token) must not hold a space, a control character or a line break, which would change the request: such a request is refused before it is sent.
     pub fn call(
         &self,
         method: &str,
         path: &str,
         body: Option<&Value>,
     ) -> Result<(u16, Value), String> {
+        check_request_part("the path", path)?;
+        check_request_part("the address of the server", &self.address)?;
+        check_request_part("the token", &self.token)?;
         let target = self
             .address
             .to_socket_addrs()
@@ -77,6 +82,31 @@ impl Client {
         stream.read_to_end(&mut raw).map_err(|e| e.to_string())?;
         parse_response(&raw)
     }
+}
+
+/// A part of a request line or header refuses a space, a control character or anything that is not ASCII (a carriage return or a line feed would end the line and let
+/// the rest pass for another header or request).
+pub fn check_request_part(what: &str, text: &str) -> Result<(), String> {
+    if text.bytes().any(|b| b <= b' ' || b == 0x7f || b >= 0x80) {
+        return Err(format!(
+            "{what} has a space, a control character or a letter that cannot be sent"
+        ));
+    }
+    Ok(())
+}
+
+/// A name (a machine, a job) as one segment of a path: everything but letters, digits and `-._~` is written as `%XX`, so a slash, a question mark, a space or a line
+/// break in a name cannot change where the request goes.
+pub fn path_segment(name: &str) -> String {
+    let mut out = String::new();
+    for b in name.bytes() {
+        if b.is_ascii_alphanumeric() || matches!(b, b'-' | b'.' | b'_' | b'~') {
+            out.push(b as char);
+        } else {
+            out.push_str(&format!("%{b:02X}"));
+        }
+    }
+    out
 }
 
 /// The status and the JSON body of an HTTP response (a body sent in chunks is put together).
@@ -138,6 +168,36 @@ pub fn error_text(status: u16, body: &Value) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn names_become_one_safe_segment_and_a_request_cannot_be_split() {
+        assert_eq!(path_segment("bench-1_a.b~c"), "bench-1_a.b~c");
+        assert_eq!(
+            path_segment("a b/c?d\r\nX: y"),
+            "a%20b%2Fc%3Fd%0D%0AX%3A%20y"
+        );
+        assert_eq!(path_segment("ñ"), "%C3%B1");
+        assert!(check_request_part("the path", "/api/v1/fleet").is_ok());
+        for bad in ["/a b", "/a\r\nHost: x", "/a\n", "/ñ", "/a\0"] {
+            assert!(check_request_part("the path", bad).is_err(), "{bad:?}");
+        }
+        let client = Client {
+            address: "127.0.0.1:1".into(),
+            token: "t\r\nX: y".into(),
+            machine: String::new(),
+        };
+        let error = client.call("GET", "/api/v1/fleet", None).unwrap_err();
+        assert!(error.contains("the token"), "{error}");
+        let client = Client {
+            address: "127.0.0.1:1".into(),
+            token: "t".into(),
+            machine: String::new(),
+        };
+        let error = client
+            .call("GET", "/api/v1/machines/a b/jobs", None)
+            .unwrap_err();
+        assert!(error.contains("the path"), "{error}");
+    }
 
     #[test]
     fn a_response_is_split_into_status_and_json() {

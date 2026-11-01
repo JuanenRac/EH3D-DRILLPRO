@@ -42,6 +42,9 @@ pub struct Tuning {
     pub home_check_piece_steps: u32,
     /// How long the job waits for the spindle to reach speed after starting it, and to stop after braking it.
     pub spindle_start_wait_ms: u32,
+    /// When not 0, the wait for the spindle to reach speed is this many milliseconds for each 10000 rpm it is asked (the `SPINDLE START TIME` of the machine file),
+    /// and `spindle_start_wait_ms` is not used.
+    pub spindle_start_ms_per_10000: u32,
     pub spindle_stop_wait_ms: u32,
     pub spindle_node: bool,
     /// The auxiliary output (latch A bit 5) is switched on with the spindle and off with it, for a vacuum cleaner wired there. The
@@ -92,6 +95,7 @@ impl Default for Tuning {
             cancel_piece_steps: 1500,
             home_check_piece_steps: 100,
             spindle_start_wait_ms: 1680,
+            spindle_start_ms_per_10000: 0,
             spindle_stop_wait_ms: 1000,
             spindle_node: false,
             vacuum_aux: false,
@@ -101,6 +105,17 @@ impl Default for Tuning {
             unstick_always: false,
             search_hint_margin_steps: 300,
             travel_ramp_steps: 400,
+        }
+    }
+}
+
+impl Tuning {
+    /// How long to wait for the spindle to reach `rpm` after starting it.
+    pub fn spindle_start_wait(&self, rpm: u32) -> u32 {
+        if self.spindle_start_ms_per_10000 > 0 {
+            (rpm as u64 * self.spindle_start_ms_per_10000 as u64 / 10_000).min(60_000) as u32
+        } else {
+            self.spindle_start_wait_ms
         }
     }
 }

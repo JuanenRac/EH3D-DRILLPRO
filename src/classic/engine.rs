@@ -114,6 +114,10 @@ pub trait ClassicEngine {
     /// Bounding box of the vectors in mm: (min x, min y, max x, max y).
     fn bounds(&self) -> Option<(f64, f64, f64, f64)>;
     fn error(&self) -> Option<&str>;
+    /// A thing the person should know about the job that was just started, which does not stop it.
+    fn warning(&self) -> Option<&str> {
+        None
+    }
     fn dir(&self) -> PathBuf;
     fn set_dir(&mut self, dir: PathBuf);
     /// File name pattern of the Select File dialog, for example `*.NCD`.
@@ -350,6 +354,10 @@ impl ClassicEngine for App {
 
     fn error(&self) -> Option<&str> {
         self.error.as_deref()
+    }
+
+    fn warning(&self) -> Option<&str> {
+        self.warning.as_deref()
     }
 
     fn dir(&self) -> PathBuf {

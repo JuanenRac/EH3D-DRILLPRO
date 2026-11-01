@@ -241,7 +241,7 @@ CText.BCont	~L~ean
 Text.StatusMain	Esc: ar ais   Enter: glac   ↑/↓: bog
 CText.QInterrupted	IDIRBHRISTE
 Text.SpindleLimit	Teorainn na fearsaide:
-Text.ToolTable	Níl an uirlis sa tábla uirlisí
+Text.ToolDefaults	Níl sa tábla uirlisí; úsáidtear luachanna cúramacha don uirlis
 Text.RackGap	Níl suíomh ag áit den athraitheoir uirlisí i gcomhad an mheaisín
 Text.LevelServer	Ní féidir an léarscáil airde a úsáid nuair a théann an tasc tríd an bhfreastalaí
 Text.IgnoredLines	Tá sliotáin nó gluaiseachtaí muilleála sa chomhad nach léitear

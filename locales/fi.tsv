@@ -241,7 +241,7 @@ CText.BCont	~J~atka
 Text.StatusMain	Esc: takaisin   Enter: hyväksy   ↑/↓: siirry
 CText.QInterrupted	KESKEYTETTY
 Text.SpindleLimit	Karan raja:
-Text.ToolTable	Työkalutaulukossa ei ole tätä työkalua
+Text.ToolDefaults	Ei ole työkalutaulukossa; työkalulle käytetään varovaisia arvoja
 Text.RackGap	Työkalunvaihtajan paikalla ei ole sijaintia koneen tiedostossa
 Text.LevelServer	Korkeuskarttaa ei voi käyttää, kun työ kulkee palvelimen kautta
 Text.IgnoredLines	Tiedostossa on uria tai jyrsintäliikkeitä, joita ei lueta
