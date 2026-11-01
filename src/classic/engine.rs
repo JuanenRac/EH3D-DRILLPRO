@@ -6,6 +6,7 @@ use crate::app::{App, Mode};
 use crate::config::{self, Config, MachineSettings};
 use crate::job::{geometry_from, sort_holes, Sorting};
 pub use crate::job::{JobOptions, Panel};
+use crate::runner::{RealRun, RunState};
 use crate::tools::{self, Tool};
 
 /// Which of the two programs the screens are for: they differ in the tool table and in one box of the Parameter dialog.
@@ -156,6 +157,10 @@ pub trait ClassicEngine {
     fn done(&self) -> usize;
     /// Advances the job; true while it goes on.
     fn tick(&mut self, n: usize) -> bool;
+    /// How the job that has just stopped going on ended: a stopped or failed job is not a finished one.
+    fn outcome(&self) -> Outcome {
+        Outcome::Completed
+    }
     /// Advances the simulated job by this many seconds of machine time (the moves take as long as the machine would take, with the feeds
     /// and the speeds of the tools); true while it goes on. An engine without a clock does one step.
     fn tick_for(&mut self, _seconds: f64) -> bool {
@@ -164,7 +169,31 @@ pub trait ClassicEngine {
     fn stop(&mut self);
 }
 
+/// How a job ended.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Outcome {
+    /// It did all it had to do (or it was a simulation).
+    Completed,
+    /// The operator stopped it.
+    Cancelled,
+    /// The link or the machine failed; the text says why.
+    Failed(String),
+}
+
+/// The outcome of a job on the real machine, from its last state.
+pub fn outcome_of(real: Option<&RealRun>) -> Outcome {
+    match real.map(|r| r.state()) {
+        Some(RunState::Cancelled) => Outcome::Cancelled,
+        Some(RunState::Failed(why)) => Outcome::Failed(why),
+        _ => Outcome::Completed,
+    }
+}
+
 impl ClassicEngine for App {
+    fn outcome(&self) -> Outcome {
+        outcome_of(self.run.as_ref().and_then(|r| r.real.as_ref()))
+    }
+
     fn kind(&self) -> Kind {
         Kind::Drill
     }

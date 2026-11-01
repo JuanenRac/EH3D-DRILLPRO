@@ -472,12 +472,15 @@ impl App {
 
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.
     pub(crate) fn job_machine(&self) -> JobMachine {
-        crate::job::job_machine(
+        let mut machine = crate::job::job_machine(
             self.settings.as_ref(),
             self.geometry,
             &self.connection,
             self.board_mm,
-        )
+        );
+        // the thickness chosen in the window wins over the one of the machine file (the window starts with the file's)
+        machine.board_mm = self.board_mm;
+        machine
     }
 
     /// Advances the simulated job by up to `n` holes. Returns true while work remains.

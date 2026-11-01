@@ -383,8 +383,11 @@ fn follow_on_server(
         }
         turn = turn.wrapping_add(1);
         if shared.cancel.load(Ordering::SeqCst) && !cancelled {
-            cancelled = true;
-            let _ = client.call("POST", &format!("/api/v1/jobs/{id}/cancel"), None);
+            // the stop is asked again at every turn until the server has taken it (or says the job is already over)
+            match client.call("POST", &format!("/api/v1/jobs/{id}/cancel"), None) {
+                Ok((200..=299, _)) | Ok((404 | 409, _)) => cancelled = true,
+                _ => {}
+            }
         }
         if shared.confirmed.swap(false, Ordering::SeqCst) {
             let _ = client.call("POST", &format!("/api/v1/jobs/{id}/confirm"), None);
