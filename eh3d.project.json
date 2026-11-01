@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "ecosystem": "EH3D",
   "name": "EH3D-DRILLPRO",
   "version": "0.1.0",
@@ -16,6 +16,9 @@
   "evidence": "host-test",
   "family": "CNC Workflow Tools",
   "parent": null,
+  "depends_on": [
+    "EH3D-COMMON"
+  ],
   "build": "cargo build --release --features gui; cargo test --workspace",
   "notes": "Scaffolding v0.1.0: a re-implementation of the drilling workflow of the classic DOS software for Bungard CCD machines. It reads Excellon .NCD drill files, the tool table and the machine configuration, orders the holes and runs the job against a simulator, in a text-mode look-alike interface in eight languages. The serial protocol was worked out by watching how the original program talks to its control unit and has been tried on one Bungard CCD MTC: the reference run of the three axes and the moves of every axis. A whole job has not run on a machine yet, and the spindle, the vacuum output and the steps per millimetre are not confirmed.",
   "native_version": {
