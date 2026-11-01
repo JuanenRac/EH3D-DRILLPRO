@@ -70,7 +70,7 @@ DTD = [
     "nn    = the tool number in your drill file (two digits): T01 in the file uses the line that begins 01",
     "d.d   = extra stroke in mm: how far the tip goes below the board into the base sheet (0.5 is usual for small drills)",
     "vvvv  = feed of the drill going down in mm/min (smaller for small, fragile drills: 500 to 1500; larger ones go faster)",
-    "sssss = spindle speed in turns per minute: 30000 to 60000 on the CCD",
+    "sssss = spindle speed in turns per minute: 5000 to 63000 on the CCD (the old control unit gives 30000 to 60000)",
     "",
     "A tool that is not in the table gets a safe default. Change the numbers, never the number of lines.",
     "Too fast a feed breaks small drills; too slow burns the board. Try on a scrap board first.",

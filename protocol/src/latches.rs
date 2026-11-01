@@ -24,7 +24,7 @@ pub enum Op {
 }
 
 /// Spindle speed of level 0 and the speed step per level: the control unit has 16 levels,
-/// 30000 rpm (level 0) to 60000 rpm (level 15). Verified at 30000, 36000, 42000, 54000 and
+/// 30000 rpm (level 0) to 60000 rpm (level 15): what the old control unit, or the MS-DOS program that ran it, gives; the spindle of the CCD itself is 63000 rpm at most. Verified at 30000, 36000, 42000, 54000 and
 /// 60000 rpm; the rounding of speeds that are not a multiple of 2000 is not known.
 pub const SPINDLE_MIN_RPM: u32 = 30_000;
 pub const SPINDLE_STEP_RPM: u32 = 2_000;
