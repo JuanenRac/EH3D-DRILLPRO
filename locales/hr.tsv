@@ -245,3 +245,9 @@ Text.ToolDefaults	Nije u tablici alata; za alat se koriste oprezne vrijednosti
 Text.RackGap	Mjesto izmjenjivača alata nema položaj u datoteci stroja
 Text.LevelServer	Karta visina ne može se koristiti kada posao ide preko poslužitelja
 Text.IgnoredLines	Datoteka ima utore ili glodalačke pokrete koji se ne čitaju
+Text.ClipCut	Izreži
+Text.ClipCopy	Kopiraj
+Text.ClipPaste	Zalijepi
+Text.ClipSelectAll	Odaberi sve
+Text.ClipUndo	Poništi
+Text.FullScreen	Cijeli zaslon

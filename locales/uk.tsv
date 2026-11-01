@@ -245,3 +245,9 @@ Text.ToolDefaults	Немає в таблиці інструментів; для 
 Text.RackGap	Місце пристрою заміни інструмента не має позиції у файлі верстата
 Text.LevelServer	Карту висот не можна використовувати, коли завдання йде через сервер
 Text.IgnoredLines	У файлі є пази або фрезерні рухи, які не читаються
+Text.ClipCut	Вирізати
+Text.ClipCopy	Копіювати
+Text.ClipPaste	Вставити
+Text.ClipSelectAll	Вибрати все
+Text.ClipUndo	Скасувати
+Text.FullScreen	Повний екран

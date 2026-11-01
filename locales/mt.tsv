@@ -245,3 +245,9 @@ Text.ToolDefaults	Mhux fit-tabella tal-għodod; jintużaw valuri kawti għall-g�
 Text.RackGap	Post tal-bdiel tal-għodda m'għandux pożizzjoni fil-fajl tal-magna
 Text.LevelServer	Il-mappa tal-għoli ma tistax tintuża meta x-xogħol jgħaddi mis-server
 Text.IgnoredLines	Il-fajl fih sloti jew movimenti ta' tħaffir li ma jinqrawx
+Text.ClipCut	Aqta'
+Text.ClipCopy	Ikkopja
+Text.ClipPaste	Waħħal
+Text.ClipSelectAll	Agħżel kollox
+Text.ClipUndo	Irtira
+Text.FullScreen	Skrin sħiħ

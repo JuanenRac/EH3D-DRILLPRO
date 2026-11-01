@@ -245,3 +245,9 @@ Text.ToolDefaults	Ei ole työkalutaulukossa; työkalulle käytetään varovaisia
 Text.RackGap	Työkalunvaihtajan paikalla ei ole sijaintia koneen tiedostossa
 Text.LevelServer	Korkeuskarttaa ei voi käyttää, kun työ kulkee palvelimen kautta
 Text.IgnoredLines	Tiedostossa on uria tai jyrsintäliikkeitä, joita ei lueta
+Text.ClipCut	Leikkaa
+Text.ClipCopy	Kopioi
+Text.ClipPaste	Liitä
+Text.ClipSelectAll	Valitse kaikki
+Text.ClipUndo	Kumoa
+Text.FullScreen	Koko näyttö

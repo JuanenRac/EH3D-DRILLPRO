@@ -137,7 +137,8 @@ fn event_loop<A: TextApp>(app: &mut A, settings: &str, out: &mut io::Stdout) -> 
         }
         if app.lang() != lang {
             lang = app.lang();
-            let _ = std::fs::write(crate::cli::settings_path(settings), lang.code());
+            let keep = crate::cli::load_prefs(settings).fullscreen;
+            crate::cli::save_prefs(settings, lang, keep);
         }
         if event::poll(Duration::from_millis(if busy { 16 } else { 80 }))? {
             match event::read()? {

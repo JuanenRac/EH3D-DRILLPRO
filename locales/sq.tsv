@@ -245,3 +245,9 @@ Text.ToolDefaults	Nuk është në tabelën e veglave; për veglën përdoren vle
 Text.RackGap	Një vend i ndërruesit të veglave nuk ka pozicion në skedarin e makinës
 Text.LevelServer	Harta e lartësive nuk mund të përdoret kur puna kalon nga serveri
 Text.IgnoredLines	Skedari ka vrima të gjata ose lëvizje frezimi që nuk lexohen
+Text.ClipCut	Prit
+Text.ClipCopy	Kopjo
+Text.ClipPaste	Ngjit
+Text.ClipSelectAll	Zgjidh të gjitha
+Text.ClipUndo	Zhbëj
+Text.FullScreen	Ekran i plotë

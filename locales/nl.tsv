@@ -245,3 +245,9 @@ Text.ToolDefaults	Niet in de gereedschapstabel; voor het gereedschap worden voor
 Text.RackGap	Een plaats van de gereedschapswisselaar heeft geen positie in het machinebestand
 Text.LevelServer	De hoogtekaart kan niet worden gebruikt als de taak via de server loopt
 Text.IgnoredLines	Het bestand bevat sleuven of freesbewegingen die niet worden gelezen
+Text.ClipCut	Knippen
+Text.ClipCopy	Kopiëren
+Text.ClipPaste	Plakken
+Text.ClipSelectAll	Alles selecteren
+Text.ClipUndo	Ongedaan maken
+Text.FullScreen	Volledig scherm

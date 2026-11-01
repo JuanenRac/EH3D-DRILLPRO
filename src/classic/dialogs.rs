@@ -109,6 +109,8 @@ enum Ctl {
     Lang,
     /// The "AutoChg" check box of the models with a tool changer.
     Auto,
+    /// The "Full screen" check box: the window fills the screen.
+    Full,
     /// The connection with the machine: Enter or a click opens its window.
     Conn,
     Btn(Dlg),
@@ -121,6 +123,8 @@ pub(crate) struct ParamDlg {
     lang: usize,
     /// The state of the AutoChg check box; `None` on the models without a tool changer (no box).
     auto: Option<bool>,
+    /// The state of the Full screen check box.
+    full: bool,
     ring: Vec<Ctl>,
     focus: Option<usize>,
     edit: Option<LineEdit>,
@@ -500,6 +504,42 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if self.dialog_editing() {
             let hint = self.t(CText::HintEdit);
             s.text(1, ROWS - 2, hint, BLACK, GREY);
+        }
+    }
+
+    /// The field that takes the typing now: the one of the open window, or the one of the main screen.
+    pub(super) fn active_edit(&self) -> Option<&LineEdit> {
+        match &self.dialog {
+            Dialog::None => self.focus.and(self.edit.as_ref()),
+            Dialog::Files(d) => Some(&d.name),
+            Dialog::Parameter(d) if d.conn.open => d.conn.edit.as_ref(),
+            Dialog::Parameter(d) => d.edit.as_ref(),
+            Dialog::Tools(d) => d.edit.as_ref(),
+            Dialog::Panel(d) => d.edit.as_ref(),
+            _ => None,
+        }
+    }
+
+    pub(super) fn active_edit_mut(&mut self) -> Option<&mut LineEdit> {
+        match &mut self.dialog {
+            Dialog::None => {
+                if self.focus.is_some() {
+                    self.edit.as_mut()
+                } else {
+                    None
+                }
+            }
+            Dialog::Files(d) => Some(&mut d.name),
+            Dialog::Parameter(d) => {
+                if d.conn.open {
+                    d.conn.edit.as_mut()
+                } else {
+                    d.edit.as_mut()
+                }
+            }
+            Dialog::Tools(d) => d.edit.as_mut(),
+            Dialog::Panel(d) => d.edit.as_mut(),
+            _ => None,
         }
     }
 
@@ -1622,6 +1662,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if auto.is_some() {
             ring.push(Ctl::Auto);
         }
+        ring.push(Ctl::Full);
         ring.push(Ctl::Lang);
         ring.extend([Dlg::Load, Dlg::Save, Dlg::Ok, Dlg::Abort].map(Ctl::Btn));
         Dialog::Parameter(ParamDlg {
@@ -1630,6 +1671,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             sorting,
             lang,
             auto,
+            full: self.fullscreen,
             ring,
             focus: None,
             edit: None,
@@ -1715,6 +1757,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Ctl::Unit => d.unit = step(d.unit, 4),
             Ctl::Sort => d.sorting = step(d.sorting, 4),
             Ctl::Auto => d.auto = d.auto.map(|a| !a),
+            // the window changes at once, so that the choice can be seen
+            Ctl::Full => {
+                d.full = !d.full;
+                self.fullscreen = d.full;
+            }
             Ctl::Lang => {
                 d.lang = step(d.lang, Lang::ALL.len());
                 // the language changes at once, so that the choice can be seen
@@ -1945,7 +1992,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                     self.conn_open(d);
                 }
                 // the language is chosen by clicking its field: each click takes the next one
-                if matches!(d.ring[i], Ctl::Lang | Ctl::Auto) {
+                if matches!(d.ring[i], Ctl::Lang | Ctl::Auto | Ctl::Full) {
                     self.param_cycle(d, d.ring[i], 1);
                 }
                 Flow::Stay
@@ -2103,6 +2150,18 @@ impl<E: ClassicEngine> ClassicApp<E> {
             self.hit(54, 17, 14, 1, Act::Ctl(ring_at(Ctl::Auto)));
             // the language moves down one row
             lang_row = 18;
+        }
+        // the full-screen check box, an option of ours in the free row under the delay of the spindle
+        {
+            let ink = if focused(Ctl::Full) { WHITE } else { BLACK };
+            s.fill(54, 16, 19, 1, ' ', ink, CYAN);
+            let mark = if d.full { 'X' } else { ' ' };
+            let name = fit_cells(
+                crate::texts::tr(self.engine.lang(), crate::texts::Text::FullScreen),
+                15,
+            );
+            s.text(55, 16, &format!("[{mark}] {name}"), ink, CYAN);
+            self.hit(54, 16, 19, 1, Act::Ctl(ring_at(Ctl::Full)));
         }
         // the language, an option of ours in the free place under the spindle
         caption(
@@ -2686,4 +2745,19 @@ fn file_label_of(p: &std::path::Path) -> String {
     p.file_name()
         .map(|n| n.to_string_lossy().into_owned())
         .unwrap_or_default()
+}
+
+/// The text cut to at most `width` cells of the screen (a wide letter takes two).
+fn fit_cells(text: &str, width: usize) -> String {
+    let mut out = String::new();
+    let mut used = 0;
+    for c in text.chars() {
+        let w = crate::i18n::cell_width(c);
+        if used + w > width {
+            break;
+        }
+        used += w;
+        out.push(c);
+    }
+    out
 }

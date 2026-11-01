@@ -245,3 +245,9 @@ Text.ToolDefaults	Findes ikke i værktøjstabellen; der bruges forsigtige værdi
 Text.RackGap	En plads i værktøjsskifteren har ingen position i maskinfilen
 Text.LevelServer	Højdekortet kan ikke bruges, når jobbet går via serveren
 Text.IgnoredLines	Filen har slidser eller fræsebevægelser, som ikke læses
+Text.ClipCut	Klip
+Text.ClipCopy	Kopiér
+Text.ClipPaste	Sæt ind
+Text.ClipSelectAll	Vælg alle
+Text.ClipUndo	Fortryd
+Text.FullScreen	Fuld skærm

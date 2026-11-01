@@ -22,6 +22,8 @@ pub struct LineEdit {
     pub fresh: bool,
     pub kind: Kind,
     pub max: usize,
+    /// The text the field had when it was entered (what Undo brings back).
+    original: String,
 }
 
 impl LineEdit {
@@ -32,7 +34,49 @@ impl LineEdit {
             fresh: true,
             kind,
             max,
+            original: text.to_string(),
         }
+    }
+
+    /// The text that is selected: all of it while the field is untouched, nothing once the cursor has moved.
+    pub fn selected_text(&self) -> Option<&str> {
+        (self.fresh && !self.text.is_empty()).then_some(self.text.as_str())
+    }
+
+    /// Selects all the text (the next character typed or pasted replaces it).
+    pub fn select_all(&mut self) {
+        self.fresh = true;
+        self.cursor = self.text.chars().count();
+    }
+
+    /// Takes the selected text out of the field and gives it back.
+    pub fn cut(&mut self) -> Option<String> {
+        let t = self.selected_text()?.to_string();
+        self.text.clear();
+        self.cursor = 0;
+        self.fresh = false;
+        Some(t)
+    }
+
+    /// Puts pasted text in the field at the cursor, in place of the selection: only the first line, without the spaces round it,
+    /// only the characters the field takes, and no more than the field can hold. Nothing changes when none of it fits the field.
+    pub fn paste(&mut self, pasted: &str) {
+        let line = pasted.lines().next().unwrap_or("").trim();
+        let take: Vec<char> = line.chars().filter(|c| self.accepts(*c)).collect();
+        for c in take {
+            self.key(Input::Char(c));
+        }
+    }
+
+    /// Brings back the text the field had when it was entered, selected.
+    pub fn undo(&mut self) {
+        self.text = self.original.clone();
+        self.select_all();
+    }
+
+    /// Something to undo: the text is not the one the field had.
+    pub fn can_undo(&self) -> bool {
+        self.text != self.original
     }
 
     fn accepts(&self, c: char) -> bool {
@@ -127,4 +171,74 @@ pub fn glob_matches(pattern: &str, name: &str) -> bool {
     let p: Vec<char> = pattern.to_lowercase().chars().collect();
     let n: Vec<char> = name.to_lowercase().chars().collect();
     go(&p, &n)
+}
+
+#[cfg(test)]
+mod clipboard_tests {
+    use super::*;
+
+    #[test]
+    fn a_pasted_text_replaces_the_selection() {
+        let mut e = LineEdit::new("12.5", Kind::Number, 8);
+        assert_eq!(e.selected_text(), Some("12.5"));
+        e.paste("7.25");
+        assert_eq!(e.text, "7.25");
+        assert_eq!(e.selected_text(), None);
+    }
+
+    #[test]
+    fn a_pasted_text_goes_in_at_the_cursor() {
+        let mut e = LineEdit::new("abcd", Kind::Text, 20);
+        e.key(Input::Home);
+        e.key(Input::Right);
+        e.key(Input::Right);
+        e.paste("XY");
+        assert_eq!(e.text, "abXYcd");
+        assert_eq!(e.cursor, 4);
+    }
+
+    #[test]
+    fn a_pasted_text_stops_at_the_length_of_the_field() {
+        let mut e = LineEdit::new("", Kind::Text, 5);
+        e.paste("abcdefgh");
+        assert_eq!(e.text, "abcde");
+        e.paste("zz");
+        assert_eq!(e.text, "abcde");
+    }
+
+    #[test]
+    fn a_number_field_keeps_only_what_a_number_has() {
+        let mut e = LineEdit::new("", Kind::Number, 10);
+        e.paste("  -12,5 mm\nsecond line");
+        assert_eq!(e.text, "-12,5");
+        let mut e = LineEdit::new("3", Kind::Number, 10);
+        e.paste("abc");
+        assert_eq!(
+            e.text, "3",
+            "nothing that fits: the field is left as it was"
+        );
+        assert!(e.fresh);
+    }
+
+    #[test]
+    fn cut_gives_the_selection_and_empties_the_field() {
+        let mut e = LineEdit::new("path", Kind::Text, 20);
+        assert_eq!(e.cut().as_deref(), Some("path"));
+        assert_eq!(e.text, "");
+        assert_eq!(e.cut(), None);
+    }
+
+    #[test]
+    fn select_all_and_undo() {
+        let mut e = LineEdit::new("abc", Kind::Text, 20);
+        e.key(Input::End);
+        e.key(Input::Char('d'));
+        assert!(e.can_undo());
+        assert_eq!(e.selected_text(), None);
+        e.select_all();
+        assert_eq!(e.selected_text(), Some("abcd"));
+        e.undo();
+        assert_eq!(e.text, "abc");
+        assert!(!e.can_undo());
+    }
 }

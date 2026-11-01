@@ -245,3 +245,9 @@ Text.ToolDefaults	Finns inte i verktygstabellen; försiktiga värden används f�
 Text.RackGap	En plats i verktygsväxlaren saknar position i maskinfilen
 Text.LevelServer	Höjdkartan kan inte användas när jobbet går via servern
 Text.IgnoredLines	Filen har spår eller fräsrörelser som inte läses
+Text.ClipCut	Klipp ut
+Text.ClipCopy	Kopiera
+Text.ClipPaste	Klistra in
+Text.ClipSelectAll	Markera alla
+Text.ClipUndo	Ångra
+Text.FullScreen	Helskärm

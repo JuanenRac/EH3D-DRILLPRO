@@ -245,3 +245,9 @@ Text.ToolDefaults	Није у табели алата; за алат се кор
 Text.RackGap	Место мењача алата нема положај у датотеци машине
 Text.LevelServer	Мапа висина се не може користити када посао иде преко сервера
 Text.IgnoredLines	Датотека има жлебове или глодалачке покрете који се не читају
+Text.ClipCut	Исеци
+Text.ClipCopy	Копирај
+Text.ClipPaste	Налепи
+Text.ClipSelectAll	Изабери све
+Text.ClipUndo	Поништи
+Text.FullScreen	Цео екран

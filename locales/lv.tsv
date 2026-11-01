@@ -245,3 +245,9 @@ Text.ToolDefaults	Nav instrumentu tabulā; instrumentam tiek izmantotas piesardz
 Text.RackGap	Instrumentu mainītāja vietai nav pozīcijas mašīnas failā
 Text.LevelServer	Augstuma karti nevar izmantot, kad darbs iet caur serveri
 Text.IgnoredLines	Failā ir rievas vai frēzēšanas kustības, kuras netiek lasītas
+Text.ClipCut	Izgriezt
+Text.ClipCopy	Kopēt
+Text.ClipPaste	Ielīmēt
+Text.ClipSelectAll	Atlasīt visu
+Text.ClipUndo	Atsaukt
+Text.FullScreen	Pilnekrāns

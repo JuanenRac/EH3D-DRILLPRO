@@ -245,3 +245,9 @@ Text.ToolDefaults	Finnes ikke i verktøytabellen; det brukes forsiktige verdier 
 Text.RackGap	En plass i verktøyskifteren har ingen posisjon i maskinfilen
 Text.LevelServer	Høydekartet kan ikke brukes når jobben går via serveren
 Text.IgnoredLines	Filen har spor eller frese-bevegelser som ikke leses
+Text.ClipCut	Klipp ut
+Text.ClipCopy	Kopier
+Text.ClipPaste	Lim inn
+Text.ClipSelectAll	Merk alt
+Text.ClipUndo	Angre
+Text.FullScreen	Fullskjerm

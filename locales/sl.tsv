@@ -245,3 +245,9 @@ Text.ToolDefaults	Ni v tabeli orodij; za orodje se uporabijo previdne vrednosti
 Text.RackGap	Mesto menjalnika orodij nima položaja v datoteki stroja
 Text.LevelServer	Višinskega zemljevida ni mogoče uporabiti, ko opravilo poteka prek strežnika
 Text.IgnoredLines	Datoteka vsebuje utore ali frezalne gibe, ki se ne berejo
+Text.ClipCut	Izreži
+Text.ClipCopy	Kopiraj
+Text.ClipPaste	Prilepi
+Text.ClipSelectAll	Izberi vse
+Text.ClipUndo	Razveljavi
+Text.FullScreen	Čez cel zaslon

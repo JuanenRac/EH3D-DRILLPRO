@@ -245,3 +245,9 @@ Text.ToolDefaults	Нет в таблице инструментов; для ин
 Text.RackGap	У места устройства смены инструмента нет позиции в файле станка
 Text.LevelServer	Карту высот нельзя использовать, когда задание идёт через сервер
 Text.IgnoredLines	В файле есть пазы или фрезерные движения, которые не читаются
+Text.ClipCut	Вырезать
+Text.ClipCopy	Копировать
+Text.ClipPaste	Вставить
+Text.ClipSelectAll	Выделить всё
+Text.ClipUndo	Отменить
+Text.FullScreen	Во весь экран

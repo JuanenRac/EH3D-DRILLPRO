@@ -83,4 +83,10 @@ translations! { Text, tr, ALL_TEXTS;
 
     RealMachine => ["REAL MACHINE ({}) - Start moves it", "MÁQUINA REAL ({}) - Iniciar la mueve", "MACCHINA REALE ({}) - Avvia la muove", "ECHTE MASCHINE ({}) - Start bewegt sie", "MACHINE RÉELLE ({}) - Démarrer la déplace", "MÁQUINA REAL ({}) - Iniciar move-a", "真实机器 ({}) - 开始将使其运动", "実機 ({}) - 開始すると動きます"],
     RealStop => ["Esc stops it; keep a hand near the power switch", "Esc la detiene; ten una mano cerca del interruptor", "Esc la ferma; tieni una mano vicino all'interruttore", "Esc stoppt sie; Hand am Netzschalter halten", "Échap l'arrête ; gardez une main près de l'interrupteur", "Esc pára-a; tenha uma mão perto do interruptor", "Esc 停止；手放在电源开关旁", "Esc で停止；電源スイッチの近くに手を置いてください"],
+    ClipCut => ["Cut", "Cortar", "Taglia", "Ausschneiden", "Couper", "Cortar", "剪切", "切り取り"],
+    ClipCopy => ["Copy", "Copiar", "Copia", "Kopieren", "Copier", "Copiar", "复制", "コピー"],
+    ClipPaste => ["Paste", "Pegar", "Incolla", "Einfügen", "Coller", "Colar", "粘贴", "貼り付け"],
+    ClipSelectAll => ["Select all", "Seleccionar todo", "Seleziona tutto", "Alles auswählen", "Tout sélectionner", "Selecionar tudo", "全选", "すべて選択"],
+    ClipUndo => ["Undo", "Deshacer", "Annulla", "Rückgängig", "Annuler", "Anular", "撤销", "元に戻す"],
+    FullScreen => ["Full screen", "Pantalla completa", "Schermo intero", "Vollbild", "Plein écran", "Ecrã inteiro", "全屏", "全画面表示"],
 }

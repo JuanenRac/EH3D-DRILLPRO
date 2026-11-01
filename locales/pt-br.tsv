@@ -56,3 +56,9 @@ CText.ErrRead	Não foi possível ler
 CText.QOffsetDelete	Apagar o desloc.|anterior?
 CText.QTeachWrite	Salvar arquivo|Teach-In?
 Text.StatusMain	Esc: voltar   Enter: aceitar   ↑/↓: mover
+Text.ClipCut	Recortar
+Text.ClipCopy	Copiar
+Text.ClipPaste	Colar
+Text.ClipSelectAll	Selecionar tudo
+Text.ClipUndo	Desfazer
+Text.FullScreen	Tela cheia

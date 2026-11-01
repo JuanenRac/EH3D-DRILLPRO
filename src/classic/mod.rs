@@ -284,6 +284,8 @@ pub struct ClassicApp<E: ClassicEngine = App> {
     /// What the Select File window is open for: a job, a tool file or a configuration file.
     file_purpose: dialogs::Purpose,
     last_click: Cell<Option<(usize, usize, Instant)>>,
+    /// The window fills the screen (the window front end reads it and keeps it between runs).
+    fullscreen: bool,
 }
 
 impl ClassicApp<App> {
@@ -319,6 +321,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             machine_file: None,
             file_purpose: dialogs::Purpose::Job,
             last_click: Cell::new(None),
+            fullscreen: false,
         }
     }
 
@@ -848,5 +851,47 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
 
     fn wants_quit(&self) -> bool {
         self.quit
+    }
+
+    fn field_state(&self) -> Option<crate::textapp::FieldState> {
+        self.active_edit().map(|e| crate::textapp::FieldState {
+            selected: e.selected_text().is_some(),
+            has_text: !e.text.is_empty(),
+            can_undo: e.can_undo(),
+        })
+    }
+
+    fn field_copy(&self) -> Option<String> {
+        self.active_edit()?.selected_text().map(str::to_string)
+    }
+
+    fn field_cut(&mut self) -> Option<String> {
+        self.active_edit_mut()?.cut()
+    }
+
+    fn field_paste(&mut self, text: &str) {
+        if let Some(e) = self.active_edit_mut() {
+            e.paste(text);
+        }
+    }
+
+    fn field_select_all(&mut self) {
+        if let Some(e) = self.active_edit_mut() {
+            e.select_all();
+        }
+    }
+
+    fn field_undo(&mut self) {
+        if let Some(e) = self.active_edit_mut() {
+            e.undo();
+        }
+    }
+
+    fn fullscreen(&self) -> Option<bool> {
+        Some(self.fullscreen)
+    }
+
+    fn set_fullscreen(&mut self, on: bool) {
+        self.fullscreen = on;
     }
 }

@@ -245,3 +245,9 @@ Text.ToolDefaults	Není v tabulce nástrojů; pro nástroj se použijí opatrné
 Text.RackGap	Místo výměníku nástrojů nemá v souboru stroje polohu
 Text.LevelServer	Mapu výšek nelze použít, když úloha prochází serverem
 Text.IgnoredLines	Soubor obsahuje drážky nebo frézovací pohyby, které se nečtou
+Text.ClipCut	Vyjmout
+Text.ClipCopy	Kopírovat
+Text.ClipPaste	Vložit
+Text.ClipSelectAll	Vybrat vše
+Text.ClipUndo	Zpět
+Text.FullScreen	Celá obrazovka

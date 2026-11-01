@@ -114,6 +114,17 @@ struct Gui<A: TextApp> {
     lang_saved: Lang,
     /// When the window opened: the cursor of a field blinks by it.
     started: std::time::Instant,
+    /// The state of the window the last time it was set (a change of the application is applied and remembered).
+    fullscreen_applied: bool,
+}
+
+/// Does the clipboard hold text? True when that cannot be known (so that Paste is not taken away for nothing).
+fn clipboard_has_text() -> bool {
+    match arboard::Clipboard::new().and_then(|mut c| c.get_text()) {
+        Ok(t) => !t.is_empty(),
+        Err(arboard::Error::ContentNotAvailable) => false,
+        Err(_) => true,
+    }
 }
 
 impl<A: TextApp> Gui<A> {
@@ -127,6 +138,17 @@ impl<A: TextApp> Gui<A> {
                     modifiers,
                     ..
                 } => {
+                    // Ctrl+A selects all the text of the field being edited (Ctrl+C, Ctrl+X and Ctrl+V arrive as their own events)
+                    if modifiers.command && key == Key::A {
+                        self.app.field_select_all();
+                        continue;
+                    }
+                    if key == Key::F11 {
+                        if let Some(on) = self.app.fullscreen() {
+                            self.app.set_fullscreen(!on);
+                        }
+                        continue;
+                    }
                     let named = match key {
                         Key::Enter => Some(Input::Enter),
                         Key::Escape => Some(Input::Esc),
@@ -162,6 +184,17 @@ impl<A: TextApp> Gui<A> {
                     let lines = (delta.y.abs().ceil() as isize).clamp(1, 3);
                     self.app.scroll(if delta.y > 0.0 { -lines } else { lines });
                 }
+                egui::Event::Paste(t) => self.app.field_paste(&t),
+                egui::Event::Copy => {
+                    if let Some(t) = self.app.field_copy() {
+                        ctx.copy_text(t);
+                    }
+                }
+                egui::Event::Cut => {
+                    if let Some(t) = self.app.field_cut() {
+                        ctx.copy_text(t);
+                    }
+                }
                 egui::Event::Text(t) => {
                     for c in t.chars().filter(|c| !c.is_control()) {
                         self.app.handle(Input::Char(c));
@@ -174,7 +207,7 @@ impl<A: TextApp> Gui<A> {
 
     /// Draws the screen scaled to the room the window gives it (the 80x25 proportions are kept and the rest is black),
     /// and returns the cell that was clicked.
-    fn paint(&self, ui: &mut egui::Ui) -> Option<(usize, usize)> {
+    fn paint(&self, ui: &mut egui::Ui) -> (Option<(usize, usize)>, egui::Response) {
         let avail = ui.available_size();
         let base = Vec2::new(CELL_W * COLS as f32, CELL_H * ROWS as f32);
         let scale = (avail.x / base.x).min(avail.y / base.y).max(0.4);
@@ -281,12 +314,72 @@ impl<A: TextApp> Gui<A> {
                 if dx >= 0.0 && dy >= 0.0 {
                     let (c, r) = ((dx / cw) as usize, (dy / ch) as usize);
                     if c < COLS && r < ROWS {
-                        return Some((c, r));
+                        return (Some((c, r)), resp);
                     }
                 }
             }
         }
-        None
+        (None, resp)
+    }
+
+    /// The menu of the right button over the field being edited: Cut, Copy, Paste, Select all and Undo.
+    fn field_menu(&mut self, ctx: &egui::Context, resp: &egui::Response) {
+        let clip_id = egui::Id::unique("field-clipboard-has-text");
+        if resp.secondary_clicked() {
+            let has = clipboard_has_text();
+            ctx.data_mut(|d| d.insert_temp(clip_id, has));
+        }
+        let Some(f) = self.app.field_state() else {
+            return;
+        };
+        let has_clip = ctx.data(|d| d.get_temp::<bool>(clip_id)).unwrap_or(true);
+        let lang = self.app.lang();
+        let word = |t| crate::texts::tr(lang, t);
+        use crate::texts::Text;
+        let app = &mut self.app;
+        resp.context_menu(|ui| {
+            if ui
+                .add_enabled(f.selected, egui::Button::new(word(Text::ClipCut)))
+                .clicked()
+            {
+                if let Some(t) = app.field_cut() {
+                    ctx.copy_text(t);
+                }
+                ui.close();
+            }
+            if ui
+                .add_enabled(f.selected, egui::Button::new(word(Text::ClipCopy)))
+                .clicked()
+            {
+                if let Some(t) = app.field_copy() {
+                    ctx.copy_text(t);
+                }
+                ui.close();
+            }
+            if ui
+                .add_enabled(has_clip, egui::Button::new(word(Text::ClipPaste)))
+                .clicked()
+            {
+                // the window asks the system for the clipboard and the text comes back as a paste
+                ctx.send_viewport_cmd(egui::ViewportCommand::RequestPaste);
+                ui.close();
+            }
+            ui.separator();
+            if ui
+                .add_enabled(f.has_text, egui::Button::new(word(Text::ClipSelectAll)))
+                .clicked()
+            {
+                app.field_select_all();
+                ui.close();
+            }
+            if ui
+                .add_enabled(f.can_undo, egui::Button::new(word(Text::ClipUndo)))
+                .clicked()
+            {
+                app.field_undo();
+                ui.close();
+            }
+        });
     }
 }
 
@@ -326,17 +419,31 @@ impl<A: TextApp> eframe::App for Gui<A> {
         }
         if self.app.lang() != self.lang_saved {
             self.lang_saved = self.app.lang();
-            let _ = std::fs::write(settings_path(&self.settings), self.app.lang().code());
+            crate::cli::save_prefs(&self.settings, self.app.lang(), self.fullscreen_applied);
         }
         // the cursor of a field being edited blinks
         crate::classic::ui::set_cursor_on(crate::classic::ui::cursor_phase(
             self.started.elapsed().as_millis(),
         ));
         self.app.render(&mut self.screen);
-        let clicked = egui::Frame::NONE
+        let (clicked, resp) = egui::Frame::NONE
             .fill(Color32::BLACK)
             .show(ui, |ui| self.paint(ui))
             .inner;
+        if self.capture.is_none() {
+            self.field_menu(&ctx, &resp);
+            // the window follows the setting of the application (F11 and the Parameter window change it) and remembers it
+            if let Some(on) = self.app.fullscreen() {
+                if on != self.fullscreen_applied {
+                    self.fullscreen_applied = on;
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Fullscreen(on));
+                    if !on {
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Maximized(true));
+                    }
+                    crate::cli::save_prefs(&self.settings, self.app.lang(), on);
+                }
+            }
+        }
         if let Some((c, r)) = clicked {
             self.app.click(c, r);
         }
@@ -353,7 +460,7 @@ pub fn run<A: TextApp + 'static>(title: &str, settings: &str, app: A) -> eframe:
 pub fn run_capture<A: TextApp + 'static>(
     title: &str,
     settings: &str,
-    app: A,
+    mut app: A,
     capture: Option<Capture>,
 ) -> eframe::Result {
     // A capture keeps the classic size so that pictures stay the same; a normal run starts roomier and can be
@@ -363,13 +470,19 @@ pub fn run_capture<A: TextApp + 'static>(
     } else {
         Vec2::new(1040.0, 650.0)
     };
+    // the window of a person starts as it was left (full screen or maximized); a capture always keeps its size
+    let fullscreen = capture.is_none() && crate::cli::load_prefs(settings).fullscreen;
+    if capture.is_none() {
+        app.set_fullscreen(fullscreen);
+    }
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size(size)
             .with_min_inner_size([640.0, 400.0])
             .with_resizable(true)
             .with_maximize_button(true)
-            .with_maximized(capture.is_none())
+            .with_maximized(capture.is_none() && !fullscreen)
+            .with_fullscreen(fullscreen)
             .with_title(title),
         ..Default::default()
     };
@@ -389,6 +502,7 @@ pub fn run_capture<A: TextApp + 'static>(
                 screen: Screen::default(),
                 lang_saved: lang,
                 started: std::time::Instant::now(),
+                fullscreen_applied: fullscreen,
             }))
         }),
     )

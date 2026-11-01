@@ -245,3 +245,9 @@ Text.ToolDefaults	Nėra įrankių lentelėje; įrankiui naudojamos atsargios rei
 Text.RackGap	Įrankių keitiklio vieta neturi padėties mašinos faile
 Text.LevelServer	Aukščių žemėlapio negalima naudoti, kai užduotis eina per serverį
 Text.IgnoredLines	Faile yra griovelių ar frezavimo judesių, kurie neskaitomi
+Text.ClipCut	Iškirpti
+Text.ClipCopy	Kopijuoti
+Text.ClipPaste	Įklijuoti
+Text.ClipSelectAll	Pasirinkti viską
+Text.ClipUndo	Atšaukti
+Text.FullScreen	Visas ekranas

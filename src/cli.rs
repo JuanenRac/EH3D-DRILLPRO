@@ -14,6 +14,51 @@ pub fn settings_path(name: &str) -> PathBuf {
     base.join(name)
 }
 
+/// What is remembered between runs in the settings file: the language (the first line, its code) and the window.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct Prefs {
+    pub lang: Option<Lang>,
+    /// The window fills the screen (a line `fullscreen=1`); off is the window maximized.
+    pub fullscreen: bool,
+}
+
+/// Reads the settings file. A file with only a language code (the older form) is read as the window not full-screen.
+pub fn parse_prefs(text: &str) -> Prefs {
+    let mut lines = text.lines();
+    let lang = lines.next().and_then(Lang::from_code);
+    let fullscreen = lines.any(|l| {
+        l.split_once('=')
+            .is_some_and(|(k, v)| k.trim() == "fullscreen" && matches!(v.trim(), "1" | "true"))
+    });
+    Prefs { lang, fullscreen }
+}
+
+/// The text of the settings file.
+pub fn render_prefs(lang: Lang, fullscreen: bool) -> String {
+    if fullscreen {
+        format!(
+            "{}
+fullscreen=1
+",
+            lang.code()
+        )
+    } else {
+        lang.code().to_string()
+    }
+}
+
+/// Reads what the settings file `settings` remembers.
+pub fn load_prefs(settings: &str) -> Prefs {
+    std::fs::read_to_string(settings_path(settings))
+        .map(|t| parse_prefs(&t))
+        .unwrap_or_default()
+}
+
+/// Remembers the language and the window.
+pub fn save_prefs(settings: &str, lang: Lang, fullscreen: bool) {
+    let _ = std::fs::write(settings_path(settings), render_prefs(lang, fullscreen));
+}
+
 /// What the command line asks for.
 #[derive(Debug, Clone)]
 pub struct Options {
@@ -52,10 +97,7 @@ pub fn parse_from(
     data_file: &str,
 ) -> Options {
     let mut o = Options {
-        lang: std::fs::read_to_string(settings_path(settings))
-            .ok()
-            .and_then(|s| Lang::from_code(&s))
-            .unwrap_or_default(),
+        lang: load_prefs(settings).lang.unwrap_or_default(),
         data: crate::config::find_data_dir(data_file),
         file: None,
         connection: None,
@@ -170,5 +212,69 @@ pub fn print_fleet(o: &Options) -> i32 {
             eprintln!("{e}");
             1
         }
+    }
+}
+
+#[cfg(test)]
+mod prefs_tests {
+    use super::*;
+
+    #[test]
+    fn the_older_file_with_only_the_language_is_still_read() {
+        let p = parse_prefs("de");
+        assert_eq!(p.lang, Some(Lang::De));
+        assert!(!p.fullscreen);
+    }
+
+    #[test]
+    fn a_new_file_has_no_full_screen_by_default() {
+        assert_eq!(parse_prefs(""), Prefs::default());
+        assert!(
+            !parse_prefs(
+                "es
+"
+            )
+            .fullscreen
+        );
+    }
+
+    #[test]
+    fn the_window_setting_comes_back() {
+        let text = render_prefs(Lang::Fr, true);
+        assert_eq!(
+            parse_prefs(&text),
+            Prefs {
+                lang: Some(Lang::Fr),
+                fullscreen: true
+            }
+        );
+        assert_eq!(
+            parse_prefs(&render_prefs(Lang::Fr, false)),
+            Prefs {
+                lang: Some(Lang::Fr),
+                fullscreen: false
+            }
+        );
+    }
+
+    #[test]
+    fn a_line_that_is_not_the_setting_is_ignored() {
+        assert!(
+            !parse_prefs(
+                "en
+fullscreen=0
+other=1
+"
+            )
+            .fullscreen
+        );
+        assert!(
+            parse_prefs(
+                "en
+other=1
+fullscreen = 1"
+            )
+            .fullscreen
+        );
     }
 }

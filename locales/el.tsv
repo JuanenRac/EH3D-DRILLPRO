@@ -245,3 +245,9 @@ Text.ToolDefaults	Δεν υπάρχει στον πίνακα εργαλείων
 Text.RackGap	Μια θέση του αλλαγέα εργαλείων δεν έχει θέση στο αρχείο του μηχανήματος
 Text.LevelServer	Ο χάρτης υψών δεν μπορεί να χρησιμοποιηθεί όταν η εργασία περνά από τον διακομιστή
 Text.IgnoredLines	Το αρχείο έχει εγκοπές ή κινήσεις φρεζαρίσματος που δεν διαβάζονται
+Text.ClipCut	Αποκοπή
+Text.ClipCopy	Αντιγραφή
+Text.ClipPaste	Επικόλληση
+Text.ClipSelectAll	Επιλογή όλων
+Text.ClipUndo	Αναίρεση
+Text.FullScreen	Πλήρης οθόνη

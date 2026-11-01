@@ -4,6 +4,9 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Cut, copy and paste work in every field:** the window was built without the clipboard, so Ctrl+C, Ctrl+X, Ctrl+V, Ctrl+Insert, Shift+Insert and Shift+Delete did nothing. The fields of the classic screens (drawn by the program, one line each) take a pasted text in place of the selection or at the cursor, only its first line, only the characters the field takes and no more than it can hold; Ctrl+A selects the whole field; the right button opens a menu with Cut, Copy, Paste, Select all and Undo (the entries that do not apply are greyed out, Paste also when the clipboard has no text), named in the 37 languages. 6 tests of the field.
+- **Full screen:** a check box in the Parameter window and the F11 key make the window fill the screen or give it back; the choice is kept in the settings file that already holds the language (a file with only the language is read as before) and the pictures keep their size. 4 tests of the file.
+
 ## [0.1.0] - Spindle warnings of the server and the head of the drill on screen
 
 

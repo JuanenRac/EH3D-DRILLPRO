@@ -245,3 +245,9 @@ Text.ToolDefaults	Níl sa tábla uirlisí; úsáidtear luachanna cúramacha don 
 Text.RackGap	Níl suíomh ag áit den athraitheoir uirlisí i gcomhad an mheaisín
 Text.LevelServer	Ní féidir an léarscáil airde a úsáid nuair a théann an tasc tríd an bhfreastalaí
 Text.IgnoredLines	Tá sliotáin nó gluaiseachtaí muilleála sa chomhad nach léitear
+Text.ClipCut	Gearr
+Text.ClipCopy	Cóipeáil
+Text.ClipPaste	Greamaigh
+Text.ClipSelectAll	Roghnaigh gach rud
+Text.ClipUndo	Cealaigh
+Text.FullScreen	Lánscáileán

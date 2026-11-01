@@ -245,3 +245,9 @@ Text.ToolDefaults	Nincs a szerszámtáblázatban; a szerszámhoz óvatos érték
 Text.RackGap	A szerszámcserélő egyik helyének nincs pozíciója a gépfájlban
 Text.LevelServer	A magassági térkép nem használható, ha a munka a szerveren megy át
 Text.IgnoredLines	A fájlban olyan hornyok vagy marási mozgások vannak, amelyeket nem olvas be
+Text.ClipCut	Kivágás
+Text.ClipCopy	Másolás
+Text.ClipPaste	Beillesztés
+Text.ClipSelectAll	Összes kijelölése
+Text.ClipUndo	Visszavonás
+Text.FullScreen	Teljes képernyő

@@ -245,3 +245,9 @@ Text.ToolDefaults	Non está na táboa de ferramentas; úsanse valores prudentes 
 Text.RackGap	Un posto do cambiador non ten posición no ficheiro da máquina
 Text.LevelServer	O mapa de alturas non se pode usar cando o traballo pasa polo servidor
 Text.IgnoredLines	O ficheiro ten ranuras ou movementos de fresado que non se len
+Text.ClipCut	Cortar
+Text.ClipCopy	Copiar
+Text.ClipPaste	Pegar
+Text.ClipSelectAll	Seleccionar todo
+Text.ClipUndo	Desfacer
+Text.FullScreen	Pantalla completa

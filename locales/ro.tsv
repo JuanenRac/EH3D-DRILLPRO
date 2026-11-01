@@ -245,3 +245,9 @@ Text.ToolDefaults	Nu este în tabelul de scule; pentru sculă se folosesc valori
 Text.RackGap	Un loc al schimbătorului de scule nu are poziție în fișierul mașinii
 Text.LevelServer	Harta înălțimilor nu poate fi folosită când lucrarea trece prin server
 Text.IgnoredLines	Fișierul are sloturi sau mișcări de frezare care nu sunt citite
+Text.ClipCut	Decupează
+Text.ClipCopy	Copiază
+Text.ClipPaste	Lipește
+Text.ClipSelectAll	Selectează tot
+Text.ClipUndo	Anulează
+Text.FullScreen	Ecran complet
