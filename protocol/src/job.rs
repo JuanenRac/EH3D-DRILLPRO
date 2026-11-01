@@ -31,19 +31,73 @@ pub struct Rack {
     pub places: Vec<(f64, f64, f64)>,
     /// Which places the configuration gives a position to: a place with none is a gap, and the plan never goes to it.
     pub defined: Vec<bool>,
+    /// How the chuck moves between the places. Without it the exchange is the one recorded on the original machines (a slide at depth from
+    /// one place to the next); with it the used tool is left in its place, the chuck goes up over the tools and the next one is taken.
+    pub travel: Option<RackTravel>,
+}
+
+/// The lengths that decide how the chuck gets to a place of the rack and away from it (they come from the machine file).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct RackTravel {
+    /// Length of a tool, and from its ring to its tip, in mm: what stands up over the ring is the shank the chuck grips.
+    pub tool_length_mm: f64,
+    pub ring_to_tip_mm: f64,
+    /// How far over the tops of the tools the empty chuck travels, in mm.
+    pub clearance_mm: f64,
+    /// The chuck comes into a place from this far along X (the free side of the bar) and goes out the same way; zero: straight down.
+    pub approach_mm: f64,
 }
 
 impl Rack {
-    /// A rack with every place defined.
+    /// A rack with every place defined, with the exchange recorded on the original machines.
     pub fn new(places: Vec<(f64, f64, f64)>) -> Rack {
         let defined = vec![true; places.len()];
-        Rack { places, defined }
+        Rack {
+            places,
+            defined,
+            travel: None,
+        }
+    }
+
+    /// The same rack with the chuck going over the tools between the places.
+    pub fn with_travel(mut self, travel: RackTravel) -> Rack {
+        self.travel = Some(travel);
+        self
     }
 
     /// The first place among 0 to `last` (both included) that has no position, if there is one.
     pub fn first_gap(&self, last: usize) -> Option<usize> {
         (0..=last)
             .find(|&i| !self.defined.get(i).copied().unwrap_or(false) || i >= self.places.len())
+    }
+
+    /// The first place among 0 to `last` that is not inside what the machine reaches (X, Y and the depth of Z, all from zero), if there is one.
+    pub fn first_outside(&self, last: usize, reach: (f64, f64, f64)) -> Option<usize> {
+        (0..=last.min(self.places.len().saturating_sub(1))).find(|&i| {
+            let (x, y, z) = self.places[i];
+            !(0.0..=reach.0).contains(&x)
+                || !(0.0..=reach.1).contains(&y)
+                || !(0.0..=reach.2).contains(&z)
+        })
+    }
+
+    /// How deep, in mm from home, the empty chuck travels between the places so that it clears the shanks of the tools in the bar (0 is
+    /// home, the highest it goes): the shallowest place, less the shank over the ring and the clearance.
+    pub fn lane_mm(&self) -> f64 {
+        let Some(t) = self.travel else {
+            return 0.0;
+        };
+        let top = self
+            .places
+            .iter()
+            .zip(&self.defined)
+            .filter(|(_, d)| **d)
+            .map(|(p, _)| p.2)
+            .fold(f64::MAX, f64::min);
+        if top == f64::MAX {
+            return 0.0;
+        }
+        (top - (t.tool_length_mm - t.ring_to_tip_mm).max(0.0) - t.clearance_mm).max(0.0)
     }
 }
 
@@ -220,6 +274,10 @@ impl Planner<'_> {
         if rack.first_gap(from.max(to)).is_some() {
             return;
         }
+        if let Some(travel) = rack.travel {
+            self.chuck_swap_over(&rack, travel, from, to);
+            return;
+        }
         let place = |i: usize| {
             let (x, y, z) = rack.places[i];
             ((g.x_steps(x), g.y_steps(y)), g.z_steps(z))
@@ -233,6 +291,42 @@ impl Planner<'_> {
         let close = self.latches.aux(false);
         self.latch(close);
         self.z_up(z_from, g.z_max_hz);
+    }
+
+    /// Z to a depth in steps below home, whatever it is now.
+    fn z_to_abs(&mut self, target: u32) {
+        let hz = self.m.geometry.z_max_hz;
+        if target >= self.z {
+            self.z_down(target - self.z, hz);
+        } else {
+            self.z_up(self.z - target, hz);
+        }
+    }
+
+    /// One visit to a place of the rack: in from the free side at the height the caller is at, down to the place, the last bit sideways
+    /// into it, the chuck opened (`open`: the tool stays) or closed (the tool is taken), and out the same way. The chuck stays down.
+    fn rack_visit(&mut self, rack: &Rack, travel: RackTravel, place: usize, open: bool) {
+        let g = self.m.geometry;
+        let (x, y, z) = rack.places[place];
+        let approach = (g.x_steps(x + travel.approach_mm), g.y_steps(y));
+        let spot = (g.x_steps(x), g.y_steps(y));
+        self.goto_xy(approach);
+        self.z_to_abs(g.z_steps(z));
+        self.goto_xy(spot);
+        let seq = self.latches.aux(open);
+        self.latch(seq);
+        self.goto_xy(approach);
+    }
+
+    /// The exchange with the chuck going over the tools: the tool in the chuck goes back to its own place (home height while it is held),
+    /// up, over the bar to the place of the next one (at the height of the empty chuck), down, taken, and up to home again.
+    fn chuck_swap_over(&mut self, rack: &Rack, travel: RackTravel, from: usize, to: usize) {
+        let lane = self.m.geometry.z_steps(rack.lane_mm());
+        self.z_to_abs(0);
+        self.rack_visit(rack, travel, from, true);
+        self.z_to_abs(lane);
+        self.rack_visit(rack, travel, to, false);
+        self.z_to_abs(0);
     }
 
     fn goto_xy(&mut self, target: (i32, i32)) {

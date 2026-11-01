@@ -440,6 +440,11 @@ impl App {
                     self.error = Some(format!("{}: {gap}", tr(self.lang, Text::RackGap)));
                     return;
                 }
+                // and each of them must be where the machine can go
+                if let Some(out) = self.rack_outside(&rack, used.len()) {
+                    self.error = Some(format!("{}: {out}", tr(self.lang, Text::RackOutside)));
+                    return;
+                }
                 match &lifts {
                     Some(l) => plan_drill_job_levelled(
                         &self.job_machine(),
@@ -524,7 +529,34 @@ impl App {
             places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
             defined[a.index as usize] = true;
         }
-        Some(Rack { places, defined })
+        let r = m.rack;
+        Some(
+            Rack {
+                places,
+                defined,
+                travel: None,
+            }
+            .with_travel(crate::protocol::job::RackTravel {
+                tool_length_mm: r.tool_length_mm,
+                ring_to_tip_mm: r.ring_to_tip_mm,
+                clearance_mm: r.clearance_mm,
+                approach_mm: r.approach_mm,
+            }),
+        )
+    }
+
+    /// The first place of the rack a job with `tools` tools goes to that the machine does not reach (the bar stands past the edge of the
+    /// table along X, by as much as the machine file allows), if there is one.
+    fn rack_outside(&self, rack: &Rack, tools: usize) -> Option<usize> {
+        let m = self.settings.as_ref()?;
+        rack.first_outside(
+            tools,
+            (
+                m.clip_mm.0 + m.rack.reach_x_mm,
+                m.clip_mm.1,
+                m.z_max_depth_mm,
+            ),
+        )
     }
 
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.

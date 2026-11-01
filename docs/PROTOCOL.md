@@ -92,6 +92,21 @@ The job begins with that change towards place 1, drills, and for each following 
 towards place 0. Between the steps the bytes are those of the manual models (drivers on, spindle `0xF8` `0x90` `0x9F`, stop `0xD2` `0x80`
 `0xD0`). This has been compared with a recording only; it has not run on a real ATC machine.
 
+The program plans another change when the machine file gives the data of the bar (`RACK_TOOL_LENGTH`, `RACK_RING_TO_TIP`,
+`RACK_CLEARANCE`, `RACK_APPROACH` after the places; a file without them gets 38 mm, 21 mm, 8 mm and -8 mm), so that the chuck never
+slides across the bar below the tops of the tools:
+
+1. with the tool held, at home height, to the free side of its own place (`RACK_APPROACH` mm along X from it), Z down to the place's Z,
+   a slide into the place, `0xA0` (open: the tool stays), a slide back out;
+2. Z up to the height of the empty chuck: the Z of the shallowest place, less the shank over the ring (tool length less ring to tip) and
+   the clearance, and never above home;
+3. over the bar to the free side of the place of the next tool, Z down, a slide into the place, `0x80` (close: the tool is taken), a
+   slide back out, Z up to home.
+
+A place that has no position, or that is past what the machine reaches (the table and `RACK_REACH_X` mm beyond it along X, and the
+depth of Z), stops the job before it starts. A rack built without these data keeps the recorded change above. The new movements are
+checked on the planned steps (`protocol/tests/rack_travel.rs`) and have not run on a real machine.
+
 ## Safety in this project
 
 The `protocol` crate has a safety gate: a `Machine` refuses to move anything until it has been armed. A real connection in the machine file is the operator's statement that the machine is ready. `Esc` cancels a job within a fraction of a second and switches the stepper drivers off, also after an error or when the link drops. The limit switches are watched by the control unit itself; this software has no emergency stop of its own.
