@@ -45,7 +45,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Software | 🟡 | Um programa Rust com ecrã de texto de 80x25 lê o ficheiro de furação, a tabela de ferramentas e o ficheiro da máquina, ordena os furos e executa o trabalho inteiro num simulador, ou numa máquina real se o ficheiro da máquina o indicar. |
-| Testes | 🟢 | Passam 248 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos 37 línguas. |
+| Testes | 🟡 | Passam 248 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos 37 línguas. |
 | Leitores de ficheiros | 🟡 | Leem-se o ficheiro de furação `.NCD`, a tabela de ferramentas `DRILLPRO.DTD` e o ficheiro da máquina `DRILLPRO.DCF`; só com pequenos ficheiros de exemplo escritos para os testes, não com ficheiros de placas reais. |
 | Protocolo da máquina | 🟠 | O protocolo de bytes da unidade de controlo foi reconstruído por engenharia inversa e o `docs/PROTOCOL.md` ainda lista partes que são hipóteses; a camada de protocolo recusa mover o que quer que seja até ser armada. |
 | Interface | 🟡 | O ecrã de texto, os menus, o diálogo de ficheiros e a vista vetorial dos furos falam os 37 línguas (testado); o chinês e o japonês precisam de um tipo de letra CJK no sistema. |
@@ -53,7 +53,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Segurança de utilização | 🟡 | `Esc` pára o trabalho numa fração de segundo e desliga os drivers dos motores, e a própria unidade de controlo da máquina vigia os fins de curso; o software não tem paragem de emergência própria. |
 | Ligação ao servidor | 🟠 | Com `connection = server` o programa envia o trabalho ao EH3D-SERVER e acompanha o progresso; este caminho só foi exercitado contra o simulador. |
 | Pacotes prontos a usar | 🟡 | A primeira versão publicada traz pacotes para Windows, Linux e macOS (Apple silicon e Intel), cada um com o seu SHA-256, construídos pelo fluxo de publicação. |
-| Documentação | 🟢 | README em oito idiomas, as notas do protocolo com o que ainda é hipótese e o guia do ficheiro da máquina com cada valor de afinação. |
+| Documentação | 🟡 | README em oito idiomas, as notas do protocolo com o que ainda é hipótese e o guia do ficheiro da máquina com cada valor de afinação. |
 
 ## 🎯 Visão geral
 

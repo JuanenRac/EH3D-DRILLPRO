@@ -45,7 +45,7 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Logiciel | 🟡 | Un programme Rust à écran texte 80x25 lit le fichier de perçage, la table d'outils et le fichier de la machine, ordonne les trous et exécute tout le travail sur un simulateur, ou sur une vraie machine si le fichier de la machine le dit. |
-| Tests | 🟢 | 248 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les 37 langues. |
+| Tests | 🟡 | 248 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les 37 langues. |
 | Lecteurs de fichiers | 🟡 | Le fichier de perçage `.NCD`, la table d'outils `DRILLPRO.DTD` et le fichier de la machine `DRILLPRO.DCF` sont lus ; seulement avec de petits fichiers d'exemple écrits pour les tests, pas avec des fichiers de vraies cartes. |
 | Protocole de la machine | 🟠 | Le protocole d'octets de l'unité de commande a été reconstruit par rétro-ingénierie et `docs/PROTOCOL.md` liste encore des parties qui sont des hypothèses ; la couche de protocole refuse de bouger quoi que ce soit avant d'être armée. |
 | Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les 37 langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
@@ -53,7 +53,7 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Sécurité d'emploi | 🟡 | `Esc` arrête le travail en une fraction de seconde et coupe les pilotes de moteurs, et l'unité de commande de la machine surveille les fins de course ; le logiciel n'a pas d'arrêt d'urgence propre. |
 | Connexion au serveur | 🟠 | Avec `connection = server`, le programme envoie le travail à EH3D-SERVER et suit sa progression ; ce chemin n'a été exercé que sur le simulateur. |
 | Paquets prêts à l'emploi | 🟡 | La première publication contient des paquets pour Windows, Linux et macOS (Apple silicon et Intel), chacun avec son SHA-256, construits par le workflow de publication. |
-| Documentation | 🟢 | README en huit langues, les notes du protocole avec ce qui reste hypothèse et le guide du fichier de la machine avec chaque valeur de réglage. |
+| Documentation | 🟡 | README en huit langues, les notes du protocole avec ce qui reste hypothèse et le guide du fichier de la machine avec chaque valeur de réglage. |
 
 ## 🎯 Présentation
 

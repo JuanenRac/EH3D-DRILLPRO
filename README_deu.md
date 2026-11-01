@@ -45,7 +45,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Software | 🟡 | Ein Rust-Programm mit 80x25-Textbildschirm liest die Bohrdatei, die Werkzeugtabelle und die Maschinendatei, ordnet die Bohrungen und führt den ganzen Auftrag gegen einen Simulator aus, oder auf einer echten Maschine, wenn die Maschinendatei es sagt. |
-| Tests | 🟢 | 248 Tests bestehen (`cargo test --workspace`): die Formate, die Auftragsplanung, das Protokoll am Simulator und die Bildschirme in allen 37 Sprachen. |
+| Tests | 🟡 | 248 Tests bestehen (`cargo test --workspace`): die Formate, die Auftragsplanung, das Protokoll am Simulator und die Bildschirme in allen 37 Sprachen. |
 | Dateileser | 🟡 | Die Bohrdatei `.NCD`, die Werkzeugtabelle `DRILLPRO.DTD` und die Maschinendatei `DRILLPRO.DCF` werden gelesen; nur mit kleinen, für die Tests geschriebenen Beispieldateien, nicht mit Dateien echter Platinen. |
 | Maschinenprotokoll | 🟠 | Das Byte-Protokoll der Steuereinheit wurde per Reverse Engineering nachgebaut, und `docs/PROTOCOL.md` nennt noch Teile, die Hypothesen sind; die Protokollschicht bewegt nichts, bevor sie scharfgeschaltet wurde. |
 | Oberfläche | 🟡 | Der Textbildschirm, die Menüs, der Dateidialog und die Vektoransicht der Bohrungen sprechen alle 37 Sprachen (getestet); Chinesisch und Japanisch brauchen eine CJK-Schrift im System. |
@@ -53,7 +53,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Betriebssicherheit | 🟡 | `Esc` stoppt den Auftrag in einem Bruchteil einer Sekunde und schaltet die Schrittmotortreiber ab, und die Steuereinheit der Maschine überwacht die Endschalter; die Software hat keinen eigenen Not-Halt. |
 | Serververbindung | 🟠 | Mit `connection = server` schickt das Programm den Auftrag an EH3D-SERVER und verfolgt dessen Fortschritt; dieser Weg wurde nur gegen den Simulator geübt. |
 | Fertige Pakete | 🟡 | Die erste Veröffentlichung enthält Pakete für Windows, Linux und macOS (Apple Silicon und Intel), jeweils mit SHA-256, gebaut vom Release-Workflow. |
-| Dokumentation | 🟢 | README in acht Sprachen, die Protokollnotizen mit dem, was noch Hypothese ist, und die Anleitung zur Maschinendatei mit jedem Abstimmwert. |
+| Dokumentation | 🟡 | README in acht Sprachen, die Protokollnotizen mit dem, was noch Hypothese ist, und die Anleitung zur Maschinendatei mit jedem Abstimmwert. |
 
 ## 🎯 Überblick
 
