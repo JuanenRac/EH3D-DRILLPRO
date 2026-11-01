@@ -378,8 +378,8 @@ impl App {
                 spindle_rpm: t.spindle_rpm,
             })
             .collect();
-        // a tool the job uses must be in the table that was read: a tool without a line, or whose line could not be read, would be drilled with a made-up
-        // feed and speed
+        // a tool the job uses whose line could not be read would be drilled with a made-up feed and speed: the job does not start, and the line is named. (A tool that
+        // has no line at all, and no line that failed to read, is the person's choice and keeps the cautious defaults.)
         if self.tools_found {
             let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
             used.sort_unstable();
@@ -388,23 +388,21 @@ impl App {
                 .into_iter()
                 .filter(|u| !self.tools.iter().any(|t| t.number == *u))
                 .collect();
-            if !missing.is_empty() {
-                let bad = self
-                    .tools_text
-                    .as_deref()
-                    .map(|t| tools::parse_report(t).1)
-                    .unwrap_or_default();
-                let mut detail = format!(
-                    "tool {}",
-                    missing
-                        .iter()
-                        .map(|t| t.to_string())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                );
-                if let Some(b) = bad.first() {
-                    detail.push_str(&format!("; line {}: {}", b.line, b.text));
-                }
+            let bad = self
+                .tools_text
+                .as_deref()
+                .map(|t| tools::parse_report(t).1)
+                .unwrap_or_default();
+            // the unreadable line of a tool the job needs (its first word is the number of the tool)
+            let lost = bad.iter().find(|b| {
+                b.text
+                    .split_whitespace()
+                    .next()
+                    .and_then(|w| w.parse::<u8>().ok())
+                    .is_some_and(|n| missing.contains(&n))
+            });
+            if let Some(b) = lost {
+                let detail = format!("line {}: {}", b.line, b.text);
                 self.error = Some(format!("{}: {detail}", tr(self.lang, Text::ToolTable)));
                 return;
             }

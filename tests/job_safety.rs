@@ -24,7 +24,7 @@ fn scratch(tag: &str, table: &str, file: &str) -> PathBuf {
 const THREE: &str = "%\nT01\nX500Y500\nT02\nX1000Y2500\nT03\nX2500Y3000\nM30\n";
 
 #[test]
-fn a_tool_the_table_does_not_give_stops_the_job_and_names_the_tool_and_the_bad_line() {
+fn a_tool_whose_line_cannot_be_read_stops_the_job_and_the_line_is_named() {
     let dir = scratch(
         "tools",
         "01 0.5 1200 24000\r\n02 0,5 1200 24000\r\n03 0.5 abc 24000\r\n",
@@ -36,11 +36,8 @@ fn a_tool_the_table_does_not_give_stops_the_job_and_names_the_tool_and_the_bad_l
     let error = ClassicEngine::error(&app)
         .expect("the job is refused")
         .to_string();
-    // the decimal comma of tool 2 is read; tool 3 has a bad line and is named with it
-    assert!(
-        error.contains("tool 3") && !error.contains("tool 2"),
-        "{error}"
-    );
+    // the decimal comma of tool 2 is read; the bad line of tool 3 is named
+    assert!(!error.contains("02 0,5"), "{error}");
     assert!(
         error.contains("line 22") && error.contains("03 0.5 abc 24000"),
         "{error}"
