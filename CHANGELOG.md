@@ -4,7 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
-## [0.0.10] - Spindle warnings of the server and the head of the drill on screen
+## [0.1.0] - Spindle warnings of the server and the head of the drill on screen
+
 
 - **What the server tells the run screen:** a job on the server shows the excesses of the spindle that the server cut (`spindle_warnings` of its view, one short text for each: the tool, the value asked for and the limit) under the progress, and, when the machine has the node of a drill head, the turns of the spindle and its temperature, asked of the server every two seconds and let go if the machine has no node or the node does not answer. The line is named in all 37 languages. 2 tests.
 

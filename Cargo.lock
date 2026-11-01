@@ -590,7 +590,7 @@ version = "0.0.1"
 
 [[package]]
 name = "eh3d-drillpro"
-version = "0.0.10"
+version = "0.1.0"
 dependencies = [
  "crossterm",
  "eframe",
