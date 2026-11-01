@@ -69,9 +69,6 @@
         "by tool"
       ],
       "code": [
-        "src/ncd.rs",
-        "src/tools.rs",
-        "src/config.rs",
         "src/job.rs"
       ]
     },

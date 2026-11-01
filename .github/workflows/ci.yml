@@ -21,6 +21,11 @@ jobs:
       - name: Manifest, documentation and language parity
         run: python -I tools/ci_validate.py
 
+      - name: Pictures of the README
+        run: |
+          python -I tools/make_architecture.py --check
+          python -I tools/make_structure.py --check --readmes
+
   rust:
     name: Rust (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
