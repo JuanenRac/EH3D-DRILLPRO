@@ -241,3 +241,7 @@ CText.BCont	~P~okrač.
 Text.StatusMain	Esc: zpět   Enter: potvrdit   ↑/↓: pohyb
 CText.QInterrupted	PŘERUŠENO
 Text.SpindleLimit	Omezení vřetena:
+Text.ToolTable	Tabulka nástrojů tento nástroj neobsahuje
+Text.RackGap	Místo výměníku nástrojů nemá v souboru stroje polohu
+Text.LevelServer	Mapu výšek nelze použít, když úloha prochází serverem
+Text.IgnoredLines	Soubor obsahuje drážky nebo frézovací pohyby, které se nečtou

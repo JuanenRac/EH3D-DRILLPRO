@@ -190,6 +190,17 @@ impl App {
             }
         };
         match ncd::parse(&text) {
+            Ok(file) if !file.ignored.is_empty() => {
+                // a slot or a routed move would vanish from the job: the file is not taken
+                let first = &file.ignored[0];
+                self.error = Some(format!(
+                    "{}: {} (line {}: {})",
+                    tr(self.lang, Text::IgnoredLines),
+                    file.ignored.len(),
+                    first.line,
+                    first.text
+                ));
+            }
             Ok(file) => {
                 self.error = None;
                 self.loaded = Some(Loaded {
@@ -329,6 +340,10 @@ impl App {
     }
 
     pub(crate) fn start(&mut self) {
+        // a refusal of an earlier start is not the answer to this one
+        if self.loaded.is_some() {
+            self.error = None;
+        }
         let Some(l) = &self.loaded else {
             self.mode = Mode::FileDialog;
             self.refresh_entries();
@@ -363,6 +378,42 @@ impl App {
                 spindle_rpm: t.spindle_rpm,
             })
             .collect();
+        // a tool the job uses must be in the table that was read: a tool without a line, or whose line could not be read, would be drilled with a made-up
+        // feed and speed
+        if self.tools_found {
+            let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
+            used.sort_unstable();
+            used.dedup();
+            let missing: Vec<u8> = used
+                .into_iter()
+                .filter(|u| !self.tools.iter().any(|t| t.number == *u))
+                .collect();
+            if !missing.is_empty() {
+                let bad = self
+                    .tools_text
+                    .as_deref()
+                    .map(|t| tools::parse_report(t).1)
+                    .unwrap_or_default();
+                let mut detail = format!(
+                    "tool {}",
+                    missing
+                        .iter()
+                        .map(|t| t.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                );
+                if let Some(b) = bad.first() {
+                    detail.push_str(&format!("; line {}: {}", b.line, b.text));
+                }
+                self.error = Some(format!("{}: {detail}", tr(self.lang, Text::ToolTable)));
+                return;
+            }
+        }
+        // the height map is not sent to the server, which plans the job on a flat table: the job would not be as deep as the screen shows
+        if self.connection.kind == ConnectionKind::Server && self.job_options.table.is_some() {
+            self.error = Some(tr(self.lang, Text::LevelServer).to_string());
+            return;
+        }
         // on a table that was measured, each hole has the height of the table under it, from the place the work starts
         let lifts: Option<Vec<f64>> = self.job_options.table.as_ref().and_then(|t| {
             let reference = t.height_at(offset.0, offset.1)?;
@@ -383,6 +434,12 @@ impl App {
                         tr(self.lang, Text::TooManyTools),
                         rack.places.len().saturating_sub(2)
                     ));
+                    return;
+                }
+                // the places the job goes to (the test pin, one for each tool, and the one the last tool is put back in) must all have a position: a gap
+                // would send the chuck to the origin of the table
+                if let Some(gap) = rack.first_gap(used.len()) {
+                    self.error = Some(format!("{}: {gap}", tr(self.lang, Text::RackGap)));
                     return;
                 }
                 match &lifts {
@@ -464,10 +521,12 @@ impl App {
         }
         let size = m.atc.iter().map(|a| a.index as usize).max()? + 1;
         let mut places = vec![(0.0, 0.0, 0.0); size];
+        let mut defined = vec![false; size];
         for a in &m.atc {
             places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
+            defined[a.index as usize] = true;
         }
-        Some(Rack { places })
+        Some(Rack { places, defined })
     }
 
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.

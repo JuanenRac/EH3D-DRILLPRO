@@ -241,3 +241,7 @@ CText.BCont	Á~f~ram
 Text.StatusMain	Esc: til baka   Enter: samþykkja   ↑/↓: færa
 CText.QInterrupted	TRUFLAÐ
 Text.SpindleLimit	Hámark spindils:
+Text.ToolTable	Verkfæratöflan inniheldur ekki verkfærið
+Text.RackGap	Staður verkfæraskiptarans hefur enga staðsetningu í vélarskránni
+Text.LevelServer	Ekki er hægt að nota hæðarkortið þegar verkið fer um þjóninn
+Text.IgnoredLines	Skráin hefur raufar eða fræsingarhreyfingar sem eru ekki lesnar

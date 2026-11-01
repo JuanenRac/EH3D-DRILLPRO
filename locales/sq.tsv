@@ -241,3 +241,7 @@ CText.BCont	~V~azhdo
 Text.StatusMain	Esc: kthehu   Enter: prano   ↑/↓: lëviz
 CText.QInterrupted	NDËRPRERË
 Text.SpindleLimit	Kufiri i boshtit:
+Text.ToolTable	Tabela e veglave nuk e ka veglën
+Text.RackGap	Një vend i ndërruesit të veglave nuk ka pozicion në skedarin e makinës
+Text.LevelServer	Harta e lartësive nuk mund të përdoret kur puna kalon nga serveri
+Text.IgnoredLines	Skedari ka vrima të gjata ose lëvizje frezimi që nuk lexohen

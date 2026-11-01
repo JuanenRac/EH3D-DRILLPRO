@@ -241,3 +241,7 @@ CText.BCont	~D~alej
 Text.StatusMain	Esc: wstecz   Enter: zatwierdź   ↑/↓: ruch
 CText.QInterrupted	PRZERWANO
 Text.SpindleLimit	Limit wrzeciona:
+Text.ToolTable	Tabela narzędzi nie zawiera tego narzędzia
+Text.RackGap	Miejsce zmieniacza narzędzi nie ma pozycji w pliku maszyny
+Text.LevelServer	Mapy wysokości nie można użyć, gdy zadanie idzie przez serwer
+Text.IgnoredLines	Plik zawiera rowki lub ruchy frezowania, które nie są czytane

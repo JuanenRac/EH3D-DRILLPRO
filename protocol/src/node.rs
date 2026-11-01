@@ -19,6 +19,9 @@ use crate::{ModemStatus, Transport};
 pub const SYNC: u8 = 0xB5;
 pub const MAX_PAYLOAD: usize = 2048;
 
+/// How long the connection to the node may take: a node that is off or has another address must not leave the program waiting for the system's own limit (a minute or two).
+pub const CONNECT_TIMEOUT: Duration = Duration::from_secs(3);
+
 /// Frame types of the link (see the node's PROTOCOL document).
 pub mod kind {
     pub const HELLO: u8 = 0x01;
@@ -147,6 +150,18 @@ fn error_text(code: u8) -> &'static str {
     }
 }
 
+/// Opens the connection to the first address that answers within `timeout` (each address of the name gets that long).
+pub fn connect_stream(addr: impl ToSocketAddrs, timeout: Duration) -> io::Result<TcpStream> {
+    let mut last = io::Error::new(io::ErrorKind::NotFound, "the node has no address");
+    for a in addr.to_socket_addrs()? {
+        match TcpStream::connect_timeout(&a, timeout) {
+            Ok(s) => return Ok(s),
+            Err(e) => last = e,
+        }
+    }
+    Err(last)
+}
+
 pub struct NodeTransport {
     stream: TcpStream,
     decoder: Decoder,
@@ -170,7 +185,7 @@ pub struct NodeTransport {
 impl NodeTransport {
     /// Opens the link and logs in. The machine stays disarmed until [`NodeTransport::arm`].
     pub fn connect(addr: impl ToSocketAddrs, token: &str) -> io::Result<Self> {
-        let stream = TcpStream::connect(addr)?;
+        let stream = connect_stream(addr, CONNECT_TIMEOUT)?;
         stream.set_nodelay(true)?;
         stream.set_read_timeout(Some(Duration::from_millis(20)))?;
         let mut t = NodeTransport {

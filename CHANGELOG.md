@@ -8,6 +8,12 @@ All notable changes to this project are documented here.
 
 
 - **What the server tells the run screen:** a job on the server shows the excesses of the spindle that the server cut (`spindle_warnings` of its view, one short text for each: the tool, the value asked for and the limit) under the progress, and, when the machine has the node of a drill head, the turns of the spindle and its temperature, asked of the server every two seconds and let go if the machine has no node or the node does not answer. The line is named in all 37 languages. 2 tests.
+- **A job is not started on made-up data:** a tool of the job that the tool table does not give (or whose line could not be read: a field missing, a letter in a number) stops the job and names the tool and the line, instead of drilling it with an invented speed and feed; the decimal comma of a Spanish or German Windows is read in the tool table.
+- **A gap in the rack of the tool changer stops the job:** a place with no position in the machine file is never gone to (it used to send the chuck to the origin of the table); the message gives the place.
+- **The height map and the server:** a job that goes through the server is not started with a height map in use, because the server plans on a flat table; the screen says so instead of ignoring the map.
+- **Slots are not lost in silence:** a drill file with slots or routed moves (`G00`/`G01`, `M15`/`M16`) is refused with the first of those lines, and a headerless body that ends in a `%` keeps its holes.
+- **The connection to the node has a time limit** (three seconds for each address): a node that is off or has another address no longer leaves the window waiting for a minute or two.
+- **Four new texts in the 37 languages;** `Rack::new` and `Rack::first_gap` in the protocol; tests for the tool table, the slots, the gaps of the rack and the connection.
 
 ## [0.0.9] - No console window on Windows, hot keys in 37 languages and the tools that are off sent to the server
 

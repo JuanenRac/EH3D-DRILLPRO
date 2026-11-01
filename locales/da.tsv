@@ -241,3 +241,7 @@ CText.BCont	~F~ortsæt
 Text.StatusMain	Esc: tilbage   Enter: acceptér   ↑/↓: flyt
 CText.QInterrupted	AFBRUDT
 Text.SpindleLimit	Spindelgrænse:
+Text.ToolTable	Værktøjstabellen angiver ikke værktøjet
+Text.RackGap	En plads i værktøjsskifteren har ingen position i maskinfilen
+Text.LevelServer	Højdekortet kan ikke bruges, når jobbet går via serveren
+Text.IgnoredLines	Filen har slidser eller fræsebevægelser, som ikke læses

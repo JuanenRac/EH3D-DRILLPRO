@@ -241,3 +241,7 @@ CText.BCont	~T~urpin.
 Text.StatusMain	Esc: atpakaļ   Enter: apstiprināt   ↑/↓: pārvietot
 CText.QInterrupted	PĀRTRAUKTS
 Text.SpindleLimit	Vārpstas robeža:
+Text.ToolTable	Instrumentu tabulā nav šī instrumenta
+Text.RackGap	Instrumentu mainītāja vietai nav pozīcijas mašīnas failā
+Text.LevelServer	Augstuma karti nevar izmantot, kad darbs iet caur serveri
+Text.IgnoredLines	Failā ir rievas vai frēzēšanas kustības, kuras netiek lasītas

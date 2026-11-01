@@ -9,7 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use eh3d_drillpro_protocol::node::{crc16, encode, kind, Decoder, NodeTransport};
+use eh3d_drillpro_protocol::node::{connect_stream, crc16, encode, kind, Decoder, NodeTransport};
 use eh3d_drillpro_protocol::Transport;
 
 #[test]
@@ -156,6 +156,23 @@ fn fake_node(token: &'static str, capacity: u32) -> FakeNode {
         stop,
         handle: Some(handle),
     }
+}
+
+#[test]
+fn connecting_has_a_limit_and_an_unreachable_node_is_an_error_not_a_wait() {
+    // nothing listens on this port of the local machine: refused at once
+    let free = TcpListener::bind("127.0.0.1:0")
+        .unwrap()
+        .local_addr()
+        .unwrap();
+    let t = Instant::now();
+    assert!(connect_stream(free, Duration::from_millis(500)).is_err());
+    assert!(NodeTransport::connect(free, "token").is_err());
+    // a name that is not an address is an error too, and a good one connects
+    assert!(connect_stream("no such host.invalid:1", Duration::from_millis(500)).is_err());
+    let up = TcpListener::bind("127.0.0.1:0").unwrap();
+    assert!(connect_stream(up.local_addr().unwrap(), Duration::from_millis(500)).is_ok());
+    assert!(t.elapsed() < Duration::from_secs(10));
 }
 
 #[test]

@@ -287,14 +287,23 @@ fn atc_machine() -> JobMachine {
 
 /// The rack of the recorded machine (the positions of its configuration file; the first four places).
 fn atc_rack() -> Rack {
-    Rack {
-        places: vec![
-            (540.0, 20.0, 37.4),
-            (530.0, 40.0, 37.4),
-            (540.0, 60.0, 37.4),
-            (530.0, 80.0, 37.4),
-        ],
-    }
+    Rack::new(vec![
+        (540.0, 20.0, 37.4),
+        (530.0, 40.0, 37.4),
+        (540.0, 60.0, 37.4),
+        (530.0, 80.0, 37.4),
+    ])
+}
+
+#[test]
+fn a_place_of_the_rack_without_a_position_is_never_gone_to() {
+    let mut rack = atc_rack();
+    assert_eq!(rack.first_gap(3), None);
+    rack.defined[2] = false;
+    assert_eq!(rack.first_gap(3), Some(2));
+    assert_eq!(rack.first_gap(1), None);
+    // beyond the places the rack has there is a gap too
+    assert_eq!(atc_rack().first_gap(4), Some(4));
 }
 
 #[test]

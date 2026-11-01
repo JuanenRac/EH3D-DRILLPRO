@@ -29,6 +29,22 @@ pub struct JobMachine {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Rack {
     pub places: Vec<(f64, f64, f64)>,
+    /// Which places the configuration gives a position to: a place with none is a gap, and the plan never goes to it.
+    pub defined: Vec<bool>,
+}
+
+impl Rack {
+    /// A rack with every place defined.
+    pub fn new(places: Vec<(f64, f64, f64)>) -> Rack {
+        let defined = vec![true; places.len()];
+        Rack { places, defined }
+    }
+
+    /// The first place among 0 to `last` (both included) that has no position, if there is one.
+    pub fn first_gap(&self, last: usize) -> Option<usize> {
+        (0..=last)
+            .find(|&i| !self.defined.get(i).copied().unwrap_or(false) || i >= self.places.len())
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -200,8 +216,12 @@ impl Planner<'_> {
             return;
         };
         let g = self.m.geometry;
+        // a place with no position is never gone to (the job is refused before: see `Rack::first_gap`); here the exchange is simply not planned
+        if rack.first_gap(from.max(to)).is_some() {
+            return;
+        }
         let place = |i: usize| {
-            let (x, y, z) = rack.places.get(i).copied().unwrap_or((0.0, 0.0, 0.0));
+            let (x, y, z) = rack.places[i];
             ((g.x_steps(x), g.y_steps(y)), g.z_steps(z))
         };
         let ((from_xy, z_from), (to_xy, _)) = (place(from), place(to));

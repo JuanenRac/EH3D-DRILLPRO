@@ -241,3 +241,7 @@ CText.BCont	~T~ęsti
 Text.StatusMain	Esc: atgal   Enter: patvirtinti   ↑/↓: judėti
 CText.QInterrupted	PERTRAUKTA
 Text.SpindleLimit	Suklio riba:
+Text.ToolTable	Įrankių lentelėje nėra šio įrankio
+Text.RackGap	Įrankių keitiklio vieta neturi padėties mašinos faile
+Text.LevelServer	Aukščių žemėlapio negalima naudoti, kai užduotis eina per serverį
+Text.IgnoredLines	Faile yra griovelių ar frezavimo judesių, kurie neskaitomi

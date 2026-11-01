@@ -380,6 +380,7 @@ pub fn select_holes(
         tools,
         diameters: Vec::new(),
         metric: file.metric,
+        ..Default::default()
     };
     let ordered = sort_holes(&sub, sorting);
     let base: Vec<JobHole> = ordered
