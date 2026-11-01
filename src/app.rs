@@ -340,14 +340,17 @@ impl App {
             .map_or(crate::ncd::MIL_MM, |m| m.unit.mm());
         let scale = self.settings.as_ref().map_or((1.0, 1.0), |m| m.scale);
         let offset = self.settings.as_ref().map_or((0.0, 0.0), |m| m.offset_mm);
-        let selection = crate::job::select_holes(
-            &l.file,
-            self.sorting,
-            &self.job_options,
-            unit_mm,
-            scale,
-            offset,
-        );
+        // with no area asked for, the table of the machine is the limit: nothing is sent outside it
+        let mut area_options = self.job_options.clone();
+        if area_options.clip_mm.is_none() {
+            area_options.clip_mm = self
+                .settings
+                .as_ref()
+                .map(|m| m.clip_mm)
+                .filter(|c| c.0 > 0.0 && c.1 > 0.0);
+        }
+        let selection =
+            crate::job::select_holes(&l.file, self.sorting, &area_options, unit_mm, scale, offset);
         let skipped = selection.skipped;
         let job_holes: Vec<JobHole> = selection.holes;
         let tools: Vec<JobTool> = self

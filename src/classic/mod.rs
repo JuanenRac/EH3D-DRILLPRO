@@ -327,7 +327,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         Form {
             scale: s.map_or((1.0, 1.0), |m| m.scale),
             offset: s.map_or((2.5, 2.5), |m| m.offset_mm),
-            clip: s.map_or((555.0, 405.0), |m| m.clip_mm),
+            clip: s.map_or((495.0, 325.0), |m| m.clip_mm),
             from: 0,
             to: 0,
             board: s.map_or(1.0, |m| m.board_mm),

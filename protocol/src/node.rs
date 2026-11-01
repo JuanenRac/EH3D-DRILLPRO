@@ -466,7 +466,7 @@ impl Transport for NodeTransport {
             if self.written > 0 && self.drained() && start.elapsed() >= Duration::from_millis(60) {
                 break;
             }
-            if total - start.elapsed() < Duration::from_millis(2) {
+            if total.saturating_sub(start.elapsed()) < Duration::from_millis(2) {
                 break;
             }
         }

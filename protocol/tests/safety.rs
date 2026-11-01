@@ -68,8 +68,8 @@ fn drill_stroke_goes_down_then_up() {
     let s = drill_stroke(2.0, 600.0, &g);
     let n = g.z_steps(2.0) as usize;
     assert_eq!(s.len(), 2 * n);
-    assert!(s[..n].iter().all(|x| x.byte == bits::Z_NEG));
-    assert!(s[n..].iter().all(|x| x.byte == bits::Z_POS));
+    assert!(s[..n].iter().all(|x| x.byte == bits::Z_POS));
+    assert!(s[n..].iter().all(|x| x.byte == bits::Z_NEG));
     assert!(
         s[0].delay_us > s[n].delay_us,
         "the way up is faster than the feed down"
