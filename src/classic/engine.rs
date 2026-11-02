@@ -151,6 +151,12 @@ pub trait ClassicEngine {
     fn hole_order(&self) -> Vec<(f64, f64)> {
         Vec::new()
     }
+    /// Where the head is while a job runs (X, Y and Z in mm from the switches), along the steps of the plan: the trips to the tool bar and the exchanges
+    /// of the tools are in it, which the view of the job (the hole that is next) does not show. `None` when there is no job or the engine does not follow
+    /// the steps.
+    fn head_mm(&self) -> Option<(f64, f64, f64)> {
+        None
+    }
     /// The dialog the job is waiting at, if any.
     fn question(&self) -> Option<Question>;
     /// Answers it: Ok goes on, Abort stops the job.
@@ -207,6 +213,16 @@ impl ClassicEngine for App {
 
     fn kind(&self) -> Kind {
         Kind::Drill
+    }
+
+    fn head_mm(&self) -> Option<(f64, f64, f64)> {
+        let run = self.run.as_ref()?;
+        let into = if run.real.is_some() {
+            0.0
+        } else {
+            run.item_clock
+        };
+        run.progress.head_mm(run.next, into)
     }
 
     fn jog(&mut self, dx: i32, dy: i32, dz: i32) {

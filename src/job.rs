@@ -3,7 +3,7 @@
 use crate::config::MachineSettings;
 use crate::ncd::{DrillFile, Hole, MIL_MM};
 use crate::protocol::connection::ConnectionConfig;
-use crate::protocol::job::JobMachine;
+use crate::protocol::job::{JobMachine, Rack, RackTravel};
 use crate::protocol::Step;
 use crate::tools::Tool;
 
@@ -162,6 +162,87 @@ pub fn job_machine(
             xy_search_steps: 26_613,
         },
     }
+}
+
+/// Why a job with the tool changer is refused before it starts.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RackRefusal {
+    /// More tools than the rack holds (the number it holds).
+    TooManyTools(usize),
+    /// A place the job goes to has no position in the machine file (its number).
+    Gap(usize),
+    /// A place is where the machine does not reach (its number).
+    Outside(usize),
+}
+
+impl RackRefusal {
+    /// The sentence that tells the person, in their language.
+    pub fn message(&self, lang: crate::i18n::Lang) -> String {
+        use crate::texts::{tr, Text};
+        match self {
+            RackRefusal::TooManyTools(n) => format!("{} {n})", tr(lang, Text::TooManyTools)),
+            RackRefusal::Gap(i) => format!("{}: {i}", tr(lang, Text::RackGap)),
+            RackRefusal::Outside(i) => format!("{}: {i}", tr(lang, Text::RackOutside)),
+        }
+    }
+}
+
+/// The rack of the tool changer from the machine file, when the machine has one and its file asks for the automatic change (place 0 is the test pin,
+/// 1 to 14 the tools and 15 the drill break detector); `None` for a machine that is changed by hand. A job with `tools` tools is refused when the
+/// rack has no place for them, when a place it goes to has no position, or when one is where the machine does not reach (the bar stands past the
+/// edge of the table along X, by as much as the file allows). Shared by DRILLPRO, ROUTEPRO and the modern interface.
+pub fn job_rack(
+    settings: Option<&MachineSettings>,
+    tools: usize,
+) -> Result<Option<Rack>, RackRefusal> {
+    let Some(m) = settings else {
+        return Ok(None);
+    };
+    if !m.auto_change || m.atc.is_empty() {
+        return Ok(None);
+    }
+    let size = m.atc.iter().map(|a| a.index as usize).max().unwrap_or(0) + 1;
+    let mut places = vec![(0.0, 0.0, 0.0); size];
+    let mut defined = vec![false; size];
+    for a in &m.atc {
+        places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
+        defined[a.index as usize] = true;
+    }
+    let r = m.rack;
+    let rack = Rack {
+        places,
+        defined,
+        travel: None,
+    }
+    .with_travel(RackTravel {
+        tool_length_mm: r.tool_length_mm,
+        ring_to_tip_mm: r.ring_to_tip_mm,
+        clearance_mm: r.clearance_mm,
+        approach_mm: r.approach_mm,
+    });
+    // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
+    if tools + 2 > rack.places.len() {
+        return Err(RackRefusal::TooManyTools(
+            rack.places.len().saturating_sub(2),
+        ));
+    }
+    // the places the job goes to (the test pin, one for each tool, and the one the last tool is put back in) must all have a position: a gap would
+    // send the chuck to the origin of the table
+    if let Some(gap) = rack.first_gap(tools) {
+        return Err(RackRefusal::Gap(gap));
+    }
+    // and each of them must be where the machine can go
+    if let Some(out) = rack.first_outside(
+        tools,
+        (
+            m.clip_mm.0 + m.rack.reach_x_mm,
+            m.clip_mm.1,
+            m.z_max_depth_mm,
+        ),
+    ) {
+        return Err(RackRefusal::Outside(out));
+    }
+    Ok(Some(rack))
 }
 
 /// The warning for tools that run with the cautious defaults: the text of the language, the numbers of the tools and, for each whose line of the table could not be

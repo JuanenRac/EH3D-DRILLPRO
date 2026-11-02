@@ -204,3 +204,50 @@ fn the_spindle_start_time_of_the_machine_file_is_the_wait_for_each_ten_thousand_
         .tuning;
     assert_eq!(none.spindle_start_wait(60_000), 1680);
 }
+
+fn changer_machine(places: usize) -> eh3d_drillpro::config::MachineSettings {
+    use eh3d_drillpro::config::{rack_line, RackSetup};
+    let mut m = shipped_machine();
+    m.clip_mm = (300.0, 200.0);
+    m.z_max_depth_mm = 40.0;
+    m.auto_change = true;
+    m.rack = RackSetup::default();
+    m.atc = rack_line(
+        (320.0, 40.0, 30.0),
+        (320.0, 40.0 + 20.0 * (places as f64 - 1.0), 30.0),
+        places,
+    );
+    m
+}
+
+#[test]
+fn a_machine_changed_by_hand_or_with_no_places_has_no_rack() {
+    let mut m = changer_machine(4);
+    assert!(job_rack(Some(&m), 2).unwrap().is_some());
+    m.auto_change = false;
+    assert_eq!(job_rack(Some(&m), 2), Ok(None));
+    let mut m = changer_machine(4);
+    m.atc.clear();
+    assert_eq!(job_rack(Some(&m), 2), Ok(None));
+    assert_eq!(job_rack(None, 2), Ok(None));
+}
+
+#[test]
+fn a_job_the_rack_cannot_hold_or_reach_is_refused_with_its_reason() {
+    let m = changer_machine(3);
+    assert_eq!(job_rack(Some(&m), 4), Err(RackRefusal::TooManyTools(3)));
+    // a place with no position
+    let mut gap = changer_machine(3);
+    gap.atc.retain(|a| a.index != 2);
+    assert_eq!(job_rack(Some(&gap), 3), Err(RackRefusal::Gap(2)));
+    // a bar further than the machine reaches
+    let mut far = changer_machine(3);
+    far.rack.reach_x_mm = 5.0;
+    assert!(matches!(
+        job_rack(Some(&far), 3),
+        Err(RackRefusal::Outside(_))
+    ));
+    // the words are in the language of the person
+    let text = RackRefusal::Gap(2).message(eh3d_drillpro::i18n::Lang::En);
+    assert!(text.ends_with(": 2"), "{text}");
+}

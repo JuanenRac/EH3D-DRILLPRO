@@ -44,6 +44,9 @@ pub struct Progress {
     /// `before[i]` is the seconds the items from the first to the `i`-th (not included) take; one more entry than items.
     before: Vec<f64>,
     marks: Vec<usize>,
+    /// `ends[i]` is where the head is (X, Y, Z in mm from the switches) after the items before the `i`-th; one more entry than items, empty when the
+    /// positions were not asked for (see [`Progress::with_track`]).
+    ends: Vec<(f64, f64, f64)>,
 }
 
 impl Progress {
@@ -59,7 +62,80 @@ impl Progress {
         Progress {
             before,
             marks: marks.to_vec(),
+            ends: Vec::new(),
         }
+    }
+
+    /// The same, following the steps of the items from the switches to know where the head is at any moment of the plan (what a view that draws the
+    /// machine moving needs: the trips to the tool bar are in the plan as moves like any other).
+    pub fn with_track(
+        mut self,
+        items: &[Item],
+        geometry: &crate::protocol::motion::Geometry,
+    ) -> Self {
+        let per_mm = [
+            geometry.steps_per_mm_xy * geometry.correction.0,
+            geometry.steps_per_mm_xy * geometry.correction.1,
+            geometry.steps_per_mm_z * geometry.correction.2,
+        ];
+        let mut at = [0i64; 3];
+        let apply = |steps: &[crate::protocol::Step], at: &mut [i64; 3]| {
+            for s in steps {
+                let (dx, dy, dz) = eh3d_summary::dryrun::decode(s.byte);
+                for (i, d) in [dx, dy, dz].into_iter().enumerate() {
+                    // an axis cannot go behind its switch
+                    at[i] = (at[i] + d).max(0);
+                }
+            }
+        };
+        let mm = |at: &[i64; 3]| {
+            let f = |i: usize| {
+                if per_mm[i] > 0.0 {
+                    at[i] as f64 / per_mm[i]
+                } else {
+                    0.0
+                }
+            };
+            (f(0), f(1), f(2))
+        };
+        let mut ends = Vec::with_capacity(items.len() + 1);
+        ends.push(mm(&at));
+        for item in items {
+            match item {
+                Item::Steps(s) | Item::Search(s) | Item::Seek(s) => apply(s, &mut at),
+                Item::Unstick(u) => {
+                    apply(&u.x, &mut at);
+                    apply(&u.y, &mut at);
+                }
+                _ => {}
+            }
+            ends.push(mm(&at));
+        }
+        self.ends = ends;
+        self
+    }
+
+    /// Where the head is (X, Y, Z in mm from the switches) when the run is about to start the `next`-th item and is `into_item` seconds into the one it is on
+    /// (the head moves in a straight line along an item, as the steps of one item go the same way); `None` when the plan was not followed.
+    pub fn head_mm(&self, next: usize, into_item: f64) -> Option<(f64, f64, f64)> {
+        let items = self.ends.len().checked_sub(1)?;
+        let at = next.min(items);
+        let from = self.ends[at];
+        if at >= items {
+            return Some(from);
+        }
+        let to = self.ends[at + 1];
+        let dur = self.before.get(at + 1).map_or(0.0, |e| e - self.before[at]);
+        let k = if dur > 0.0 {
+            (into_item / dur).clamp(0.0, 1.0)
+        } else {
+            0.0
+        };
+        Some((
+            from.0 + (to.0 - from.0) * k,
+            from.1 + (to.1 - from.1) * k,
+            from.2 + (to.2 - from.2) * k,
+        ))
     }
 
     /// The time the whole plan takes, in seconds.
@@ -210,5 +286,43 @@ mod tests {
             &Item::Pause(crate::protocol::job::Pause::SpindleStart),
         );
         assert_eq!(sim.sent.len(), 5);
+    }
+
+    #[test]
+    fn the_head_is_followed_along_the_steps_of_the_plan() {
+        let g = crate::protocol::motion::Geometry::default();
+        let per_mm = g.steps_per_mm_xy * g.correction.0;
+        let n = (20.0 * per_mm).round() as usize;
+        let items = vec![
+            run_of(n, 500.0),
+            Item::Steps(vec![
+                Step {
+                    byte: bits::Y_POS,
+                    delay_us: 500.0
+                };
+                n
+            ]),
+            // going back past the switch is swallowed: the head cannot be behind it
+            Item::Steps(vec![
+                Step {
+                    byte: bits::X_NEG,
+                    delay_us: 500.0
+                };
+                n * 2
+            ]),
+        ];
+        let p = Progress::new(&items, &[]);
+        assert_eq!(p.head_mm(0, 0.0), None, "no track unless asked for");
+        let p = p.with_track(&items, &g);
+        let (x, y, _) = p.head_mm(1, 0.0).unwrap();
+        assert!((x - 20.0).abs() < 0.1 && y.abs() < 0.01, "{x} {y}");
+        // half way into the second item the head is half way up Y
+        let half = n as f64 * 500e-6 / 2.0;
+        let (x, y, _) = p.head_mm(1, half).unwrap();
+        assert!((x - 20.0).abs() < 0.1 && (y - 10.0).abs() < 0.2, "{x} {y}");
+        let (x, _, _) = p.head_mm(3, 0.0).unwrap();
+        assert!(x.abs() < 0.01, "the head stops on its switch: {x}");
+        // past the end it stays where the plan ends
+        assert_eq!(p.head_mm(99, 0.0), p.head_mm(3, 0.0));
     }
 }

@@ -8,9 +8,7 @@ use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
 use crate::progress::Progress;
 use crate::protocol::connection::{ConnectionConfig, Kind as ConnectionKind};
-use crate::protocol::job::{
-    plan_drill_job_marked, Item, JobHole, JobMachine, JobTool, Pause, Rack,
-};
+use crate::protocol::job::{plan_drill_job_marked, Item, JobHole, JobMachine, JobTool, Pause};
 use crate::protocol::{connect, Simulator};
 use crate::runner::{RealRun, RunState};
 use crate::screen::*;
@@ -454,34 +452,15 @@ impl App {
                 .map(|h| Some(t.height_at(h.x_mm + offset.0, h.y_mm + offset.1)? - reference))
                 .collect()
         });
-        let rack = match self.rack() {
-            Some(rack) => {
-                // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
-                let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
-                used.sort_unstable();
-                used.dedup();
-                if used.len() + 2 > rack.places.len() {
-                    self.error = Some(format!(
-                        "{} {})",
-                        tr(self.lang, Text::TooManyTools),
-                        rack.places.len().saturating_sub(2)
-                    ));
-                    return;
-                }
-                // the places the job goes to (the test pin, one for each tool, and the one the last tool is put back in) must all have a position: a gap
-                // would send the chuck to the origin of the table
-                if let Some(gap) = rack.first_gap(used.len()) {
-                    self.error = Some(format!("{}: {gap}", tr(self.lang, Text::RackGap)));
-                    return;
-                }
-                // and each of them must be where the machine can go
-                if let Some(out) = self.rack_outside(&rack, used.len()) {
-                    self.error = Some(format!("{}: {out}", tr(self.lang, Text::RackOutside)));
-                    return;
-                }
-                Some(rack)
+        let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
+        used.sort_unstable();
+        used.dedup();
+        let rack = match crate::job::job_rack(self.settings.as_ref(), used.len()) {
+            Ok(rack) => rack,
+            Err(why) => {
+                self.error = Some(why.message(self.lang));
+                return;
             }
-            None => None,
         };
         let (items, marks) = plan_drill_job_marked(
             &self.job_machine(),
@@ -490,7 +469,8 @@ impl App {
             lifts.as_deref().unwrap_or(&[]),
             rack.as_ref(),
         );
-        let progress = Progress::new(&items, &marks);
+        let progress =
+            Progress::new(&items, &marks).with_track(&items, &self.job_machine().geometry);
         // a machine that moves: the exact plan is followed on paper first, a plan that leaves the course is refused (when the tuning says so), and the
         // person sees the summary and accepts it before anything starts
         self.summary = None;
@@ -568,50 +548,6 @@ impl App {
             pause_sounded: false,
         });
         self.mode = Mode::Running;
-    }
-
-    /// The tool changer's rack when the machine has one and its configuration asks for the automatic change: place 0 is the test pin,
-    /// 1 to 14 the tools and 15 the drill break detector.
-    fn rack(&self) -> Option<Rack> {
-        let m = self.settings.as_ref()?;
-        if !m.auto_change || m.atc.is_empty() {
-            return None;
-        }
-        let size = m.atc.iter().map(|a| a.index as usize).max()? + 1;
-        let mut places = vec![(0.0, 0.0, 0.0); size];
-        let mut defined = vec![false; size];
-        for a in &m.atc {
-            places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
-            defined[a.index as usize] = true;
-        }
-        let r = m.rack;
-        Some(
-            Rack {
-                places,
-                defined,
-                travel: None,
-            }
-            .with_travel(crate::protocol::job::RackTravel {
-                tool_length_mm: r.tool_length_mm,
-                ring_to_tip_mm: r.ring_to_tip_mm,
-                clearance_mm: r.clearance_mm,
-                approach_mm: r.approach_mm,
-            }),
-        )
-    }
-
-    /// The first place of the rack a job with `tools` tools goes to that the machine does not reach (the bar stands past the edge of the
-    /// table along X, by as much as the machine file allows), if there is one.
-    fn rack_outside(&self, rack: &Rack, tools: usize) -> Option<usize> {
-        let m = self.settings.as_ref()?;
-        rack.first_outside(
-            tools,
-            (
-                m.clip_mm.0 + m.rack.reach_x_mm,
-                m.clip_mm.1,
-                m.z_max_depth_mm,
-            ),
-        )
     }
 
     /// Machine data for the job: from the configuration file when it was read, defaults otherwise.

@@ -110,3 +110,29 @@ fn finish_and_finish_marked_make_the_same_plan() {
     };
     assert_eq!(build().finish(), build().finish_marked().0);
 }
+
+#[test]
+fn a_builder_with_a_rack_swaps_the_chuck_between_places_and_one_without_plans_nothing() {
+    let m = machine();
+    let rack = Rack::new(vec![
+        (540.0, 20.0, 30.0),
+        (540.0, 40.0, 30.0),
+        (540.0, 60.0, 30.0),
+    ]);
+    let base = JobBuilder::new(&m).into_items().len();
+    // without a rack the swap is not planned
+    let mut plain = JobBuilder::new(&m);
+    assert!(!plain.has_rack());
+    plain.chuck_swap(0, 1);
+    assert_eq!(plain.into_items().len(), base);
+    // with one the head goes to the bar and back: it opens and closes the chuck (the auxiliary output) and goes as far as the places
+    let mut b = JobBuilder::new(&m).with_rack(rack);
+    assert!(b.has_rack());
+    b.chuck_swap(0, 1);
+    let items = b.into_items();
+    assert!(items.len() > base + 4);
+    let moved_far = items
+        .iter()
+        .any(|i| matches!(i, Item::Steps(s) if s.len() > 3000));
+    assert!(moved_far, "the head travels to the bar");
+}

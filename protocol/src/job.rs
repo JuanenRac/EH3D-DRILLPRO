@@ -493,6 +493,28 @@ impl<'a> JobBuilder<'a> {
         Self { p }
     }
 
+    /// The same job on a machine with the automatic tool changer: the tools of the job wait in the places of the rack, in the order they are used.
+    pub fn with_rack(mut self, rack: Rack) -> Self {
+        self.p.rack = Some(rack);
+        self
+    }
+
+    /// Whether the job changes the tools by itself (it was given a rack).
+    pub fn has_rack(&self) -> bool {
+        self.p.rack.is_some()
+    }
+
+    /// The exchange of the tool in the chuck for the next one: the chuck goes from the place `from` to the place `to` of the rack (place 0 is the
+    /// test pin) and the drivers go on again. Nothing is planned without a rack.
+    pub fn chuck_swap(&mut self, from: usize, to: usize) {
+        if self.p.rack.is_none() {
+            return;
+        }
+        self.p.chuck_swap(from, to);
+        let on = self.p.latches.drivers_on();
+        self.p.latch(on);
+    }
+
     pub fn pause(&mut self, pause: Pause) {
         self.p.items.push(Item::Pause(pause));
     }

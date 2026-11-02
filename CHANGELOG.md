@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **`job_rack` builds the rack of the tool changer from a machine file and says why a job is refused (`RackRefusal`):** more tools than places, a place with no position or a place the machine does not reach; DRILLPRO, ROUTEPRO and the modern interface use the same function, with the words in the 37 languages.
+- **Where the head is during a simulated job, from the steps of the plan:** `Progress::with_track` follows the steps of the items from the switches and `ClassicEngine::head_mm` gives the head's X, Y and Z at any moment, so a view can show the trips to the tool bar and the exchanges of the tools, not only the hole that is next.
+- **`JobBuilder` can change tools from a rack:** `with_rack`, `has_rack` and `chuck_swap` plan the exchange of the tool in the chuck for the next one (place 0 is the test pin), which is what a routing job needs on the machines with the tool changer.
+
 ## [0.1.4] - Shared summary, progress by time and a machine file from the start
 - **The dry run and the summary before a start live in EH3D-COMMON (`eh3d-summary`):** `dryrun` and `summary` keep their paths and their functions as before, but the measure, the sanity checks, the summary and the words of them (now in `eh3d-view`, in the 37 languages) are shared with the other programs; `Summary::refusal` takes the `Limits` that `summary::limits(&tuning)` gives.
 
