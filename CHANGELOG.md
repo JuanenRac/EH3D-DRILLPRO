@@ -3,6 +3,8 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+
+## [0.1.4] - Shared summary, progress by time and a machine file from the start
 - **The dry run and the summary before a start live in EH3D-COMMON (`eh3d-summary`):** `dryrun` and `summary` keep their paths and their functions as before, but the measure, the sanity checks, the summary and the words of them (now in `eh3d-view`, in the 37 languages) are shared with the other programs; `Summary::refusal` takes the `Limits` that `summary::limits(&tuning)` gives.
 
 - **A folder with no machine file starts from the one that comes with the program,** so the settings (the bar of the tool changer among them) can be changed and saved there; before, every change was silently lost until a `DRILLPRO.DCF` was put in the folder. With tests.
