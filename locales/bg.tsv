@@ -23,6 +23,7 @@ Text.LblTravel	Ход (mm)
 Text.LblSorting	Сортиране
 Text.LblProgress	Напредък
 Text.LblTime	Симул. време (s)
+Text.LblLeft	Остава време
 Text.LblSerial	Сериен интерфейс
 Text.SortNone	Няма
 Text.SortX	Първо X

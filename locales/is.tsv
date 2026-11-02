@@ -23,6 +23,7 @@ Text.LblTravel	Ferill (mm)
 Text.LblSorting	Röðun
 Text.LblProgress	Framvinda
 Text.LblTime	Hermdur tími (s)
+Text.LblLeft	Tími eftir
 Text.LblSerial	Raðtengi
 Text.SortNone	Engin
 Text.SortX	X fyrst

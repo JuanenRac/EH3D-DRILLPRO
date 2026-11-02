@@ -23,6 +23,7 @@ Text.LblTravel	Väg (mm)
 Text.LblSorting	Sortering
 Text.LblProgress	Förlopp
 Text.LblTime	Simulerad tid (s)
+Text.LblLeft	Återstående tid
 Text.LblSerial	Seriellt gränssnitt
 Text.SortNone	Ingen
 Text.SortX	X först

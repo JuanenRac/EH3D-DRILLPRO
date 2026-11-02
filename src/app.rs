@@ -6,13 +6,12 @@ use crate::config::{self, Config};
 use crate::i18n::{str_width, Lang};
 use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
+use crate::progress::Progress;
 use crate::protocol::connection::{ConnectionConfig, Kind as ConnectionKind};
 use crate::protocol::job::{
-    plan_drill_job, plan_drill_job_atc, plan_drill_job_levelled, Item, JobHole, JobMachine,
-    JobTool, Pause, Rack,
+    plan_drill_job_marked, Item, JobHole, JobMachine, JobTool, Pause, Rack,
 };
-use crate::protocol::latches::run_ops;
-use crate::protocol::{bits, connect, run_steps, Simulator};
+use crate::protocol::{connect, Simulator};
 use crate::runner::{RealRun, RunState};
 use crate::screen::*;
 use crate::textapp::TextApp;
@@ -70,13 +69,12 @@ pub(crate) struct Run {
     pub(crate) total_holes: usize,
     /// Holes whose stroke has been completed.
     pub(crate) done: usize,
-    pub(crate) pending_descent: bool,
     pub(crate) sim: Simulator,
     pub(crate) connected: bool,
     /// The job on a real machine (a connection other than `demo`); the simulator above is then unused.
     pub(crate) real: Option<RealRun>,
-    /// Index of the item that finishes each hole, to count the holes done from the real progress.
-    pub(crate) hole_ends: Vec<usize>,
+    /// The time each item takes and the item that finishes each hole: the holes done and the time left come from the item the job has reached.
+    pub(crate) progress: Progress,
     /// The holes of the job in the order they are drilled (with the copies of a panel).
     pub(crate) plan: Vec<JobHole>,
     /// Holes left out because they fall outside the working area.
@@ -89,13 +87,19 @@ pub(crate) struct Run {
     pub(crate) pause_sounded: bool,
 }
 
-/// How long an item of the plan takes on the machine, in seconds.
-fn item_seconds(item: &Item) -> f64 {
-    match item {
-        Item::Steps(s) | Item::Search(s) | Item::Seek(s) => crate::protocol::motion::duration_s(s),
-        Item::Latch(ops) => 0.05 * ops.len() as f64,
-        Item::Spindle { wait_ms, .. } => *wait_ms as f64 / 1000.0,
-        _ => 0.0,
+impl Run {
+    /// How much of the job is done (0 to 1, by the time the items take on the machine) and the seconds left.
+    pub(crate) fn time_progress(&self) -> (f64, f64) {
+        // a real run is at the item the machine reports; the simulated one is also part-way into the item it is on
+        let into = if self.real.is_some() {
+            0.0
+        } else {
+            self.item_clock
+        };
+        (
+            self.progress.fraction(self.next, into),
+            self.progress.remaining_seconds(self.next, into),
+        )
     }
 }
 
@@ -352,11 +356,6 @@ impl App {
         self.error = Some(message);
     }
 
-    /// Items that finish a hole: a long Z descent followed by a long ascent.
-    fn hole_end_indexes(items: &[Item]) -> Vec<usize> {
-        crate::job::hole_end_indexes(items)
-    }
-
     fn sorting_index(&self) -> usize {
         [
             Sorting::None,
@@ -447,7 +446,7 @@ impl App {
                 .map(|h| Some(t.height_at(h.x_mm + offset.0, h.y_mm + offset.1)? - reference))
                 .collect()
         });
-        let items = match self.rack() {
+        let rack = match self.rack() {
             Some(rack) => {
                 // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
                 let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
@@ -472,25 +471,18 @@ impl App {
                     self.error = Some(format!("{}: {out}", tr(self.lang, Text::RackOutside)));
                     return;
                 }
-                match &lifts {
-                    Some(l) => plan_drill_job_levelled(
-                        &self.job_machine(),
-                        &tools,
-                        &job_holes,
-                        l,
-                        Some(&rack),
-                    ),
-                    None => plan_drill_job_atc(&self.job_machine(), &tools, &job_holes, &rack),
-                }
+                Some(rack)
             }
-            None => match &lifts {
-                Some(l) => {
-                    plan_drill_job_levelled(&self.job_machine(), &tools, &job_holes, l, None)
-                }
-                None => plan_drill_job(&self.job_machine(), &tools, &job_holes),
-            },
+            None => None,
         };
-        let hole_ends = Self::hole_end_indexes(&items);
+        let (items, marks) = plan_drill_job_marked(
+            &self.job_machine(),
+            &tools,
+            &job_holes,
+            lifts.as_deref().unwrap_or(&[]),
+            rack.as_ref(),
+        );
+        let progress = Progress::new(&items, &marks);
         // a machine that moves: the exact plan is followed on paper first, a plan that leaves the course is refused (when the tuning says so), and the
         // person sees the summary and accepts it before anything starts
         self.summary = None;
@@ -540,7 +532,7 @@ impl App {
                 Some(RealRun::start_on_server(
                     self.connection.clone(),
                     request,
-                    hole_ends.clone(),
+                    marks.clone(),
                     items.len(),
                 )),
             )
@@ -557,11 +549,10 @@ impl App {
             next: 0,
             total_holes: job_holes.len(),
             done: 0,
-            pending_descent: false,
             sim,
             connected,
             real,
-            hole_ends,
+            progress,
             plan: job_holes,
             skipped,
             waiting: None,
@@ -661,7 +652,7 @@ impl App {
             let Some(item) = run.items.get(run.next) else {
                 return false;
             };
-            let dur = item_seconds(item);
+            let dur = crate::progress::item_seconds(item);
             if run.item_clock + dt < dur {
                 run.item_clock += dt;
                 return true;
@@ -697,7 +688,7 @@ impl App {
             run.pause_sounded = asks;
             let (next, _) = real.progress();
             run.next = next;
-            run.done = run.hole_ends.iter().filter(|&&e| e < next).count();
+            run.done = run.progress.units_done(next);
             return !real.finished();
         }
         for _ in 0..n {
@@ -705,24 +696,8 @@ impl App {
                 return false;
             };
             match item {
-                Item::Steps(steps) | Item::Search(steps) | Item::Seek(steps) => {
-                    let first = steps.first().map(|x| x.byte);
-                    let _ = run_steps(&mut run.sim, steps);
-                    // A long Z descent followed by a long ascent is one finished hole.
-                    if first == Some(bits::Z_POS) && steps.len() >= 100 {
-                        run.pending_descent = true;
-                    } else if first == Some(bits::Z_NEG)
-                        && steps.len() >= 100
-                        && run.pending_descent
-                    {
-                        run.done += 1;
-                        run.pending_descent = false;
-                    }
-                }
-                Item::Latch(ops) => {
-                    let _ = run_ops(&mut run.sim, ops);
-                    // a descent that ends in a latch is the tool changer's (Z down to open the chuck), not a hole
-                    run.pending_descent = false;
+                Item::Steps(_) | Item::Search(_) | Item::Seek(_) | Item::Latch(_) => {
+                    crate::progress::play(&mut run.sim, item);
                 }
                 // The operator's dialogs are asked for when the front end wants them and confirmed at once otherwise; there is
                 // nothing to unstick, and the simulator has no spindle.
@@ -735,11 +710,13 @@ impl App {
                     }
                     run.waiting = Some(*p);
                     run.next += 1;
+                    run.done = run.progress.units_done(run.next);
                     return true;
                 }
                 Item::Pause(_) | Item::Unstick(_) | Item::Spindle { .. } => {}
             }
             run.next += 1;
+            run.done = run.progress.units_done(run.next);
         }
         run.next < run.items.len()
     }
@@ -1144,6 +1121,8 @@ impl App {
         let Some(r) = &self.run else { return };
         let total = r.total_holes;
         let real = r.real.as_ref().map(|x| x.state());
+        // the share of the job done and the time left follow the time the items take on the machine, not the count of holes
+        let (fraction, left) = r.time_progress();
         let status = match &real {
             Some(RunState::Connecting) => tr(self.lang, Text::Connecting).to_string(),
             Some(RunState::Running) => tr(self.lang, Text::Drilling).to_string(),
@@ -1180,18 +1159,32 @@ impl App {
             x + 2,
             y + 4,
             &format!(
-                "{}: {} / {}",
+                "{}: {} / {} ({} %)",
                 tr(self.lang, Text::LblProgress),
                 r.done,
-                total
+                total,
+                (fraction * 100.0).floor() as u32
             ),
             BLACK,
             WIN_BG,
         );
         let bar = w - 6;
-        let filled = (bar * r.done).checked_div(total).unwrap_or(0);
+        let filled = (bar as f64 * fraction).round() as usize;
         s.fill(x + 3, y + 5, bar, 1, '░', DARK_GRAY, WIN_BG);
-        s.fill(x + 3, y + 5, filled, 1, '█', BLUE, WIN_BG);
+        s.fill(x + 3, y + 5, filled.min(bar), 1, '█', BLUE, WIN_BG);
+        if left > 0.0 {
+            s.text(
+                x + 2,
+                y + 6,
+                &format!(
+                    "{}: {}",
+                    tr(self.lang, Text::LblLeft),
+                    crate::summary::clock(left)
+                ),
+                BLACK,
+                WIN_BG,
+            );
+        }
         if real.is_some() {
             s.text(
                 x + 2,

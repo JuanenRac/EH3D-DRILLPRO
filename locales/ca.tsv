@@ -23,6 +23,7 @@ Text.LblTravel	Recorregut (mm)
 Text.LblSorting	Ordre
 Text.LblProgress	Progrés
 Text.LblTime	Temps simulat (s)
+Text.LblLeft	Temps restant
 Text.LblSerial	Interfície sèrie
 Text.SortNone	Cap
 Text.SortX	Primer X

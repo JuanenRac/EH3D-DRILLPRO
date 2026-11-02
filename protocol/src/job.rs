@@ -214,9 +214,16 @@ struct Planner<'a> {
     z: u32,
     /// The tool changer of the ATC models: where the tools wait (see [`Rack`]).
     rack: Option<Rack>,
+    /// The item that ends each unit of work (a hole, a path), in the order they are done.
+    marks: Vec<usize>,
 }
 
 impl Planner<'_> {
+    /// The unit of work that was just planned ends with the last item pushed.
+    fn mark_done(&mut self) {
+        self.marks.push(self.items.len().saturating_sub(1));
+    }
+
     fn latch(&mut self, seq: crate::latches::Sequence) {
         self.latches = seq.next;
         self.items.push(Item::Latch(seq.ops));
@@ -473,6 +480,7 @@ impl<'a> JobBuilder<'a> {
             items: Vec::new(),
             latches: Latches::default(),
             rack: None,
+            marks: Vec::new(),
             pos: (0, 0),
             z: 0,
         };
@@ -487,6 +495,12 @@ impl<'a> JobBuilder<'a> {
 
     pub fn pause(&mut self, pause: Pause) {
         self.p.items.push(Item::Pause(pause));
+    }
+
+    /// The unit of work planned last (a path) is finished: the item pushed last ends it. The marks tell, from the item a run has reached, how many
+    /// units are done, without guessing it from the shape of the steps.
+    pub fn mark_done(&mut self) {
+        self.p.mark_done();
     }
 
     /// What has been planned so far, without the end of the job: for a session that homes the machine and then goes on by hand.
@@ -529,7 +543,12 @@ impl<'a> JobBuilder<'a> {
     }
 
     /// The end of the job: Z up to the top, the fine Z reference again, back to the origin, the XY reference and drivers off.
-    pub fn finish(mut self) -> Vec<Item> {
+    pub fn finish(self) -> Vec<Item> {
+        self.finish_marked().0
+    }
+
+    /// Like [`JobBuilder::finish`], with the item that ends each unit marked by [`JobBuilder::mark_done`].
+    pub fn finish_marked(mut self) -> (Vec<Item>, Vec<usize>) {
         let all = self.p.z;
         let hz = self.p.m.geometry.z_max_hz;
         self.p.z_up(all, hz);
@@ -548,14 +567,14 @@ impl<'a> JobBuilder<'a> {
         self.p.xy_search();
         let off = self.p.latches.drivers_off();
         self.p.latch(off);
-        self.p.items
+        (self.p.items, self.p.marks)
     }
 }
 
 /// Plans a drilling job. `holes` must already be in drilling order, grouped by tool in the order
 /// the tools are used; `tools` gives the data of each tool number.
 pub fn plan_drill_job(m: &JobMachine, tools: &[JobTool], holes: &[JobHole]) -> Vec<Item> {
-    plan_job(m, tools, holes, None, &[])
+    plan_job(m, tools, holes, None, &[]).0
 }
 
 /// The same job on a table that is not flat: `lifts_mm[i]` is how much higher the table is under hole `i` than at the place the Z was set (negative where it is
@@ -567,6 +586,18 @@ pub fn plan_drill_job_levelled(
     lifts_mm: &[f64],
     rack: Option<&Rack>,
 ) -> Vec<Item> {
+    plan_job(m, tools, holes, rack.cloned(), lifts_mm).0
+}
+
+/// The plan of a drilling job with the item that ends each hole, in the order the holes are drilled (the job groups them by tool). `lifts_mm` and `rack`
+/// are as in [`plan_drill_job_levelled`]; empty and `None` for a flat table and the manual models.
+pub fn plan_drill_job_marked(
+    m: &JobMachine,
+    tools: &[JobTool],
+    holes: &[JobHole],
+    lifts_mm: &[f64],
+    rack: Option<&Rack>,
+) -> (Vec<Item>, Vec<usize>) {
     plan_job(m, tools, holes, rack.cloned(), lifts_mm)
 }
 
@@ -579,7 +610,7 @@ pub fn plan_drill_job_atc(
     holes: &[JobHole],
     rack: &Rack,
 ) -> Vec<Item> {
-    plan_job(m, tools, holes, Some(rack.clone()), &[])
+    plan_job(m, tools, holes, Some(rack.clone()), &[]).0
 }
 
 fn plan_job(
@@ -588,7 +619,7 @@ fn plan_job(
     holes: &[JobHole],
     rack: Option<Rack>,
     lifts_mm: &[f64],
-) -> Vec<Item> {
+) -> (Vec<Item>, Vec<usize>) {
     let mut p = Planner {
         m,
         items: Vec::new(),
@@ -596,6 +627,7 @@ fn plan_job(
         pos: (0, 0),
         z: 0,
         rack,
+        marks: Vec::new(),
     };
     let g = m.geometry;
 
@@ -694,6 +726,7 @@ fn plan_job(
             } else {
                 p.z_up(levels.stroke_steps, fast_hz);
             }
+            p.mark_done();
         }
 
         // Spindle stop (brake, release run, release brake) and drivers on again.
@@ -723,7 +756,7 @@ fn plan_job(
     p.xy_search();
     let off = p.latches.drivers_off();
     p.latch(off);
-    p.items
+    (p.items, p.marks)
 }
 
 /// Every byte the plan sends, in order (pauses and waits omitted).

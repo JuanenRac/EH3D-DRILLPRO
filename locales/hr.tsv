@@ -23,6 +23,7 @@ Text.LblTravel	Put (mm)
 Text.LblSorting	Sortiranje
 Text.LblProgress	Napredak
 Text.LblTime	Simulirano vrijeme (s)
+Text.LblLeft	Preostalo vrijeme
 Text.LblSerial	Serijsko sučelje
 Text.SortNone	Bez
 Text.SortX	Prvo X

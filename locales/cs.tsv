@@ -23,6 +23,7 @@ Text.LblTravel	Dráha (mm)
 Text.LblSorting	Řazení
 Text.LblProgress	Průběh
 Text.LblTime	Simulovaný čas (s)
+Text.LblLeft	Zbývá
 Text.LblSerial	Sériové rozhraní
 Text.SortNone	Žádné
 Text.SortX	Nejdřív X

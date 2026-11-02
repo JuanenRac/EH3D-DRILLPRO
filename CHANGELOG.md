@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The plan says where each hole ends:** `plan_drill_job_marked` gives the item that ends every hole beside the items, and `JobBuilder::mark_done` and `finish_marked` do the same for jobs that are not holes. The holes done now come from those marks, not from guessing them out of the shape of the steps.
+- **Progress by time, and the time left** (`eh3d_drillpro::progress`): the share of the job done is the time of the items already done over the time of the whole plan, so a reference run no longer counts as much as one hole; the window of the run shows the percentage, a bar that follows it and the time left.
+- **The errors of the link are told in words:** `ConnectError` and `HomingError` have a readable message, and the failures of a run say what was being done (connecting, the reference run, the move) instead of showing the name of the error type.
+- **`test.sh` and `test.bat` run the tests of the whole workspace,** the protocol crate included.
+
 ## [0.1.3] - Summary and dry run before moving a machine
 
 - **A dry run of the exact plan** (`eh3d_drillpro::dryrun`): the steps of a planned job are followed on paper, decoded the way the control unit reads them, to measure how far each axis goes from its switches, where the plan ends and how long the movements take; a plan that takes an axis past the course of the machine file is found before a motor turns. Shared by the programs, the interface and the server.

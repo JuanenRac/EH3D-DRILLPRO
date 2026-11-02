@@ -23,6 +23,7 @@ Text.LblTravel	Percorrido (mm)
 Text.LblSorting	Orde
 Text.LblProgress	Progreso
 Text.LblTime	Tempo simulado (s)
+Text.LblLeft	Tempo restante
 Text.LblSerial	Interface serie
 Text.SortNone	Ningunha
 Text.SortX	X primeiro

@@ -8,6 +8,7 @@ pub mod dryrun;
 pub use eh3d_bungard_formats::config;
 pub mod i18n;
 pub mod job;
+pub mod progress;
 pub use eh3d_bungard_formats::ncd;
 /// The machine protocol library, re-exported under its old path.
 pub use eh3d_drillpro_protocol as protocol;

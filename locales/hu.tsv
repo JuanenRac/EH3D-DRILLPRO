@@ -23,6 +23,7 @@ Text.LblTravel	Úthossz (mm)
 Text.LblSorting	Rendezés
 Text.LblProgress	Haladás
 Text.LblTime	Szimulált idő (s)
+Text.LblLeft	Hátralévő idő
 Text.LblSerial	Soros interfész
 Text.SortNone	Nincs
 Text.SortX	Előbb X

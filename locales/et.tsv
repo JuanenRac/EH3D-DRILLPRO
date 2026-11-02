@@ -23,6 +23,7 @@ Text.LblTravel	Käik (mm)
 Text.LblSorting	Sortimine
 Text.LblProgress	Edenemine
 Text.LblTime	Simuleeritud aeg (s)
+Text.LblLeft	Aega jäänud
 Text.LblSerial	Jadaliides
 Text.SortNone	Puudub
 Text.SortX	Esmalt X

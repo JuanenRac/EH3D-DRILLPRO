@@ -23,6 +23,7 @@ Text.LblTravel	Przejazd (mm)
 Text.LblSorting	Sortowanie
 Text.LblProgress	Postęp
 Text.LblTime	Czas symulacji (s)
+Text.LblLeft	Pozostały czas
 Text.LblSerial	Interfejs szeregowy
 Text.SortNone	Brak
 Text.SortX	Najpierw X

@@ -23,6 +23,7 @@ Text.LblTravel	Verplaats. (mm)
 Text.LblSorting	Sorteren
 Text.LblProgress	Voortgang
 Text.LblTime	Gesimuleerde tijd (s)
+Text.LblLeft	Resterende tijd
 Text.LblSerial	Seriële interface
 Text.SortNone	Geen
 Text.SortX	Eerst X

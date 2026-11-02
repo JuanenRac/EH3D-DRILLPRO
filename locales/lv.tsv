@@ -23,6 +23,7 @@ Text.LblTravel	Gājiens (mm)
 Text.LblSorting	Kārtošana
 Text.LblProgress	Progress
 Text.LblTime	Simulētais laiks (s)
+Text.LblLeft	Atlikušais laiks
 Text.LblSerial	Seriālā saskarne
 Text.SortNone	Nav
 Text.SortX	Vispirms X

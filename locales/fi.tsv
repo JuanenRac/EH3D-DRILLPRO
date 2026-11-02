@@ -23,6 +23,7 @@ Text.LblTravel	Liike (mm)
 Text.LblSorting	Lajittelu
 Text.LblProgress	Eteneminen
 Text.LblTime	Simuloitu aika (s)
+Text.LblLeft	Aikaa jäljellä
 Text.LblSerial	Sarjaliitäntä
 Text.SortNone	Ei mitään
 Text.SortX	X ensin

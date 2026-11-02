@@ -23,6 +23,7 @@ Text.LblTravel	Διαδρομή (mm)
 Text.LblSorting	Ταξινόμηση
 Text.LblProgress	Πρόοδος
 Text.LblTime	Προσομ. χρόνος (s)
+Text.LblLeft	Χρόνος που απομένει
 Text.LblSerial	Σειριακή διεπαφή
 Text.SortNone	Καμία
 Text.SortX	Πρώτα X

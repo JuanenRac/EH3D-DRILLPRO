@@ -23,6 +23,7 @@ Text.LblTravel	Kelias (mm)
 Text.LblSorting	Rūšiavimas
 Text.LblProgress	Eiga
 Text.LblTime	Imituotas laikas (s)
+Text.LblLeft	Liko laiko
 Text.LblSerial	Nuosekli sąsaja
 Text.SortNone	Nėra
 Text.SortX	Pirma X

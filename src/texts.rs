@@ -30,6 +30,7 @@ translations! { Text, tr, ALL_TEXTS;
     LblSorting => ["Sorting", "Orden", "Ordine", "Sortierung", "Tri", "Ordem", "排序", "並べ替え"],
     LblProgress => ["Progress", "Progreso", "Avanzamento", "Fortschritt", "Progression", "Progresso", "进度", "進捗"],
     LblTime => ["Simulated time (s)", "Tiempo simulado (s)", "Tempo simulato (s)", "Simulierte Zeit (s)", "Temps simulé (s)", "Tempo simulado (s)", "模拟时间 (秒)", "シミュレーション時間 (秒)"],
+    LblLeft => ["Time left", "Tiempo restante", "Tempo rimasto", "Verbleibende Zeit", "Temps restant", "Tempo restante", "剩余时间", "残り時間"],
     LblSerial => ["Serial interface", "Interfaz serie", "Interfaccia seriale", "Serielle Schnittstelle", "Interface série", "Interface série", "串口", "シリアル"],
 
     SortNone => ["None", "Ninguno", "Nessuno", "Keine", "Aucun", "Nenhum", "无", "なし"],

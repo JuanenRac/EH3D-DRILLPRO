@@ -23,6 +23,7 @@ Text.LblTravel	Ibilbidea (mm)
 Text.LblSorting	Ordena
 Text.LblProgress	Aurrerapena
 Text.LblTime	Simulatutako denbora (s)
+Text.LblLeft	Geratzen den denbora
 Text.LblSerial	Serie interfazea
 Text.SortNone	Bat ere ez
 Text.SortX	X lehenengo

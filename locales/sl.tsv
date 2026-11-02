@@ -23,6 +23,7 @@ Text.LblTravel	Pot (mm)
 Text.LblSorting	Razvrščanje
 Text.LblProgress	Napredek
 Text.LblTime	Simulirani čas (s)
+Text.LblLeft	Preostali čas
 Text.LblSerial	Serijski vmesnik
 Text.SortNone	Brez
 Text.SortX	Najprej X

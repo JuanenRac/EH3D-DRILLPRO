@@ -23,6 +23,7 @@ Text.LblTravel	Cursă (mm)
 Text.LblSorting	Sortare
 Text.LblProgress	Progres
 Text.LblTime	Timp simulat (s)
+Text.LblLeft	Timp rămas
 Text.LblSerial	Interfață serială
 Text.SortNone	Fără
 Text.SortX	Întâi X

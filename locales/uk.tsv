@@ -23,6 +23,7 @@ Text.LblTravel	Хід (mm)
 Text.LblSorting	Сортування
 Text.LblProgress	Прогрес
 Text.LblTime	Модельований час (s)
+Text.LblLeft	Залишилось часу
 Text.LblSerial	Послідовний інтерфейс
 Text.SortNone	Немає
 Text.SortX	Спершу X
