@@ -6,4 +6,5 @@ if [ -z "${PRETTY_RUN:-}" ] && [ -f "$(dirname "$0")/tools/pretty_run.py" ] && c
 fi
 # PRETTY_RUN_END
 cd "$(dirname "$0")" || exit 1
-cargo test
+# the workspace: the program and the protocol crate
+cargo test --workspace
