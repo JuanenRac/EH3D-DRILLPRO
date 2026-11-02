@@ -29,9 +29,18 @@ fn a_folder_without_a_machine_file_has_the_settings_of_the_one_that_comes_with_t
 fn the_settings_changed_in_such_a_folder_are_written_and_read_back() {
     let dir = empty_dir("savedcf");
     let mut app = App::new(Lang::En, &dir);
-    // the lines of the bar are only written when the tool changer is on, as the window of the bar turns it on with its first change
-    app.settings_mut().unwrap().auto_change = true;
-    app.settings_mut().unwrap().rack.clearance_mm = 9.0;
+    // the lines of the bar are written with its places, once the tool changer is on: the window of the bar sets all of them with its first change
+    let settings = app.settings_mut().unwrap();
+    settings.auto_change = true;
+    settings.atc = (0..3)
+        .map(|i| eh3d_bungard_formats::config::AtcSlot {
+            index: i,
+            x_mm: 540.0,
+            y_mm: 20.0 + 20.0 * f64::from(i),
+            z_mm: 37.4,
+        })
+        .collect();
+    settings.rack.clearance_mm = 9.0;
     app.settings_changed();
     app.save_config().expect("the machine file is written");
     assert!(dir.join("DRILLPRO.DCF").exists());
