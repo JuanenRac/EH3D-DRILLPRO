@@ -29,6 +29,8 @@ fn a_folder_without_a_machine_file_has_the_settings_of_the_one_that_comes_with_t
 fn the_settings_changed_in_such_a_folder_are_written_and_read_back() {
     let dir = empty_dir("savedcf");
     let mut app = App::new(Lang::En, &dir);
+    // the lines of the bar are only written when the tool changer is on, as the window of the bar turns it on with its first change
+    app.settings_mut().unwrap().auto_change = true;
     app.settings_mut().unwrap().rack.clearance_mm = 9.0;
     app.settings_changed();
     app.save_config().expect("the machine file is written");
