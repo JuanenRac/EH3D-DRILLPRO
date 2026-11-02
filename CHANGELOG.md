@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A folder with no machine file starts from the one that comes with the program,** so the settings (the bar of the tool changer among them) can be changed and saved there; before, every change was silently lost until a `DRILLPRO.DCF` was put in the folder. With tests.
 - **The plan says where each hole ends:** `plan_drill_job_marked` gives the item that ends every hole beside the items, and `JobBuilder::mark_done` and `finish_marked` do the same for jobs that are not holes. The holes done now come from those marks, not from guessing them out of the shape of the steps.
 - **Progress by time, and the time left** (`eh3d_drillpro::progress`): the share of the job done is the time of the items already done over the time of the whole plan, so a reference run no longer counts as much as one hole; the window of the run shows the percentage, a bar that follows it and the time left.
 - **The errors of the link are told in words:** `ConnectError` and `HomingError` have a readable message, and the failures of a run say what was being done (connecting, the reference run, the move) instead of showing the name of the error type.

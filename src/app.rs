@@ -148,7 +148,15 @@ impl App {
                 .map(|b| b.iter().map(|&c| c as char).collect::<String>())
         };
         let tool_text = read("DRILLPRO.DTD");
-        let config_text = read("DRILLPRO.DCF");
+        // a folder with no machine file starts from the one that comes with the program, so the settings (the tool changer bar among them) can be changed and saved
+        let config_text = read("DRILLPRO.DCF").or_else(|| {
+            Some(
+                include_bytes!("../config/DRILLPRO.DCF")
+                    .iter()
+                    .map(|&c| c as char)
+                    .collect::<String>(),
+            )
+        });
         let config = config_text.as_deref().and_then(config::parse);
         // The machine calibration (correction coefficients) comes from the configuration file.
         let settings = config.as_ref().and_then(|c| c.settings());
