@@ -149,6 +149,8 @@ Run it with `run.bat` (Windows) or `./run.sh` (Linux and macOS); both build the 
 
 The suite has 252 tests (`cargo test --workspace`). They check the file formats (the drill file, the tool table and the machine file, and writing them back), the job planning, the protocol on the simulator (bytes, motion, the reference run, the latch bits, the link to the node and the safety gate that refuses to move until armed), the classic screens cell by cell and the screens in all eight languages. The CI also runs `cargo fmt --check` and `cargo clippy` with warnings as errors, and `python -I tools/ci_validate.py` checks the manifest, the versions, the changelog and the eight READMEs.
 
+Self-test for the day the program meets the machine: `python tools/machine_selftest.py` reads the machine file (`DRILLPRO.DCF`) and the tool table and checks them against the model (speeds against the serial line, acceleration, spindle start time, tool speeds, depth); `--measure` guides a stopwatch measurement and writes a proposed machine file as a new file, never over yours. It sends nothing to the machine. Its tests run in the CI (`python -I -m unittest discover -s tools -p "test_*.py"`). The steps to do by hand are in [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md).
+
 ## 🏗️ Build & Release
 
 The version lives in `Cargo.toml` and in `eh3d.project.json`, and each version has its entry in [CHANGELOG.md](CHANGELOG.md). Releases are published on GitHub.

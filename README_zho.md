@@ -149,6 +149,8 @@ python -I tools/ci_validate.py
 
 测试套件共有 252 个测试（`cargo test --workspace`）。它们检查文件格式（钻孔文件、刀具表和机器文件，以及写回）、作业规划、模拟器上的协议（字节、运动、回参考点、锁存位、与节点的连接，以及未启用前拒绝运动的安全门）、逐个字符单元核对的经典界面，以及八种语言的界面。CI 还会运行 `cargo fmt --check` 和把警告当作错误的 `cargo clippy`，并由 `python -I tools/ci_validate.py` 检查清单、版本、变更日志和八个 README。
 
+程序接上机器当天的自检：`python tools/machine_selftest.py` 读取机器文件（`DRILLPRO.DCF`）和刀具表，并按模型检查（速度与串行线路的关系、加速度、主轴启动时间、刀具转速、深度）；`--measure` 引导用秒表测量，并把建议的机器文件写成新文件，绝不覆盖你的文件。它不会向机器发送任何东西。其测试在 CI 中运行（`python -I -m unittest discover -s tools -p "test_*.py"`）。手动步骤见 [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md)。
+
 ## 🏗️ 构建与发布
 
 版本号位于 `Cargo.toml` 和 `eh3d.project.json` 中，每个版本在 [CHANGELOG.md](CHANGELOG.md) 中都有条目。发布版本在 GitHub 上公开。

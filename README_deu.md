@@ -149,6 +149,8 @@ Starten Sie es mit `run.bat` (Windows) oder `./run.sh` (Linux und macOS); beide 
 
 Die Suite hat 252 Tests (`cargo test --workspace`). Sie prüfen die Dateiformate (die Bohrdatei, die Werkzeugtabelle und die Maschinendatei samt Zurückschreiben), die Auftragsplanung, das Protokoll im Simulator (Bytes, Bewegung, die Referenzfahrt, die Latch-Bits, die Verbindung zum Knoten und das Sicherheitstor, das ohne Scharfschalten nichts bewegt), die klassischen Bildschirme Zelle für Zelle und die Bildschirme in allen acht Sprachen. Die CI führt außerdem `cargo fmt --check` und `cargo clippy` mit Warnungen als Fehlern aus, und `python -I tools/ci_validate.py` prüft Manifest, Versionen, Changelog und die acht READMEs.
 
+Selbsttest für den Tag, an dem das Programm auf die Maschine trifft: `python tools/machine_selftest.py` liest die Maschinendatei (`DRILLPRO.DCF`) und die Werkzeugtabelle und prüft sie gegen das Modell (Geschwindigkeiten gegen die serielle Leitung, Beschleunigung, Anlaufzeit der Spindel, Werkzeugdrehzahlen, Tiefe); `--measure` führt durch eine Messung mit der Stoppuhr und schreibt einen Vorschlag für die Maschinendatei als neue Datei, nie über deine. Er sendet nichts an die Maschine. Seine Tests laufen in der CI (`python -I -m unittest discover -s tools -p "test_*.py"`). Die manuellen Schritte stehen in [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md).
+
 ## 🏗️ Build und Veröffentlichung
 
 Die Version steht in `Cargo.toml` und in `eh3d.project.json`, und jede Version hat ihren Eintrag in [CHANGELOG.md](CHANGELOG.md). Releases werden auf GitHub veröffentlicht.

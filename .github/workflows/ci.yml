@@ -20,6 +20,8 @@ jobs:
           python-version: "3.12"
       - name: Manifest, documentation and language parity
         run: python -I tools/ci_validate.py
+      - name: Tests of the tools
+        run: python -I -m unittest discover -s tools -p "test_*.py"
 
       - name: Pictures of the README
         run: |

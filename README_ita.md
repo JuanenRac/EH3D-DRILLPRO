@@ -149,6 +149,8 @@ Avvialo con `run.bat` (Windows) o `./run.sh` (Linux e macOS); entrambi compilano
 
 La suite ha 252 test (`cargo test --workspace`). Verificano i formati di file (il file di foratura, la tabella degli utensili e il file della macchina, e la loro riscrittura), la pianificazione del lavoro, il protocollo sul simulatore (byte, movimento, la corsa di riferimento, i bit di latch, il collegamento con il nodo e il blocco di sicurezza che si rifiuta di muovere finché non è armato), le schermate classiche cella per cella e le schermate in tutte e otto le lingue. La CI esegue anche `cargo fmt --check` e `cargo clippy` con gli avvisi come errori, e `python -I tools/ci_validate.py` controlla il manifesto, le versioni, il changelog e gli otto README.
 
+Autotest per il giorno in cui il programma incontra la macchina: `python tools/machine_selftest.py` legge il file della macchina (`DRILLPRO.DCF`) e la tabella degli utensili e li controlla con il modello (velocità rispetto alla linea seriale, accelerazione, tempo di avvio del mandrino, velocità degli utensili, profondità); `--measure` guida una misura con il cronometro e scrive una proposta di file macchina come file nuovo, mai sopra il tuo. Non invia nulla alla macchina. I suoi test girano nella CI (`python -I -m unittest discover -s tools -p "test_*.py"`). I passi manuali sono in [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md).
+
 ## 🏗️ Compilazione e rilascio
 
 La versione sta in `Cargo.toml` e in `eh3d.project.json`, e ogni versione ha la sua voce in [CHANGELOG.md](CHANGELOG.md). Le release sono pubblicate su GitHub.

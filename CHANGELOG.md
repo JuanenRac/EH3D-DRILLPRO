@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A machine self-test:** `tools/machine_selftest.py` reads `DRILLPRO.DCF` and the tool table and checks them against the model of the program (speeds against the serial line, acceleration against the ramp, spindle start time, tool speeds against the spindle, depth, calibration factors) and writes `machine_selftest_drillpro_<time>.txt`. `--measure` guides a stopwatch measurement of the acceleration and the spindle start time and writes a proposed machine file as a new file, never over the machine file. It sends nothing to the machine. Its tests run in the CI.
+- **`docs/HARDWARE_CHECKLIST.md`:** the steps to do by hand on the machine, with what must happen and where to write the result.
 - **A failure inside the work is told, and the machine is stopped:** when the thread that runs a job (or the Offset window) panics, the run no longer stays at "running" for ever with nothing said: the machine is stopped first and the state becomes failed with "internal error" and the words of the panic.
 - **A record of crashes:** a panic is also appended to `eh3d-crash.log` in the configuration folder (`%APPDATA%\EH3D`, `~/.config/eh3d`) with the program, its version, the words and the place, because a window program on Windows has no console to show it.
 - **The CI builds and tests the graphical interface too** (`--features gui`, with the libraries of the window system on Linux), and checks the pictures of the README; the architecture picture pointed at files that no longer exist and now points at the ones that do.

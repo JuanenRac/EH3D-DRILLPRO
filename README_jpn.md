@@ -149,6 +149,8 @@ python -I tools/ci_validate.py
 
 テストスイートは 252 件のテストから成ります（`cargo test --workspace`）。ファイル形式（ドリルファイル、ツールテーブル、マシンファイルと、その書き戻し）、作業計画、シミュレーター上のプロトコル（バイト、動作、原点復帰、ラッチビット、ノードとの接続、アームされるまで動かさない安全ゲート）、従来の画面のセル単位の照合、8 言語すべての画面を検証します。CI では `cargo fmt --check` と、警告をエラーとする `cargo clippy` も実行し、`python -I tools/ci_validate.py` がマニフェスト、バージョン、変更履歴、8 つの README を検査します。
 
+プログラムが実機につながる日のためのセルフテスト：`python tools/machine_selftest.py` が機械ファイル（`DRILLPRO.DCF`）と工具表を読み、モデルに照らして検査します（シリアル回線に対する速度、加速度、スピンドルの起動時間、工具の回転数、深さ）。`--measure` はストップウォッチによる測定を案内し、提案する機械ファイルを新しいファイルとして書き出します（既存のファイルは上書きしません）。機械には何も送りません。テストは CI で実行されます（`python -I -m unittest discover -s tools -p "test_*.py"`）。手作業の手順は [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md) にあります。
+
 ## 🏗️ ビルドとリリース
 
 バージョンは `Cargo.toml` と `eh3d.project.json` にあり、各バージョンには [CHANGELOG.md](CHANGELOG.md) に項目があります。リリースは GitHub で公開されます。
