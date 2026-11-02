@@ -13,7 +13,7 @@ EH3D.000000A  * VERSION label of this file. Only a label; leave it.
 02.50         * OFFSET Y in mm (same as X). From -325 to 325.
 495.00        * CLIPPING X in mm: the usable length of your table in X. Nothing farther than this is ever drilled. Set it to your real table (CCD 495, CCD/2 325).
 325.00        * CLIPPING Y in mm: the usable width of your table in Y (CCD 325, CCD/2 270).
-1.00          * BOARD THICKNESS in mm. The drill goes through the board plus the extra stroke of the tool. 1.50 is the usual 1.6 mm board.
+1.00          * BOARD THICKNESS in mm. The drill goes through the board plus the extra stroke of the tool. The value 1.00 is the one of the original file; write 1.60 for a usual 1.6 mm board.
 12.00         * BASE SHEET THICKNESS in mm: the sacrificial plate under the board. The drill goes into it by the extra stroke only, never deeper.
               * MACHINE CONSTANTS
 4000          * XY SPEED, FASTEST (mm/min) when moving between holes. If the motors lose steps or stall, lower it (try 2500). Too high = missed holes.
