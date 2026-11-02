@@ -181,14 +181,16 @@ impl RealRun {
                 machine.set_pacing(config.pacing());
                 machine.set_tuning(config.tuning);
                 machine.set_home_signal(config.home_signal);
-                machine.connect().map_err(|e| format!("{e:?}"))?;
-                machine.arm(Verified::all()).map_err(|e| format!("{e:?}"))?;
+                machine.connect().map_err(|e| format!("connecting: {e}"))?;
+                machine
+                    .arm(Verified::all())
+                    .map_err(|e| format!("arming the machine: {e}"))?;
                 worker.set(RunState::Running);
                 let ran = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                     run_items(&mut machine, &items, &mut WorkerHooks(worker.clone()))
                 }));
                 match ran {
-                    Ok(r) => r.map_err(|e| format!("{e:?}")),
+                    Ok(r) => r.map_err(|e| format!("running the job: {e}")),
                     Err(p) => {
                         // the machine is stopped before the run is said to have failed
                         machine.emergency_stop();
@@ -527,11 +529,15 @@ impl TeachSession {
                 machine.set_pacing(config.pacing());
                 machine.set_tuning(config.tuning);
                 machine.set_home_signal(config.home_signal);
-                machine.connect().map_err(|e| format!("{e:?}"))?;
-                machine.arm(Verified::all()).map_err(|e| format!("{e:?}"))?;
+                machine.connect().map_err(|e| format!("connecting: {e}"))?;
+                machine
+                    .arm(Verified::all())
+                    .map_err(|e| format!("arming the machine: {e}"))?;
                 let start = JobBuilder::new(&jm).into_items();
                 let mut hooks = NoDialogs(cn.clone());
-                match run_items(&mut machine, &start, &mut hooks).map_err(|e| format!("{e:?}"))? {
+                match run_items(&mut machine, &start, &mut hooks)
+                    .map_err(|e| format!("reference run: {e}"))?
+                {
                     Outcome::Completed => {}
                     Outcome::Cancelled => return Ok(()),
                 }
@@ -554,7 +560,9 @@ impl TeachSession {
                                 }
                                 z = new_z;
                             }
-                            machine.run(&steps).map_err(|e| format!("{e:?}"))?;
+                            machine
+                                .run(&steps)
+                                .map_err(|e| format!("moving the head: {e}"))?;
                             pos = to;
                         }
                         Ok(TeachCmd::End) | Err(_) => break,
@@ -567,10 +575,11 @@ impl TeachSession {
                 if z > 0.0 {
                     machine
                         .run(&z_move(z, false, g.z_max_feed(), &g))
-                        .map_err(|e| format!("{e:?}"))?;
+                        .map_err(|e| format!("lifting the head: {e}"))?;
                 }
                 let end = JobBuilder::new(&jm).finish();
-                run_items(&mut machine, &end, &mut hooks).map_err(|e| format!("{e:?}"))?;
+                run_items(&mut machine, &end, &mut hooks)
+                    .map_err(|e| format!("returning to the origin: {e}"))?;
                 Ok(())
             });
             set(match result {

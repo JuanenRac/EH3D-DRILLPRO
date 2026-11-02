@@ -180,6 +180,24 @@ pub enum ConnectError {
     Io(String),
 }
 
+impl std::fmt::Display for ConnectError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ConnectError::DcdStuckHigh => write!(
+                f,
+                "the control unit signal is already up with the line down: nothing is connected, or it is something else"
+            ),
+            ConnectError::NoAnswer => write!(
+                f,
+                "the control unit did not answer the handshake: check that it is on and that the cable is the right one"
+            ),
+            ConnectError::Io(e) => write!(f, "the link failed: {e}"),
+        }
+    }
+}
+
+impl std::error::Error for ConnectError {}
+
 impl From<io::Error> for ConnectError {
     fn from(e: io::Error) -> Self {
         ConnectError::Io(e.to_string())

@@ -67,6 +67,21 @@ pub enum HomingError {
     Machine(MachineError),
 }
 
+impl std::fmt::Display for HomingError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            HomingError::NoLimitSignal => write!(
+                f,
+                "the reference search ended without the limit signal (an axis never reached its switch)"
+            ),
+            HomingError::Fault => write!(f, "the machine reported a fault during the move"),
+            HomingError::Machine(e) => write!(f, "{e}"),
+        }
+    }
+}
+
+impl std::error::Error for HomingError {}
+
 impl From<MachineError> for HomingError {
     fn from(e: MachineError) -> Self {
         HomingError::Machine(e)

@@ -57,7 +57,7 @@ impl std::fmt::Display for MachineError {
             MachineError::NotArmed => {
                 write!(f, "motion refused: bit map and geometry are not verified")
             }
-            MachineError::Connect(e) => write!(f, "connection failed: {e:?}"),
+            MachineError::Connect(e) => write!(f, "connection failed: {e}"),
             MachineError::Io(e) => write!(f, "I/O error: {e}"),
             MachineError::HomeNotFound => {
                 write!(f, "the reference search ended without the home signal")
