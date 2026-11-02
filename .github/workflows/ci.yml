@@ -46,3 +46,10 @@ jobs:
         run: cargo clippy --workspace --all-targets --features console -- -D warnings
       - name: Tests
         run: cargo test --workspace --all-targets --features console
+      - name: Libraries of the window system (the graphical interface)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev
+      - name: Lints of the graphical interface
+        run: cargo clippy --workspace --all-targets --features gui -- -D warnings
+      - name: Tests of the graphical interface
+        run: cargo test --workspace --all-targets --features gui

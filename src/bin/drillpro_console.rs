@@ -11,6 +11,7 @@ use eh3d_drillpro::console;
 const SETTINGS: &str = "eh3d-drillpro.lang";
 
 fn main() -> std::io::Result<()> {
+    eh3d_drillpro::crash::install("drillpro-console", env!("CARGO_PKG_VERSION"));
     let o = cli::parse(SETTINGS, "DRILLPRO.DCF");
     if o.modern {
         let mut app = App::new(o.lang, &o.data);

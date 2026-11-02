@@ -15,6 +15,7 @@ use eh3d_drillpro::gui;
 const SETTINGS: &str = "eh3d-drillpro.lang";
 
 fn main() -> eframe::Result {
+    eh3d_drillpro::crash::install("drillpro", env!("CARGO_PKG_VERSION"));
     attach_console();
     let o = cli::parse(SETTINGS, "DRILLPRO.DCF");
     if o.machines {

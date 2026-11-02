@@ -3,6 +3,7 @@
 pub mod app;
 pub mod classic;
 pub mod cli;
+pub mod crash;
 pub use eh3d_bungard_formats::config;
 pub mod i18n;
 pub mod job;

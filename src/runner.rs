@@ -153,6 +153,12 @@ pub struct RealRun {
     on_server: bool,
 }
 
+/// Runs `f` and turns a panic into an error that says so, so the state of a run never stays `Running` when the thread of the work dies.
+pub fn caught<T>(f: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
+    std::panic::catch_unwind(std::panic::AssertUnwindSafe(f))
+        .unwrap_or_else(|p| Err(format!("internal error: {}", crate::crash::text_of(&*p))))
+}
+
 impl RealRun {
     /// Starts the job on the machine of `config`. Returns at once; follow it with [`RealRun::state`].
     pub fn start(config: ConnectionConfig, items: Vec<Item>) -> Self {
@@ -167,7 +173,7 @@ impl RealRun {
         });
         let worker = shared.clone();
         let handle = thread::spawn(move || {
-            let result = (|| -> Result<Outcome, String> {
+            let result = caught(|| -> Result<Outcome, String> {
                 let link = config
                     .open()
                     .map_err(|e| format!("{}: {e}", config.describe()))?;
@@ -178,9 +184,18 @@ impl RealRun {
                 machine.connect().map_err(|e| format!("{e:?}"))?;
                 machine.arm(Verified::all()).map_err(|e| format!("{e:?}"))?;
                 worker.set(RunState::Running);
-                run_items(&mut machine, &items, &mut WorkerHooks(worker.clone()))
-                    .map_err(|e| format!("{e:?}"))
-            })();
+                let ran = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    run_items(&mut machine, &items, &mut WorkerHooks(worker.clone()))
+                }));
+                match ran {
+                    Ok(r) => r.map_err(|e| format!("{e:?}")),
+                    Err(p) => {
+                        // the machine is stopped before the run is said to have failed
+                        machine.emergency_stop();
+                        Err(format!("internal error: {}", crate::crash::text_of(&*p)))
+                    }
+                }
+            });
             worker.set(match result {
                 Ok(Outcome::Completed) => RunState::Done,
                 Ok(Outcome::Cancelled) => RunState::Cancelled,
@@ -215,7 +230,8 @@ impl RealRun {
         });
         let worker = shared.clone();
         let handle = thread::spawn(move || {
-            let result = follow_on_server(&config, &request, &hole_ends, items_total, &worker);
+            let result =
+                caught(|| follow_on_server(&config, &request, &hole_ends, items_total, &worker));
             if let Err(why) = result {
                 worker.set(RunState::Failed(why));
             }
@@ -498,7 +514,7 @@ impl TeachSession {
                     *g = s;
                 }
             };
-            let result = (|| -> Result<(), String> {
+            let result = caught(|| -> Result<(), String> {
                 if config.kind == crate::protocol::connection::Kind::Server {
                     return Err(
                         "the Offset window does not move a machine through the server".into(),
@@ -556,7 +572,7 @@ impl TeachSession {
                 let end = JobBuilder::new(&jm).finish();
                 run_items(&mut machine, &end, &mut hooks).map_err(|e| format!("{e:?}"))?;
                 Ok(())
-            })();
+            });
             set(match result {
                 Ok(()) => TeachState::Finished,
                 Err(e) => TeachState::Failed(e),
