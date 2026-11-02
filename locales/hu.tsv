@@ -254,13 +254,5 @@ Text.ClipUndo	Visszavonás
 Text.FullScreen	Teljes képernyő
 Text.RackOutside	A sor egy pontja a gép hatókörén kívül esik
 Text.SumTitle	Ellenőrzés indítás előtt
-Text.SumTime	Becsült idő
-Text.SumReach	A tengelyek elérése (mm)
-Text.WarnTiny	A teljes munka csak {} x {} mm: ellenőrizze a fájl mértékegységét
-Text.WarnBig	A munka ({} x {} mm) nagyobb az asztalnál ({} x {} mm)
-Text.WarnFar	A munka az asztal sarkától {} mm-re kezdődik: ellenőrizze az eltolást és a mértékegységet
-Text.WarnScale	A gépfájl nyújtja a munkát (méretarány {} x {}, nem 1)
-Text.DryOut	A terv a(z) {} tengelyt {} mm-rel a lépéshatárán túlra viszi
-Text.DryOk	Szárazfutás: a pontos terv minden tengely lépéshatárán belül marad
 Text.BtnStartJob	Munka indítása
 Text.BtnCancel	Mégse

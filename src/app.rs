@@ -508,7 +508,7 @@ impl App {
                 job_holes.len(),
                 used.len(),
             );
-            if let Some(why) = summary.refusal(&tuning, self.lang) {
+            if let Some(why) = summary.refusal(&crate::summary::limits(&tuning), self.lang) {
                 self.summary_ok = false;
                 self.error = Some(why);
                 return;

@@ -477,3 +477,10 @@ impl Lang {
 pub fn str_width(s: &str) -> usize {
     s.chars().filter(|&c| c != '~').map(cell_width).sum()
 }
+
+/// The words of the summary live in the shared crates of the suite, which name the languages with their own type: the same language, by its code.
+impl From<Lang> for eh3d_view::texts::Lang {
+    fn from(l: Lang) -> Self {
+        eh3d_view::texts::Lang::from_code(l.code()).unwrap_or(eh3d_view::texts::Lang::En)
+    }
+}

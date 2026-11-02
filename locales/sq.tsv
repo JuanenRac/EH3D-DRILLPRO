@@ -254,13 +254,5 @@ Text.ClipUndo	Zhbëj
 Text.FullScreen	Ekran i plotë
 Text.RackOutside	Një pikë e shiritit është jashtë shtrirjes së makinës
 Text.SumTitle	Kontrolloni para nisjes
-Text.SumTime	Koha e vlerësuar
-Text.SumReach	Shtrirja e akseve (mm)
-Text.WarnTiny	I gjithë puna është vetëm {} x {} mm: kontrolloni njësinë e skedarit
-Text.WarnBig	Puna ({} x {} mm) është më e madhe se tavolina ({} x {} mm)
-Text.WarnFar	Puna fillon {} mm nga këndi i tavolinës: kontrolloni zhvendosjen dhe njësinë
-Text.WarnScale	Skedari i makinës e shtrin punën (shkalla {} x {}, jo 1)
-Text.DryOut	Plani e çon boshtin {} {} mm përtej udhëtimit të tij
-Text.DryOk	Ecje e thatë: plani i saktë mbetet brenda udhëtimit të çdo boshti
 Text.BtnStartJob	Nis punën
 Text.BtnCancel	Anulo

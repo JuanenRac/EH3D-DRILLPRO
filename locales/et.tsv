@@ -254,13 +254,5 @@ Text.ClipUndo	Võta tagasi
 Text.FullScreen	Täisekraan
 Text.RackOutside	Riba üks punkt jääb masina ulatusest välja
 Text.SumTitle	Kontrolli enne algust
-Text.SumTime	Hinnanguline aeg
-Text.SumReach	Telgede ulatus (mm)
-Text.WarnTiny	Kogu töö on vaid {} x {} mm: kontrolli faili ühikut
-Text.WarnBig	Töö ({} x {} mm) on suurem kui laud ({} x {} mm)
-Text.WarnFar	Töö algab {} mm laua nurgast: kontrolli nihet ja ühikut
-Text.WarnScale	Masinafail venitab tööd (mõõtkava {} x {}, mitte 1)
-Text.DryOut	Plaan viib telje {} {} mm üle tema käigu
-Text.DryOk	Kuivjooks: täpne plaan jääb iga telje käigu piiresse
 Text.BtnStartJob	Alusta tööd
 Text.BtnCancel	Tühista

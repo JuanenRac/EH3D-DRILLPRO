@@ -254,13 +254,5 @@ Text.ClipUndo	Cofnij
 Text.FullScreen	Pełny ekran
 Text.RackOutside	Punkt listwy jest poza zasięgiem maszyny
 Text.SumTitle	Sprawdź przed startem
-Text.SumTime	Szacowany czas
-Text.SumReach	Zasięg osi (mm)
-Text.WarnTiny	Cała praca ma tylko {} x {} mm: sprawdź jednostkę pliku
-Text.WarnBig	Praca ({} x {} mm) jest większa niż stół ({} x {} mm)
-Text.WarnFar	Praca zaczyna się {} mm od rogu stołu: sprawdź przesunięcie i jednostkę
-Text.WarnScale	Plik maszyny rozciąga pracę (skala {} x {}, nie 1)
-Text.DryOut	Plan wyprowadza oś {} o {} mm poza jej skok
-Text.DryOk	Bieg na sucho: dokładny plan mieści się w skoku każdej osi
 Text.BtnStartJob	Uruchom zadanie
 Text.BtnCancel	Anuluj

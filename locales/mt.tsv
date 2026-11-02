@@ -254,13 +254,5 @@ Text.ClipUndo	Irtira
 Text.FullScreen	Skrin sħiħ
 Text.RackOutside	Punt tal-bar huwa barra mill-firxa tal-magna
 Text.SumTitle	Iċċekkja qabel tibda
-Text.SumTime	Ħin stmat
-Text.SumReach	Firxa tal-assi (mm)
-Text.WarnTiny	Ix-xogħol kollu huwa biss {} x {} mm: iċċekkja l-unità tal-fajl
-Text.WarnBig	Ix-xogħol ({} x {} mm) huwa akbar mill-mejda ({} x {} mm)
-Text.WarnFar	Ix-xogħol jibda {} mm mill-kantuniera tal-mejda: iċċekkja l-offset u l-unità
-Text.WarnScale	Il-fajl tal-magna jifrex ix-xogħol (skala {} x {}, mhux 1)
-Text.DryOut	Il-pjan jieħu l-assi {} {} mm lil hinn mill-korsa tiegħu
-Text.DryOk	Mixja niexfa: il-pjan eżatt jibqa' fil-korsa ta' kull assi
 Text.BtnStartJob	Ibda x-xogħol
 Text.BtnCancel	Ikkanċella

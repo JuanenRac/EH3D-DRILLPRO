@@ -254,13 +254,5 @@ Text.ClipUndo	Desfacer
 Text.FullScreen	Pantalla completa
 Text.RackOutside	Un punto da barra está fóra do alcance da máquina
 Text.SumTitle	Revisa antes de comezar
-Text.SumTime	Tempo estimado
-Text.SumReach	Alcance dos eixes (mm)
-Text.WarnTiny	Todo o traballo mide só {} x {} mm: revisa a unidade do ficheiro
-Text.WarnBig	O traballo ({} x {} mm) é maior que a mesa ({} x {} mm)
-Text.WarnFar	O traballo comeza a {} mm da esquina da mesa: revisa o desprazamento e a unidade
-Text.WarnScale	O ficheiro da máquina estira o traballo (escala {} x {}, non 1)
-Text.DryOut	O plan leva o eixe {} {} mm máis aló do seu percorrido
-Text.DryOk	Proba en seco: o plan exacto queda dentro do percorrido de cada eixe
 Text.BtnStartJob	Iniciar o traballo
 Text.BtnCancel	Cancelar

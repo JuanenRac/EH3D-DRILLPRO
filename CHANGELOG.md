@@ -3,6 +3,7 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+- **The dry run and the summary before a start live in EH3D-COMMON (`eh3d-summary`):** `dryrun` and `summary` keep their paths and their functions as before, but the measure, the sanity checks, the summary and the words of them (now in `eh3d-view`, in the 37 languages) are shared with the other programs; `Summary::refusal` takes the `Limits` that `summary::limits(&tuning)` gives.
 
 - **A folder with no machine file starts from the one that comes with the program,** so the settings (the bar of the tool changer among them) can be changed and saved there; before, every change was silently lost until a `DRILLPRO.DCF` was put in the folder. With tests.
 - **The plan says where each hole ends:** `plan_drill_job_marked` gives the item that ends every hole beside the items, and `JobBuilder::mark_done` and `finish_marked` do the same for jobs that are not holes. The holes done now come from those marks, not from guessing them out of the shape of the steps.

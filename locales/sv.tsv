@@ -254,13 +254,5 @@ Text.ClipUndo	Ångra
 Text.FullScreen	Helskärm
 Text.RackOutside	En punkt på listen ligger utanför maskinens räckvidd
 Text.SumTitle	Kontrollera före start
-Text.SumTime	Beräknad tid
-Text.SumReach	Axlarnas räckvidd (mm)
-Text.WarnTiny	Hela arbetet är bara {} x {} mm: kontrollera filens enhet
-Text.WarnBig	Arbetet ({} x {} mm) är större än bordet ({} x {} mm)
-Text.WarnFar	Arbetet börjar {} mm från bordets hörn: kontrollera förskjutning och enhet
-Text.WarnScale	Maskinfilen sträcker arbetet (skala {} x {}, inte 1)
-Text.DryOut	Planen tar axel {} {} mm förbi dess slaglängd
-Text.DryOk	Torrkörning: den exakta planen håller sig inom varje axels slaglängd
 Text.BtnStartJob	Starta jobbet
 Text.BtnCancel	Avbryt

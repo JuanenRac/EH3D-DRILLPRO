@@ -254,13 +254,5 @@ Text.ClipUndo	Cealaigh
 Text.FullScreen	Lánscáileán
 Text.RackOutside	Tá pointe den bharra lasmuigh de réim an innill
 Text.SumTitle	Seiceáil sula dtosaíonn tú
-Text.SumTime	An t-am measta
-Text.SumReach	Raon na n-aiseanna (mm)
-Text.WarnTiny	Níl san obair ar fad ach {} x {} mm: seiceáil aonad an chomhaid
-Text.WarnBig	Tá an obair ({} x {} mm) níos mó ná an tábla ({} x {} mm)
-Text.WarnFar	Tosaíonn an obair {} mm ón gcúinne den tábla: seiceáil an fritháireamh agus an t-aonad
-Text.WarnScale	Síneann comhad an mheaisín an obair (scála {} x {}, ní 1)
-Text.DryOut	Tógann an plean ais {} {} mm thar a haistear
-Text.DryOk	Rith tirim: fanann an plean cruinn laistigh d'aistear gach aise
 Text.BtnStartJob	Tosaigh an obair
 Text.BtnCancel	Cealaigh

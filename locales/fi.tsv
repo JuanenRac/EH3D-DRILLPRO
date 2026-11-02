@@ -254,13 +254,5 @@ Text.ClipUndo	Kumoa
 Text.FullScreen	Koko näyttö
 Text.RackOutside	Palkin yksi piste on koneen ulottumattomissa
 Text.SumTitle	Tarkista ennen aloitusta
-Text.SumTime	Arvioitu aika
-Text.SumReach	Akselien ulottuvuus (mm)
-Text.WarnTiny	Koko työ on vain {} x {} mm: tarkista tiedoston yksikkö
-Text.WarnBig	Työ ({} x {} mm) on pöytää ({} x {} mm) suurempi
-Text.WarnFar	Työ alkaa {} mm päässä pöydän kulmasta: tarkista siirtymä ja yksikkö
-Text.WarnScale	Konetiedosto venyttää työtä (mittakaava {} x {}, ei 1)
-Text.DryOut	Suunnitelma vie akselin {} {} mm sen liikealueen yli
-Text.DryOk	Kuivajo: tarkka suunnitelma pysyy jokaisen akselin liikealueella
 Text.BtnStartJob	Aloita työ
 Text.BtnCancel	Peruuta

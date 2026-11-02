@@ -63,8 +63,4 @@ Text.ClipSelectAll	Selecionar tudo
 Text.ClipUndo	Desfazer
 Text.FullScreen	Tela cheia
 Text.SumTitle	Verifique antes de iniciar
-Text.WarnTiny	O trabalho inteiro mede apenas {} x {} mm: verifique a unidade do arquivo
-Text.WarnScale	O arquivo da máquina estica o trabalho (escala {} x {}, não 1)
-Text.DryOut	O plano leva o eixo {} {} mm além do seu curso
-Text.DryOk	Simulação a seco: o plano exato fica dentro do curso de cada eixo
 Text.BtnStartJob	Iniciar o trabalho

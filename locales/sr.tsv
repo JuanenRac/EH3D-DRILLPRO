@@ -254,13 +254,5 @@ Text.ClipUndo	Поништи
 Text.FullScreen	Цео екран
 Text.RackOutside	Тачка траке је ван домашаја машине
 Text.SumTitle	Проверите пре почетка
-Text.SumTime	Процењено време
-Text.SumReach	Домет оса (mm)
-Text.WarnTiny	Цео посао је само {} x {} mm: проверите јединицу датотеке
-Text.WarnBig	Посао ({} x {} mm) је већи од стола ({} x {} mm)
-Text.WarnFar	Посао почиње {} mm од угла стола: проверите помак и јединицу
-Text.WarnScale	Датотека машине развлачи посао (размера {} x {}, не 1)
-Text.DryOut	План води осу {} {} mm изван њеног хода
-Text.DryOk	Суви ход: тачан план остаје унутар хода сваке осе
 Text.BtnStartJob	Покрени посао
 Text.BtnCancel	Откажи

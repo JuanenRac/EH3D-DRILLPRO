@@ -254,13 +254,5 @@ Text.ClipUndo	Afturkalla
 Text.FullScreen	Allur skjárinn
 Text.RackOutside	Punktur á stikunni er utan seilingar vélarinnar
 Text.SumTitle	Athugaðu áður en byrjað er
-Text.SumTime	Áætlaður tími
-Text.SumReach	Ná ásanna (mm)
-Text.WarnTiny	Allt verkið er aðeins {} x {} mm: athugaðu einingu skrárinnar
-Text.WarnBig	Verkið ({} x {} mm) er stærra en borðið ({} x {} mm)
-Text.WarnFar	Verkið byrjar {} mm frá horni borðsins: athugaðu hliðrunina og eininguna
-Text.WarnScale	Vélarskráin teygir verkið (kvarði {} x {}, ekki 1)
-Text.DryOut	Áætlunin fer með ás {} um {} mm út fyrir ferilinn
-Text.DryOk	Þurrkeyrsla: nákvæm áætlun helst innan ferils hvers áss
 Text.BtnStartJob	Hefja verkið
 Text.BtnCancel	Hætta við

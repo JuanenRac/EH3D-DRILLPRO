@@ -254,13 +254,5 @@ Text.ClipUndo	Angre
 Text.FullScreen	Fullskjerm
 Text.RackOutside	Et punkt på listen ligger utenfor maskinens rekkevidde
 Text.SumTitle	Kontroller før start
-Text.SumTime	Beregnet tid
-Text.SumReach	Aksenes rekkevidde (mm)
-Text.WarnTiny	Hele arbeidet er bare {} x {} mm: kontroller enheten i filen
-Text.WarnBig	Arbeidet ({} x {} mm) er større enn bordet ({} x {} mm)
-Text.WarnFar	Arbeidet starter {} mm fra hjørnet av bordet: kontroller forskyvningen og enheten
-Text.WarnScale	Maskinfilen strekker arbeidet (skala {} x {}, ikke 1)
-Text.DryOut	Planen kjører akse {} {} mm forbi slaglengden
-Text.DryOk	Tørrkjøring: den nøyaktige planen holder seg innenfor slaglengden til hver akse
 Text.BtnStartJob	Start jobben
 Text.BtnCancel	Avbryt
