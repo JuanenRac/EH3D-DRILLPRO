@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.1.2] - A failure inside the work is told and stops the machine, a record of crashes, a self-test for the machine and a CI that builds the interface
+
 - **A machine self-test:** `tools/machine_selftest.py` reads `DRILLPRO.DCF` and the tool table and checks them against the model of the program (speeds against the serial line, acceleration against the ramp, spindle start time, tool speeds against the spindle, depth, calibration factors) and writes `machine_selftest_drillpro_<time>.txt`. `--measure` guides a stopwatch measurement of the acceleration and the spindle start time and writes a proposed machine file as a new file, never over the machine file. It sends nothing to the machine. Its tests run in the CI.
 - **`docs/HARDWARE_CHECKLIST.md`:** the steps to do by hand on the machine, with what must happen and where to write the result.
 - **A failure inside the work is told, and the machine is stopped:** when the thread that runs a job (or the Offset window) panics, the run no longer stays at "running" for ever with nothing said: the machine is stopped first and the state becomes failed with "internal error" and the words of the panic.
