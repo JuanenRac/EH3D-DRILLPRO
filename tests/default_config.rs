@@ -14,10 +14,15 @@ fn empty_dir(name: &str) -> std::path::PathBuf {
 fn a_folder_without_a_machine_file_has_the_settings_of_the_one_that_comes_with_the_program() {
     let dir = empty_dir("nodcf");
     let mut app = App::new(Lang::En, &dir);
-    let settings = app.settings_mut().expect("the settings exist without a file");
+    let settings = app
+        .settings_mut()
+        .expect("the settings exist without a file");
     let before = settings.rack;
     settings.rack.clearance_mm += 2.0;
-    assert_eq!(app.settings().unwrap().rack.clearance_mm, before.clearance_mm + 2.0);
+    assert_eq!(
+        app.settings().unwrap().rack.clearance_mm,
+        before.clearance_mm + 2.0
+    );
 }
 
 #[test]
