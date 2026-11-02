@@ -252,3 +252,14 @@ Text.ClipSelectAll	Hautatu guztia
 Text.ClipUndo	Desegin
 Text.FullScreen	Pantaila osoa
 Text.RackOutside	Barraren puntu bat makinaren irispidetik kanpo dago
+Text.SumTitle	Egiaztatu hasi aurretik
+Text.SumTime	Aurreikusitako denbora
+Text.SumReach	Ardatzen irispidea (mm)
+Text.WarnTiny	Lan osoak {} x {} mm baino ez ditu: egiaztatu fitxategiaren unitatea
+Text.WarnBig	Lana ({} x {} mm) mahaia ({} x {} mm) baino handiagoa da
+Text.WarnFar	Lana mahaiaren izkinatik {} mm-ra hasten da: egiaztatu desplazamendua eta unitatea
+Text.WarnScale	Makinaren fitxategiak lana luzatzen du (eskala {} x {}, ez 1)
+Text.DryOut	Planak {} ardatza {} mm eramaten du bere ibilbidetik kanpo
+Text.DryOk	Proba lehorra: plan zehatza ardatz bakoitzaren ibilbidearen barruan geratzen da
+Text.BtnStartJob	Hasi lana
+Text.BtnCancel	Utzi

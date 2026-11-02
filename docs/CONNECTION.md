@@ -76,6 +76,10 @@ Speeds are in steps per second: the control unit takes one byte per step, and th
 | `unstick_always` | off | do it even when the home line is down. The positions are then unknown: leave it off unless you know where the axes are |
 | `search_hint_margin_steps` | 300 | steps added to the known distance of the short search (if RI still does not rise, the whole search is repeated) |
 | `travel_ramp_steps` | 400 | ramp of the moves between holes and paths |
+| `confirm_start` | on | the summary of the job is shown, and has to be accepted, before a job starts on a machine that moves |
+| `dry_run` | reject | an axis that the exact steps of the plan would take past its course: `reject` refuses the job, `warn` only says so |
+| `dry_run_margin_mm` | 0.5 | how far past the course an axis may go before it counts, in mm |
+| `sanity_tiny_mm`, `sanity_far_mm` | 5, 150 | a file whose work is smaller than the first (mm) looks like a wrong unit; one that starts further than the second from the corner looks like a wrong offset: both only warn |
 | `z_pacing` | bytes | `bytes`: moves of Z alone go one byte at a time even on a `usb` or `node` connection; `stream`: as a stream too |
 | `stream_filler` | dir | the filler between two steps of a stream keeps the direction bits (`dir`) or is zero (`zero`) |
 | `cancel_piece_steps` | 1500 | steps sent at a time before the cancel key is looked at again |

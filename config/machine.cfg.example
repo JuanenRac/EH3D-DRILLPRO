@@ -108,6 +108,19 @@ search_hint_margin_steps = 300
 # z_hz_limit above these moves never go faster than the motors keep up with.
 travel_ramp_steps = 400
 
+# --- Before a job starts on a machine that moves -----------------------------------------------------------------------------
+# on: the summary of the job (what it does, how long, how far each axis goes, what looks wrong in the file) is shown and has to be
+# accepted before the job starts. off: the job starts as soon as the person presses Start.
+confirm_start = on
+# The dry run follows the exact steps of the plan on paper. If an axis would go past its course: reject refuses the job; warn only says so.
+dry_run = reject
+# How far past the course an axis may go before it counts, in mm (the play of the machine).
+dry_run_margin_mm = 0.5
+# A file whose work is smaller than this, in mm, in both directions looks like a wrong unit; one that starts further than sanity_far_mm
+# from the corner of the table looks like a wrong offset or unit. Both only warn.
+sanity_tiny_mm = 5
+sanity_far_mm = 150
+
 # --- Sounds (all optional) ------------------------------------------------------------------------------------------------
 # A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
 # ("default"), or a sound file of your own: write the full path of a WAV file. Nothing is played when the line is missing or says off.

@@ -252,3 +252,14 @@ Text.ClipSelectAll	Alles selecteren
 Text.ClipUndo	Ongedaan maken
 Text.FullScreen	Volledig scherm
 Text.RackOutside	Een punt van de balk ligt buiten het bereik van de machine
+Text.SumTitle	Controleer vóór de start
+Text.SumTime	Geschatte tijd
+Text.SumReach	Bereik van de assen (mm)
+Text.WarnTiny	Het hele werk is slechts {} x {} mm: controleer de eenheid van het bestand
+Text.WarnBig	Het werk ({} x {} mm) is groter dan de tafel ({} x {} mm)
+Text.WarnFar	Het werk begint {} mm van de hoek van de tafel: controleer de verschuiving en de eenheid
+Text.WarnScale	Het machinebestand rekt het werk uit (schaal {} x {}, niet 1)
+Text.DryOut	Het plan voert as {} {} mm voorbij zijn bereik
+Text.DryOk	Droogloop: het exacte plan blijft binnen het bereik van elke as
+Text.BtnStartJob	Taak starten
+Text.BtnCancel	Annuleren

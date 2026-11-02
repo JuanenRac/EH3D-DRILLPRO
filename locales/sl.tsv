@@ -252,3 +252,14 @@ Text.ClipSelectAll	Izberi vse
 Text.ClipUndo	Razveljavi
 Text.FullScreen	Čez cel zaslon
 Text.RackOutside	Točka letve je zunaj dosega stroja
+Text.SumTitle	Preverite pred začetkom
+Text.SumTime	Ocenjeni čas
+Text.SumReach	Doseg osi (mm)
+Text.WarnTiny	Celotno delo meri samo {} x {} mm: preverite enoto datoteke
+Text.WarnBig	Delo ({} x {} mm) je večje od mize ({} x {} mm)
+Text.WarnFar	Delo se začne {} mm od vogala mize: preverite zamik in enoto
+Text.WarnScale	Datoteka stroja razteguje delo (merilo {} x {}, ne 1)
+Text.DryOut	Načrt odpelje os {} za {} mm čez njen hod
+Text.DryOk	Suhi tek: natančen načrt ostane znotraj hoda vsake osi
+Text.BtnStartJob	Zaženi opravilo
+Text.BtnCancel	Prekliči

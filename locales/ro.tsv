@@ -252,3 +252,14 @@ Text.ClipSelectAll	Selectează tot
 Text.ClipUndo	Anulează
 Text.FullScreen	Ecran complet
 Text.RackOutside	Un punct al barei este în afara razei de acțiune a mașinii
+Text.SumTitle	Verificați înainte de pornire
+Text.SumTime	Timp estimat
+Text.SumReach	Raza de acțiune a axelor (mm)
+Text.WarnTiny	Întreaga lucrare are doar {} x {} mm: verificați unitatea fișierului
+Text.WarnBig	Lucrarea ({} x {} mm) este mai mare decât masa ({} x {} mm)
+Text.WarnFar	Lucrarea începe la {} mm de colțul mesei: verificați deplasarea și unitatea
+Text.WarnScale	Fișierul mașinii întinde lucrarea (scară {} x {}, nu 1)
+Text.DryOut	Planul duce axa {} cu {} mm dincolo de cursa ei
+Text.DryOk	Rulare în gol: planul exact rămâne în cursa fiecărei axe
+Text.BtnStartJob	Pornește lucrarea
+Text.BtnCancel	Anulează

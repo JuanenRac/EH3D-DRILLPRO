@@ -252,3 +252,14 @@ Text.ClipSelectAll	Pasirinkti viską
 Text.ClipUndo	Atšaukti
 Text.FullScreen	Visas ekranas
 Text.RackOutside	Juostos taškas yra už staklių pasiekiamumo ribų
+Text.SumTitle	Patikrinkite prieš pradėdami
+Text.SumTime	Apskaičiuotas laikas
+Text.SumReach	Ašių pasiekiamumas (mm)
+Text.WarnTiny	Visas darbas yra tik {} x {} mm: patikrinkite failo vienetą
+Text.WarnBig	Darbas ({} x {} mm) didesnis už stalą ({} x {} mm)
+Text.WarnFar	Darbas prasideda {} mm nuo stalo kampo: patikrinkite poslinkį ir vienetą
+Text.WarnScale	Staklių failas ištempia darbą (mastelis {} x {}, ne 1)
+Text.DryOut	Planas išveda ašį {} {} mm už jos eigos
+Text.DryOk	Bandomoji eiga be darbo: tikslus planas lieka kiekvienos ašies eigos ribose
+Text.BtnStartJob	Pradėti darbą
+Text.BtnCancel	Atšaukti

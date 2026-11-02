@@ -252,3 +252,14 @@ Text.ClipSelectAll	Selecciona-ho tot
 Text.ClipUndo	Desfés
 Text.FullScreen	Pantalla completa
 Text.RackOutside	Un punt de la barra és fora de l'abast de la màquina
+Text.SumTitle	Revisa abans de començar
+Text.SumTime	Temps estimat
+Text.SumReach	Abast dels eixos (mm)
+Text.WarnTiny	Tota la feina fa només {} x {} mm: revisa la unitat del fitxer
+Text.WarnBig	La feina ({} x {} mm) és més gran que la taula ({} x {} mm)
+Text.WarnFar	La feina comença a {} mm de la cantonada de la taula: revisa el desplaçament i la unitat
+Text.WarnScale	El fitxer de la màquina estira la feina (escala {} x {}, no 1)
+Text.DryOut	El pla porta l'eix {} {} mm més enllà del seu recorregut
+Text.DryOk	Prova en sec: el pla exacte queda dins del recorregut de cada eix
+Text.BtnStartJob	Inicia la feina
+Text.BtnCancel	Cancel·la

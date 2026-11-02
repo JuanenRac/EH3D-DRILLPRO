@@ -70,6 +70,17 @@ pub struct Tuning {
     /// Length of the ramp (in steps) of the moves between holes and paths (the original's acceleration coefficient). The 40 steps of
     /// a bare default are far too brusque for the owner's motors at speed.
     pub travel_ramp_steps: u32,
+    /// The summary of the job (what it does, how long, how far the axes go, what looks wrong) is shown, and has to be accepted, before a job
+    /// starts on a machine that moves. On by default.
+    pub confirm_start: bool,
+    /// A dry run of the plan that goes past the course of an axis: `true` refuses the job, `false` only warns. Refusing is the default.
+    pub dry_run_reject: bool,
+    /// How far past the course of an axis a dry run may go before it counts, in mm (the play of the machine).
+    pub dry_run_margin_mm: f64,
+    /// A file whose work is smaller than this in both directions looks like a wrong unit (mm read as inches, or the other way), in mm.
+    pub sanity_tiny_mm: f64,
+    /// A file whose work starts further than this from the corner of the table looks like a wrong offset or unit, in mm.
+    pub sanity_far_mm: f64,
 }
 
 impl Default for Tuning {
@@ -105,6 +116,11 @@ impl Default for Tuning {
             unstick_always: false,
             search_hint_margin_steps: 300,
             travel_ramp_steps: 400,
+            confirm_start: true,
+            dry_run_reject: true,
+            dry_run_margin_mm: 0.5,
+            sanity_tiny_mm: 5.0,
+            sanity_far_mm: 150.0,
         }
     }
 }
@@ -178,6 +194,11 @@ impl Tuning {
             "home_watch_chunk_bytes" => {
                 self.home_watch_chunk_bytes = number(key, value, 0.0, 4000.0)? as u32
             }
+            "confirm_start" => self.confirm_start = choice(key, value, "on", "off")?,
+            "dry_run" => self.dry_run_reject = choice(key, value, "reject", "warn")?,
+            "dry_run_margin_mm" => self.dry_run_margin_mm = number(key, value, 0.0, 20.0)?,
+            "sanity_tiny_mm" => self.sanity_tiny_mm = number(key, value, 0.0, 100.0)?,
+            "sanity_far_mm" => self.sanity_far_mm = number(key, value, 0.0, 2000.0)?,
             _ => return Ok(false),
         }
         Ok(true)

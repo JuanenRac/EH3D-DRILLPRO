@@ -252,3 +252,14 @@ Text.ClipSelectAll	Vybrať všetko
 Text.ClipUndo	Späť
 Text.FullScreen	Celá obrazovka
 Text.RackOutside	Bod lišty je mimo dosahu stroja
+Text.SumTitle	Skontrolujte pred spustením
+Text.SumTime	Odhadovaný čas
+Text.SumReach	Dosah osí (mm)
+Text.WarnTiny	Celá práca má len {} x {} mm: skontrolujte jednotku súboru
+Text.WarnBig	Práca ({} x {} mm) je väčšia ako stôl ({} x {} mm)
+Text.WarnFar	Práca začína {} mm od rohu stola: skontrolujte posun a jednotku
+Text.WarnScale	Súbor stroja naťahuje prácu (mierka {} x {}, nie 1)
+Text.DryOut	Plán vedie os {} o {} mm za jej dráhu
+Text.DryOk	Suchý chod: presný plán ostáva v dráhe každej osi
+Text.BtnStartJob	Spustiť úlohu
+Text.BtnCancel	Zrušiť

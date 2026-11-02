@@ -252,3 +252,14 @@ Text.ClipSelectAll	Odaberi sve
 Text.ClipUndo	Poništi
 Text.FullScreen	Cijeli zaslon
 Text.RackOutside	Točka letve izvan je dosega stroja
+Text.SumTitle	Provjera prije početka
+Text.SumTime	Procijenjeno vrijeme
+Text.SumReach	Doseg osi (mm)
+Text.WarnTiny	Cijeli posao je velik samo {} x {} mm: provjerite jedinicu datoteke
+Text.WarnBig	Posao ({} x {} mm) veći je od stola ({} x {} mm)
+Text.WarnFar	Posao počinje {} mm od kuta stola: provjerite pomak i jedinicu
+Text.WarnScale	Datoteka stroja rasteže posao (mjerilo {} x {}, a ne 1)
+Text.DryOut	Plan odvodi os {} za {} mm izvan njezina hoda
+Text.DryOk	Suhi hod: točan plan ostaje unutar hoda svake osi
+Text.BtnStartJob	Pokreni posao
+Text.BtnCancel	Odustani

@@ -252,3 +252,14 @@ Text.ClipSelectAll	Atlasīt visu
 Text.ClipUndo	Atsaukt
 Text.FullScreen	Pilnekrāns
 Text.RackOutside	Joslas punkts atrodas ārpus iekārtas sasniedzamības
+Text.SumTitle	Pārbaudiet pirms sākšanas
+Text.SumTime	Aptuvenais laiks
+Text.SumReach	Asu sasniedzamība (mm)
+Text.WarnTiny	Viss darbs ir tikai {} x {} mm: pārbaudiet faila mērvienību
+Text.WarnBig	Darbs ({} x {} mm) ir lielāks par galdu ({} x {} mm)
+Text.WarnFar	Darbs sākas {} mm no galda stūra: pārbaudiet nobīdi un mērvienību
+Text.WarnScale	Iekārtas fails izstiepj darbu (mērogs {} x {}, nevis 1)
+Text.DryOut	Plāns izved asi {} {} mm ārpus tās gājiena
+Text.DryOk	Sausā darbība: precīzais plāns paliek katras ass gājiena robežās
+Text.BtnStartJob	Sākt darbu
+Text.BtnCancel	Atcelt

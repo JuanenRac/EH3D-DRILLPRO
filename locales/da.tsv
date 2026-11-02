@@ -252,3 +252,14 @@ Text.ClipSelectAll	Vælg alle
 Text.ClipUndo	Fortryd
 Text.FullScreen	Fuld skærm
 Text.RackOutside	Et punkt på listen ligger uden for maskinens rækkevidde
+Text.SumTitle	Kontrollér før start
+Text.SumTime	Anslået tid
+Text.SumReach	Akslernes rækkevidde (mm)
+Text.WarnTiny	Hele arbejdet er kun {} x {} mm: kontrollér filens enhed
+Text.WarnBig	Arbejdet ({} x {} mm) er større end bordet ({} x {} mm)
+Text.WarnFar	Arbejdet starter {} mm fra bordets hjørne: kontrollér forskydning og enhed
+Text.WarnScale	Maskinfilen strækker arbejdet (skala {} x {}, ikke 1)
+Text.DryOut	Planen kører akse {} {} mm ud over dens vandring
+Text.DryOk	Tørkørsel: den nøjagtige plan bliver inden for hver akses vandring
+Text.BtnStartJob	Start opgaven
+Text.BtnCancel	Annullér
