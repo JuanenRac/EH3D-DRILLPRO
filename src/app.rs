@@ -50,6 +50,8 @@ pub(crate) enum Mode {
     Language,
     Running,
     ConfirmQuit,
+    /// The summary of the job (what it does, how long, how far the axes go, what looks wrong) waits for Enter before a machine that moves is started.
+    ConfirmStart,
 }
 
 pub(crate) struct Loaded {
@@ -124,6 +126,9 @@ pub struct App {
     pub(crate) tools_text: Option<String>,
     /// What the main form and the Panelization dialog add to the job.
     pub(crate) job_options: crate::job::JobOptions,
+    /// The lines of the summary that wait for the person's answer, and whether it was accepted (the next start goes through).
+    pub(crate) summary: Option<Vec<String>>,
+    pub(crate) summary_ok: bool,
     pub quit: bool,
 }
 
@@ -177,6 +182,8 @@ impl App {
             teach: None,
             board_mm,
             connection: ConnectionConfig::default(),
+            summary: None,
+            summary_ok: false,
             quit: false,
         };
         app.dir = crate::config::work_dir(data_dir, app.config.as_ref());
@@ -185,6 +192,7 @@ impl App {
     }
 
     pub fn load_file(&mut self, path: &Path) {
+        self.warning = None;
         let text: String = match std::fs::read(path) {
             Ok(b) => b.iter().map(|&c| c as char).collect(),
             Err(e) => {
@@ -206,6 +214,25 @@ impl App {
             }
             Ok(file) => {
                 self.error = None;
+                // what looks wrong in the work is said as soon as it is loaded (a unit that is probably wrong, a work far from the corner)
+                let unit_mm = self
+                    .settings
+                    .as_ref()
+                    .map_or(crate::ncd::MIL_MM, |m| m.unit.mm());
+                let scale = self.settings.as_ref().map_or((1.0, 1.0), |m| m.scale);
+                let holes = sort_holes(&file, Sorting::None);
+                self.warning = crate::summary::load_warning(
+                    holes.iter().map(|h| {
+                        (
+                            h.x_mil as f64 * unit_mm * scale.0,
+                            h.y_mil as f64 * unit_mm * scale.1,
+                        )
+                    }),
+                    holes.len(),
+                    self.settings.as_ref(),
+                    &self.connection.tuning,
+                    self.lang,
+                );
                 self.loaded = Some(Loaded {
                     path: path.to_path_buf(),
                     file,
@@ -464,6 +491,35 @@ impl App {
             },
         };
         let hole_ends = Self::hole_end_indexes(&items);
+        // a machine that moves: the exact plan is followed on paper first, a plan that leaves the course is refused (when the tuning says so), and the
+        // person sees the summary and accepts it before anything starts
+        self.summary = None;
+        if self.connection.is_real() {
+            let tuning = self.connection.tuning;
+            let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
+            used.sort_unstable();
+            used.dedup();
+            let summary = crate::summary::build(
+                &items,
+                &self.job_machine().geometry,
+                self.settings.as_ref(),
+                &tuning,
+                job_holes.iter().map(|h| (h.x_mm, h.y_mm)),
+                job_holes.len(),
+                used.len(),
+            );
+            if let Some(why) = summary.refusal(&tuning, self.lang) {
+                self.summary_ok = false;
+                self.error = Some(why);
+                return;
+            }
+            if tuning.confirm_start && !self.summary_ok {
+                self.summary = Some(summary.lines(self.lang));
+                self.mode = Mode::ConfirmStart;
+                return;
+            }
+        }
+        self.summary_ok = false;
         let mut sim = Simulator::default();
         let (connected, real) = if self.connection.kind == ConnectionKind::Server {
             // the job goes to the EH3D server, which plans it again with the machine's constants and runs it on the machine's node
@@ -720,6 +776,11 @@ impl App {
                 Input::Esc | Input::Char(_) => self.mode = Mode::Main,
                 _ => {}
             },
+            Mode::ConfirmStart => match input {
+                Input::Enter => self.accept_summary(),
+                Input::Esc => self.decline_summary(),
+                _ => {}
+            },
             Mode::Running => {
                 let live = self.run.as_ref().and_then(|r| r.real.as_ref());
                 match (live, input) {
@@ -812,6 +873,7 @@ impl App {
             }
             Mode::Running => self.render_run(s),
             Mode::ConfirmQuit => self.render_quit(s),
+            Mode::ConfirmStart => self.render_summary(s),
         }
         s.fill(0, ROWS - 1, COLS, 1, ' ', BLACK, MENU_BG);
         s.text(1, ROWS - 1, tr(self.lang, Text::StatusMain), BLACK, MENU_BG);
@@ -1197,6 +1259,42 @@ impl App {
                 WIN_BG,
             );
         }
+    }
+
+    /// The person accepted the summary: the job starts.
+    pub(crate) fn accept_summary(&mut self) {
+        self.summary_ok = true;
+        self.summary = None;
+        self.mode = Mode::Main;
+        self.start();
+    }
+
+    /// The person did not accept the summary: nothing starts.
+    pub(crate) fn decline_summary(&mut self) {
+        self.summary_ok = false;
+        self.summary = None;
+        self.mode = Mode::Main;
+    }
+
+    fn render_summary(&self, s: &mut Screen) {
+        let Some(lines) = &self.summary else {
+            return;
+        };
+        let buttons = format!(
+            "[ {} ]   [ {} ]",
+            tr(self.lang, Text::BtnStartJob),
+            tr(self.lang, Text::BtnCancel)
+        );
+        let w = (lines.iter().map(|l| str_width(l)).max().unwrap_or(0) + 4)
+            .max(str_width(&buttons) + 4)
+            .min(COLS - 2);
+        let h = lines.len() + 5;
+        let (x, y) = ((COLS - w) / 2, 3);
+        s.window(x, y, w, h, tr(self.lang, Text::SumTitle), WHITE, BLUE);
+        for (i, l) in lines.iter().skip(1).enumerate() {
+            s.text(x + 2, y + 1 + i, l, WHITE, BLUE);
+        }
+        s.text_centered(y + h - 2, x, w, &buttons, YELLOW, BLUE);
     }
 
     fn render_quit(&self, s: &mut Screen) {

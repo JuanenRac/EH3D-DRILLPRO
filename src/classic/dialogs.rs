@@ -31,6 +31,8 @@ pub(crate) enum Dialog {
     },
     About,
     Message(String),
+    /// The summary of the job, before a machine that moves is started.
+    Summary,
     Running,
 }
 
@@ -448,7 +450,25 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 Input::Enter | Input::Esc | Input::Char(_) | Input::Alt(_) => Flow::Close,
                 _ => Flow::Stay,
             },
+            Dialog::Summary => match input {
+                Input::Enter => self.summary_answer(true),
+                Input::Esc => self.summary_answer(false),
+                _ => Flow::Stay,
+            },
             _ => Flow::Stay,
+        }
+    }
+
+    /// The answer to the summary: yes starts the job, no leaves it.
+    fn summary_answer(&mut self, start: bool) -> Flow {
+        if !start {
+            self.engine.decline_summary();
+            return Flow::Close;
+        }
+        self.engine.accept_summary();
+        match self.engine.error() {
+            Some(e) => Flow::to(Dialog::Message(e.to_string())),
+            None => Flow::to(Dialog::Running),
         }
     }
 
@@ -465,6 +485,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::TeachWrite { teach, .. } => self.teach_write_click(teach, act),
             Dialog::About => match act {
                 Act::Dlg(_) => Flow::Close,
+                _ => Flow::Stay,
+            },
+            Dialog::Summary => match act {
+                Act::Dlg(Dlg::Ok) => self.summary_answer(true),
+                Act::Dlg(Dlg::Abort) => self.summary_answer(false),
                 _ => Flow::Stay,
             },
             _ => Flow::Stay,
@@ -498,6 +523,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 window(s, x, 10, w, 5, "", false);
                 s.text_centered(12, x, w, m, INK, GREY);
             }
+            Dialog::Summary => self.render_summary(s),
             Dialog::Running => self.render_running(s),
         }
         // a hint on the grey strip while something is being typed
@@ -657,6 +683,49 @@ impl<E: ClassicEngine> ClassicApp<E> {
         button(s, 42, 14, 10, self.t(CText::BNo), !yes, true);
         self.hit(29, 14, 11, 2, Act::Dlg(Dlg::Yes));
         self.hit(42, 14, 11, 2, Act::Dlg(Dlg::No));
+    }
+
+    // ------------------------------------------------------------------------------------------ Summary
+
+    fn render_summary(&self, s: &mut Screen) {
+        let Some(lines) = self.engine.pending_summary() else {
+            return;
+        };
+        let lang = self.lang();
+        let h = lines.len() + 4;
+        let y = (ROWS - 2).saturating_sub(h) / 2;
+        window(
+            s,
+            3,
+            y,
+            74,
+            h,
+            lines.first().map_or("", |l| l.as_str()),
+            true,
+        );
+        for (i, l) in lines.iter().skip(1).enumerate() {
+            s.text(5, y + 1 + i, l, INK, GREY);
+        }
+        button(
+            s,
+            20,
+            y + h - 3,
+            18,
+            crate::texts::tr(lang, crate::texts::Text::BtnStartJob),
+            true,
+            true,
+        );
+        button(
+            s,
+            42,
+            y + h - 3,
+            14,
+            crate::texts::tr(lang, crate::texts::Text::BtnCancel),
+            false,
+            true,
+        );
+        self.hit(20, y + h - 3, 19, 2, Act::Dlg(Dlg::Ok));
+        self.hit(42, y + h - 3, 15, 2, Act::Dlg(Dlg::Abort));
     }
 
     // ------------------------------------------------------------------------------------------ About

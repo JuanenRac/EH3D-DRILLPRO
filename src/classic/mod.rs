@@ -592,7 +592,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Button::Start => {
                 self.engine.set_job_options(self.job_options());
                 self.engine.start();
-                self.dialog = Dialog::Running;
+                self.dialog = if self.engine.pending_summary().is_some() {
+                    Dialog::Summary
+                } else {
+                    Dialog::Running
+                };
             }
             Button::Panelz => self.dialog = self.open_panel(),
             Button::Offset => {

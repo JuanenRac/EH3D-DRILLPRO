@@ -156,6 +156,13 @@ pub trait ClassicEngine {
     /// Answers it: Ok goes on, Abort stops the job.
     fn answer(&mut self, ok: bool);
     fn start(&mut self);
+    /// The summary of the job (its first line is the title) when `start` found that a machine that moves must not start before the person has seen
+    /// it; nothing has started then. `accept_summary` starts the job; `decline_summary` drops it.
+    fn pending_summary(&self) -> Option<&[String]> {
+        None
+    }
+    fn accept_summary(&mut self) {}
+    fn decline_summary(&mut self) {}
     /// True once the job moved past the homing.
     fn started(&self) -> bool;
     fn done(&self) -> usize;
@@ -554,6 +561,18 @@ impl ClassicEngine for App {
 
     fn start(&mut self) {
         App::start(self);
+    }
+
+    fn pending_summary(&self) -> Option<&[String]> {
+        self.summary.as_deref()
+    }
+
+    fn accept_summary(&mut self) {
+        App::accept_summary(self);
+    }
+
+    fn decline_summary(&mut self) {
+        App::decline_summary(self);
     }
 
     fn started(&self) -> bool {

@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A dry run of the exact plan** (`eh3d_drillpro::dryrun`): the steps of a planned job are followed on paper, decoded the way the control unit reads them, to measure how far each axis goes from its switches, where the plan ends and how long the movements take; a plan that takes an axis past the course of the machine file is found before a motor turns. Shared by the programs, the interface and the server.
+- **A summary before a job moves a real machine** (`eh3d_drillpro::summary`): what the job does, how long it takes, how far each axis goes and what looks wrong in the file (a work that is tiny or far from the corner of the table, bigger than the table, or stretched by a scale that is not 1), in the 37 languages. The text screens and the classic screens show it and the job starts only when it is accepted; a plan that would take an axis past its course is refused. The engines of the classic screens offer `pending_summary`, `accept_summary` and `decline_summary` to the interfaces.
+- **Four new keys of the machine file:** `confirm_start` (on), `dry_run` (`reject` by default, or `warn`), `dry_run_margin_mm` (0.5), `sanity_tiny_mm` (5) and `sanity_far_mm` (150), with their lines in the example file and in `docs/CONNECTION.md`.
+
 ## [0.1.2] - A failure inside the work is told and stops the machine, a record of crashes, a self-test for the machine and a CI that builds the interface
 
 - **A machine self-test:** `tools/machine_selftest.py` reads `DRILLPRO.DCF` and the tool table and checks them against the model of the program (speeds against the serial line, acceleration against the ramp, spindle start time, tool speeds against the spindle, depth, calibration factors) and writes `machine_selftest_drillpro_<time>.txt`. `--measure` guides a stopwatch measurement of the acceleration and the spindle start time and writes a proposed machine file as a new file, never over the machine file. It sends nothing to the machine. Its tests run in the CI.
