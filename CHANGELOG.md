@@ -3,6 +3,7 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+- **Release builds are checked and attested:** `release-binaries.yml` takes the owner's go-ahead only (a manual start from main, the commit must be part of main), builds the same packages as before, writes `SHA256SUMS` and a build manifest, attests their provenance, verifies the artifact as a stranger would, prepares a draft release of unsigned files only after the owner approves it (a dry run is the default) and opens an issue `build-failed` when anything does not finish.
 
 - **The README says what the ATC models do:** it no longer says that they are not supported; the tool changer follows the rack of the machine file and has not run on a real machine.
 - **`job_rack` builds the rack of the tool changer from a machine file and says why a job is refused (`RackRefusal`):** more tools than places, a place with no position or a place the machine does not reach; DRILLPRO, ROUTEPRO and the modern interface use the same function, with the words in the 37 languages.
