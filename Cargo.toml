@@ -49,6 +49,10 @@ name = "drillpro-console"
 path = "src/bin/drillpro_console.rs"
 required-features = ["console"]
 
+[[bin]]
+name = "drillpro-plan"
+path = "src/bin/drillpro_plan.rs"
+
 [[test]]
 name = "console"
 required-features = ["console"]
