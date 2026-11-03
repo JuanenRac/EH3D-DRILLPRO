@@ -148,7 +148,8 @@ fn unchunk(mut rest: &[u8]) -> Result<Vec<u8>, String> {
         if size == 0 {
             return Ok(out);
         }
-        if rest.len() < size + 2 {
+        // a size that is bigger than anything that could come must not overflow (nor index past the end)
+        if rest.len() < 2 || size > rest.len() - 2 {
             return Err("a chunk of the answer is cut".into());
         }
         out.extend_from_slice(&rest[..size]);

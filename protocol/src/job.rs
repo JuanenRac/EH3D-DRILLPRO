@@ -73,6 +73,10 @@ impl Rack {
 
     /// The first place among 0 to `last` that is not inside what the machine reaches (X, Y and the depth of Z, all from zero), if there is one.
     pub fn first_outside(&self, last: usize, reach: (f64, f64, f64)) -> Option<usize> {
+        // a rack with no places has none that is outside
+        if self.places.is_empty() {
+            return None;
+        }
         (0..=last.min(self.places.len().saturating_sub(1))).find(|&i| {
             let (x, y, z) = self.places[i];
             !(0.0..=reach.0).contains(&x)

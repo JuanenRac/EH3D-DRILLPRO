@@ -19,12 +19,12 @@ console = ["dep:crossterm"]
 serde_json = "1"
 eh3d-drillpro-protocol = { path = "protocol", features = ["serial", "node"] }
 # jobs packed in ZIP archives (the shared code of the suite lives in EH3D-COMMON)
-eh3d-archive = { path = "../EH3D-COMMON/crates/archive" }
+eh3d-archive = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/archive" }
 # the files of the Bungard machines (drill file, tool table, machine configuration), shared with ROUTEPRO and the modern interface
-eh3d-bungard-formats = { path = "../EH3D-COMMON/crates/formats" }
+eh3d-bungard-formats = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/formats" }
 # several machines and stations at once: the answer of the server for the whole fleet
-eh3d-fleet = { path = "../EH3D-COMMON/crates/fleet" }
-eh3d-levelling = { path = "../EH3D-COMMON/crates/levelling" }
+eh3d-fleet = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/fleet" }
+eh3d-levelling = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/levelling" }
 # the dry run and the summary before a job starts, and the languages they are said in
 eh3d-summary = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/summary" }
 eh3d-view = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/view" }
@@ -48,6 +48,10 @@ required-features = ["gui"]
 name = "drillpro-console"
 path = "src/bin/drillpro_console.rs"
 required-features = ["console"]
+
+[[bin]]
+name = "drillpro-plan"
+path = "src/bin/drillpro_plan.rs"
 
 [[test]]
 name = "console"
