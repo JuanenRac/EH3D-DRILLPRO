@@ -374,6 +374,87 @@ impl App {
         .unwrap_or(0)
     }
 
+    /// The plan of the loaded drill file, made on paper with no machine and no connection: the same holes, tools and rack that a start would plan, the exact steps followed against
+    /// the course of the machine file (none when the folder has no machine file) and the sanity checks, said in the language of the screen. The lines are always the same for the
+    /// same files, so a program or a test can compare them with a stored copy. An error says why no plan could be made.
+    pub fn plan_report(&self) -> Result<Vec<String>, String> {
+        let l = self.loaded.as_ref().ok_or_else(|| {
+            self.error
+                .clone()
+                .unwrap_or_else(|| "no drill file is loaded".to_string())
+        })?;
+        let unit_mm = self
+            .settings
+            .as_ref()
+            .map_or(crate::ncd::MIL_MM, |m| m.unit.mm());
+        let scale = self.settings.as_ref().map_or((1.0, 1.0), |m| m.scale);
+        let offset = self.settings.as_ref().map_or((0.0, 0.0), |m| m.offset_mm);
+        let mut area_options = self.job_options.clone();
+        if area_options.clip_mm.is_none() {
+            area_options.clip_mm = self
+                .settings
+                .as_ref()
+                .map(|m| m.clip_mm)
+                .filter(|c| c.0 > 0.0 && c.1 > 0.0);
+        }
+        let selection =
+            crate::job::select_holes(&l.file, self.sorting, &area_options, unit_mm, scale, offset);
+        let skipped = selection.skipped;
+        let job_holes: Vec<JobHole> = selection.holes;
+        let tools: Vec<JobTool> = self
+            .tools
+            .iter()
+            .map(|t| JobTool {
+                number: t.number,
+                extra_stroke_mm: t.extra_stroke_mm,
+                feed_mm_min: t.feed_mm_min,
+                spindle_rpm: t.spindle_rpm,
+            })
+            .collect();
+        let lifts: Option<Vec<f64>> = self.job_options.table.as_ref().and_then(|t| {
+            let reference = t.height_at(offset.0, offset.1)?;
+            job_holes
+                .iter()
+                .map(|h| Some(t.height_at(h.x_mm + offset.0, h.y_mm + offset.1)? - reference))
+                .collect()
+        });
+        let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
+        used.sort_unstable();
+        used.dedup();
+        let rack = crate::job::job_rack(self.settings.as_ref(), used.len())
+            .map_err(|why| why.message(self.lang))?;
+        let (items, _marks) = plan_drill_job_marked(
+            &self.job_machine(),
+            &tools,
+            &job_holes,
+            lifts.as_deref().unwrap_or(&[]),
+            rack.as_ref(),
+        );
+        let summary = crate::summary::build(
+            &items,
+            &self.job_machine().geometry,
+            self.settings.as_ref(),
+            &self.connection.tuning,
+            job_holes.iter().map(|h| (h.x_mm, h.y_mm)),
+            job_holes.len(),
+            used.len(),
+        );
+        let name = l
+            .path
+            .file_name()
+            .map(|n| n.to_string_lossy().to_string())
+            .unwrap_or_default();
+        let mut out = vec![
+            format!("file: {name}"),
+            format!("holes: {}", job_holes.len()),
+            format!("tools: {}", used.len()),
+            format!("steps: {}", items.len()),
+            format!("left out: {skipped}"),
+        ];
+        out.extend(summary.lines(self.lang));
+        Ok(out)
+    }
+
     pub(crate) fn start(&mut self) {
         // a refusal or a warning of an earlier start is not the answer to this one
         self.warning = None;
