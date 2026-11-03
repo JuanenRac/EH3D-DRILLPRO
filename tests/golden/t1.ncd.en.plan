@@ -1,0 +1,12 @@
+file: T1.NCD
+holes: 3
+tools: 1
+steps: 30
+left out: 0
+Check before starting
+Holes: 3
+Tools: 1
+Size (mm): 25.4 x 25.4
+Estimated time: 35 s
+Reach of the axes (mm): X 0.0 .. 53.3   Y 0.0 .. 53.3   Z 0.0 .. 25.8
+Dry run: the exact plan stays inside the course of every axis

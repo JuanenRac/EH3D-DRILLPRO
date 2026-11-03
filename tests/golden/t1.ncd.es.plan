@@ -1,0 +1,12 @@
+file: T1.NCD
+holes: 3
+tools: 1
+steps: 30
+left out: 0
+Revisa antes de empezar
+Agujeros: 3
+Herramientas: 1
+Tamaño (mm): 25.4 x 25.4
+Tiempo estimado: 35 s
+Alcance de los ejes (mm): X 0.0 .. 53.3   Y 0.0 .. 53.3   Z 0.0 .. 25.8
+Simulación en seco: el plan exacto queda dentro del recorrido de cada eje

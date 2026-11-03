@@ -1,0 +1,12 @@
+file: refholes.ncd
+holes: 2
+tools: 1
+steps: 27
+left out: 0
+Check before starting
+Holes: 2
+Tools: 1
+Size (mm): 203.2 x 0.0
+Estimated time: 38 s
+Reach of the axes (mm): X 0.0 .. 231.1   Y 0.0 .. 27.9   Z 0.0 .. 27.0
+Dry run: the exact plan stays inside the course of every axis

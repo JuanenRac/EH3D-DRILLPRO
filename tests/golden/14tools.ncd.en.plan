@@ -1,0 +1,14 @@
+file: 14TOOLS.NCD
+holes: 14
+tools: 14
+steps: 102
+left out: 0
+Check before starting
+Holes: 14
+Tools: 14
+Size (mm): 0.0 x 0.0
+Estimated time: 1 min 48 s
+Reach of the axes (mm): X 0.0 .. 256.5   Y 0.0 .. 154.9   Z 0.0 .. 26.8
+Dry run: the exact plan stays inside the course of every axis
+The whole work is only 0.0 x 0.0 mm: check the unit of the file
+The work starts 254.0 mm from the corner of the table: check the offset and the unit
