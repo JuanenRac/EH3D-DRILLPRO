@@ -13,6 +13,7 @@ permissions:
 jobs:
   package:
     name: ${{ matrix.label }}
+    if: github.actor == github.repository_owner && github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -24,7 +25,9 @@ jobs:
           - { os: macos-latest, label: macos-arm64, target: aarch64-apple-darwin, ext: "", archive: tar.gz }
           - { os: macos-latest, label: macos-x86_64, target: x86_64-apple-darwin, ext: "", archive: tar.gz }
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
       - name: Check out the sibling EH3D-COMMON (a path dependency)
         shell: bash
         run: git clone --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git ../EH3D-COMMON
@@ -32,25 +35,34 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev
       - name: Rust toolchain
-        run: rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+        run: rustup toolchain install stable --profile minimal --target ${MATRIX_TARGET}
+        shell: bash
+        env:
+          MATRIX_TARGET: ${{ matrix.target }}
       - name: Build
-        run: cargo build --release --features gui --target ${{ matrix.target }}
+        run: cargo build --release --features gui --target ${MATRIX_TARGET}
+        shell: bash
+        env:
+          MATRIX_TARGET: ${{ matrix.target }}
       - name: Build the console version
-        run: cargo build --release --features console --bin drillpro-console --target ${{ matrix.target }}
+        run: cargo build --release --features console --bin drillpro-console --target ${MATRIX_TARGET}
+        shell: bash
+        env:
+          MATRIX_TARGET: ${{ matrix.target }}
       - name: Package
         shell: bash
         run: |
           set -euo pipefail
           version=$(python3 -c "import json;print(json.load(open('eh3d.project.json'))['version'])")
-          name="drillpro-${version}-${{ matrix.label }}"
+          name="drillpro-${version}-${MATRIX_LABEL}"
           mkdir "$name"
-          cp "target/${{ matrix.target }}/release/drillpro${{ matrix.ext }}" "$name/"
+          cp "target/${MATRIX_TARGET}/release/drillpro${MATRIX_EXT}" "$name/"
           cp LICENSE README.md CHANGELOG.md "$name/"
           # the basic configuration (explained line by line) and the examples, from one hole to twenty thousand
           cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$name/"
           cp -r examples "$name/examples"
           mkdir -p dist
-          if [ "${{ matrix.archive }}" = "zip" ]; then
+          if [ "${MATRIX_ARCHIVE}" = "zip" ]; then
             7z a -tzip "dist/${name}.zip" "$name" >/dev/null
             asset="dist/${name}.zip"
           else
@@ -60,13 +72,13 @@ jobs:
           if command -v sha256sum >/dev/null; then sha256sum "$asset" | sed 's#dist/##' > "${asset}.sha256"; else shasum -a 256 "$asset" | sed 's#dist/##' > "${asset}.sha256"; fi
           cat "${asset}.sha256"
           # the console version: the same screens in a terminal, no window system needed
-          cname="drillpro-${version}-console-${{ matrix.label }}"
+          cname="drillpro-${version}-console-${MATRIX_LABEL}"
           mkdir "$cname"
-          cp "target/${{ matrix.target }}/release/drillpro-console${{ matrix.ext }}" "$cname/"
+          cp "target/${MATRIX_TARGET}/release/drillpro-console${MATRIX_EXT}" "$cname/"
           cp LICENSE README.md CHANGELOG.md "$cname/"
           cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$cname/"
           cp -r examples "$cname/examples"
-          if [ "${{ matrix.archive }}" = "zip" ]; then
+          if [ "${MATRIX_ARCHIVE}" = "zip" ]; then
             7z a -tzip "dist/${cname}.zip" "$cname" >/dev/null
             casset="dist/${cname}.zip"
           else
@@ -75,7 +87,12 @@ jobs:
           fi
           if command -v sha256sum >/dev/null; then sha256sum "$casset" | sed 's#dist/##' > "${casset}.sha256"; else shasum -a 256 "$casset" | sed 's#dist/##' > "${casset}.sha256"; fi
           cat "${casset}.sha256"
-      - uses: actions/upload-artifact@v4
+        env:
+          MATRIX_LABEL: ${{ matrix.label }}
+          MATRIX_TARGET: ${{ matrix.target }}
+          MATRIX_EXT: ${{ matrix.ext }}
+          MATRIX_ARCHIVE: ${{ matrix.archive }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: drillpro-${{ matrix.label }}
           path: dist/*
