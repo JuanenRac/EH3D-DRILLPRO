@@ -456,12 +456,43 @@ pub fn run<A: TextApp + 'static>(title: &str, settings: &str, app: A) -> eframe:
     run_capture(title, settings, app, None)
 }
 
+/// The icon of DRILLPRO, for the title bar and the task bar.
+const ICON_PNG: &[u8] = include_bytes!("../images/brand/icon-256.png");
+
+/// Decodes a PNG of 8 bits per channel with alpha into the icon of a window; `None` when it is anything else.
+pub fn window_icon(bytes: &[u8]) -> Option<egui::IconData> {
+    let decoder = png::Decoder::new(std::io::Cursor::new(bytes));
+    let mut reader = decoder.read_info().ok()?;
+    let mut buf = vec![0; reader.output_buffer_size()];
+    let info = reader.next_frame(&mut buf).ok()?;
+    if info.color_type != png::ColorType::Rgba || info.bit_depth != png::BitDepth::Eight {
+        return None;
+    }
+    buf.truncate(info.buffer_size());
+    Some(egui::IconData {
+        rgba: buf,
+        width: info.width,
+        height: info.height,
+    })
+}
+
 /// Like [`run`]; with a [`Capture`] it plays the key script, saves a PNG of the window and exits.
 pub fn run_capture<A: TextApp + 'static>(
     title: &str,
     settings: &str,
+    app: A,
+    capture: Option<Capture>,
+) -> eframe::Result {
+    run_capture_icon(title, settings, app, capture, ICON_PNG)
+}
+
+/// Like [`run_capture`] with the icon of the window given as a PNG (ROUTEPRO brings its own).
+pub fn run_capture_icon<A: TextApp + 'static>(
+    title: &str,
+    settings: &str,
     mut app: A,
     capture: Option<Capture>,
+    icon_png: &[u8],
 ) -> eframe::Result {
     // A capture keeps the classic size so that pictures stay the same; a normal run starts roomier and can be
     // resized or maximized: the screen scales between 640x400 and any larger size (720p, 1080p and beyond).
@@ -475,15 +506,19 @@ pub fn run_capture<A: TextApp + 'static>(
     if capture.is_none() {
         app.set_fullscreen(fullscreen);
     }
+    let mut viewport = egui::ViewportBuilder::default()
+        .with_inner_size(size)
+        .with_min_inner_size([640.0, 400.0])
+        .with_resizable(true)
+        .with_maximize_button(true)
+        .with_maximized(capture.is_none() && !fullscreen)
+        .with_fullscreen(fullscreen)
+        .with_title(title);
+    if let Some(icon) = window_icon(icon_png) {
+        viewport = viewport.with_icon(icon);
+    }
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default()
-            .with_inner_size(size)
-            .with_min_inner_size([640.0, 400.0])
-            .with_resizable(true)
-            .with_maximize_button(true)
-            .with_maximized(capture.is_none() && !fullscreen)
-            .with_fullscreen(fullscreen)
-            .with_title(title),
+        viewport,
         ..Default::default()
     };
     let lang = app.lang();
