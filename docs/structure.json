@@ -1,6 +1,7 @@
 {
   "repo": "EH3D-DRILLPRO",
   "exempt": [
+    "build.rs",
     "test.bat",
     "test.sh"
   ],
