@@ -3,6 +3,7 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+- **The Windows executable carries the icon of the program:** the file shows it in the explorer and the taskbar, together with the name, the description and the version, embedded by `build.rs`; other systems are not affected.
 - **The window carries the icon of the program:** the title bar and the task bar show the icon of DRILLPRO.
 
 ## [0.1.5] - Audit fixes, the new reading limits, tests and the application icon
