@@ -242,6 +242,7 @@ CText.BCont	~V~erder
 Text.StatusMain	Esc: terug   Enter: accepteren   ↑/↓: verplaatsen
 CText.QInterrupted	ONDERBROKEN
 Text.SpindleLimit	Spindelgrens:
+Text.ChainDropped	Server: gereedschapswissels niet geketend
 Text.ToolDefaults	Niet in de gereedschapstabel; voor het gereedschap worden voorzichtige waarden gebruikt
 Text.RackGap	Een plaats van de gereedschapswisselaar heeft geen positie in het machinebestand
 Text.LevelServer	De hoogtekaart kan niet worden gebruikt als de taak via de server loopt

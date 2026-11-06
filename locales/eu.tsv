@@ -242,6 +242,7 @@ CText.BCont	~J~arr.
 Text.StatusMain	Esc: atzera   Enter: onartu   ↑/↓: mugitu
 CText.QInterrupted	ETETEN
 Text.SpindleLimit	Ardatzaren muga:
+Text.ChainDropped	Zerbitzaria: erreminta-aldaketak ez dira kateatu
 Text.ToolDefaults	Ez dago erreminta-taulan; kontuz hartutako balioak erabiltzen dira erreminta honetarako
 Text.RackGap	Erreminta-aldatzailearen leku batek ez du posiziorik makinaren fitxategian
 Text.LevelServer	Altuera-mapa ezin da erabili lana zerbitzaritik pasatzen denean

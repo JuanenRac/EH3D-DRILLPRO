@@ -242,6 +242,7 @@ CText.BCont	~C~ontin.
 Text.StatusMain	Esc: înapoi   Enter: acceptă   ↑/↓: mișcare
 CText.QInterrupted	ÎNTRERUPT
 Text.SpindleLimit	Limita arborelui:
+Text.ChainDropped	Server: schimbările de sculă nu sunt înlănțuite
 Text.ToolDefaults	Nu este în tabelul de scule; pentru sculă se folosesc valori prudente
 Text.RackGap	Un loc al schimbătorului de scule nu are poziție în fișierul mașinii
 Text.LevelServer	Harta înălțimilor nu poate fi folosită când lucrarea trece prin server

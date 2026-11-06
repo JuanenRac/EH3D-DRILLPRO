@@ -242,6 +242,7 @@ CText.BCont	~N~adalj.
 Text.StatusMain	Esc: nazaj   Enter: potrdi   ↑/↓: premik
 CText.QInterrupted	PREKINJENO
 Text.SpindleLimit	Omejitev vretena:
+Text.ChainDropped	Strežnik: menjave orodij niso povezane v verigo
 Text.ToolDefaults	Ni v tabeli orodij; za orodje se uporabijo previdne vrednosti
 Text.RackGap	Mesto menjalnika orodij nima položaja v datoteki stroja
 Text.LevelServer	Višinskega zemljevida ni mogoče uporabiti, ko opravilo poteka prek strežnika

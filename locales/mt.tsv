@@ -242,6 +242,7 @@ CText.BCont	~K~ompli
 Text.StatusMain	Esc: lura   Enter: aċċetta   ↑/↓: mexxi
 CText.QInterrupted	IMWAQQAF
 Text.SpindleLimit	Limitu tal-ispindle:
+Text.ChainDropped	Server: il-bdil tal-għodod mhux marbut f'katina
 Text.ToolDefaults	Mhux fit-tabella tal-għodod; jintużaw valuri kawti għall-għodda
 Text.RackGap	Post tal-bdiel tal-għodda m'għandux pożizzjoni fil-fajl tal-magna
 Text.LevelServer	Il-mappa tal-għoli ma tistax tintuża meta x-xogħol jgħaddi mis-server

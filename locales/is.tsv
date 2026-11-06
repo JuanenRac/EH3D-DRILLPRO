@@ -242,6 +242,7 @@ CText.BCont	Á~f~ram
 Text.StatusMain	Esc: til baka   Enter: samþykkja   ↑/↓: færa
 CText.QInterrupted	TRUFLAÐ
 Text.SpindleLimit	Hámark spindils:
+Text.ChainDropped	Þjónn: verkfæraskipti eru ekki keðjuð
 Text.ToolDefaults	Ekki í verkfæratöflunni; varfærin gildi eru notuð fyrir verkfæri
 Text.RackGap	Staður verkfæraskiptarans hefur enga staðsetningu í vélarskránni
 Text.LevelServer	Ekki er hægt að nota hæðarkortið þegar verkið fer um þjóninn

@@ -242,6 +242,7 @@ CText.BCont	~P~okrač.
 Text.StatusMain	Esc: zpět   Enter: potvrdit   ↑/↓: pohyb
 CText.QInterrupted	PŘERUŠENO
 Text.SpindleLimit	Omezení vřetena:
+Text.ChainDropped	Server: výměny nástrojů nejsou zřetězeny
 Text.ToolDefaults	Není v tabulce nástrojů; pro nástroj se použijí opatrné hodnoty
 Text.RackGap	Místo výměníku nástrojů nemá v souboru stroje polohu
 Text.LevelServer	Mapu výšek nelze použít, když úloha prochází serverem

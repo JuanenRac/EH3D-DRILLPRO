@@ -242,6 +242,7 @@ CText.BCont	~T~ovább
 Text.StatusMain	Esc: vissza   Enter: elfogad   ↑/↓: mozgás
 CText.QInterrupted	MEGSZAKÍTVA
 Text.SpindleLimit	Az orsó határa:
+Text.ChainDropped	Szerver: a szerszámcserék nincsenek láncolva
 Text.ToolDefaults	Nincs a szerszámtáblázatban; a szerszámhoz óvatos értékek lesznek használva
 Text.RackGap	A szerszámcserélő egyik helyének nincs pozíciója a gépfájlban
 Text.LevelServer	A magassági térkép nem használható, ha a munka a szerveren megy át

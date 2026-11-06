@@ -242,6 +242,7 @@ CText.BCont	~V~azhdo
 Text.StatusMain	Esc: kthehu   Enter: prano   ↑/↓: lëviz
 CText.QInterrupted	NDËRPRERË
 Text.SpindleLimit	Kufiri i boshtit:
+Text.ChainDropped	Serveri: ndërrimet e mjeteve nuk janë të lidhura në zinxhir
 Text.ToolDefaults	Nuk është në tabelën e veglave; për veglën përdoren vlera të kujdesshme
 Text.RackGap	Një vend i ndërruesit të veglave nuk ka pozicion në skedarin e makinës
 Text.LevelServer	Harta e lartësive nuk mund të përdoret kur puna kalon nga serveri
