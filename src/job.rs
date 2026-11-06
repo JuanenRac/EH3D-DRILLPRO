@@ -245,6 +245,23 @@ pub fn job_rack(
     Ok(Some(rack))
 }
 
+/// The same rack for a job that is one of several in a load: its tools are in the places after the ones of the jobs before, and the chuck is handed on
+/// as the options say. A job on its own gets the rack of [`job_rack`].
+pub fn job_rack_for(
+    settings: Option<&MachineSettings>,
+    tools: usize,
+    options: &JobOptions,
+) -> Result<Option<Rack>, RackRefusal> {
+    let rack = job_rack(settings, tools + options.rack_first)?;
+    Ok(rack.map(|r| {
+        r.in_load(
+            options.rack_first,
+            options.rack_carry_in,
+            options.rack_carry_out,
+        )
+    }))
+}
+
 /// The warning for tools that run with the cautious defaults: the text of the language, the numbers of the tools and, for each whose line of the table could not be
 /// read, that line.
 pub fn tool_defaults_message(text: &str, missing: &[u8], bad: &[(usize, String)]) -> String {
@@ -459,6 +476,11 @@ pub struct JobOptions {
     pub skip_tools: Vec<u8>,
     /// The height map of the table: the holes are drilled to the same depth into the board wherever the table is high or low.
     pub table: Option<eh3d_levelling::HeightMap>,
+    /// The tool changer, when the job is one of several that share a load of the rack (the drilling and then the routing): how many places the tools of the
+    /// jobs before it take, whether the chuck comes from the job before holding its last tool, and whether this job leaves its last tool in the chuck for the next.
+    pub rack_first: usize,
+    pub rack_carry_in: bool,
+    pub rack_carry_out: bool,
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.

@@ -421,7 +421,7 @@ impl App {
         let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
         used.sort_unstable();
         used.dedup();
-        let rack = crate::job::job_rack(self.settings.as_ref(), used.len())
+        let rack = crate::job::job_rack_for(self.settings.as_ref(), used.len(), &self.job_options)
             .map_err(|why| why.message(self.lang))?;
         let (items, _marks) = plan_drill_job_marked(
             &self.job_machine(),
@@ -536,13 +536,14 @@ impl App {
         let mut used: Vec<u8> = job_holes.iter().map(|h| h.tool).collect();
         used.sort_unstable();
         used.dedup();
-        let rack = match crate::job::job_rack(self.settings.as_ref(), used.len()) {
-            Ok(rack) => rack,
-            Err(why) => {
-                self.error = Some(why.message(self.lang));
-                return;
-            }
-        };
+        let rack =
+            match crate::job::job_rack_for(self.settings.as_ref(), used.len(), &self.job_options) {
+                Ok(rack) => rack,
+                Err(why) => {
+                    self.error = Some(why.message(self.lang));
+                    return;
+                }
+            };
         let (items, marks) = plan_drill_job_marked(
             &self.job_machine(),
             &tools,

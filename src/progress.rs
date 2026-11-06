@@ -38,6 +38,12 @@ pub fn play(sim: &mut Simulator, item: &Item) {
     }
 }
 
+/// How many steps apart the points are that the track of the head keeps inside an item (a whole path of the router is one item: its corners must be in the track).
+pub const TRACK_EVERY_STEPS: usize = 32;
+
+/// One point of the track of the head inside an item: the seconds from the start of the item, and X, Y and Z in mm from the switches.
+type TrackPoint = (f64, (f64, f64, f64));
+
 /// The time of every item of a plan, added up, and the items that end a unit of work (a hole, a path).
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct Progress {
@@ -47,6 +53,9 @@ pub struct Progress {
     /// `ends[i]` is where the head is (X, Y, Z in mm from the switches) after the items before the `i`-th; one more entry than items, empty when the
     /// positions were not asked for (see [`Progress::with_track`]).
     ends: Vec<(f64, f64, f64)>,
+    /// For each item that moves the axes, the points the head passes inside it (so that a path of the router, which is one item, is followed along its corners and
+    /// not in a straight line from where it begins to where it ends); empty with `ends`.
+    inner: Vec<Vec<TrackPoint>>,
 }
 
 impl Progress {
@@ -63,6 +72,7 @@ impl Progress {
             before,
             marks: marks.to_vec(),
             ends: Vec::new(),
+            inner: Vec::new(),
         }
     }
 
@@ -99,10 +109,22 @@ impl Progress {
             (f(0), f(1), f(2))
         };
         let mut ends = Vec::with_capacity(items.len() + 1);
+        let mut inner: Vec<Vec<TrackPoint>> = Vec::with_capacity(items.len());
         ends.push(mm(&at));
         for item in items {
+            let mut way: Vec<TrackPoint> = Vec::new();
             match item {
-                Item::Steps(s) | Item::Search(s) | Item::Seek(s) => apply(s, &mut at),
+                Item::Steps(s) | Item::Search(s) | Item::Seek(s) => {
+                    way.push((0.0, mm(&at)));
+                    let mut t = 0.0;
+                    for (k, st) in s.iter().enumerate() {
+                        apply(std::slice::from_ref(st), &mut at);
+                        t += st.delay_us / 1e6;
+                        if (k + 1).is_multiple_of(TRACK_EVERY_STEPS) || k + 1 == s.len() {
+                            way.push((t, mm(&at)));
+                        }
+                    }
+                }
                 Item::Unstick(u) => {
                     apply(&u.x, &mut at);
                     apply(&u.y, &mut at);
@@ -110,8 +132,10 @@ impl Progress {
                 _ => {}
             }
             ends.push(mm(&at));
+            inner.push(way);
         }
         self.ends = ends;
+        self.inner = inner;
         self
     }
 
@@ -123,6 +147,28 @@ impl Progress {
         let from = self.ends[at];
         if at >= items {
             return Some(from);
+        }
+        // inside an item that has its points: between the two the head is passing
+        if let Some(way) = self.inner.get(at).filter(|w| w.len() > 1) {
+            let t = into_item.max(0.0);
+            let j = way.partition_point(|(tk, _)| *tk <= t);
+            if j == 0 {
+                return Some(way[0].1);
+            }
+            if j >= way.len() {
+                return Some(way[way.len() - 1].1);
+            }
+            let ((t0, p0), (t1, p1)) = (way[j - 1], way[j]);
+            let k = if t1 > t0 {
+                ((t - t0) / (t1 - t0)).clamp(0.0, 1.0)
+            } else {
+                0.0
+            };
+            return Some((
+                p0.0 + (p1.0 - p0.0) * k,
+                p0.1 + (p1.1 - p0.1) * k,
+                p0.2 + (p1.2 - p0.2) * k,
+            ));
         }
         let to = self.ends[at + 1];
         let dur = self.before.get(at + 1).map_or(0.0, |e| e - self.before[at]);
@@ -324,5 +370,37 @@ mod tests {
         assert!(x.abs() < 0.01, "the head stops on its switch: {x}");
         // past the end it stays where the plan ends
         assert_eq!(p.head_mm(99, 0.0), p.head_mm(3, 0.0));
+    }
+
+    #[test]
+    fn a_single_item_with_a_corner_is_followed_round_the_corner() {
+        let g = crate::protocol::motion::Geometry::default();
+        let per_mm = g.steps_per_mm_xy * g.correction.0;
+        let n = (20.0 * per_mm).round() as usize;
+        // one item (as a whole path of the router is): 20 mm along X and then 20 mm along Y
+        let leg = |byte| {
+            vec![
+                Step {
+                    byte,
+                    delay_us: 500.0
+                };
+                n
+            ]
+        };
+        let mut steps = leg(bits::X_POS);
+        steps.extend(leg(bits::Y_POS));
+        let items = vec![Item::Steps(steps)];
+        let p = Progress::new(&items, &[0]).with_track(&items, &g);
+        // at the end of the first leg the head is at the corner, not half way along the diagonal
+        let (x, y, _) = p.head_mm(0, n as f64 * 500e-6).unwrap();
+        assert!((x - 20.0).abs() < 1.0 && y.abs() < 1.0, "{x} {y}");
+        // half way up the second leg
+        let (x, y, _) = p.head_mm(0, n as f64 * 1.5 * 500e-6).unwrap();
+        assert!((x - 20.0).abs() < 1.0 && (y - 10.0).abs() < 1.0, "{x} {y}");
+        // the start and the end of the item
+        let (x, y, _) = p.head_mm(0, 0.0).unwrap();
+        assert!(x.abs() < 0.1 && y.abs() < 0.1);
+        let (x, y, _) = p.head_mm(1, 0.0).unwrap();
+        assert!((x - 20.0).abs() < 0.1 && (y - 20.0).abs() < 0.1);
     }
 }

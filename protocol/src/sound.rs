@@ -349,11 +349,64 @@ fn players(path: &Path) -> Vec<(String, Vec<String>)> {
     }
 }
 
+/// The notes of the notice that a part of the job is done and the next one follows (the drilling is done, the routing comes next): two short bells and a
+/// rise, so that it is not taken for the end of the job.
+const STAGE_NOTES: &[(f32, u32)] = &[
+    (783.99, 120),
+    (0.0, 50),
+    (783.99, 120),
+    (0.0, 50),
+    (987.77, 300),
+];
+
+/// The recording of the notice that a part of the job is done and the next follows (`stage.wav`), when it is there.
+pub fn voice_stage_file(root: &Path, lang: &str, female: bool) -> Option<PathBuf> {
+    let p = root
+        .join(lang)
+        .join(if female { "f" } else { "m" })
+        .join("stage.wav");
+    p.is_file().then_some(p)
+}
+
+/// The file of the notice between two parts of a job, for the setting of the sound of the end of the job: the voice that is chosen says it when its recording
+/// is there, and any other sound (or a voice with no recording of it) is the tone of the notice, which is not the tone of the end. `None` when there is no sound.
+pub fn stage_file(setting: &SoundSetting) -> Option<PathBuf> {
+    if !setting.is_on() {
+        return None;
+    }
+    if let SoundSetting::Voice { lang, female } = setting {
+        if let Some(p) = voices_dir().and_then(|d| voice_stage_file(&d, lang, *female)) {
+            return Some(p);
+        }
+    }
+    let path = std::env::temp_dir().join("eh3d-sound-stage.wav");
+    if !path.is_file() {
+        std::fs::write(&path, stage_wav()).ok()?;
+    }
+    Some(path)
+}
+
+/// The tone of the notice between two parts of a job as a WAV file.
+pub fn stage_wav() -> Vec<u8> {
+    wav_of(STAGE_NOTES)
+}
+
+/// Plays the notice between two parts of a job if the sound of the end of the job is on. It returns at once.
+pub fn play_stage(setting: &SoundSetting) {
+    if let Some(path) = stage_file(setting) {
+        play_file(path);
+    }
+}
+
 /// Plays the sound of a cue if the setting asks for one. It returns at once.
 pub fn play(setting: &SoundSetting, cue: Cue) {
     let Some(path) = file_for(setting, cue) else {
         return;
     };
+    play_file(path);
+}
+
+fn play_file(path: PathBuf) {
     std::thread::spawn(move || {
         for (cmd, args) in players(&path) {
             let mut c = std::process::Command::new(&cmd);
@@ -588,5 +641,28 @@ sound_tool_change = C:\sounds\ding.wav
             (d.sound_finish, d.sound_tool_change),
             (SoundSetting::Off, SoundSetting::Off)
         );
+    }
+
+    #[test]
+    fn the_notice_between_two_parts_of_a_job_is_not_the_sound_of_the_end() {
+        assert_ne!(stage_wav(), tone_wav(Cue::Finished));
+        assert_ne!(stage_wav(), tone_wav(Cue::ToolChange));
+        assert!(stage_file(&SoundSetting::Off).is_none());
+        // any sound that is on gives a file, and a voice with no recording of it gives the tone
+        let tone = stage_file(&SoundSetting::Default).unwrap();
+        assert!(tone.is_file());
+        let missing = SoundSetting::Voice {
+            lang: "xx".into(),
+            female: false,
+        };
+        assert_eq!(stage_file(&missing), Some(tone));
+        // the recording is used when it is in the folder
+        let dir = std::env::temp_dir().join(format!("eh3d-voices-stage-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(dir.join("es").join("m"));
+        assert!(voice_stage_file(&dir, "es", false).is_none());
+        std::fs::write(dir.join("es").join("m").join("stage.wav"), stage_wav()).unwrap();
+        assert!(voice_stage_file(&dir, "es", false).is_some());
+        assert!(voice_stage_file(&dir, "es", true).is_none());
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

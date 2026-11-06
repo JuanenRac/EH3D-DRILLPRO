@@ -34,6 +34,14 @@ pub struct Rack {
     /// How the chuck moves between the places. Without it the exchange is the one recorded on the original machines (a slide at depth from
     /// one place to the next); with it the used tool is left in its place, the chuck goes up over the tools and the next one is taken.
     pub travel: Option<RackTravel>,
+    /// Places of the rack taken by the tools of the programs that went before this one in the same load (a routing job after a drilling job holds the
+    /// cutters in the places that follow the drills): the tools of this job are in the places `first + 1`, `first + 2`...
+    pub first: usize,
+    /// The chuck holds, when the job starts, the last tool of the job before (in place `first`) instead of the test pin: the first exchange puts it back
+    /// in its place and takes the first tool of this job from its own.
+    pub carry_in: bool,
+    /// The job ends with its last tool still in the chuck, for the job that follows in the same load to put it back in its place and take its own.
+    pub carry_out: bool,
 }
 
 /// The lengths that decide how the chuck gets to a place of the rack and away from it (they come from the machine file).
@@ -56,7 +64,38 @@ impl Rack {
             places,
             defined,
             travel: None,
+            first: 0,
+            carry_in: false,
+            carry_out: false,
         }
+    }
+
+    /// The same rack for a job that follows others in the same load: `first` places are taken by the tools of the jobs before, and the chuck is
+    /// handed on from one job to the next (`carry_in`) and to the next after it (`carry_out`).
+    pub fn in_load(mut self, first: usize, carry_in: bool, carry_out: bool) -> Rack {
+        self.first = first;
+        self.carry_in = carry_in && first > 0;
+        self.carry_out = carry_out;
+        self
+    }
+
+    /// The place the chuck holds a tool from when the first exchange of the job begins (the test pin, or the last tool of the job before).
+    pub fn start_place(&self) -> usize {
+        if self.carry_in {
+            self.first
+        } else {
+            0
+        }
+    }
+
+    /// The place of the tool number `n` (counted from 0) of the job, and the place the chuck comes from for it: the tool before it, or the start place.
+    pub fn exchange(&self, n: usize) -> (usize, usize) {
+        let from = if n == 0 {
+            self.start_place()
+        } else {
+            self.first + n
+        };
+        (from, self.first + n + 1)
     }
 
     /// The same rack with the chuck going over the tools between the places.
@@ -508,6 +547,25 @@ impl<'a> JobBuilder<'a> {
         self.p.rack.is_some()
     }
 
+    /// The places of the exchange for the tool number `n` of the job (counted from 0), as the rack of the job says: the place the chuck comes from and the place
+    /// of the tool. `None` without a rack.
+    pub fn exchange(&self, n: usize) -> Option<(usize, usize)> {
+        self.p.rack.as_ref().map(|r| r.exchange(n))
+    }
+
+    /// Whether the job is handed the chuck by the one before it in the same load, and whether it hands it on to the next (both false without a rack).
+    pub fn carries(&self) -> (bool, bool) {
+        self.p
+            .rack
+            .as_ref()
+            .map_or((false, false), |r| (r.carry_in, r.carry_out))
+    }
+
+    /// The place of the last tool of a job of `tools` tools, which the exchange at the end puts back in its place.
+    pub fn last_place(&self, tools: usize) -> usize {
+        self.p.rack.as_ref().map_or(tools, |r| r.first + tools)
+    }
+
     /// The exchange of the tool in the chuck for the next one: the chuck goes from the place `from` to the place `to` of the rack (place 0 is the
     /// test pin) and the drivers go on again. Nothing is planned without a rack.
     pub fn chuck_swap(&mut self, from: usize, to: usize) {
@@ -707,11 +765,14 @@ fn plan_job(
         if p.rack.is_some() {
             // The tool changer: from the place of the tool that was in the chuck (place 0, the test pin, at the start) to the place of
             // this one, then to the first hole; the drivers go on again before the spindle starts.
-            p.chuck_swap(gi, gi + 1);
+            let (from, to) = p.rack.as_ref().map_or((gi, gi + 1), |r| r.exchange(gi));
+            p.chuck_swap(from, to);
             p.goto_xy(first);
             let on = p.latches.drivers_on();
             p.latch(on);
-            if gi == 0 {
+            // a job that goes on from another one in the same load does not ask for the spindle again
+            let carried = p.rack.as_ref().is_some_and(|r| r.carry_in);
+            if gi == 0 && !carried {
                 p.items.push(Item::Pause(Pause::SpindleStart));
             }
             p.spindle_start(tool.spindle_rpm);
@@ -760,10 +821,13 @@ fn plan_job(
     }
 
     // The last tool goes back to its place and the chuck is left closed on the test pin's place.
-    if p.rack.is_some() {
-        p.chuck_swap(order.len(), 0);
-        let on = p.latches.drivers_on();
-        p.latch(on);
+    // (a job that is followed by another one in the same load leaves it in the chuck: the next one exchanges it)
+    if let Some((first, keep)) = p.rack.as_ref().map(|r| (r.first, r.carry_out)) {
+        if !keep {
+            p.chuck_swap(first + order.len(), 0);
+            let on = p.latches.drivers_on();
+            p.latch(on);
+        }
     }
 
     // Return: Z fine search again, back to the origin, XY search, drivers off.

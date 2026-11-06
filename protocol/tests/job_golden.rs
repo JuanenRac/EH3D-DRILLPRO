@@ -438,3 +438,153 @@ fn a_table_that_is_not_flat_changes_the_depth_of_each_hole_and_nothing_else() {
     assert_eq!(down(&[0.3, 0.3, 0.3]) + steps, flat);
     assert_eq!(down(&[-0.3, -0.3, -0.3]), flat + steps);
 }
+
+/// The items between two dialogs of the operator are one stretch; this says whether a stretch stops the spindle (the braking byte of the control unit, or the
+/// order of 0 rpm to the node) and whether it starts it again.
+fn stretch_stops(items: &[Item], node: bool) -> bool {
+    if node {
+        items
+            .iter()
+            .any(|i| matches!(i, Item::Spindle { rpm: 0, .. }))
+    } else {
+        flatten_bytes(items).contains(&0xD2)
+    }
+}
+
+fn stretch_starts(items: &[Item], node: bool) -> bool {
+    if node {
+        items
+            .iter()
+            .any(|i| matches!(i, Item::Spindle { rpm, .. } if *rpm > 0))
+    } else {
+        flatten_bytes(items).contains(&0x90)
+    }
+}
+
+#[test]
+fn by_hand_the_spindle_is_stopped_before_every_request_to_change_the_tool_and_started_after_it() {
+    for node in [false, true] {
+        let mut m = machine();
+        m.geometry.tuning.spindle_node = node;
+        let tools = [1u8, 2, 3].map(|number| JobTool {
+            number,
+            extra_stroke_mm: 0.0,
+            feed_mm_min: 1000,
+            spindle_rpm: 24_000,
+        });
+        let holes: Vec<JobHole> = (0..6)
+            .map(|i| JobHole {
+                tool: (i / 2 + 1) as u8,
+                x_mm: mil(1000.0 + 500.0 * i as f64),
+                y_mm: mil(1000.0),
+            })
+            .collect();
+        let items = plan_drill_job(&m, &tools, &holes);
+        let pauses: Vec<usize> = items
+            .iter()
+            .enumerate()
+            .filter(|(_, i)| matches!(i, Item::Pause(_)))
+            .map(|(k, _)| k)
+            .collect();
+        let changes: Vec<usize> = pauses
+            .iter()
+            .copied()
+            .filter(|&k| matches!(items[k], Item::Pause(Pause::ToolChange { .. })))
+            .collect();
+        assert_eq!(changes.len(), 3, "node: {node}");
+        for (n, &k) in changes.iter().enumerate() {
+            // after the first dialog the spindle has run: its stop is between the previous dialog and this one
+            if n > 0 {
+                let before = pauses.iter().copied().filter(|&p| p < k).max().unwrap();
+                assert!(
+                    stretch_stops(&items[before + 1..k], node),
+                    "the spindle ran on to the request of tool {} (node: {node})",
+                    n + 1
+                );
+            }
+            // and it is started again once the tool is in (the dialog of the spindle may come first)
+            let after = pauses
+                .iter()
+                .copied()
+                .find(|&p| p > k)
+                .unwrap_or(items.len());
+            let next_change = changes.get(n + 1).copied().unwrap_or(items.len());
+            assert!(
+                stretch_starts(&items[k + 1..next_change.max(after)], node),
+                "the spindle was not started after the tool {} (node: {node})",
+                n + 1
+            );
+        }
+    }
+}
+
+#[test]
+fn the_places_of_a_job_in_a_load_follow_the_ones_before_and_the_chuck_is_handed_on() {
+    let alone = atc_rack();
+    assert_eq!(alone.exchange(0), (0, 1));
+    assert_eq!(alone.exchange(1), (1, 2));
+    // after two drills in the same load, the first cutter is taken from place 3 and the chuck still holds the last drill, which is put back in place 2
+    let routing = atc_rack().in_load(2, true, false);
+    assert_eq!(routing.exchange(0), (2, 3));
+    assert_eq!(routing.exchange(1), (3, 4));
+    // a job that is not handed the chuck starts from the test pin whatever its first place is
+    assert_eq!(atc_rack().in_load(2, false, false).exchange(0), (0, 3));
+    // the first job of a load has nothing to be handed
+    assert_eq!(atc_rack().in_load(0, true, false).exchange(0), (0, 1));
+}
+
+#[test]
+fn a_drilling_job_that_hands_the_chuck_on_does_not_put_its_last_tool_back_and_the_next_does_not_ask_for_the_spindle(
+) {
+    let tool = |n| JobTool {
+        number: n,
+        extra_stroke_mm: 0.1,
+        feed_mm_min: 100,
+        spindle_rpm: 60_000,
+    };
+    let h = |tool, x: f64| JobHole {
+        tool,
+        x_mm: mil(x),
+        y_mm: mil(500.0),
+    };
+    let tools = [tool(1), tool(2)];
+    let holes = [h(1, 500.0), h(2, 1500.0)];
+    let plain = plan_drill_job_marked(&machine(), &tools, &holes, &[], Some(&atc_rack())).0;
+    let handing = plan_drill_job_marked(
+        &machine(),
+        &tools,
+        &holes,
+        &[],
+        Some(&atc_rack().in_load(0, false, true)),
+    )
+    .0;
+    // the exchange at the end (the last tool back in its place and the test pin taken) is left out
+    assert!(handing.len() < plain.len());
+    // a job that goes on from another one in the load plans its exchanges from the place of the tool in the chuck, and asks for no spindle start of its own
+    let spindle_dialogs = |items: &[Item]| {
+        items
+            .iter()
+            .filter(|i| matches!(i, Item::Pause(Pause::SpindleStart)))
+            .count()
+    };
+    let later = plan_drill_job_marked(
+        &machine(),
+        &tools,
+        &holes,
+        &[],
+        Some(&atc_rack().in_load(1, true, false)),
+    )
+    .0;
+    assert_eq!(spindle_dialogs(&plain), 1);
+    assert_eq!(spindle_dialogs(&later), 0);
+    // a job on its own is the same as before this existed
+    let same = plan_drill_job_marked(
+        &machine(),
+        &tools,
+        &holes,
+        &[],
+        Some(&atc_rack().in_load(0, false, false)),
+    )
+    .0;
+    assert_eq!(same, plain);
+}

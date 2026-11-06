@@ -157,6 +157,11 @@ pub trait ClassicEngine {
     fn head_mm(&self) -> Option<(f64, f64, f64)> {
         None
     }
+    /// How far below the surface of the board the tool is, in mm (negative above it), while a job runs and the engine follows the steps of the plan; `None` otherwise. A
+    /// window that marks what the router has cut uses it to tell the head that cuts from the head that travels.
+    fn depth_below_surface_mm(&self) -> Option<f64> {
+        None
+    }
     /// The dialog the job is waiting at, if any.
     fn question(&self) -> Option<Question>;
     /// Answers it: Ok goes on, Abort stops the job.

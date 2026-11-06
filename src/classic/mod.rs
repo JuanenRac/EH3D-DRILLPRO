@@ -727,6 +727,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             skip: 0,
             skip_tools: Vec::new(),
             table: None,
+            ..Default::default()
         }
     }
 
