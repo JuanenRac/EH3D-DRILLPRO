@@ -242,7 +242,7 @@ mod tests {
         assert_eq!(chained["rack"]["carry_in"], true);
         assert_eq!(chained["rack"]["carry_out"], false);
         // taken off again, it is the request of an older server
-        assert_eq!(without_chain(&chained), Some(base));
+        assert_eq!(without_chain(&chained), Some(base.clone()));
         // the places the person gave to the tools go in the rack too, and only when there are some
         assert!(chained["rack"].get("slots").is_none());
         let placed = with_chain(
