@@ -213,6 +213,9 @@ pub fn job_rack(
         places,
         defined,
         travel: None,
+        first: 0,
+        carry_in: false,
+        carry_out: false,
     }
     .with_travel(RackTravel {
         tool_length_mm: r.tool_length_mm,
