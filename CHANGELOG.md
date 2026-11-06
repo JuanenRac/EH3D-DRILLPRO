@@ -3,11 +3,11 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
-- **The Windows executable carries the icon of the program:** the file shows it in the explorer and the taskbar, together with the name, the description and the version, embedded by `build.rs`; other systems are not affected.
-- **The window carries the icon of the program:** the title bar and the task bar show the icon of DRILLPRO.
 
 ## [0.1.5] - Audit fixes, the new reading limits, tests and the application icon
 
+- **The Windows executable carries the icon of the program:** the file shows it in the explorer and the taskbar, together with the name, the description and the version, embedded by `build.rs`; other systems are not affected.
+- **The window carries the icon of the program:** the title bar and the task bar show the icon of DRILLPRO.
 - **The application icon and the logos of the program:** `images/brand/` holds the icon (SVG, PNG sizes, `.ico` and `.icns`), the horizontal and vertical logos in a light and a dark version and the social preview image.
 - **Release builds are checked and attested:** `release-binaries.yml` takes the owner's go-ahead only (a manual start from main, the commit must be part of main), builds the same packages as before, writes `SHA256SUMS` and a build manifest, attests their provenance, verifies the artifact as a stranger would, prepares a draft release of unsigned files only after the owner approves it (a dry run is the default) and opens an issue `build-failed` when anything does not finish.
 - **A plan on paper with no machine (`drillpro-plan`):** `drillpro-plan FILE.NCD [--data DIR] [--lang CODE]` and `App::plan_report` work out what a job would do with the holes, tools, rack and machine file that a start uses and print the facts (holes, tools, steps, holes left out) and the summary (how far each axis goes, the time, the checks of the work and the verdict against the course), in any of the languages of the program. It needs no connection and sends nothing; an option it does not know, a language it does not have or a file it cannot read is an error with exit code 1.
