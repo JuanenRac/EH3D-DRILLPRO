@@ -107,6 +107,16 @@ A place that has no position, or that is past what the machine reaches (the tabl
 depth of Z), stops the job before it starts. A rack built without these data keeps the recorded change above. The new movements are
 checked on the planned steps (`protocol/tests/rack_travel.rs`) and have not run on a real machine.
 
+## The job request to the server (versioned contract)
+
+When the job runs on a server, the program sends a job request (`POST /api/v1/machines/{id}/jobs`). A request that chains the tool changer carries `request_version: 2` and a `rack` object (`first`, `carry_in`, `carry_out`, `slots`, `carry_slot`); a request without chaining is the request of the first version, with neither field. The module `work_contract` holds the pure part of this contract, so the program and the server can be held to the same words:
+
+- `check_rack_options` makes the checks the server makes of a `rack` (`bad_rack`), in the same order and with the same sentence in `detail`; `refusal_detail` tells in the same words what the local planner refuses when the machine file does not fit (a place it does not define, one out of reach, more tools than the rack holds).
+- `chain_answer` reads `rack_applied` and the warnings `rack_needs_v2`, `rack_no_changer`, `rack_unknown_field` and `request_version_newer` of the answer; a code it does not know is kept as it came. A request that asked for chaining and is not answered with `rack_applied: true` is shown to the person as not chained.
+- `unknown_rack_fields` and `chain_options` check that the program sends only the fields the server knows and that reading a request gives the options back.
+
+The files the program opens are held to wide limits before the reader sees them (`input_guard`): at most 64 MiB, no character 0, lines of at most 16384 characters in drill files and drawings, and no number of more than 40 digits in a row. A file outside them is turned down with a stable code and the number of its line: `input_too_large`, `input_binary`, `input_line_too_long`, `input_number_too_long`.
+
 ## Safety in this project
 
 The `protocol` crate has a safety gate: a `Machine` refuses to move anything until it has been armed. A real connection in the machine file is the operator's statement that the machine is ready. `Esc` cancels a job within a fraction of a second and switches the stepper drivers off, also after an error or when the link drops. The limit switches are watched by the control unit itself; this software has no emergency stop of its own.

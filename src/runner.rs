@@ -365,7 +365,7 @@ fn follow_on_server(
             (status, job) = client.call("POST", &jobs_path, Some(&plain))?;
             chain_dropped = true;
         }
-    } else if status == 200 && request.get("rack").is_some() && job["rack_applied"] != true {
+    } else if status == 200 && crate::work_contract::rack_ignored(request, &job) {
         // a server that takes the field but does not say it used it
         chain_dropped = true;
     }

@@ -7,6 +7,7 @@ pub mod crash;
 pub mod dryrun;
 pub use eh3d_bungard_formats::config;
 pub mod i18n;
+pub mod input_guard;
 pub mod job;
 pub mod progress;
 pub use eh3d_bungard_formats::ncd;
@@ -18,6 +19,7 @@ pub mod server_link;
 pub mod summary;
 pub mod textapp;
 pub mod texts;
+pub mod work_contract;
 pub use eh3d_bungard_formats::drill_tools as tools;
 
 #[cfg(feature = "console")]

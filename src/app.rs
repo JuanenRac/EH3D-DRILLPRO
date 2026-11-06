@@ -210,6 +210,11 @@ impl App {
                 return;
             }
         };
+        // a file that is far too big, not text or with absurd numbers is turned down with its code and line before the reader sees it
+        if let Err(problem) = crate::input_guard::check(crate::input_guard::InputKind::Ncd, &text) {
+            self.error = Some(format!("{}: {problem}", tr(self.lang, Text::ErrRead)));
+            return;
+        }
         match ncd::parse(&text) {
             Ok(file) if !file.ignored.is_empty() => {
                 // a slot or a routed move would vanish from the job: the file is not taken
