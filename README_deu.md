@@ -110,25 +110,25 @@ Wie die Teile dieses Repositorys zusammenpassen: wer es nutzt, was es enthält u
 ## 🖼️ Screenshots
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="Hauptbildschirm des klassischen Programms" width="80%">
 </p>
 
 <p align="center"><em>Die Hauptmaske des klassischen Programms, so wie das eigene Programm der Maschine sie zeichnet: Maßstab, Versatz und Beschnitt, die Vektoren des Auftrags und die Tasten.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="Fenster mit den Werkzeugdaten" width="80%">
 </p>
 
 <p align="center"><em>Die Werkzeugdaten: der Zusatzhub, der Vorschub und die Spindeldrehzahl jedes Platzes des Wechslers und wie viel jedes Werkzeug benutzt wurde.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="Parameterfenster der Maschine" width="80%">
 </p>
 
 <p align="center"><em>Die Parameter der Maschine: die Koordinaten der Dateien, die Sortierung der Löcher, die Geschwindigkeiten, die Rampen, die Korrektur und die Sprache.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="Verbindung zur Maschine mit der Liste der möglichen Wege" width="80%">
 </p>
 
 <p align="center"><em>Die Verbindung mit der Maschine: der in der Auswahlliste gewählte Weg und was er braucht (hier der EH3D-Server).</em></p>

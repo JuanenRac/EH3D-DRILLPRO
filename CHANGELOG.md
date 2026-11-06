@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- Screenshots of the application in the README.
 - **The tools of a job can be taken from the places of the rack that the person gave them:** `JobOptions` has `rack_slots` (the tool number and its place) and `rack_carry_slot` (the place of the tool the chuck comes holding), and the rack of the job carries them: every exchange of the job - taking a tool, putting the used one back, the one the chuck hands on to the next job and the last one at the end - goes to the place given to that tool, and a tool without a place is taken from the place the order of the job gives it, as before. A job with places is refused, with the number of the place, when one is not defined in the machine file or is where the machine does not reach. The request to the server carries them in `rack.slots` and `rack.carry_slot`. With tests of the order of the chuck for places that are not in the order of the job, of the chaining with places and of the checks.
 - **A drilling job sent to the server carries the chaining of the tool changer:** the request has the optional `rack` field (`first`, `carry_in`, `carry_out`, with `request_version` 2) when the job is one of a chain, and is the request of before when it is not. A server that turns the field down (400 or 422) gets the job again without it, and one that does not answer `rack_applied` is noticed too: the run window says in red that the tool changes were not chained. With tests of the request with and without chaining.
 

@@ -110,25 +110,25 @@ EH3D-DRILLPRO 是 EH3D 家族中的独立程序，面向其控制单元需要由
 ## 🖼️ 屏幕截图
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="经典程序的主屏幕" width="80%">
 </p>
 
 <p align="center"><em>经典程序的主界面，与机器自带程序的画法一致：比例、偏移和裁剪、作业的矢量以及按钮。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="刀具数据窗口" width="80%">
 </p>
 
 <p align="center"><em>刀具数据：换刀器每个位置的附加行程、进给和主轴转速，以及每把刀具的使用量。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="机器参数窗口" width="80%">
 </p>
 
 <p align="center"><em>机器参数：文件的坐标、孔的排序、速度、加减速、修正和语言。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="与机器的连接，以及连接方式的列表" width="80%">
 </p>
 
 <p align="center"><em>与机床的连接：在下拉列表中选择的方式及其所需内容（此处为 EH3D 服务器）。</em></p>

@@ -110,25 +110,25 @@ EH3D-DRILLPRO は、制御ユニットがすべてのモーターステップを
 ## 🖼️ スクリーンショット
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="クラシック版プログラムのメイン画面" width="80%">
 </p>
 
 <p align="center"><em>クラシック版のメイン画面。マシン付属のプログラムと同じ描き方で、倍率、オフセット、クリップ、ジョブのベクトル、ボタンを表示します。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="工具データのウィンドウ" width="80%">
 </p>
 
 <p align="center"><em>ツールデータ：ツールチェンジャーの各位置の追加ストローク、送り、主軸回転数と、各ツールの使用量。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="マシンのパラメータのウィンドウ" width="80%">
 </p>
 
 <p align="center"><em>マシンのパラメーター：ファイルの座標、穴の並べ替え、速度、ランプ、補正、言語。</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="マシンとの接続と、接続方法の一覧" width="80%">
 </p>
 
 <p align="center"><em>マシンとの接続：ドロップダウンで選んだ方法と必要なもの（ここでは EH3D サーバー）。</em></p>

@@ -110,25 +110,25 @@ Come si incastrano le parti di questo repository: chi lo usa, che cosa contiene 
 ## 🖼️ Schermate
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="Schermata principale del programma classico" width="80%">
 </p>
 
 <p align="center"><em>La schermata principale del programma classico, come la disegna il programma della macchina: scala, offset e ritaglio, i vettori del lavoro e i pulsanti.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="Finestra dei dati degli utensili" width="80%">
 </p>
 
 <p align="center"><em>I dati degli utensili: la corsa extra, l'avanzamento e la velocità del mandrino di ogni posto del cambio, e quanto è stato usato ogni utensile.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="Finestra dei parametri della macchina" width="80%">
 </p>
 
 <p align="center"><em>I parametri della macchina: le coordinate dei file, l'ordinamento dei fori, le velocità, le rampe, la correzione e la lingua.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="Connessione con la macchina, con l'elenco dei modi per raggiungerla" width="80%">
 </p>
 
 <p align="center"><em>La connessione con la macchina: il modo scelto nel menu a tendina e ciò che serve (qui il server EH3D).</em></p>

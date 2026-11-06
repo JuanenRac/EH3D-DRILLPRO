@@ -110,25 +110,25 @@ Comment les parties de ce dépôt s'articulent : qui l'utilise, ce qu'il contien
 ## 🖼️ Captures d'écran
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="Écran principal du programme classique" width="80%">
 </p>
 
 <p align="center"><em>L'écran principal du programme classique, tel que le dessine le programme propre à la machine : l'échelle, le décalage et la coupe, les vecteurs du travail et les boutons.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="Fenêtre des données d'outils" width="80%">
 </p>
 
 <p align="center"><em>Les données d'outils : la course supplémentaire, l'avance et la vitesse de la broche de chaque place du changeur, et combien chaque outil a servi.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="Fenêtre des paramètres de la machine" width="80%">
 </p>
 
 <p align="center"><em>Les paramètres de la machine : les coordonnées des fichiers, le tri des trous, les vitesses, les rampes, la correction et la langue.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="Connexion avec la machine, avec la liste des façons de l'atteindre" width="80%">
 </p>
 
 <p align="center"><em>La connexion avec la machine : la façon choisie dans la liste et ce qu'elle demande (ici le serveur EH3D).</em></p>

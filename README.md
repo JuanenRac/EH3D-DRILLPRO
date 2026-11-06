@@ -110,25 +110,25 @@ How the parts of this repository fit together: who uses it, what it holds and wh
 ## 🖼️ Screenshots
 
 <p align="center">
-  <img src="images/screenshots/main.png" alt="main screen" width="80%">
+  <img src="images/screens/drillpro-01-main.png" alt="Main screen of the classic program" width="80%">
 </p>
 
 <p align="center"><em>The main screen of the classic program, as the machine's own program draws it: the scale, the offset and the clip, the vectors of the job and the buttons.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/tools.png" alt="tool data" width="80%">
+  <img src="images/screens/drillpro-02-tools.png" alt="Tool data window" width="80%">
 </p>
 
 <p align="center"><em>The tool data: the extra stroke, the feed and the spindle speed of every place of the tool changer, and how much each tool has been used.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/config.png" alt="parameters" width="80%">
+  <img src="images/screens/drillpro-03-config.png" alt="Parameters window of the machine" width="80%">
 </p>
 
 <p align="center"><em>The parameters of the machine: the coordinates of the files, the sorting of the holes, the speeds, the ramps, the correction and the language.</em></p>
 
 <p align="center">
-  <img src="images/screenshots/connection.png" alt="connection" width="80%">
+  <img src="images/screens/drillpro-04-connection.png" alt="Connection with the machine, with the list of the ways to reach it" width="80%">
 </p>
 
 <p align="center"><em>The connection with the machine: the way chosen in the drop-down and what it needs (here the EH3D server).</em></p>
