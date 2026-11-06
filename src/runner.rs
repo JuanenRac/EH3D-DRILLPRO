@@ -49,6 +49,8 @@ pub struct ServerNotes {
     /// The turns of the spindle and the temperature the node of the head reports.
     pub head_rpm: Option<f64>,
     pub head_temp_c: Option<f64>,
+    /// The job asked the server to chain the tool changes and the server did not (an older one): every tool went back to its place.
+    pub chain_dropped: bool,
 }
 
 impl ServerNotes {
@@ -349,16 +351,24 @@ fn follow_on_server(
     items_total: usize,
     shared: &Shared,
 ) -> Result<(), String> {
-    use crate::server_link::{error_text, Client};
+    use crate::server_link::{chain_refused, error_text, without_chain, Client};
     let client = Client::new(config);
     if client.address.is_empty() || client.machine.is_empty() {
         return Err("server_address and server_machine are not set in the connection file".into());
     }
-    let (status, job) = client.call(
-        "POST",
-        &format!("/api/v1/machines/{}/jobs", path_segment(&client.machine)),
-        Some(request),
-    )?;
+    let jobs_path = format!("/api/v1/machines/{}/jobs", path_segment(&client.machine));
+    let (mut status, mut job) = client.call("POST", &jobs_path, Some(request))?;
+    let mut chain_dropped = false;
+    if chain_refused(status) {
+        // an older server turns the chaining down: the job goes again without it and the run says so
+        if let Some(plain) = without_chain(request) {
+            (status, job) = client.call("POST", &jobs_path, Some(&plain))?;
+            chain_dropped = true;
+        }
+    } else if status == 200 && request.get("rack").is_some() && job["rack_applied"] != true {
+        // a server that takes the field but does not say it used it
+        chain_dropped = true;
+    }
     if status != 200 {
         return Err(error_text(status, &job));
     }
@@ -368,6 +378,7 @@ fn follow_on_server(
         .to_string();
     if let Ok(mut n) = shared.notes.lock() {
         n.spindle_warnings = spindle_notes(&job["view"]);
+        n.chain_dropped = chain_dropped;
     }
     let (status, answer) = client.call(
         "POST",

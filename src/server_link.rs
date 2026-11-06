@@ -157,6 +157,39 @@ fn unchunk(mut rest: &[u8]) -> Result<Vec<u8>, String> {
     }
 }
 
+/// Version of the job request that carries the chaining of the tool changer (`rack`); a request without it is the first version and has no `request_version`.
+pub const REQUEST_VERSION_CHAINED: u64 = 2;
+
+/// Puts the chaining of the tool changer into a job request: where the rack of this job starts, whether the chuck comes holding the last tool of the job before
+/// and whether this job leaves its last tool in the chuck for the next. A job with the defaults (no chaining) is left as it was, so a server that
+/// does not know the field gets exactly the request it always got.
+pub fn with_chain(mut request: Value, options: &crate::job::JobOptions) -> Value {
+    if options.rack_first == 0 && !options.rack_carry_in && !options.rack_carry_out {
+        return request;
+    }
+    request["request_version"] = Value::from(REQUEST_VERSION_CHAINED);
+    request["rack"] = serde_json::json!({
+        "first": options.rack_first,
+        "carry_in": options.rack_carry_in,
+        "carry_out": options.rack_carry_out,
+    });
+    request
+}
+
+/// The same request without the chaining (what an older server takes), or `None` when it had none.
+pub fn without_chain(request: &Value) -> Option<Value> {
+    let mut plain = request.clone();
+    let map = plain.as_object_mut()?;
+    map.remove("rack")?;
+    map.remove("request_version");
+    Some(plain)
+}
+
+/// The server turned a job down for a field it does not know: an old server answers 400 or 422 to the chaining of the request.
+pub fn chain_refused(status: u16) -> bool {
+    status == 400 || status == 422
+}
+
 /// What the server says went wrong, as one line.
 pub fn error_text(status: u16, body: &Value) -> String {
     match (body["error"].as_str(), body["detail"].as_str()) {
@@ -169,6 +202,34 @@ pub fn error_text(status: u16, body: &Value) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_chaining_goes_into_the_request_only_when_there_is_one() {
+        use crate::job::JobOptions;
+        let base = serde_json::json!({"kind": "drill", "name": "a"});
+        // no chaining: the request is the one of always
+        let plain = with_chain(base.clone(), &JobOptions::default());
+        assert_eq!(plain, base);
+        assert!(without_chain(&plain).is_none());
+        // with chaining: a versioned request with the three values
+        let chained = with_chain(
+            base.clone(),
+            &JobOptions {
+                rack_first: 3,
+                rack_carry_in: true,
+                rack_carry_out: false,
+                ..JobOptions::default()
+            },
+        );
+        assert_eq!(chained["request_version"], 2);
+        assert_eq!(chained["rack"]["first"], 3);
+        assert_eq!(chained["rack"]["carry_in"], true);
+        assert_eq!(chained["rack"]["carry_out"], false);
+        // taken off again, it is the request of an older server
+        assert_eq!(without_chain(&chained), Some(base));
+        assert!(chain_refused(400) && chain_refused(422));
+        assert!(!chain_refused(200) && !chain_refused(401) && !chain_refused(500));
+    }
 
     #[test]
     fn names_become_one_safe_segment_and_a_request_cannot_be_split() {

@@ -590,13 +590,8 @@ impl App {
                 .file_name()
                 .map(|n| n.to_string_lossy().to_string())
                 .unwrap_or_default();
-            let request = server_drill_request(
-                &name,
-                self.board_mm,
-                &tools,
-                &job_holes,
-                &self.job_options.skip_tools,
-            );
+            let request =
+                server_drill_request(&name, self.board_mm, &tools, &job_holes, &self.job_options);
             (
                 true,
                 Some(RealRun::start_on_server(
@@ -1128,9 +1123,9 @@ impl App {
     }
 
     fn render_run(&self, s: &mut Screen) {
-        // a job on the server has two more lines: the excesses of the spindle it cut and what the node of the head says
+        // a job on the server has three more lines: the excesses of the spindle it cut, what the node of the head says and the chaining it did not do
         let h = if self.connection.kind == ConnectionKind::Server {
-            13
+            14
         } else {
             11
         };
@@ -1257,6 +1252,13 @@ impl App {
                     let text = format!("{label}: {line}");
                     s.text(x + 2, y + 11, &text, BLACK, WIN_BG);
                 }
+                if notes.chain_dropped {
+                    let text: String = tr(self.lang, Text::ChainDropped)
+                        .chars()
+                        .take(w - 4)
+                        .collect();
+                    s.text(x + 2, y + 12, &text, RED, WIN_BG);
+                }
             }
         } else {
             s.text(
@@ -1353,15 +1355,17 @@ impl TextApp for App {
 }
 
 /// The job as the server's interface takes it. The holes are those the program chose (the tools that are switched off and the holes already done are
-/// left out of them); the switched-off tools go along too, so the server leaves them out by itself and shows them in the view of the job.
+/// left out of them); the switched-off tools go along too (`options.skip_tools`), so the server leaves them out by itself and shows them in the view of the job.
+/// When the job is one of a chain on the tool changer (`options.rack_*`) the request carries it as a versioned `rack` field; without chaining it is the
+/// request of the first version.
 pub fn server_drill_request(
     name: &str,
     board_mm: f64,
     tools: &[JobTool],
     holes: &[JobHole],
-    skip_tools: &[u8],
+    options: &crate::job::JobOptions,
 ) -> serde_json::Value {
-    serde_json::json!({
+    let request = serde_json::json!({
         "kind": "drill",
         "name": name,
         "board_mm": board_mm,
@@ -1374,8 +1378,9 @@ pub fn server_drill_request(
         "holes": holes.iter().map(|h| serde_json::json!({
             "tool": h.tool, "x_mm": h.x_mm, "y_mm": h.y_mm,
         })).collect::<Vec<_>>(),
-        "skip_tools": skip_tools,
-    })
+        "skip_tools": options.skip_tools,
+    });
+    crate::server_link::with_chain(request, options)
 }
 
 #[cfg(test)]
@@ -1395,12 +1400,51 @@ mod server_request_tests {
             x_mm: 5.0,
             y_mm: 6.0,
         }];
-        let r = server_drill_request("a.ncd", 1.6, &tools, &holes, &[2, 3]);
+        let skipping = crate::job::JobOptions {
+            skip_tools: vec![2, 3],
+            ..Default::default()
+        };
+        let r = server_drill_request("a.ncd", 1.6, &tools, &holes, &skipping);
         assert_eq!(r["kind"], "drill");
         assert_eq!(r["skip_tools"], serde_json::json!([2, 3]));
         assert_eq!(r["holes"].as_array().unwrap().len(), 1);
         assert_eq!(r["tools"][0]["spindle_rpm"], 24000);
-        let none = server_drill_request("a.ncd", 1.6, &tools, &holes, &[]);
+        let none = server_drill_request("a.ncd", 1.6, &tools, &holes, &Default::default());
         assert_eq!(none["skip_tools"], serde_json::json!([]));
+        // without chaining the request is the one of the first version
+        assert!(none.get("rack").is_none() && none.get("request_version").is_none());
+        assert!(r.get("rack").is_none());
+    }
+
+    #[test]
+    fn a_job_chained_on_the_tool_changer_tells_the_server_so() {
+        let tools = [JobTool {
+            number: 1,
+            extra_stroke_mm: 0.0,
+            feed_mm_min: 1000,
+            spindle_rpm: 24000,
+        }];
+        let holes = [JobHole {
+            tool: 1,
+            x_mm: 5.0,
+            y_mm: 6.0,
+        }];
+        let chained = crate::job::JobOptions {
+            rack_first: 0,
+            rack_carry_in: false,
+            rack_carry_out: true,
+            ..Default::default()
+        };
+        let r = server_drill_request("a.ncd", 1.6, &tools, &holes, &chained);
+        assert_eq!(r["request_version"], 2);
+        assert_eq!(r["rack"]["carry_out"], true);
+        assert_eq!(r["rack"]["carry_in"], false);
+        assert_eq!(r["rack"]["first"], 0);
+        // everything else of the request is as without chaining
+        let plain = crate::server_link::without_chain(&r).unwrap();
+        assert_eq!(
+            plain,
+            server_drill_request("a.ncd", 1.6, &tools, &holes, &Default::default())
+        );
     }
 }

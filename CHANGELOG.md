@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A drilling job sent to the server carries the chaining of the tool changer:** the request has the optional `rack` field (`first`, `carry_in`, `carry_out`, with `request_version` 2) when the job is one of a chain, and is the request of before when it is not. A server that turns the field down (400 or 422) gets the job again without it, and one that does not answer `rack_applied` is noticed too: the run window says in red that the tool changes were not chained. With tests of the request with and without chaining.
+
 ## [0.1.5] - Audit fixes, the new reading limits, tests and the application icon
 
 - **The Windows executable carries the icon of the program:** the file shows it in the explorer and the taskbar, together with the name, the description and the version, embedded by `build.rs`; other systems are not affected.
