@@ -1,9 +1,11 @@
 use eh3d_drillpro::config::{rack_line, MachineSettings, RackSetup};
+use eh3d_drillpro::i18n::{str_width, Lang};
 use eh3d_drillpro::job::{job_rack, job_rack_for, JobOptions, RackRefusal};
 use eh3d_drillpro::server_link::{with_chain, without_chain};
 use eh3d_drillpro::work_contract::{
     chain_answer, chain_options, check_rack_options, rack_ignored, refusal_detail,
-    unknown_rack_fields, warning, AnswerWarning, RackProblem, BAD_RACK, MAX_RACK_PLACES,
+    unknown_rack_fields, warning, warning_lines, warning_text, wrap_cells, AnswerWarning,
+    RackProblem, BAD_RACK, MAX_RACK_PLACES,
 };
 use serde_json::json;
 
@@ -385,4 +387,166 @@ fn a_rack_from_a_later_version_is_read_for_what_it_has_and_its_new_fields_are_na
     assert_eq!(read.rack_slots, vec![(1, 5)], "bad entries are left out");
     assert_eq!(read.rack_carry_slot, None);
     assert_eq!(chain_options(&json!({"rack": 4})), None);
+}
+
+#[test]
+fn the_server_warning_that_the_work_leaves_the_course_is_read_with_its_axis_and_excess() {
+    let job = json!({"view": {"warnings": [
+        {"code": "out_of_course", "axis": "X", "values": [2.5]},
+        {"code": "out_of_course", "axis": "Z", "values": [-1.0]},
+        {"code": "out_of_course"},
+    ]}});
+    assert_eq!(
+        chain_answer(&job).warnings,
+        vec![
+            AnswerWarning::OutOfCourse {
+                axis: "X".into(),
+                excess_um: 2500
+            },
+            AnswerWarning::OutOfCourse {
+                axis: "Z".into(),
+                excess_um: 0
+            },
+            AnswerWarning::OutOfCourse {
+                axis: String::new(),
+                excess_um: 0
+            },
+        ]
+    );
+}
+
+#[test]
+fn a_warning_of_the_server_is_told_in_the_words_of_the_language() {
+    let en = |w: AnswerWarning| warning_text(&w, Lang::En).unwrap();
+    assert_eq!(
+        en(AnswerWarning::RackNoChanger),
+        "This machine changes its tools by hand: the tools are not chained"
+    );
+    assert_eq!(
+        en(AnswerWarning::RackUnknownField("speed".into())),
+        "The server ignored a field of the tool changer that it does not know: speed"
+    );
+    assert_eq!(
+        en(AnswerWarning::RequestVersionNewer(3)),
+        "The server read the request as the newest version it knows (request_version 3)"
+    );
+    assert_eq!(
+        en(AnswerWarning::OutOfCourse {
+            axis: "X".into(),
+            excess_um: 2500
+        }),
+        "The work goes past the course of the machine on the axis: X (+2.500 mm)"
+    );
+    assert_eq!(
+        en(AnswerWarning::OutOfCourse {
+            axis: "Y".into(),
+            excess_um: 12_007
+        }),
+        "The work goes past the course of the machine on the axis: Y (+12.007 mm)"
+    );
+    assert_eq!(
+        warning_text(&AnswerWarning::RackNoChanger, Lang::Es).unwrap(),
+        "Esta máquina cambia las herramientas a mano: no se encadenan"
+    );
+    // a code of a later version of the server is not shown
+    assert_eq!(
+        warning_text(&AnswerWarning::Other("x".into()), Lang::En),
+        None
+    );
+    // every language has the words of every warning
+    for lang in Lang::ALL {
+        for w in [
+            AnswerWarning::RackNeedsV2,
+            AnswerWarning::RackNoChanger,
+            AnswerWarning::RackUnknownField("a".into()),
+            AnswerWarning::RequestVersionNewer(3),
+            AnswerWarning::OutOfCourse {
+                axis: "Z".into(),
+                excess_um: 1,
+            },
+        ] {
+            let text = warning_text(&w, lang).unwrap();
+            assert!(text.chars().count() > 12, "{lang:?}: {text}");
+        }
+    }
+}
+
+#[test]
+fn what_the_server_sends_along_cannot_break_the_line() {
+    let long = "x".repeat(100);
+    let name = format!("a\r\nb{long}");
+    let text = warning_text(&AnswerWarning::RackUnknownField(name), Lang::En).unwrap();
+    assert!(!text.contains('\n') && !text.contains('\r'));
+    assert!(text.ends_with(&format!("ab{}", "x".repeat(30))), "{text}");
+    let axis = warning_text(
+        &AnswerWarning::OutOfCourse {
+            axis: "XYZW\u{7}".into(),
+            excess_um: 5,
+        },
+        Lang::En,
+    )
+    .unwrap();
+    assert!(axis.ends_with("XYZ (+0.005 mm)"), "{axis}");
+}
+
+#[test]
+fn a_text_is_cut_into_lines_of_cells() {
+    assert_eq!(wrap_cells("aa bb cc", 5), ["aa bb", "cc"]);
+    assert_eq!(wrap_cells("abcdefgh", 3), ["abc", "def", "gh"]);
+    // a wide character takes two cells
+    assert_eq!(
+        wrap_cells("\u{4f60}\u{597d}\u{4e16}\u{754c}", 5),
+        ["\u{4f60}\u{597d}", "\u{4e16}\u{754c}"]
+    );
+    assert!(wrap_cells("", 10).is_empty());
+    assert_eq!(
+        wrap_cells(
+            "The server ignored the tool changer: the request was of the first version",
+            52
+        ),
+        [
+            "The server ignored the tool changer: the request was",
+            "of the first version"
+        ]
+    );
+}
+
+#[test]
+fn the_rows_of_the_warnings_fit_the_window_and_say_when_they_were_cut() {
+    let all = [
+        AnswerWarning::RackNeedsV2,
+        AnswerWarning::RackNoChanger,
+        AnswerWarning::RackUnknownField("spare_place".into()),
+    ];
+    let two = warning_lines(&all[..2], Lang::En, 52, 4);
+    assert_eq!(
+        two,
+        [
+            "The server ignored the tool changer: the request was",
+            "of the first version",
+            "This machine changes its tools by hand: the tools",
+            "are not chained"
+        ]
+    );
+    // more than the rows allow: the last row ends in three dots
+    let cut = warning_lines(&all, Lang::En, 52, 4);
+    assert_eq!(cut.len(), 4);
+    assert_eq!(&cut[..3], &two[..3]);
+    assert_eq!(cut[3], "are not chained...");
+    let cut = warning_lines(&all, Lang::En, 52, 3);
+    assert_eq!(
+        cut,
+        [
+            two[0].as_str(),
+            two[1].as_str(),
+            "This machine changes its tools by hand: the tools..."
+        ]
+    );
+    assert!(warning_lines(&all, Lang::En, 52, 0).is_empty());
+    assert!(warning_lines(&[], Lang::En, 52, 4).is_empty());
+    for lang in Lang::ALL {
+        for line in warning_lines(&all, lang, 52, 4) {
+            assert!(str_width(&line) <= 52, "{lang:?}: {line}");
+        }
+    }
 }

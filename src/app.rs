@@ -471,6 +471,15 @@ impl App {
             self.refresh_entries();
             return;
         };
+        // a closing or a place of the tool changer that cannot be right is turned down here with the sentence the server would give, before anything is planned
+        // or sent to the server or to the node
+        if let Err(problem) = crate::work_contract::check_rack_options(
+            &self.job_options,
+            crate::work_contract::MAX_RACK_PLACES,
+        ) {
+            self.error = Some(problem.to_string());
+            return;
+        }
         let unit_mm = self
             .settings
             .as_ref()
@@ -1128,9 +1137,10 @@ impl App {
     }
 
     fn render_run(&self, s: &mut Screen) {
-        // a job on the server has three more lines: the excesses of the spindle it cut, what the node of the head says and the chaining it did not do
+        // a job on the server has more lines: the excesses of the spindle it cut, what the node of the head says, the chaining it did not do and the
+        // warnings of the server about the request
         let h = if self.connection.kind == ConnectionKind::Server {
-            14
+            14 + crate::work_contract::WARNING_ROWS
         } else {
             11
         };
@@ -1264,6 +1274,17 @@ impl App {
                         .collect();
                     s.text(x + 2, y + 12, &text, RED, WIN_BG);
                 }
+                for (row, line) in crate::work_contract::warning_lines(
+                    &notes.warnings,
+                    self.lang,
+                    w - 4,
+                    crate::work_contract::WARNING_ROWS,
+                )
+                .iter()
+                .enumerate()
+                {
+                    s.text(x + 2, y + 13 + row, line, RED, WIN_BG);
+                }
             }
         } else {
             s.text(
@@ -1391,6 +1412,34 @@ pub fn server_drill_request(
 #[cfg(test)]
 mod server_request_tests {
     use super::*;
+
+    #[test]
+    fn a_rack_the_server_would_refuse_is_refused_before_the_job_is_planned() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let mut app = App::new(Lang::En, &data);
+        app.load_file(&data.join("I8d.ncd"));
+        // a place for the tool in the chuck without saying that it comes holding one
+        app.job_options.rack_carry_slot = Some(3);
+        app.start();
+        assert_eq!(
+            app.error.as_deref(),
+            Some("bad_rack: rack.carry_slot needs rack.carry_in")
+        );
+        assert!(app.run.is_none());
+        app.job_options.rack_carry_slot = None;
+        app.job_options.rack_first = 15;
+        app.start();
+        assert_eq!(
+            app.error.as_deref(),
+            Some("bad_rack: rack.first may be up to 14 places")
+        );
+        assert!(app.run.is_none());
+        // a job with nothing wrong in its rack starts as it always did
+        app.job_options = crate::job::JobOptions::default();
+        app.start();
+        assert!(app.error.is_none(), "{:?}", app.error);
+        assert!(app.run.is_some());
+    }
 
     #[test]
     fn the_job_sent_to_the_server_carries_the_tools_that_are_switched_off() {

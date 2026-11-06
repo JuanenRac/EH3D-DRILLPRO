@@ -51,6 +51,9 @@ pub struct ServerNotes {
     pub head_temp_c: Option<f64>,
     /// The job asked the server to chain the tool changes and the server did not (an older one): every tool went back to its place.
     pub chain_dropped: bool,
+    /// The warnings of the server about the request (`view.warnings`): the fields it did not know, the version it read the request as, the tool changer it left
+    /// out and the course the work goes past.
+    pub warnings: Vec<crate::work_contract::AnswerWarning>,
 }
 
 impl ServerNotes {
@@ -379,6 +382,7 @@ fn follow_on_server(
     if let Ok(mut n) = shared.notes.lock() {
         n.spindle_warnings = spindle_notes(&job["view"]);
         n.chain_dropped = chain_dropped;
+        n.warnings = crate::work_contract::chain_answer(&job).warnings;
     }
     let (status, answer) = client.call(
         "POST",

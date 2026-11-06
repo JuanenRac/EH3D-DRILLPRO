@@ -6,6 +6,7 @@
 
 use serde_json::Value;
 
+use crate::i18n::{cell_width, str_width, Lang};
 use crate::job::{JobOptions, RackRefusal};
 
 /// The error code of a `rack` that does not fit.
@@ -131,6 +132,7 @@ pub mod warning {
     pub const RACK_NO_CHANGER: &str = "rack_no_changer";
     pub const RACK_UNKNOWN_FIELD: &str = "rack_unknown_field";
     pub const REQUEST_VERSION_NEWER: &str = "request_version_newer";
+    pub const OUT_OF_COURSE: &str = "out_of_course";
 }
 
 /// A warning of the server about the request, by its code. A code this program does not know is kept as it came.
@@ -144,6 +146,8 @@ pub enum AnswerWarning {
     RackUnknownField(String),
     /// `request_version` above what the server speaks (the version asked for); it read the request as the latest it knows.
     RequestVersionNewer(u64),
+    /// The work goes past the course of an axis of the machine (`axis`, `X`, `Y` or `Z`, and how far past it in thousandths of a millimetre).
+    OutOfCourse { axis: String, excess_um: u64 },
     /// Any other code (a later version of the server).
     Other(String),
 }
@@ -182,8 +186,128 @@ fn read_warning(entry: &Value) -> Option<AnswerWarning> {
             let asked = entry["values"][0].as_f64().unwrap_or(0.0);
             AnswerWarning::RequestVersionNewer(if asked >= 0.0 { asked as u64 } else { 0 })
         }
+        warning::OUT_OF_COURSE => {
+            let excess = entry["values"][0].as_f64().unwrap_or(0.0);
+            AnswerWarning::OutOfCourse {
+                axis: entry["axis"].as_str().unwrap_or("").to_string(),
+                excess_um: if excess > 0.0 {
+                    (excess * 1000.0).round() as u64
+                } else {
+                    0
+                },
+            }
+        }
         other => AnswerWarning::Other(other.to_string()),
     })
+}
+
+/// The most rows of a screen that the warnings of the server take.
+pub const WARNING_ROWS: usize = 4;
+
+/// What a text of the server may bring into a line of the screen: no control characters and no more than `most` characters.
+fn plain(text: &str, most: usize) -> String {
+    text.chars()
+        .filter(|c| !c.is_control())
+        .take(most)
+        .collect()
+}
+
+/// A warning of the server about the request in the words of a language (`None` for a code this program does not know, which is not shown). The text the server
+/// sends along (the name of a field, the axis) goes into the line only after its control characters are taken out and its length cut.
+pub fn warning_text(warning: &AnswerWarning, lang: Lang) -> Option<String> {
+    use eh3d_view::texts::{tr, Text};
+    let lang: eh3d_view::texts::Lang = lang.into();
+    Some(match warning {
+        AnswerWarning::RackNeedsV2 => tr(lang, Text::WarnRackNeedsV2).to_string(),
+        AnswerWarning::RackNoChanger => tr(lang, Text::WarnRackNoChanger).to_string(),
+        AnswerWarning::RackUnknownField(name) => {
+            format!(
+                "{} {}",
+                tr(lang, Text::WarnRackUnknownField),
+                plain(name, 32)
+            )
+        }
+        AnswerWarning::RequestVersionNewer(asked) => {
+            format!(
+                "{} (request_version {asked})",
+                tr(lang, Text::WarnRequestNewer)
+            )
+        }
+        AnswerWarning::OutOfCourse { axis, excess_um } => format!(
+            "{} {} (+{}.{:03} mm)",
+            tr(lang, Text::WarnOutOfCourse),
+            plain(axis, 3),
+            excess_um / 1000,
+            excess_um % 1000
+        ),
+        AnswerWarning::Other(_) => return None,
+    })
+}
+
+/// A text cut into lines of at most `width` cells of the screen (a wide character takes two): at the blanks, and inside a word that is longer than a line (the
+/// languages written without blanks).
+pub fn wrap_cells(text: &str, width: usize) -> Vec<String> {
+    let width = width.max(2);
+    let mut lines = Vec::new();
+    let (mut line, mut used) = (String::new(), 0usize);
+    for word in text.split_whitespace() {
+        let need = str_width(word);
+        if !line.is_empty() && used + 1 + need <= width {
+            line.push(' ');
+            line.push_str(word);
+            used += 1 + need;
+            continue;
+        }
+        if !line.is_empty() {
+            lines.push(std::mem::take(&mut line));
+            used = 0;
+        }
+        for c in word.chars() {
+            let cells = cell_width(c);
+            if used + cells > width {
+                lines.push(std::mem::take(&mut line));
+                used = 0;
+            }
+            line.push(c);
+            used += cells;
+        }
+    }
+    if !line.is_empty() {
+        lines.push(line);
+    }
+    lines
+}
+
+/// The rows of the screen that tell the warnings of the server, in order, each cut to `width` cells. When they do not fit in `most` rows the last row ends in
+/// `...`.
+pub fn warning_lines(
+    warnings: &[AnswerWarning],
+    lang: Lang,
+    width: usize,
+    most: usize,
+) -> Vec<String> {
+    let mut lines: Vec<String> = warnings
+        .iter()
+        .filter_map(|w| warning_text(w, lang))
+        .flat_map(|text| wrap_cells(&text, width))
+        .collect();
+    if lines.len() > most {
+        lines.truncate(most);
+        if let Some(last) = lines.last_mut() {
+            let mut kept = String::new();
+            let mut used = 0usize;
+            for c in last.chars() {
+                let cells = cell_width(c);
+                if used + cells + 3 > width {
+                    break;
+                }
+                kept.push(c);
+                used += cells;
+            }
+            *last = format!("{}...", kept.trim_end());
+        }
+    }
+    lines
 }
 
 /// Whether the request asked for the chaining (it carries a `rack`) and the server did not say it used it.
