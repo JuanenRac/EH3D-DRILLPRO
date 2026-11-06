@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.1.6] - The contract of the job with the server, guards for the input files and the zip library at 9
+
 - **The contract of the job request is in one place (`work_contract`):** `check_rack_options` makes the checks the server makes of a `rack` (`bad_rack`: `first` and the number of places over the limit, place 0, a tool or a place given twice, `carry_slot` without `carry_in`, at place 0 or taken) in the same order and with the same sentence, `refusal_detail` tells what the local planner refuses with the words of the server, `chain_answer` reads `rack_applied` and the warnings `rack_needs_v2`, `rack_no_changer`, `rack_unknown_field` and `request_version_newer` (a code it does not know is kept), and `unknown_rack_fields` and `chain_options` hold the request to the fields the server knows and read it back. The run window notices a rack that was not used through the same reading. With tests of every sentence and code, of the order of the checks, of the round trip of the request and, when the repository of the server is next to this one, of the sentences and codes against its documented contract.
 - **The files that are read have limits (`input_guard`):** a drill file that is bigger than 64 MiB, has a character 0, a line of more than 16384 characters or a number of more than 40 digits in a row is turned down when it is loaded, with the stable code (`input_too_large`, `input_binary`, `input_line_too_long`, `input_number_too_long`) and the number of its line; files of real boards are far inside the limits and load as before. With tests of each limit, of the first problem found and of the sample files.
 - Update the zip library to the version without the known vulnerabilities.
