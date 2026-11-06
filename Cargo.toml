@@ -58,7 +58,8 @@ name = "console"
 required-features = ["console"]
 
 [dev-dependencies]
-zip = { version = "2", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate-flate2"] }
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
 
 [profile.dev]
 # a lighter debug build: the file and line of a panic stay, the full debug symbols (the bulk of the target folder) do not
