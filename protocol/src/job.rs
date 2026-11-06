@@ -42,6 +42,11 @@ pub struct Rack {
     pub carry_in: bool,
     /// The job ends with its last tool still in the chuck, for the job that follows in the same load to put it back in its place and take its own.
     pub carry_out: bool,
+    /// Where each tool of the job is, when the person said so: the tool number and its place. A tool that is not in the list is taken from the place the
+    /// order of the job gives it (`first + 1`, `first + 2`...), which is how a job without an assignment always worked.
+    pub slots: Vec<(u8, usize)>,
+    /// The place the last tool of the job before is in, when the chuck comes holding it (`carry_in`); without it, the place `first`.
+    pub carry_slot: Option<usize>,
 }
 
 /// The lengths that decide how the chuck gets to a place of the rack and away from it (they come from the machine file).
@@ -67,7 +72,16 @@ impl Rack {
             first: 0,
             carry_in: false,
             carry_out: false,
+            slots: Vec::new(),
+            carry_slot: None,
         }
+    }
+
+    /// The same rack with the place of each tool said by the person (see [`Rack::slots`]) and the place of the tool the chuck comes holding.
+    pub fn with_slots(mut self, slots: Vec<(u8, usize)>, carry_slot: Option<usize>) -> Rack {
+        self.slots = slots;
+        self.carry_slot = carry_slot;
+        self
     }
 
     /// The same rack for a job that follows others in the same load: `first` places are taken by the tools of the jobs before, and the chuck is
@@ -82,7 +96,7 @@ impl Rack {
     /// The place the chuck holds a tool from when the first exchange of the job begins (the test pin, or the last tool of the job before).
     pub fn start_place(&self) -> usize {
         if self.carry_in {
-            self.first
+            self.carry_slot.unwrap_or(self.first)
         } else {
             0
         }
@@ -96,6 +110,34 @@ impl Rack {
             self.first + n
         };
         (from, self.first + n + 1)
+    }
+
+    /// The place of the tool `tool`, which is the number `n` (counted from 0) of the job: the one the person gave it, or the next one in the order of the job.
+    pub fn place_of(&self, n: usize, tool: u8) -> usize {
+        self.slots
+            .iter()
+            .find(|(t, _)| *t == tool)
+            .map_or(self.first + n + 1, |(_, place)| *place)
+    }
+
+    /// The same exchange as [`Rack::exchange`] with the places the person gave: `tool` is the number `n` of the job and `before` the tool that was in the chuck
+    /// from the tool before it (`None` for the first, which comes from the start place).
+    pub fn exchange_of(&self, n: usize, tool: u8, before: Option<u8>) -> (usize, usize) {
+        let from = match before {
+            Some(prev) if n > 0 => self.place_of(n - 1, prev),
+            _ if n == 0 => self.start_place(),
+            _ => self.first + n,
+        };
+        (from, self.place_of(n, tool))
+    }
+
+    /// The place the last tool of a job of `tools` tools goes back to (`last` is its number): the place `first` when the job has no tool.
+    pub fn return_place(&self, tools: usize, last: Option<u8>) -> usize {
+        match (tools, last) {
+            (0, _) => self.first,
+            (n, Some(t)) => self.place_of(n - 1, t),
+            (n, None) => self.first + n,
+        }
     }
 
     /// The same rack with the chuck going over the tools between the places.
@@ -566,6 +608,20 @@ impl<'a> JobBuilder<'a> {
         self.p.rack.as_ref().map_or(tools, |r| r.first + tools)
     }
 
+    /// The same with the places the person gave to the tools: `tool` is the number `n` (counted from 0) of the job, `before` the tool that was in the chuck
+    /// before it. `None` without a rack.
+    pub fn exchange_of(&self, n: usize, tool: u8, before: Option<u8>) -> Option<(usize, usize)> {
+        self.p.rack.as_ref().map(|r| r.exchange_of(n, tool, before))
+    }
+
+    /// The place the last tool of a job of `tools` tools (`last` is its number) is put back in, with the places the person gave.
+    pub fn return_place(&self, tools: usize, last: Option<u8>) -> usize {
+        self.p
+            .rack
+            .as_ref()
+            .map_or(tools, |r| r.return_place(tools, last))
+    }
+
     /// The exchange of the tool in the chuck for the next one: the chuck goes from the place `from` to the place `to` of the rack (place 0 is the
     /// test pin) and the drivers go on again. Nothing is planned without a rack.
     pub fn chuck_swap(&mut self, from: usize, to: usize) {
@@ -765,7 +821,11 @@ fn plan_job(
         if p.rack.is_some() {
             // The tool changer: from the place of the tool that was in the chuck (place 0, the test pin, at the start) to the place of
             // this one, then to the first hole; the drivers go on again before the spindle starts.
-            let (from, to) = p.rack.as_ref().map_or((gi, gi + 1), |r| r.exchange(gi));
+            let before = gi.checked_sub(1).map(|k| order[k]);
+            let (from, to) = p
+                .rack
+                .as_ref()
+                .map_or((gi, gi + 1), |r| r.exchange_of(gi, tool_no, before));
             p.chuck_swap(from, to);
             p.goto_xy(first);
             let on = p.latches.drivers_on();
@@ -822,9 +882,14 @@ fn plan_job(
 
     // The last tool goes back to its place and the chuck is left closed on the test pin's place.
     // (a job that is followed by another one in the same load leaves it in the chuck: the next one exchanges it)
-    if let Some((first, keep)) = p.rack.as_ref().map(|r| (r.first, r.carry_out)) {
+    if let Some((back, keep)) = p.rack.as_ref().map(|r| {
+        (
+            r.return_place(order.len(), order.last().copied()),
+            r.carry_out,
+        )
+    }) {
         if !keep {
-            p.chuck_swap(first + order.len(), 0);
+            p.chuck_swap(back, 0);
             let on = p.latches.drivers_on();
             p.latch(on);
         }

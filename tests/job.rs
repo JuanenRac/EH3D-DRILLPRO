@@ -251,3 +251,77 @@ fn a_job_the_rack_cannot_hold_or_reach_is_refused_with_its_reason() {
     let text = RackRefusal::Gap(2).message(eh3d_drillpro::i18n::Lang::En);
     assert!(text.ends_with(": 2"), "{text}");
 }
+
+#[test]
+fn the_places_given_to_the_tools_are_checked_against_the_machine_file_and_go_into_the_rack() {
+    let m = changer_machine(5);
+    let given = JobOptions {
+        rack_slots: vec![(1, 4), (2, 2)],
+        ..JobOptions::default()
+    };
+    let rack = job_rack_for(Some(&m), 2, &given).unwrap().unwrap();
+    assert_eq!(rack.slots, vec![(1, 4), (2, 2)]);
+    assert_eq!(rack.exchange_of(0, 1, None), (0, 4));
+    assert_eq!(rack.exchange_of(1, 2, Some(1)), (4, 2));
+    assert_eq!(rack.return_place(2, Some(2)), 2);
+    // the places need not be the first ones in a row: a gap in the places that are not used does not matter
+    let mut gap = changer_machine(5);
+    gap.atc.retain(|a| a.index != 1 && a.index != 3);
+    assert!(job_rack_for(Some(&gap), 2, &given).is_ok());
+    // a place the tool was given that the machine file does not define is refused, with its number
+    let missing = JobOptions {
+        rack_slots: vec![(1, 4), (2, 3)],
+        ..JobOptions::default()
+    };
+    assert_eq!(
+        job_rack_for(Some(&gap), 2, &missing),
+        Err(RackRefusal::Gap(3))
+    );
+    // so is one past the end of the bar
+    let past = JobOptions {
+        rack_slots: vec![(1, 40)],
+        ..JobOptions::default()
+    };
+    assert_eq!(job_rack_for(Some(&m), 1, &past), Err(RackRefusal::Gap(40)));
+    // and the place of the tool the chuck comes holding is checked too
+    let carried = JobOptions {
+        rack_first: 2,
+        rack_carry_in: true,
+        rack_slots: vec![(5, 1)],
+        rack_carry_slot: Some(40),
+        ..JobOptions::default()
+    };
+    assert_eq!(
+        job_rack_for(Some(&m), 1, &carried),
+        Err(RackRefusal::Gap(40))
+    );
+    // a bar further than the machine reaches is refused whatever the places
+    let mut far = changer_machine(5);
+    far.rack.reach_x_mm = 5.0;
+    assert!(matches!(
+        job_rack_for(Some(&far), 2, &given),
+        Err(RackRefusal::Outside(_))
+    ));
+    // a machine changed by hand has no rack, with or without places
+    let mut hand = changer_machine(5);
+    hand.auto_change = false;
+    assert_eq!(job_rack_for(Some(&hand), 2, &given), Ok(None));
+}
+
+#[test]
+fn without_places_the_rack_of_a_job_is_the_one_of_always() {
+    let m = changer_machine(5);
+    let plain = job_rack_for(Some(&m), 2, &JobOptions::default())
+        .unwrap()
+        .unwrap();
+    assert!(plain.slots.is_empty() && plain.carry_slot.is_none());
+    assert_eq!(plain.exchange_of(0, 1, None), plain.exchange(0));
+    let chained = JobOptions {
+        rack_first: 2,
+        rack_carry_in: true,
+        ..JobOptions::default()
+    };
+    let r = job_rack_for(Some(&m), 1, &chained).unwrap().unwrap();
+    assert_eq!((r.first, r.carry_in), (2, true));
+    assert_eq!(r.exchange_of(0, 9, None), (2, 3));
+}

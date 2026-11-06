@@ -161,10 +161,16 @@ fn unchunk(mut rest: &[u8]) -> Result<Vec<u8>, String> {
 pub const REQUEST_VERSION_CHAINED: u64 = 2;
 
 /// Puts the chaining of the tool changer into a job request: where the rack of this job starts, whether the chuck comes holding the last tool of the job before
-/// and whether this job leaves its last tool in the chuck for the next. A job with the defaults (no chaining) is left as it was, so a server that
-/// does not know the field gets exactly the request it always got.
+/// and whether this job leaves its last tool in the chuck for the next. When the person said where each tool is, the places go too: `rack.slots` is a list
+/// of `{"tool": n, "place": p}` and `rack.carry_slot` the place of the tool the chuck comes holding. A job with the defaults (no chaining, no places) is left as
+/// it was, so a server that does not know the field gets exactly the request it always got.
 pub fn with_chain(mut request: Value, options: &crate::job::JobOptions) -> Value {
-    if options.rack_first == 0 && !options.rack_carry_in && !options.rack_carry_out {
+    if options.rack_first == 0
+        && !options.rack_carry_in
+        && !options.rack_carry_out
+        && options.rack_slots.is_empty()
+        && options.rack_carry_slot.is_none()
+    {
         return request;
     }
     request["request_version"] = Value::from(REQUEST_VERSION_CHAINED);
@@ -173,6 +179,16 @@ pub fn with_chain(mut request: Value, options: &crate::job::JobOptions) -> Value
         "carry_in": options.rack_carry_in,
         "carry_out": options.rack_carry_out,
     });
+    if !options.rack_slots.is_empty() {
+        request["rack"]["slots"] = options
+            .rack_slots
+            .iter()
+            .map(|(tool, place)| serde_json::json!({"tool": tool, "place": place}))
+            .collect();
+    }
+    if let Some(place) = options.rack_carry_slot {
+        request["rack"]["carry_slot"] = Value::from(place);
+    }
     request
 }
 
@@ -227,6 +243,24 @@ mod tests {
         assert_eq!(chained["rack"]["carry_out"], false);
         // taken off again, it is the request of an older server
         assert_eq!(without_chain(&chained), Some(base));
+        // the places the person gave to the tools go in the rack too, and only when there are some
+        assert!(chained["rack"].get("slots").is_none());
+        let placed = with_chain(
+            base.clone(),
+            &JobOptions {
+                rack_slots: vec![(5, 9), (2, 1)],
+                rack_carry_slot: Some(4),
+                ..JobOptions::default()
+            },
+        );
+        assert_eq!(placed["request_version"], 2);
+        assert_eq!(placed["rack"]["first"], 0);
+        assert_eq!(placed["rack"]["slots"][0]["tool"], 5);
+        assert_eq!(placed["rack"]["slots"][0]["place"], 9);
+        assert_eq!(placed["rack"]["slots"][1]["tool"], 2);
+        assert_eq!(placed["rack"]["slots"][1]["place"], 1);
+        assert_eq!(placed["rack"]["carry_slot"], 4);
+        assert_eq!(without_chain(&placed), Some(base));
         assert!(chain_refused(400) && chain_refused(422));
         assert!(!chain_refused(200) && !chain_refused(401) && !chain_refused(500));
     }

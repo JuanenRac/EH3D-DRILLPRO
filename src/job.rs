@@ -187,6 +187,39 @@ impl RackRefusal {
     }
 }
 
+/// The rack of the machine file as it is: every place with a position, the ones the file does not give marked as gaps, and how the chuck travels. `None` for a
+/// machine that is changed by hand (it has no places, or its file does not ask for the automatic change).
+fn rack_of(m: &MachineSettings) -> Option<Rack> {
+    if !m.auto_change || m.atc.is_empty() {
+        return None;
+    }
+    let size = m.atc.iter().map(|a| a.index as usize).max().unwrap_or(0) + 1;
+    let mut places = vec![(0.0, 0.0, 0.0); size];
+    let mut defined = vec![false; size];
+    for a in &m.atc {
+        places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
+        defined[a.index as usize] = true;
+    }
+    let r = m.rack;
+    let mut rack = Rack::new(places).with_travel(RackTravel {
+        tool_length_mm: r.tool_length_mm,
+        ring_to_tip_mm: r.ring_to_tip_mm,
+        clearance_mm: r.clearance_mm,
+        approach_mm: r.approach_mm,
+    });
+    rack.defined = defined;
+    Some(rack)
+}
+
+/// What the machine reaches along X, Y and Z (the bar stands past the edge of the table along X by as much as the file allows).
+fn rack_reach(m: &MachineSettings) -> (f64, f64, f64) {
+    (
+        m.clip_mm.0 + m.rack.reach_x_mm,
+        m.clip_mm.1,
+        m.z_max_depth_mm,
+    )
+}
+
 /// The rack of the tool changer from the machine file, when the machine has one and its file asks for the automatic change (place 0 is the test pin,
 /// 1 to 14 the tools and 15 the drill break detector); `None` for a machine that is changed by hand. A job with `tools` tools is refused when the
 /// rack has no place for them, when a place it goes to has no position, or when one is where the machine does not reach (the bar stands past the
@@ -198,31 +231,9 @@ pub fn job_rack(
     let Some(m) = settings else {
         return Ok(None);
     };
-    if !m.auto_change || m.atc.is_empty() {
+    let Some(rack) = rack_of(m) else {
         return Ok(None);
-    }
-    let size = m.atc.iter().map(|a| a.index as usize).max().unwrap_or(0) + 1;
-    let mut places = vec![(0.0, 0.0, 0.0); size];
-    let mut defined = vec![false; size];
-    for a in &m.atc {
-        places[a.index as usize] = (a.x_mm, a.y_mm, a.z_mm);
-        defined[a.index as usize] = true;
-    }
-    let r = m.rack;
-    let rack = Rack {
-        places,
-        defined,
-        travel: None,
-        first: 0,
-        carry_in: false,
-        carry_out: false,
-    }
-    .with_travel(RackTravel {
-        tool_length_mm: r.tool_length_mm,
-        ring_to_tip_mm: r.ring_to_tip_mm,
-        clearance_mm: r.clearance_mm,
-        approach_mm: r.approach_mm,
-    });
+    };
     // the rack has a place per tool (1 to 14): a job with more tools cannot be changed by the machine
     if tools + 2 > rack.places.len() {
         return Err(RackRefusal::TooManyTools(
@@ -235,14 +246,7 @@ pub fn job_rack(
         return Err(RackRefusal::Gap(gap));
     }
     // and each of them must be where the machine can go
-    if let Some(out) = rack.first_outside(
-        tools,
-        (
-            m.clip_mm.0 + m.rack.reach_x_mm,
-            m.clip_mm.1,
-            m.z_max_depth_mm,
-        ),
-    ) {
+    if let Some(out) = rack.first_outside(tools, rack_reach(m)) {
         return Err(RackRefusal::Outside(out));
     }
     Ok(Some(rack))
@@ -250,19 +254,56 @@ pub fn job_rack(
 
 /// The same rack for a job that is one of several in a load: its tools are in the places after the ones of the jobs before, and the chuck is handed on
 /// as the options say. A job on its own gets the rack of [`job_rack`].
+///
+/// When the options carry the places the person gave to the tools (`rack_slots`), the tools are taken from those places and not from the ones the order of
+/// the job would give: the places the job goes to (the test pin, those of the tools and the one the chuck comes holding) must each be defined in the machine
+/// file and inside what the machine reaches, or the job is refused. That every tool has a place of its own is checked by whoever gives the places (a tool
+/// without one is taken from the place the order of the job gives it).
 pub fn job_rack_for(
     settings: Option<&MachineSettings>,
     tools: usize,
     options: &JobOptions,
 ) -> Result<Option<Rack>, RackRefusal> {
-    let rack = job_rack(settings, tools + options.rack_first)?;
-    Ok(rack.map(|r| {
-        r.in_load(
+    if options.rack_slots.is_empty() && options.rack_carry_slot.is_none() {
+        let rack = job_rack(settings, tools + options.rack_first)?;
+        return Ok(rack.map(|r| {
+            r.in_load(
+                options.rack_first,
+                options.rack_carry_in,
+                options.rack_carry_out,
+            )
+        }));
+    }
+    let Some(m) = settings else {
+        return Ok(None);
+    };
+    let Some(rack) = rack_of(m) else {
+        return Ok(None);
+    };
+    let reach = rack_reach(m);
+    let mut used: Vec<usize> = vec![0];
+    used.extend(options.rack_slots.iter().map(|(_, place)| *place));
+    used.extend(options.rack_carry_slot);
+    for place in used {
+        if place >= rack.places.len() || !rack.defined.get(place).copied().unwrap_or(false) {
+            return Err(RackRefusal::Gap(place));
+        }
+        let (x, y, z) = rack.places[place];
+        if !(0.0..=reach.0).contains(&x)
+            || !(0.0..=reach.1).contains(&y)
+            || !(0.0..=reach.2).contains(&z)
+        {
+            return Err(RackRefusal::Outside(place));
+        }
+    }
+    Ok(Some(
+        rack.in_load(
             options.rack_first,
             options.rack_carry_in,
             options.rack_carry_out,
         )
-    }))
+        .with_slots(options.rack_slots.clone(), options.rack_carry_slot),
+    ))
 }
 
 /// The warning for tools that run with the cautious defaults: the text of the language, the numbers of the tools and, for each whose line of the table could not be
@@ -484,6 +525,11 @@ pub struct JobOptions {
     pub rack_first: usize,
     pub rack_carry_in: bool,
     pub rack_carry_out: bool,
+    /// The place of each tool of this job in the rack, when the person said where each one is: the tool number and its place. Empty: the tools are taken from the
+    /// places the order of the job gives them, as a job without an assignment always did.
+    pub rack_slots: Vec<(u8, usize)>,
+    /// The place the last tool of the job before is in, when the chuck comes holding it (`rack_carry_in`).
+    pub rack_carry_slot: Option<usize>,
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.
