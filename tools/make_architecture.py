@@ -4,6 +4,7 @@
 # Copyright (C) 2026 JuanenRac (Electro Hobby 3D)
 # GPL-3.0-or-later - see LICENSE
 # =============================================================================
+# canonical: EH3D-DOCS tools 2
 """Draws the Architecture picture of a repository from `docs/architecture.json`.
 
     python tools/make_architecture.py             # writes images/architecture.svg
@@ -28,7 +29,7 @@ docs/architecture.json:
       "nodes": [
         {"id": "srv", "column": 0, "level": "contract", "title": "ARMOR-SERVER",
          "lines": ["asks the service", ["holds the PIN", "ok"]],
-         "code": ["src/service.py", "src/turn.py::9"]}        # what the box stands for (checked by --check)
+         "code": ["src/service.py", "src/service.py::def handle_turn("]}   # what the box stands for (checked by --check: the file exists and holds the text after ::)
       ],
       "edges": [{"from": "srv", "to": "turn", "label": "/v1/turn", "level": "tested"}],
       "legend": {"tested": "decides, tested (114 tests)"},    # optional text per level
@@ -97,6 +98,8 @@ def validate_spec(spec: dict) -> None:
         raise SpecError(f"between 1 and {MAX_NODES} nodes are allowed, got {len(nodes) if isinstance(nodes, list) else 'none'}")
     ids: dict[str, dict] = {}
     for node in nodes:
+        if not isinstance(node, dict):
+            raise SpecError(f"a node has to be an object, got {node!r}")
         for key in ("id", "column", "title"):
             if key not in node:
                 raise SpecError(f"a node is missing '{key}': {node}")
@@ -106,7 +109,12 @@ def validate_spec(spec: dict) -> None:
             raise SpecError(f"node '{node['id']}': column must be 0, 1 or 2")
         if node.get("level", "tested") not in LEVELS:
             raise SpecError(f"node '{node['id']}': level must be one of {', '.join(LEVELS)}")
+        code = node.get("code", [])
+        if not isinstance(code, list) or not all(isinstance(ref, str) for ref in code):
+            raise SpecError(f"node '{node['id']}': 'code' is a list of paths")
         for line in node.get("lines", []):
+            if isinstance(line, list) and len(line) < 2:
+                raise SpecError(f"node '{node['id']}': a line given as a list needs [text, tone]")
             tone = line[1] if isinstance(line, list) else "primary"
             if tone not in TONES:
                 raise SpecError(f"node '{node['id']}': tone '{tone}' is not one of {', '.join(TONES)}")
@@ -114,6 +122,8 @@ def validate_spec(spec: dict) -> None:
     if not any(n["column"] == 1 for n in nodes):
         raise SpecError("at least one node has to be in column 1 (the repository)")
     for edge in spec.get("edges", []):
+        if not isinstance(edge, dict):
+            raise SpecError(f"an edge has to be an object, got {edge!r}")
         for end in ("from", "to"):
             if edge.get(end) not in ids:
                 raise SpecError(f"edge {edge}: '{end}' is not a node id")
@@ -390,6 +400,9 @@ def check_code_refs(spec: dict, root: Path) -> list[str]:
     for node in spec["nodes"]:
         for ref in node.get("code", []):
             path_part, _, needle = ref.partition("::")
+            if Path(path_part).is_absolute() or path_part.startswith(("/", chr(92))) or ".." in path_part.replace(chr(92), "/").split("/"):
+                problems.append(f"node '{node['id']}': {path_part} must be a path inside the repository")
+                continue
             target = root / path_part
             if not target.exists():
                 problems.append(f"node '{node['id']}' points to {path_part}, which does not exist")
@@ -409,8 +422,8 @@ def run(root: Path, check: bool, png: Path | None) -> int:
         spec = load_spec(spec_file)
         svg = build_svg(spec)
         K.validate_xml(svg)
-    except (SpecError, ValueError) as error:
-        print(f"ARCHITECTURE=FAIL {error}")
+    except (SpecError, ValueError, KeyError, IndexError, TypeError, AttributeError) as error:
+        print(f"ARCHITECTURE=FAIL the spec is malformed ({error.__class__.__name__}: {error})")
         return 1
     if check:
         problems = check_code_refs(spec, root)
