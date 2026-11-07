@@ -35,6 +35,10 @@ MACHINES WITH AN AUTOMATIC TOOL CHANGER (ATC)
 
 IF SOMETHING GOES WRONG
   Put your copy back. Do not change the lines marked RESERVED. The examples folder has files from one hole to twenty thousand.
+
+SOUNDS (OPTIONAL)
+  In machine.cfg: sound_finish and sound_tool_change. Each one is off (the default), default (a tone the program makes) or the full path of a WAV file
+  of your own. The first plays when a job ends by itself; the second when the machine asks for a tool. If there is no player or no sound card the job goes on.
 """,
     "spa": """GUÍA DE CONFIGURACIÓN - los ficheros explicados en palabras sencillas
 
@@ -64,6 +68,10 @@ MÁQUINAS CON CAMBIADOR AUTOMÁTICO DE HERRAMIENTA (ATC)
 
 SI ALGO SALE MAL
   Vuelve a poner tu copia. No cambies las líneas marcadas RESERVED. La carpeta examples tiene ficheros desde un agujero hasta veinte mil.
+
+SONIDOS (OPCIONAL)
+  En machine.cfg: sound_finish y sound_tool_change. Cada uno es off (lo normal), default (un tono que hace el programa) o la ruta completa de un archivo WAV
+  propio. El primero suena cuando un trabajo termina solo; el segundo cuando la máquina pide una herramienta. Si no hay reproductor o tarjeta de sonido, el trabajo sigue.
 """,
     "deu": """KONFIGURATIONSANLEITUNG - die Dateien in einfachen Worten
 
@@ -93,6 +101,10 @@ MASCHINEN MIT AUTOMATISCHEM WERKZEUGWECHSLER (ATC)
 
 WENN ETWAS SCHIEFGEHT
   Die Kopie zurückspielen. Zeilen mit RESERVED nicht ändern. Der Ordner examples enthält Dateien von einem Loch bis zu zwanzigtausend.
+
+TÖNE (OPTIONAL)
+  In machine.cfg: sound_finish und sound_tool_change. Jede Zeile ist off (Standard), default (ein Ton, den das Programm erzeugt) oder der vollständige Pfad einer eigenen
+  WAV-Datei. Der erste Ton erklingt, wenn ein Auftrag von selbst endet; der zweite, wenn die Maschine ein Werkzeug verlangt. Ohne Player oder Soundkarte läuft der Auftrag weiter.
 """,
     "fra": """GUIDE DE CONFIGURATION - les fichiers expliqués en mots simples
 
@@ -122,6 +134,10 @@ MACHINES AVEC CHANGEUR D'OUTILS AUTOMATIQUE (ATC)
 
 SI QUELQUE CHOSE VA MAL
   Remettez votre copie. Ne changez pas les lignes marquées RESERVED. Le dossier examples contient des fichiers d'un trou à vingt mille.
+
+SONS (FACULTATIF)
+  Dans machine.cfg : sound_finish et sound_tool_change. Chacun vaut off (par défaut), default (une tonalité que le programme fabrique) ou le chemin complet d'un fichier
+  WAV à vous. Le premier retentit quand un travail se termine tout seul ; le second quand la machine demande un outil. Sans lecteur ou carte son, le travail continue.
 """,
     "ita": """GUIDA ALLA CONFIGURAZIONE - i file spiegati in parole semplici
 
@@ -151,6 +167,10 @@ MACCHINE CON CAMBIO UTENSILE AUTOMATICO (ATC)
 
 SE QUALCOSA VA STORTO
   Rimetti la tua copia. Non cambiare le righe segnate RESERVED. La cartella examples ha file da un foro a ventimila.
+
+SUONI (FACOLTATIVO)
+  In machine.cfg: sound_finish e sound_tool_change. Ognuno è off (predefinito), default (un tono che crea il programma) o il percorso completo di un file WAV
+  vostro. Il primo suona quando un lavoro finisce da solo; il secondo quando la macchina chiede un utensile. Senza lettore o scheda audio il lavoro continua.
 """,
     "por": """GUIA DE CONFIGURAÇÃO - os ficheiros explicados em palavras simples
 
@@ -180,6 +200,10 @@ MÁQUINAS COM TROCADOR AUTOMÁTICO DE FERRAMENTA (ATC)
 
 SE ALGO CORRER MAL
   Reponha a sua cópia. Não altere as linhas marcadas RESERVED. A pasta examples tem ficheiros desde um furo até vinte mil.
+
+SONS (OPCIONAL)
+  Em machine.cfg: sound_finish e sound_tool_change. Cada um é off (o normal), default (um tom que o programa faz) ou o caminho completo de um ficheiro WAV
+  seu. O primeiro toca quando um trabalho termina sozinho; o segundo quando a máquina pede uma ferramenta. Sem leitor ou placa de som, o trabalho continua.
 """,
     "zho": """配置指南 - 用简单的话解释这些文件
 
@@ -209,6 +233,10 @@ SE ALGO CORRER MAL
 
 出现问题时
   放回您的备份。不要修改标有 RESERVED 的行。examples 文件夹里有从一个孔到两万个孔的文件。
+
+声音（可选）
+  在 machine.cfg 中：sound_finish 和 sound_tool_change。每项可以是 off（默认）、default（程序自己生成的提示音）或您自己的 WAV 文件的完整路径。
+  前者在作业自行结束时播放，后者在机器请求刀具时播放。没有播放器或声卡时，作业照常进行。
 """,
     "jpn": """設定ガイド - ファイルをやさしい言葉で説明します
 
@@ -238,6 +266,10 @@ SE ALGO CORRER MAL
 
 うまくいかないとき
   取っておいたコピーに戻します。RESERVED と書かれた行は変更しないでください。examples フォルダーには1穴から2万穴までのファイルがあります。
+
+サウンド（任意）
+  machine.cfg の sound_finish と sound_tool_change。どちらも off（既定）、default（プログラムが作る音）、または自分の WAV ファイルのフルパスを指定します。
+  前者は作業が自然に終わったとき、後者はマシンが工具を求めたときに鳴ります。プレーヤーやサウンドカードがなくても作業は続きます。
 """,
 }
 
