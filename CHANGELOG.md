@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Tests of the files that cannot be loaded:** a file that is not there or a folder is an error on the screen and the file already loaded stays; a file of nothing but comments and blank lines is either taken with no holes or turned down with a reason, never a panic.
 - **The frames of the link to the node are tested against shared vectors:** `protocol/tests/frames_vectors.rs` reads `protocol/tests/testdata/frames.json`, the file the firmware of the node tests its C++ code with, and checks that `encode` writes those bytes, that the decoder reads them back one byte at a time too, and that damaged streams (a wrong CRC, a length beyond the maximum, noise or a false start before a good frame) are counted and the good frames still come out.
 
 - **The selection of a job takes its rule from the shared crate:** `job::vector_range`, `job::panel_offsets` and `job::inside_work_area` now call `eh3d_bungard_formats::selection`, where the rule lives for every program; what is selected does not change.

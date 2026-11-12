@@ -1538,4 +1538,45 @@ mod reader_limit_tests {
         let warning = app.warning.as_deref().unwrap_or_default();
         assert!(warning.contains("The file is big"), "{warning}");
     }
+
+    #[test]
+    fn a_file_that_is_not_there_is_an_error_and_the_file_already_loaded_stays() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let mut app = App::new(Lang::En, &data);
+        app.load_file(&data.join("I8d.ncd"));
+        assert!(app.error.is_none() && app.loaded.is_some());
+        let before = app.loaded.as_ref().map(|l| l.path.clone());
+        app.load_file(&data.join("there-is-no-such-file.ncd"));
+        assert!(app.error.is_some(), "an error must be shown");
+        assert_eq!(app.loaded.as_ref().map(|l| l.path.clone()), before);
+        // a folder where a file is expected is an error too, not a panic
+        app.error = None;
+        app.load_file(&data);
+        assert!(app.error.is_some());
+    }
+
+    #[test]
+    fn a_file_of_nothing_but_comments_and_blank_lines_does_not_panic() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let dir = std::env::temp_dir().join(format!("drillpro-empty-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        for (name, text) in [
+            ("empty.ncd", ""),
+            ("blank.ncd", "\n\n  \n"),
+            ("comment.ncd", ";\n(note)\n%\n"),
+        ] {
+            let path = dir.join(name);
+            std::fs::write(&path, text).unwrap();
+            let mut app = App::new(Lang::En, &data);
+            app.load_file(&path);
+            // either it is taken with no holes or it is turned down with a reason: never both, never nothing
+            let holes = app.loaded.as_ref().map(|l| l.file.holes.len());
+            assert!(
+                app.error.is_some() || holes == Some(0),
+                "{name}: error {:?}, holes {holes:?}",
+                app.error
+            );
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }
