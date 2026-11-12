@@ -157,7 +157,12 @@ pub fn feed_xy(
 /// Z movement of `depth_mm` downwards (`down = true`) or upwards at `feed_mm_min`.
 pub fn z_move(depth_mm: f64, down: bool, feed_mm_min: f64, g: &Geometry) -> Vec<Step> {
     // the same way the planner and the homing have it: Z_POS goes down, Z_NEG goes up towards the switch
-    let byte = if down { bits::Z_POS } else { bits::Z_NEG };
+    let byte = if down {
+        bits::ZDir::Down
+    } else {
+        bits::ZDir::Up
+    }
+    .step_byte();
     let hz = g.z_hz(feed_mm_min);
     (0..g.z_steps(depth_mm))
         .map(|_| Step {

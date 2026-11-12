@@ -438,7 +438,8 @@ impl Planner<'_> {
 
     fn z_down(&mut self, steps: u32, hz: f64) {
         if steps > 0 {
-            self.items.push(Item::Steps(run(bits::Z_POS, steps, hz)));
+            self.items
+                .push(Item::Steps(run(bits::ZDir::Down.step_byte(), steps, hz)));
             self.z += steps;
         }
     }
@@ -446,7 +447,8 @@ impl Planner<'_> {
     fn z_up(&mut self, steps: u32, hz: f64) {
         let steps = steps.min(self.z);
         if steps > 0 {
-            self.items.push(Item::Steps(run(bits::Z_NEG, steps, hz)));
+            self.items
+                .push(Item::Steps(run(bits::ZDir::Up.step_byte(), steps, hz)));
             self.z -= steps;
         }
     }
@@ -461,16 +463,19 @@ impl Planner<'_> {
         let start = g.z_start_hz.min(t.z_start_hz);
         let top = g.z_max_hz.min(t.z_search_hz).max(start);
         self.items.push(Item::Seek(ramped(
-            bits::Z_NEG,
+            bits::ZDir::Up.step_byte(),
             search,
             start,
             top,
             t.z_ramp_steps,
         )));
-        self.items
-            .push(Item::Steps(run(bits::Z_POS, t.z_backoff_steps, g.z_ref_hz)));
         self.items.push(Item::Steps(run(
-            bits::Z_NEG,
+            bits::ZDir::Down.step_byte(),
+            t.z_backoff_steps,
+            g.z_ref_hz,
+        )));
+        self.items.push(Item::Steps(run(
+            bits::ZDir::Up.step_byte(),
             t.z_approach_steps,
             g.z_ref_hz,
         )));
@@ -694,12 +699,12 @@ impl<'a> JobBuilder<'a> {
         self.p.z_up(all, hz);
         let z_ref = self.p.m.geometry.z_ref_hz;
         self.p.items.push(Item::Steps(run(
-            bits::Z_POS,
+            bits::ZDir::Down.step_byte(),
             self.p.m.geometry.tuning.z_backoff_steps,
             z_ref,
         )));
         self.p.items.push(Item::Steps(run(
-            bits::Z_NEG,
+            bits::ZDir::Up.step_byte(),
             self.p.m.geometry.tuning.z_approach_steps,
             z_ref,
         )));
@@ -898,12 +903,12 @@ fn plan_job(
     // Return: Z fine search again, back to the origin, XY search, drivers off.
     let z_ref = p.m.geometry.z_ref_hz;
     p.items.push(Item::Steps(run(
-        bits::Z_POS,
+        bits::ZDir::Down.step_byte(),
         p.m.geometry.tuning.z_backoff_steps,
         z_ref,
     )));
     p.items.push(Item::Steps(run(
-        bits::Z_NEG,
+        bits::ZDir::Up.step_byte(),
         p.m.geometry.tuning.z_approach_steps,
         z_ref,
     )));

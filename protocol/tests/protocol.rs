@@ -80,3 +80,24 @@ fn a_filler_that_keeps_the_direction_clears_only_the_step_bits() {
     let plain = paced_stream_with(&[step(bits::Z_NEG, 3.0)], false);
     assert_eq!(plain, vec![0x30, 0x00, 0x00]);
 }
+
+#[test]
+fn the_direction_of_z_has_one_table_of_bytes() {
+    use eh3d_drillpro_protocol::bits::{self, ZDir};
+    assert_eq!(ZDir::Down.step_byte(), bits::Z_POS);
+    assert_eq!(ZDir::Up.step_byte(), bits::Z_NEG);
+    for dir in ZDir::ALL {
+        assert_eq!(ZDir::of_step_byte(dir.step_byte()), Some(dir));
+    }
+    // a byte that does not step Z says no direction, whatever its other bits are
+    for byte in [
+        bits::X_POS,
+        bits::X_NEG,
+        bits::Y_POS,
+        bits::Y_NEG,
+        0x00,
+        0x40,
+    ] {
+        assert_eq!(ZDir::of_step_byte(byte), None, "{byte:#04x}");
+    }
+}

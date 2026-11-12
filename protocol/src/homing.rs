@@ -129,10 +129,18 @@ pub fn home_z<T: Transport>(
     p: &HomingParams,
     _g: &Geometry,
 ) -> Result<(), HomingError> {
-    let up = constant_rate(bits::Z_NEG, p.z_search_steps, p.search_hz);
+    let up = constant_rate(bits::ZDir::Up.step_byte(), p.z_search_steps, p.search_hz);
     seek(m, &up, p)?;
-    m.run(&constant_rate(bits::Z_POS, p.z_backoff_steps, p.search_hz))?;
-    let again = constant_rate(bits::Z_NEG, p.z_reapproach_steps, p.search_hz);
+    m.run(&constant_rate(
+        bits::ZDir::Down.step_byte(),
+        p.z_backoff_steps,
+        p.search_hz,
+    ))?;
+    let again = constant_rate(
+        bits::ZDir::Up.step_byte(),
+        p.z_reapproach_steps,
+        p.search_hz,
+    );
     seek(m, &again, p)
 }
 

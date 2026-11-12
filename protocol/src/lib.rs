@@ -59,6 +59,40 @@ pub mod bits {
     /// direction bit, set when its delta is positive or zero.
     pub const X_DIR: u8 = 0x02;
     pub const Y_DIR: u8 = 0x08;
+    /// The step bit of Z and the bit that says its direction (set when Z goes down).
+    pub const Z_STEP: u8 = 0x10;
+    pub const Z_DOWN_BIT: u8 = 0x40;
+
+    /// The direction Z moves in: `Down` is towards the board (the byte `Z_POS`), `Up` towards its switch (the byte `Z_NEG`). The only table of the two bytes: the
+    /// planners, the homing and the simulator ask it instead of repeating the numbers.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum ZDir {
+        Up,
+        Down,
+    }
+
+    impl ZDir {
+        pub const ALL: [ZDir; 2] = [ZDir::Up, ZDir::Down];
+
+        /// The step byte of one step of Z in this direction.
+        pub const fn step_byte(self) -> u8 {
+            match self {
+                ZDir::Up => Z_NEG,
+                ZDir::Down => Z_POS,
+            }
+        }
+
+        /// The direction a byte that steps Z says (the direction bit decides; the byte must step Z).
+        pub const fn of_step_byte(byte: u8) -> Option<ZDir> {
+            if byte & Z_STEP == 0 {
+                None
+            } else if byte & Z_DOWN_BIT != 0 {
+                Some(ZDir::Down)
+            } else {
+                Some(ZDir::Up)
+            }
+        }
+    }
 }
 
 /// State of the machine's inputs, read from the modem status register.
@@ -331,8 +365,8 @@ impl Transport for Simulator {
                 if b & 0x04 != 0 {
                     self.y_steps += if b & 0x08 != 0 { 1 } else { -1 };
                 }
-                if b & 0x10 != 0 {
-                    self.z_steps += if b & 0x40 != 0 { 1 } else { -1 };
+                if let Some(dir) = bits::ZDir::of_step_byte(b) {
+                    self.z_steps += if dir == bits::ZDir::Down { 1 } else { -1 };
                 }
             }
             _ => {}
