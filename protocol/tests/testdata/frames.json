@@ -1,0 +1,140 @@
+{
+ "about": "Test vectors of the frames of the control link: sync 0xB5, type, payload length (u16 little endian), payload, CRC-16/CCITT-FALSE (little endian) over the type, the length and the payload. The same file is used by the Rust and by the C++ implementation.",
+ "sync": 181,
+ "vectors": [
+  {
+   "name": "hello_with_a_token",
+   "type": 1,
+   "payload": "7365637265743432",
+   "frame": "b501080073656372657434322b02"
+  },
+  {
+   "name": "hello_empty",
+   "type": 1,
+   "payload": "",
+   "frame": "b5010000acfb"
+  },
+  {
+   "name": "arm",
+   "type": 2,
+   "payload": "",
+   "frame": "b5020000fca2"
+  },
+  {
+   "name": "disarm",
+   "type": 3,
+   "payload": "",
+   "frame": "b5030000cc95"
+  },
+  {
+   "name": "dtr_on",
+   "type": 4,
+   "payload": "01",
+   "frame": "b5040100012069"
+  },
+  {
+   "name": "write_bytes_for_the_control_unit",
+   "type": 5,
+   "payload": "000102030405060708090a0b",
+   "frame": "b5050c00000102030405060708090a0bc99f"
+  },
+  {
+   "name": "write_with_the_sync_byte_inside",
+   "type": 5,
+   "payload": "b5010000b5",
+   "frame": "b5050500b5010000b5848c"
+  },
+  {
+   "name": "abort",
+   "type": 6,
+   "payload": "",
+   "frame": "b50600003c7e"
+  },
+  {
+   "name": "ping",
+   "type": 7,
+   "payload": "",
+   "frame": "b50700000c49"
+  },
+  {
+   "name": "spindle_12000_rpm_forward_now",
+   "type": 8,
+   "payload": "e02e0000",
+   "frame": "b5080400e02e0000ef7d"
+  },
+  {
+   "name": "spindle_24000_rpm_reverse_at_the_end_of_the_queue",
+   "type": 8,
+   "payload": "c05d0101",
+   "frame": "b5080400c05d0101e9e8"
+  },
+  {
+   "name": "stop_on_home_x_and_z",
+   "type": 9,
+   "payload": "05",
+   "frame": "b5090100052210"
+  },
+  {
+   "name": "info_0_0_6_9600_baud_queue_4096",
+   "type": 129,
+   "payload": "0000068025000000100000",
+   "frame": "b5810b000000068025000000100000b1b2"
+  },
+  {
+   "name": "status_idle",
+   "type": 130,
+   "payload": "000000000000000000000000000000",
+   "frame": "b5820f0000000000000000000000000000000049a7"
+  },
+  {
+   "name": "rx_text",
+   "type": 131,
+   "payload": "6f6b0d0a",
+   "frame": "b58304006f6b0d0aa4b5"
+  },
+  {
+   "name": "error_queue_full",
+   "type": 132,
+   "payload": "04",
+   "frame": "b584010004bde4"
+  },
+  {
+   "name": "home_seen_x",
+   "type": 133,
+   "payload": "01",
+   "frame": "b585010001acc2"
+  }
+ ],
+ "damaged": [
+  {
+   "name": "a_wrong_crc",
+   "bytes": "b505030061626315c1",
+   "frames": 0,
+   "damaged_at_least": 1
+  },
+  {
+   "name": "a_length_beyond_the_maximum",
+   "bytes": "b5050108000000000000",
+   "frames": 0,
+   "damaged_at_least": 1
+  },
+  {
+   "name": "noise_then_a_good_frame",
+   "bytes": "00ff01b5050f00616674657220746865206e6f697365e18b",
+   "frames": 1,
+   "damaged_at_least": 0
+  },
+  {
+   "name": "a_false_start_then_a_good_frame",
+   "bytes": "b501030041b5050f00616674657220746865206e6f697365e18b",
+   "frames": 1,
+   "damaged_at_least": 0
+  },
+  {
+   "name": "two_frames_back_to_back",
+   "bytes": "b50700000c49b5020000fca2",
+   "frames": 2,
+   "damaged_at_least": 0
+  }
+ ]
+}
