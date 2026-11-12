@@ -534,38 +534,25 @@ pub struct JobOptions {
 
 /// The first and the last vector (counted from 1) that a job takes: `from` is at least 1 and a `to` of 0 means up to the end. Shared by the drilling and the routing.
 pub fn vector_range(opts: &JobOptions) -> (usize, usize) {
-    (
-        opts.from.max(1),
-        if opts.to == 0 { usize::MAX } else { opts.to },
-    )
+    eh3d_bungard_formats::selection::vector_range(opts.from, opts.to)
 }
 
-/// Where each copy of the board goes on the panel, as the shift of its corner in mm (one copy with no shift when the panel is not asked for or has one place). Shared by the
-/// drilling and the routing.
+/// Where each copy of the board goes on the panel, as the shift of its corner in mm (one copy with no shift when the panel is not asked for or has one place). The rule is the
+/// one of `eh3d_bungard_formats::selection`, shared by every program that plans a job.
 pub fn panel_offsets(opts: &JobOptions) -> Vec<(f64, f64)> {
     match opts.panel {
-        Some(p) if p.columns * p.rows > 1 => (0..p.rows)
-            .flat_map(|iy| {
-                (0..p.columns).map(move |ix| (ix as f64 * p.pitch_mm.0, iy as f64 * p.pitch_mm.1))
-            })
-            .collect(),
-        _ => vec![(0.0, 0.0)],
+        Some(p) => eh3d_bungard_formats::selection::panel_offsets(p.columns, p.rows, p.pitch_mm),
+        None => vec![(0.0, 0.0)],
     }
 }
 
-/// Whether every point (in mm from the zero of the file, before the offset of the machine file) falls inside the working area once the offset is added. With no working area
-/// everything is inside. Shared by the drilling and the routing.
+/// Whether every point falls inside the working area once the offset of the machine file is added (see `eh3d_bungard_formats::selection::inside_work_area`).
 pub fn inside_work_area(
     clip_mm: Option<(f64, f64)>,
     offset_mm: (f64, f64),
     points: impl IntoIterator<Item = (f64, f64)>,
 ) -> bool {
-    clip_mm.is_none_or(|(cx, cy)| {
-        points.into_iter().all(|(x, y)| {
-            let (x, y) = (x + offset_mm.0, y + offset_mm.1);
-            x >= 0.0 && y >= 0.0 && x <= cx && y <= cy
-        })
-    })
+    eh3d_bungard_formats::selection::inside_work_area(clip_mm, offset_mm, points)
 }
 
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.
