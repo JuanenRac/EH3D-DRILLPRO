@@ -895,7 +895,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let archive = match eh3d_archive::Archive::open(&path) {
             Ok(a) => a,
             Err(e) => {
-                d.info = Some(e.chars().take(44).collect());
+                d.info = Some(e.to_string().chars().take(44).collect());
                 return Flow::Stay;
             }
         };
@@ -932,11 +932,13 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Kind::Drill => eh3d_archive::Kind::Drill,
             Kind::Route => eh3d_archive::Kind::Route,
         };
-        let first = eh3d_archive::Archive::open(path).and_then(|a| {
-            a.first(kind)
-                .map(|e| e.name.clone())
-                .ok_or_else(|| format!("{}: no file of this kind in the archive", path.display()))
-        });
+        let first = eh3d_archive::Archive::open(path)
+            .map_err(String::from)
+            .and_then(|a| {
+                a.first(kind).map(|e| e.name.clone()).ok_or_else(|| {
+                    format!("{}: no file of this kind in the archive", path.display())
+                })
+            });
         match first.and_then(|name| extract_to_temp(path, &name)) {
             Ok(p) => self.load_file(&p),
             Err(e) => self.engine.set_error(e),
@@ -2793,7 +2795,9 @@ type Heading = (usize, CText, Option<(usize, &'static str)>);
 /// Takes a file of a job archive out into the work folder of this run and says where it went.
 fn extract_to_temp(archive: &std::path::Path, name: &str) -> Result<PathBuf, String> {
     let dir = std::env::temp_dir().join(format!("eh3d-zip-{}", std::process::id()));
-    eh3d_archive::Archive::open(archive).and_then(|mut a| a.extract(name, &dir))
+    eh3d_archive::Archive::open(archive)
+        .and_then(|mut a| a.extract(name, &dir))
+        .map_err(String::from)
 }
 
 /// A path that fits `width` cells: a long one keeps its end (the folder one is in), after `~`.
