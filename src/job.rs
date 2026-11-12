@@ -532,6 +532,42 @@ pub struct JobOptions {
     pub rack_carry_slot: Option<usize>,
 }
 
+/// The first and the last vector (counted from 1) that a job takes: `from` is at least 1 and a `to` of 0 means up to the end. Shared by the drilling and the routing.
+pub fn vector_range(opts: &JobOptions) -> (usize, usize) {
+    (
+        opts.from.max(1),
+        if opts.to == 0 { usize::MAX } else { opts.to },
+    )
+}
+
+/// Where each copy of the board goes on the panel, as the shift of its corner in mm (one copy with no shift when the panel is not asked for or has one place). Shared by the
+/// drilling and the routing.
+pub fn panel_offsets(opts: &JobOptions) -> Vec<(f64, f64)> {
+    match opts.panel {
+        Some(p) if p.columns * p.rows > 1 => (0..p.rows)
+            .flat_map(|iy| {
+                (0..p.columns).map(move |ix| (ix as f64 * p.pitch_mm.0, iy as f64 * p.pitch_mm.1))
+            })
+            .collect(),
+        _ => vec![(0.0, 0.0)],
+    }
+}
+
+/// Whether every point (in mm from the zero of the file, before the offset of the machine file) falls inside the working area once the offset is added. With no working area
+/// everything is inside. Shared by the drilling and the routing.
+pub fn inside_work_area(
+    clip_mm: Option<(f64, f64)>,
+    offset_mm: (f64, f64),
+    points: impl IntoIterator<Item = (f64, f64)>,
+) -> bool {
+    clip_mm.is_none_or(|(cx, cy)| {
+        points.into_iter().all(|(x, y)| {
+            let (x, y) = (x + offset_mm.0, y + offset_mm.1);
+            x >= 0.0 && y >= 0.0 && x <= cx && y <= cy
+        })
+    })
+}
+
 /// The holes of a job: the vectors the form asks for, ordered, copied over the panel and clipped to the working area.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct Selection {
@@ -552,8 +588,7 @@ pub fn select_holes(
 ) -> Selection {
     use crate::protocol::job::JobHole;
     // the vectors asked for, in the order of the file
-    let first = opts.from.max(1);
-    let last = if opts.to == 0 { usize::MAX } else { opts.to };
+    let (first, last) = vector_range(opts);
     let kept: Vec<Hole> = file
         .holes
         .iter()
@@ -584,14 +619,7 @@ pub fn select_holes(
             y_mm: h.y_mil as f64 * unit_mm * scale.1,
         })
         .collect();
-    let copies: Vec<(f64, f64)> = match opts.panel {
-        Some(p) if p.columns * p.rows > 1 => (0..p.rows)
-            .flat_map(|iy| {
-                (0..p.columns).map(move |ix| (ix as f64 * p.pitch_mm.0, iy as f64 * p.pitch_mm.1))
-            })
-            .collect(),
-        _ => vec![(0.0, 0.0)],
-    };
+    let copies = panel_offsets(opts);
     let mut out = Vec::with_capacity(base.len() * copies.len());
     let mut skipped = 0;
     // one tool after the other (the tool changes are the operator's), every copy of its holes in turn
@@ -608,11 +636,11 @@ pub fn select_holes(
                     x_mm: h.x_mm + dx,
                     y_mm: h.y_mm + dy,
                 };
-                let inside = opts.clip_mm.is_none_or(|(cx, cy)| {
-                    let (x, y) = (moved.x_mm + offset_mm.0, moved.y_mm + offset_mm.1);
-                    x >= 0.0 && y >= 0.0 && x <= cx && y <= cy
-                });
-                if inside {
+                if inside_work_area(
+                    opts.clip_mm,
+                    offset_mm,
+                    std::iter::once((moved.x_mm, moved.y_mm)),
+                ) {
                     out.push(moved);
                 } else {
                     skipped += 1;
@@ -746,5 +774,58 @@ mod tab_tests {
             ..tabs
         };
         assert_eq!(cut_tabs(&long, &none), vec![long.clone()]);
+    }
+}
+
+#[cfg(test)]
+mod selection_helper_tests {
+    use super::*;
+
+    #[test]
+    fn the_range_of_vectors_starts_at_one_and_zero_means_to_the_end() {
+        let none = JobOptions::default();
+        assert_eq!(vector_range(&none), (1, usize::MAX));
+        let some = JobOptions {
+            from: 3,
+            to: 7,
+            ..Default::default()
+        };
+        assert_eq!(vector_range(&some), (3, 7));
+    }
+
+    #[test]
+    fn a_panel_of_one_place_is_one_copy_and_a_grid_goes_row_by_row() {
+        assert_eq!(panel_offsets(&JobOptions::default()), vec![(0.0, 0.0)]);
+        let grid = JobOptions {
+            panel: Some(Panel {
+                columns: 2,
+                rows: 2,
+                pitch_mm: (10.0, 20.0),
+                tabs: None,
+            }),
+            ..Default::default()
+        };
+        assert_eq!(
+            panel_offsets(&grid),
+            vec![(0.0, 0.0), (10.0, 0.0), (0.0, 20.0), (10.0, 20.0)]
+        );
+    }
+
+    #[test]
+    fn the_working_area_takes_the_offset_into_account_and_all_the_points() {
+        let area = Some((100.0, 50.0));
+        assert!(inside_work_area(None, (0.0, 0.0), [(1e9, 1e9)]));
+        assert!(inside_work_area(
+            area,
+            (0.0, 0.0),
+            [(0.0, 0.0), (100.0, 50.0)]
+        ));
+        assert!(!inside_work_area(area, (1.0, 0.0), [(100.0, 50.0)]));
+        assert!(!inside_work_area(
+            area,
+            (0.0, 0.0),
+            [(5.0, 5.0), (5.0, -0.1)]
+        ));
+        assert!(inside_work_area(area, (10.0, 5.0), [(90.0, 45.0)]));
     }
 }
