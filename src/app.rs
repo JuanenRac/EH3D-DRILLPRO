@@ -15,6 +15,7 @@ use crate::screen::*;
 use crate::textapp::TextApp;
 use crate::texts::{tr, Text};
 use crate::tools::{self, Tool};
+use eh3d_bungard_formats::limits::ReaderLimits;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Input {
@@ -215,8 +216,9 @@ impl App {
             self.error = Some(format!("{}: {problem}", tr(self.lang, Text::ErrRead)));
             return;
         }
-        match ncd::parse(&text) {
-            Ok(file) if !file.ignored.is_empty() => {
+        // the size limits of the readers (kept in reader_limits.cfg of the shared crate): a file past a hard limit is refused, one past a warning limit is read and said
+        match ncd::parse_limited(&text, &ReaderLimits::default()) {
+            Ok((file, _)) if !file.ignored.is_empty() => {
                 // a slot or a routed move would vanish from the job: the file is not taken
                 let first = &file.ignored[0];
                 self.error = Some(format!(
@@ -227,7 +229,7 @@ impl App {
                     first.text
                 ));
             }
-            Ok(file) => {
+            Ok((file, verdict)) => {
                 self.error = None;
                 // what looks wrong in the work is said as soon as it is loaded (a unit that is probably wrong, a work far from the corner)
                 let unit_mm = self
@@ -236,7 +238,7 @@ impl App {
                     .map_or(crate::ncd::MIL_MM, |m| m.unit.mm());
                 let scale = self.settings.as_ref().map_or((1.0, 1.0), |m| m.scale);
                 let holes = sort_holes(&file, Sorting::None);
-                self.warning = crate::summary::load_warning(
+                let looks_wrong = crate::summary::load_warning(
                     holes.iter().map(|h| {
                         (
                             h.x_mil as f64 * unit_mm * scale.0,
@@ -248,12 +250,22 @@ impl App {
                     &self.connection.tuning,
                     self.lang,
                 );
+                self.warning = crate::summary::join_warnings(
+                    crate::summary::size_warning(verdict, self.lang),
+                    looks_wrong,
+                );
                 self.loaded = Some(Loaded {
                     path: path.to_path_buf(),
                     file,
                 });
             }
-            Err(e) => self.error = Some(format!("{}: {e}", tr(self.lang, Text::ErrRead))),
+            Err(e) => {
+                self.error = Some(format!(
+                    "{}: {}",
+                    tr(self.lang, Text::ErrRead),
+                    crate::summary::refusal_message(&e, self.lang)
+                ))
+            }
         }
     }
 
@@ -1500,5 +1512,30 @@ mod server_request_tests {
             plain,
             server_drill_request("a.ncd", 1.6, &tools, &holes, &Default::default())
         );
+    }
+}
+
+#[cfg(test)]
+mod reader_limit_tests {
+    use super::*;
+
+    #[test]
+    fn a_big_drill_file_is_read_and_the_screen_says_it_is_big() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let dir = std::env::temp_dir().join(format!("drillpro-big-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("big.ncd");
+        // a little more than the warning limit of the bytes (16 MiB) and far under the hard limits
+        let mut text = String::from("%\nT10\n");
+        text.push_str(&"X1000Y1000\n".repeat(1_600_000));
+        text.push_str("M30\n");
+        std::fs::write(&path, text).unwrap();
+        let mut app = App::new(Lang::En, &data);
+        app.load_file(&path);
+        let _ = std::fs::remove_dir_all(&dir);
+        assert!(app.error.is_none(), "{:?}", app.error);
+        assert!(app.loaded.is_some());
+        let warning = app.warning.as_deref().unwrap_or_default();
+        assert!(warning.contains("The file is big"), "{warning}");
     }
 }

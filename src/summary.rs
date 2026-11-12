@@ -10,7 +10,10 @@ use crate::i18n::Lang;
 use crate::protocol::job::Item;
 use crate::protocol::motion::Geometry;
 use crate::protocol::tuning::Tuning;
-pub use eh3d_summary::summary::{bounds_of, clock, course_warnings, Limits, Summary, Warning};
+pub use eh3d_summary::summary::{
+    bounds_of, clock, course_warnings, join_warnings, refusal_message, size_warning, Limits,
+    Summary, Warning,
+};
 
 /// The thresholds of the checks, as the tuning of the machine sets them.
 pub fn limits(tuning: &Tuning) -> Limits {
