@@ -50,7 +50,8 @@ jobs:
         shell: bash
         run: git clone --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git ../EH3D-COMMON
       - name: Rust toolchain
-        run: rustup toolchain install stable --profile minimal --component rustfmt,clippy
+        shell: bash
+        run: rustup toolchain install "$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" --profile minimal --component rustfmt,clippy
       - name: Format
         run: cargo fmt --all --check
       - name: Lints

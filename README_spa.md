@@ -197,6 +197,7 @@ EH3D-DRILLPRO/
 ├── run.sh run.bat                               arrancan el programa
 ├── eh3d.project.json                            manifiesto: versión, rol, madurez y comando de compilación
 ├── Cargo.toml Cargo.lock                        el paquete de Rust y sus dependencias fijadas
+├── rust-toolchain.toml                          la toolchain de Rust fijada
 ├── CHANGELOG.md                                 qué cambió en cada versión
 ├── SECURITY.md SUPPORT.md                       cómo informar de una vulnerabilidad y dónde preguntar
 └── CONTRIBUTING.md CODE_OF_CONDUCT.md LICENSE   cómo contribuir, el código de conducta y la licencia
