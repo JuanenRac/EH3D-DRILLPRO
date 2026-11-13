@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Datora seriālais ports, pa vienam baitam.
 CText.ConnNoteUsb	USB-RS-232 adapteris: kustības iet vienā plūsmā.
 CText.ConnNoteNode	Iekārtas EH3D mezgls, pa Ethernet vai Wi-Fi.
 CText.ConnNoteServer	EH3D serveris plāno darbu un izpilda to iekārtā.
+CText.ConnWarnPlain	Nešifrēts: žetons tiek sūtīts kā vienkāršs teksts. Izmantojiet uzticamu tīklu vai tuneli.
 CText.ConnPort	Ports
 CText.ConnAddress	Adrese
 CText.ConnToken	Token

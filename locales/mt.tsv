@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Il-port serjali tal-kompjuter, byte b'byte.
 CText.ConnNoteUsb	Adattatur USB-RS-232: movimenti f'fluss wieħed.
 CText.ConnNoteNode	In-nodu EH3D tal-magna, bl-Ethernet jew bil-Wi-Fi.
 CText.ConnNoteServer	Is-server EH3D jippjana x-xogħol u jmexxih fuq magna.
+CText.ConnWarnPlain	Mhux ikkriptat: it-token jivvjaġġa bħala test sempliċi. Uża netwerk fdat jew mina.
 CText.ConnPort	Port
 CText.ConnAddress	Indirizz
 CText.ConnToken	Token

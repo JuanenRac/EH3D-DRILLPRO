@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Port sraitheach an ríomhaire, beart amháin ag an am.
 CText.ConnNoteUsb	Adaptóir USB go RS-232: téann na gluaiseachtaí amach mar shruth amháin.
 CText.ConnNoteNode	Nód EH3D an mheaisín, thar Ethernet nó Wi-Fi.
 CText.ConnNoteServer	Pleanálann an freastalaí EH3D an obair agus ritheann sé ar mheaisín í.
+CText.ConnWarnPlain	Gan chriptiú: téann an comhartha mar théacs simplí. Úsáid líonra iontaofa nó tolláin.
 CText.ConnPort	Port
 CText.ConnAddress	Seoladh
 CText.ConnToken	Comhartha

@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Portul serial al calculatorului, octet cu octet.
 CText.ConnNoteUsb	Adaptor USB-RS-232: mișcările pleacă într-un flux.
 CText.ConnNoteNode	Nodul EH3D al mașinii, prin Ethernet sau Wi-Fi.
 CText.ConnNoteServer	Serverul EH3D planifică lucrarea și o rulează pe mașină.
+CText.ConnWarnPlain	Necriptat: tokenul circulă ca text simplu. Folosiți o rețea de încredere sau un tunel.
 CText.ConnPort	Port
 CText.ConnAddress	Adresă
 CText.ConnToken	Token

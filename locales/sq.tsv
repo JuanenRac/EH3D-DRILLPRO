@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Porta serike e kompjuterit, një bajt një herë.
 CText.ConnNoteUsb	Përshtatës USB-RS-232: lëvizjet dalin në një rrjedhë.
 CText.ConnNoteNode	Nyja EH3D e makinës, përmes Ethernet ose Wi-Fi.
 CText.ConnNoteServer	Serveri EH3D planifikon punën dhe e ekzekuton në makinë.
+CText.ConnWarnPlain	Pa enkriptim: tokeni udhëton si tekst i thjeshtë. Përdorni një rrjet të besuar ose një tunel.
 CText.ConnPort	Porta
 CText.ConnAddress	Adresa
 CText.ConnToken	Token

@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Серијски порт рачунара, по један 
 CText.ConnNoteUsb	USB-RS-232 адаптер: покрети иду једним током.
 CText.ConnNoteNode	EH3D чвор машине, преко Етернета или Wi-Fi-ја.
 CText.ConnNoteServer	EH3D сервер планира посао и изводи га на машини.
+CText.ConnWarnPlain	Није шифровано: токен путује као обичан текст. Користите поуздану мрежу или тунел.
 CText.ConnPort	Порт
 CText.ConnAddress	Адреса
 CText.ConnToken	Токен

@@ -28,6 +28,7 @@ CText.ConnNoteDemo	O trabalho roda no simulador: nada se move.
 CText.ConnNoteRs232	A porta serial do computador, byte a byte.
 CText.ConnNoteUsb	Um adaptador USB para RS-232: os movimentos saem em um fluxo.
 CText.ConnNoteServer	O servidor EH3D planeja o trabalho e o executa em uma máquina.
+CText.ConnWarnPlain	Sem criptografia: o token viaja em texto simples. Use uma rede confiável ou um túnel.
 CText.ConnNeedAddress	O endereço deve ser host:porta.
 CText.ConnSaved	Conexão salva no arquivo da máquina.
 CText.ConnNoSave	Não é possível gravar o arquivo da máquina.

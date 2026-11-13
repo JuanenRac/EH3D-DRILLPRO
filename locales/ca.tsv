@@ -125,6 +125,7 @@ CText.ConnNoteRs232	El port sèrie de l'ordinador, un byte cada cop.
 CText.ConnNoteUsb	Adaptador USB-RS-232: els moviments surten en un sol flux.
 CText.ConnNoteNode	El node EH3D de la màquina, per Ethernet o Wi-Fi.
 CText.ConnNoteServer	El servidor EH3D planifica la feina i l'executa en una màquina.
+CText.ConnWarnPlain	Sense xifrar: el token viatja en text pla. Feu servir una xarxa de confiança o un túnel.
 CText.ConnPort	Port
 CText.ConnAddress	Adreça
 CText.ConnToken	Testimoni

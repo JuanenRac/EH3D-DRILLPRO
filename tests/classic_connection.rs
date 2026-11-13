@@ -156,3 +156,42 @@ fn the_machine_file_keeps_its_other_lines_when_a_connection_is_saved() {
     let engine = ClassicApp::new(Lang::En, &dir);
     assert_eq!(engine.engine.connection().kind, Kind::Demo);
 }
+
+/// The window of the connection with the server way chosen and `address` typed into its first field.
+fn server_window_with(name: &str, lang: Lang, address: &str) -> String {
+    let dir = scratch(name);
+    let file = dir.join("machine.cfg");
+    std::fs::write(&file, "connection = demo\n").unwrap();
+    let mut a = ClassicApp::new(lang, &dir);
+    a.set_machine_file(Some(file));
+    a.handle(Input::Char('c'));
+    a.handle(Input::Tab);
+    a.handle(Input::Enter);
+    for _ in 0..4 {
+        a.handle(Input::Down);
+    }
+    a.handle(Input::Tab);
+    type_in(&mut a, address);
+    text(&a)
+}
+
+#[test]
+fn a_server_that_is_not_local_or_private_gets_a_visible_warning_about_the_token() {
+    let t = server_window_with("warn-public", Lang::En, "8.8.8.8:18200");
+    assert!(t.contains("Not encrypted: the token travels"), "{t}");
+    let t = server_window_with("warn-public-es", Lang::Es, "example.com:18200");
+    assert!(t.contains("Sin cifrar: el token viaja"), "{t}");
+}
+
+#[test]
+fn a_local_or_private_server_gets_no_warning() {
+    for address in [
+        "127.0.0.1:18200",
+        "192.168.0.180:18200",
+        "10.1.2.3:18200",
+        "cm5.local:18200",
+    ] {
+        let t = server_window_with("warn-private", Lang::En, address);
+        assert!(!t.contains("Not encrypted"), "{address}: {t}");
+    }
+}

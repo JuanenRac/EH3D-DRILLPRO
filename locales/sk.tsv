@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Sériový port počítača, bajt po bajte.
 CText.ConnNoteUsb	Adaptér USB-RS-232: pohyby idú ako jeden tok.
 CText.ConnNoteNode	Uzol EH3D stroja cez Ethernet alebo Wi-Fi.
 CText.ConnNoteServer	Server EH3D plánuje úlohu a spúšťa ju na stroji.
+CText.ConnWarnPlain	Nešifrované: token putuje ako obyčajný text. Použite dôveryhodnú sieť alebo tunel.
 CText.ConnPort	Port
 CText.ConnAddress	Adresa
 CText.ConnToken	Token

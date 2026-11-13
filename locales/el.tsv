@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Η σειριακή θύρα του υπολογιστή, έ
 CText.ConnNoteUsb	Προσαρμογέας USB σε RS-232: οι κινήσεις στέλνονται ως ροή.
 CText.ConnNoteNode	Ο κόμβος EH3D του μηχανήματος, μέσω Ethernet ή Wi-Fi.
 CText.ConnNoteServer	Ο διακομιστής EH3D σχεδιάζει την εργασία και την εκτελεί σε μηχάνημα.
+CText.ConnWarnPlain	Χωρίς κρυπτογράφηση: το διακριτικό ταξιδεύει ως απλό κείμενο. Χρησιμοποιήστε αξιόπιστο δίκτυο ή τούνελ.
 CText.ConnPort	Θύρα
 CText.ConnAddress	Διεύθυνση
 CText.ConnToken	Διακριτικό

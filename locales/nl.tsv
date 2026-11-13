@@ -125,6 +125,7 @@ CText.ConnNoteRs232	De seriële poort van de computer, byte voor byte.
 CText.ConnNoteUsb	Een USB-naar-RS-232-adapter: de bewegingen gaan als één stroom.
 CText.ConnNoteNode	De EH3D-node van de machine, via Ethernet of Wi-Fi.
 CText.ConnNoteServer	De EH3D-server plant de taak en voert hem uit op een machine.
+CText.ConnWarnPlain	Niet versleuteld: het token gaat als platte tekst. Gebruik een vertrouwd netwerk of tunnel.
 CText.ConnPort	Poort
 CText.ConnAddress	Adres
 CText.ConnToken	Token

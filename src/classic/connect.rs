@@ -88,6 +88,18 @@ impl ConnState {
         }
     }
 
+    /// The token would travel in the clear to an address that is neither this computer nor a private network (the server way only; what is being typed counts).
+    pub fn plain_token_warning(&self) -> bool {
+        if KINDS[self.kind] != Kind::Server {
+            return false;
+        }
+        let editing = match (&self.edit, self.item()) {
+            (Some(e), Item::Field(k)) if self.fields()[k].1 == 4 => Some(e.text.as_str()),
+            _ => None,
+        };
+        crate::server_link::plain_token_warning(editing.unwrap_or(&self.vals[4]))
+    }
+
     pub fn ring(&self) -> Vec<Item> {
         let mut r = vec![Item::Kind];
         r.extend((0..self.fields().len()).map(Item::Field));

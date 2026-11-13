@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Tietokoneen sarjaportti, yksi tavu kerrallaan.
 CText.ConnNoteUsb	USB-RS-232-sovitin: liikkeet lähtevät yhtenä virtana.
 CText.ConnNoteNode	Koneen EH3D-solmu, Ethernetin tai WiFin kautta.
 CText.ConnNoteServer	EH3D-palvelin suunnittelee työn ja ajaa sen koneella.
+CText.ConnWarnPlain	Salaamaton: tunniste kulkee selkotekstinä. Käytä luotettavaa verkkoa tai tunnelia.
 CText.ConnPort	Portti
 CText.ConnAddress	Osoite
 CText.ConnToken	Tunniste
