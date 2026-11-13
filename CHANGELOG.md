@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The CI and the release build take the sibling repositories at their released tags:** `EH3D-COMMON` at `v0.2.1`, and the other siblings at the version they were released in, instead of at `main`; the manifest asks for `min_common` 0.2.1.
+
 ## [0.1.7] - Shared job selection, typed Z direction, reader limits and warnings of the server
 
 - **A pull request must say what it changes:** the validation runs `tools/changelog_pr_check.py` on a pull request (it fails when the CHANGELOG has no new line under [Unreleased]; the label `no-changelog` skips it), the same check as the other repositories of the suite.
