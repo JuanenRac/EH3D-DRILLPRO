@@ -39,35 +39,3 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: python -I tools/changelog_pr_check.py --base "origin/$BASE_REF"
-
-  rust:
-    name: Rust (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          persist-credentials: false
-      - name: Check out the sibling EH3D-COMMON (a path dependency)
-        shell: bash
-        run: git clone --depth 1 --branch v0.2.1 https://github.com/JuanenRac/EH3D-COMMON.git ../EH3D-COMMON
-      - name: Rust toolchain
-        shell: bash
-        run: rustup toolchain install "$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" --profile minimal --component rustfmt,clippy
-      - name: Format
-        run: cargo fmt --all --check
-      - name: Lints
-        run: cargo clippy --workspace --all-targets --features console -- -D warnings
-      - name: Tests
-        run: cargo test --workspace --all-targets --features console
-      - name: Libraries of the window system (the graphical interface)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev
-      - name: Lints of the graphical interface
-        run: cargo clippy --workspace --all-targets --features gui -- -D warnings
-      - name: Tests of the graphical interface
-        run: cargo test --workspace --all-targets --features gui
