@@ -125,6 +125,7 @@ CText.ConnNoteRs232	O porto serie do ordenador, byte a byte.
 CText.ConnNoteUsb	Adaptador USB a RS-232: os movementos saen nun fluxo.
 CText.ConnNoteNode	O nodo EH3D da máquina, por Ethernet ou Wi-Fi.
 CText.ConnNoteServer	O servidor EH3D planifica o traballo e execútao nunha máquina.
+CText.ConnWarnPlain	Sen cifrar: o token viaxa en texto plano. Usa unha rede de confianza ou un túnel.
 CText.ConnPort	Porto
 CText.ConnAddress	Enderezo
 CText.ConnToken	Token

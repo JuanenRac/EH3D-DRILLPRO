@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Kompiuterio nuoseklus prievadas, po vieną baitą.
 CText.ConnNoteUsb	USB-RS-232 adapteris: judesiai eina vienu srautu.
 CText.ConnNoteNode	Staklių EH3D mazgas, per Ethernet ar Wi-Fi.
 CText.ConnNoteServer	EH3D serveris planuoja darbą ir vykdo jį staklėse.
+CText.ConnWarnPlain	Nešifruota: žetonas siunčiamas kaip paprastas tekstas. Naudokite patikimą tinklą arba tunelį.
 CText.ConnPort	Prievadas
 CText.ConnAddress	Adresas
 CText.ConnToken	Žetonas

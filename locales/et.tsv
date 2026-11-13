@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Arvuti jadaport, bait haaval.
 CText.ConnNoteUsb	USB-RS-232 adapter: liikumised lähevad ühe vooga.
 CText.ConnNoteNode	Masina EH3D-sõlm, Etherneti või WiFi kaudu.
 CText.ConnNoteServer	EH3D-server planeerib töö ja käivitab selle masinal.
+CText.ConnWarnPlain	Krüpteerimata: token liigub lihttekstina. Kasuta usaldusväärset võrku või tunnelit.
 CText.ConnPort	Port
 CText.ConnAddress	Aadress
 CText.ConnToken	Luba

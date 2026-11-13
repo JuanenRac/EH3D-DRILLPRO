@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Datamaskinens serieport, én byte om gangen.
 CText.ConnNoteUsb	USB-RS-232-adapter: bevegelsene går som én strøm.
 CText.ConnNoteNode	Maskinens EH3D-node via Ethernet eller Wi-Fi.
 CText.ConnNoteServer	EH3D-serveren planlegger jobben og kjører den på en maskin.
+CText.ConnWarnPlain	Ikke kryptert: token sendes i klartekst. Bruk et pålitelig nettverk eller en tunnel.
 CText.ConnPort	Port
 CText.ConnAddress	Adresse
 CText.ConnToken	Token

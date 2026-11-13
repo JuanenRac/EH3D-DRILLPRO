@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Последовательный порт ПК, по одн�
 CText.ConnNoteUsb	Адаптер USB-RS-232: движения идут одним потоком.
 CText.ConnNoteNode	Узел EH3D станка, по Ethernet или Wi-Fi.
 CText.ConnNoteServer	Сервер EH3D планирует задание и выполняет его на станке.
+CText.ConnWarnPlain	Без шифрования: токен передаётся открытым текстом. Используйте доверенную сеть или туннель.
 CText.ConnPort	Порт
 CText.ConnAddress	Адрес
 CText.ConnToken	Токен

@@ -84,6 +84,49 @@ impl Client {
     }
 }
 
+/// True when the token of the program would travel in the clear over a network that is not the user's own: the client speaks plain HTTP, so an address that is not
+/// this computer (`127.x`, `::1`, `localhost`) or a private network (`10.x`, `172.16` to `172.31`, `192.168.x`, link-local `169.254.x` and `fe80::`, unique-local
+/// `fc00::/7`, and names ending in `.local`) deserves a warning in the window of the connection. An address with `https://` (a tunnel or a proxy in front of the
+/// server) and an empty address give no warning. The address is `host:port`, with or without a scheme and a path.
+pub fn plain_token_warning(address: &str) -> bool {
+    let text = address.trim();
+    if text.is_empty() {
+        return false;
+    }
+    let lower = text.to_ascii_lowercase();
+    if lower.starts_with("https://") {
+        return false;
+    }
+    let rest = lower.strip_prefix("http://").unwrap_or(&lower);
+    let authority = rest.split(['/', '?', '#']).next().unwrap_or("");
+    let authority = authority.rsplit_once('@').map_or(authority, |(_, h)| h);
+    // [v6]:port, host:port or a bare v6 address
+    let host = if let Some(inner) = authority.strip_prefix('[') {
+        inner.split(']').next().unwrap_or("")
+    } else if authority.matches(':').count() > 1 {
+        authority
+    } else {
+        authority.split(':').next().unwrap_or("")
+    };
+    let host = host.trim_end_matches('.');
+    if host.is_empty() {
+        return false;
+    }
+    if host == "localhost" || host.ends_with(".local") || host.ends_with(".localhost") {
+        return false;
+    }
+    if let Ok(v4) = host.parse::<std::net::Ipv4Addr>() {
+        return !(v4.is_loopback() || v4.is_private() || v4.is_link_local());
+    }
+    if let Ok(v6) = host.parse::<std::net::Ipv6Addr>() {
+        let first = v6.segments()[0];
+        let unique_local = first & 0xfe00 == 0xfc00;
+        let link_local = first & 0xffc0 == 0xfe80;
+        return !(v6.is_loopback() || unique_local || link_local);
+    }
+    true
+}
+
 /// A part of a request line or header refuses a space, a control character or anything that is not ASCII (a carriage return or a line feed would end the line and let
 /// the rest pass for another header or request).
 pub fn check_request_part(what: &str, text: &str) -> Result<(), String> {

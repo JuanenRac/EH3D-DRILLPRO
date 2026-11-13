@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Raðtengi tölvunnar, einn bæti í einu.
 CText.ConnNoteUsb	USB-RS-232 millistykki: hreyfingar fara í einum straumi.
 CText.ConnNoteNode	EH3D hnútur vélarinnar um Ethernet eða Wi-Fi.
 CText.ConnNoteServer	EH3D þjónninn skipuleggur verkið og keyrir það á vél.
+CText.ConnWarnPlain	Ódulkóðað: tákn ferðast sem hreinn texti. Notaðu traust net eða göng.
 CText.ConnPort	Tengi
 CText.ConnAddress	Vistfang
 CText.ConnToken	Tóki

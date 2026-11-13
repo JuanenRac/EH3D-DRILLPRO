@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Ordenagailuaren serie ataka, byte bat aldiko.
 CText.ConnNoteUsb	USB-RS-232 egokitzailea: mugimenduak jario batean irteten dira.
 CText.ConnNoteNode	Makinaren EH3D nodoa, Ethernet edo Wi-Fi bidez.
 CText.ConnNoteServer	EH3D zerbitzariak lana planifikatu eta makina batean exekutatzen du.
+CText.ConnWarnPlain	Zifratu gabe: tokena testu soil gisa doa. Erabili sare fidagarri bat edo tunel bat.
 CText.ConnPort	Ataka
 CText.ConnAddress	Helbidea
 CText.ConnToken	Tokena

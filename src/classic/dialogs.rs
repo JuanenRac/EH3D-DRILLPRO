@@ -2429,6 +2429,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         if let Some(e) = d.conn.error {
             s.text(11, 16, self.t(e), RED, GREY);
+        } else if d.conn.plain_token_warning() {
+            // the token goes in the clear: said in one or two lines over the buttons
+            let (first, second) = wrap_note(self.t(CText::ConnWarnPlain), 58);
+            s.text(11, 16, &first, RED, GREY);
+            s.text(11, 17, &second, RED, GREY);
         }
         for (x, it, text) in [
             (22usize, Item::Ok, CText::BOk),

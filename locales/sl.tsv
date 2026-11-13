@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Serijska vrata računalnika, bajt za bajtom.
 CText.ConnNoteUsb	Adapter USB-RS-232: gibi gredo v enem toku.
 CText.ConnNoteNode	Vozlišče EH3D stroja prek etherneta ali Wi-Fi.
 CText.ConnNoteServer	Strežnik EH3D načrtuje opravilo in ga izvede na stroju.
+CText.ConnWarnPlain	Nešifrirano: žeton potuje kot navadno besedilo. Uporabite zaupanja vredno omrežje ali tunel.
 CText.ConnPort	Vrata
 CText.ConnAddress	Naslov
 CText.ConnToken	Žeton

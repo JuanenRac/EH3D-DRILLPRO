@@ -125,6 +125,7 @@ CText.ConnNoteRs232	A számítógép soros portja, bájtonként.
 CText.ConnNoteUsb	USB-RS-232 adapter: a mozgások egy adatfolyamként mennek ki.
 CText.ConnNoteNode	A gép EH3D csomópontja, Etherneten vagy Wi-Fin.
 CText.ConnNoteServer	Az EH3D szerver megtervezi a munkát és egy gépen futtatja.
+CText.ConnWarnPlain	Titkosítatlan: a token egyszerű szövegként utazik. Használjon megbízható hálózatot vagy alagutat.
 CText.ConnPort	Port
 CText.ConnAddress	Cím
 CText.ConnToken	Token

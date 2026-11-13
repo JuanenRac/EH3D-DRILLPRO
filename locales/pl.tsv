@@ -125,6 +125,7 @@ CText.ConnNoteRs232	Port szeregowy komputera, bajt po bajcie.
 CText.ConnNoteUsb	Adapter USB-RS-232: ruchy idą jednym strumieniem.
 CText.ConnNoteNode	Węzeł EH3D maszyny, przez Ethernet lub Wi-Fi.
 CText.ConnNoteServer	Serwer EH3D planuje zadanie i uruchamia je na maszynie.
+CText.ConnWarnPlain	Bez szyfrowania: token jest wysyłany jawnym tekstem. Użyj zaufanej sieci lub tunelu.
 CText.ConnPort	Port
 CText.ConnAddress	Adres
 CText.ConnToken	Token
