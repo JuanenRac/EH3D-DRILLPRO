@@ -14,6 +14,7 @@ use std::io;
 
 pub mod connection;
 pub mod execute;
+pub mod faulty;
 pub mod homing;
 pub mod job;
 pub mod latches;
