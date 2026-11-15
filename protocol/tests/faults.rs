@@ -7,6 +7,13 @@ use eh3d_drillpro_protocol::motion::{rapid_xy, Geometry};
 use eh3d_drillpro_protocol::safety::{Machine, MachineError, Verified};
 use eh3d_drillpro_protocol::{ConnectError, Limits, Simulator, Transport};
 
+#[allow(clippy::field_reassign_with_default)]
+fn simulator_with(limits: Limits) -> Simulator {
+    let mut sim = Simulator::default();
+    sim.limits = Some(limits);
+    sim
+}
+
 fn armed(link: FaultyLink<Simulator>) -> Machine<FaultyLink<Simulator>> {
     let mut m = Machine::new(link);
     m.connect().unwrap();
@@ -77,10 +84,7 @@ fn a_dead_limit_switch_ends_the_reference_run_with_no_limit_signal() {
         y: 0,
         z: -100,
     };
-    let sim = Simulator {
-        limits: Some(limits),
-        ..Default::default()
-    };
+    let sim = simulator_with(limits);
     let link = FaultyLink::new(sim).with(Fault::DeadLimitSwitch);
     let mut m = armed(link);
     let r = home_z(&mut m, &HomingParams::default(), &Geometry::default());
@@ -89,10 +93,7 @@ fn a_dead_limit_switch_ends_the_reference_run_with_no_limit_signal() {
     assert!(m.transport().inner().z_steps <= -1320);
 
     // with the switch working the same run ends on the switch
-    let sim = Simulator {
-        limits: Some(limits),
-        ..Default::default()
-    };
+    let sim = simulator_with(limits);
     let mut ok = armed(FaultyLink::new(sim));
     home_z(&mut ok, &HomingParams::default(), &Geometry::default()).unwrap();
 }
