@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A simulation of failures of the link:** `faulty::FaultyLink` wraps the simulator (or any transport) and fails on purpose: a control unit that never answers the handshake, a fault line stuck high, a limit switch that never closes, a cable pulled in the middle of a run, a status that cannot be read and bytes lost on the line, chosen by a seeded generator so the same seed loses the same bytes; `clear` plugs the cable in again. `protocol/tests/faults.rs` checks the error that is told, that nothing moves after a failed connection, that the reference run ends with no limit signal and that a second run works after the recovery. It has not run on a real machine.
+
 ## [0.1.8] - Warning when the token would travel in the clear
 
 - **The shared validation tools are updated:** the validator also runs the workflow and lessons checks of the suite with their latest rules, including a check to run before every push.

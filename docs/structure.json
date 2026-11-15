@@ -175,17 +175,17 @@
           }
         },
         {
-          "name": "homing.rs  latches.rs",
-          "tree_name": "homing.rs latches.rs",
+          "name": "homing.rs  latches.rs  faulty.rs",
+          "tree_name": "homing.rs latches.rs faulty.rs",
           "desc": {
-            "en": "the reference run and the control unit's latch bits",
-            "es": "la marcha de referencia y los bits de enclavamiento",
-            "de": "die Referenzfahrt und die Latch-Bits der Steuerung",
-            "fr": "la prise de référence et les bits de verrouillage",
-            "it": "la corsa di riferimento e i bit di latch",
-            "ja": "原点復帰とラッチビット",
-            "zh": "回参考点和锁存位",
-            "pt": "a referência dos eixos e os bits de latch"
+            "en": "the reference run, the latch bits and the link that fails on purpose",
+            "es": "la marcha de referencia, los bits de enclavamiento y el enlace que falla a propósito",
+            "de": "die Referenzfahrt, die Latch-Bits und die absichtlich fehlerhafte Verbindung",
+            "fr": "la prise de référence, les bits de verrouillage et la liaison qui échoue exprès",
+            "it": "la corsa di riferimento, i bit di latch e il collegamento che si guasta apposta",
+            "ja": "原点復帰、ラッチビット、わざと故障させる接続",
+            "zh": "回参考点、锁存位和故意出错的连接",
+            "pt": "a referência dos eixos, os bits de latch e a ligação que falha de propósito"
           }
         },
         {
