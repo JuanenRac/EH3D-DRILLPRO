@@ -513,3 +513,95 @@ fn unstick_off_in_the_tuning_means_no_move_away() {
         .iter()
         .any(|i| matches!(i, Item::Unstick(_))));
 }
+
+/// Cancels from the n-th time it is asked (the first question is the one before the item).
+struct CancelFrom {
+    asked: usize,
+    from: usize,
+}
+
+impl Hooks for CancelFrom {
+    fn pause(&mut self, _p: Pause) -> bool {
+        true
+    }
+    fn progress(&mut self, _next: usize, _total: usize) {}
+    fn cancelled(&mut self) -> bool {
+        self.asked += 1;
+        self.asked >= self.from
+    }
+}
+
+fn assert_stopped_early(m: &Machine<Simulator>, outcome: Outcome, whole: i64) {
+    assert_eq!(outcome, Outcome::Cancelled);
+    assert!(!m.is_armed());
+    assert_eq!(*m.transport().sent.last().unwrap(), 0xC0);
+    let x = m.transport().x_steps.abs();
+    assert!(x > 0 && x < whole, "moved {x} of {whole} steps");
+}
+
+#[test]
+fn a_stop_during_a_search_is_noticed_within_a_piece_on_every_connection() {
+    for pacing in [Pacing::Bytes, Pacing::Stream, Pacing::StreamKeepDir] {
+        // the line never rises, so only the stop can end the search
+        let mut m = machine_with(None, true);
+        m.set_pacing(pacing);
+        let items = vec![Item::Search(plan_line(
+            -10_000, -10_000, 1000.0, 2000.0, 100,
+        ))];
+        let mut h = CancelFrom { asked: 0, from: 4 };
+        let outcome = run_items(&mut m, &items, &mut h).unwrap();
+        assert_stopped_early(&m, outcome, 10_000);
+        assert!(h.asked <= 4, "{pacing:?}: asked {} times", h.asked);
+    }
+}
+
+#[test]
+fn a_stop_during_a_search_without_the_home_signal_and_during_a_seek_is_noticed_within_a_piece() {
+    for pacing in [Pacing::Bytes, Pacing::Stream] {
+        for seek in [false, true] {
+            let mut m = machine_with(None, false);
+            m.set_pacing(pacing);
+            let steps = plan_line(-10_000, -10_000, 1000.0, 2000.0, 100);
+            let items = vec![if seek {
+                Item::Seek(steps)
+            } else {
+                Item::Search(steps)
+            }];
+            let mut h = CancelFrom { asked: 0, from: 4 };
+            let outcome = run_items(&mut m, &items, &mut h).unwrap();
+            assert_stopped_early(&m, outcome, 10_000);
+        }
+    }
+}
+
+#[test]
+fn a_stop_during_a_search_with_a_watch_chunk_is_noticed_within_a_piece() {
+    let mut m = machine_with(None, true);
+    m.set_pacing(Pacing::Stream);
+    let mut tuning = *m.tuning();
+    tuning.home_watch_chunk_bytes = 1900;
+    m.set_tuning(tuning);
+    let items = vec![Item::Search(plan_line(
+        -10_000, -10_000, 1000.0, 2000.0, 100,
+    ))];
+    let mut h = CancelFrom { asked: 0, from: 4 };
+    let outcome = run_items(&mut m, &items, &mut h).unwrap();
+    assert_stopped_early(&m, outcome, 10_000);
+}
+
+#[test]
+fn a_stop_while_moving_away_from_the_switches_is_noticed_within_a_piece() {
+    use eh3d_drillpro_protocol::job::Unstick;
+    // on all three switches, so the move away is made; its X leg is long
+    let mut m = machine_with(Some(Limits { x: 0, y: 0, z: 0 }), true);
+    let long = plan_line(10_000, 0, 1000.0, 2000.0, 100);
+    let items = vec![Item::Unstick(Unstick {
+        x: long,
+        y: vec![],
+        x_back: 10_000,
+        y_back: 0,
+    })];
+    let mut h = CancelFrom { asked: 0, from: 4 };
+    let outcome = run_items(&mut m, &items, &mut h).unwrap();
+    assert_stopped_early(&m, outcome, 10_000);
+}
