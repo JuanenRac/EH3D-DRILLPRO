@@ -2,11 +2,12 @@
 //! node. The operator's dialogs and the cancel key come in through [`Hooks`].
 //!
 //! A cancel, an error or a refused dialog stops the machine at once ([`Machine::emergency_stop`]: the queue far from here is
-//! emptied and the stepper drivers are switched off). Long moves are cut into pieces so a cancel is noticed within a fraction
-//! of a second, not at the end of the move.
+//! emptied and the stepper drivers are switched off). Long moves, the searches towards the switches included, are cut into
+//! pieces so a cancel is noticed within a fraction of a second, not at the end of the move.
 
 use crate::job::{Item, Pause};
 use crate::safety::{Machine, MachineError};
+use crate::Pacing;
 use crate::Step;
 use crate::Transport;
 
@@ -70,19 +71,36 @@ pub fn run_items<T: Transport>(
                 }
                 let short = hinted(m, steps).filter(|&n| n < steps.len());
                 let first = short.map_or(steps.as_slice(), |n| &steps[..n]);
-                match m.run_until_home(first) {
-                    Ok(true) => Ok(()),
+                match search_in_pieces(m, first, hooks) {
+                    Ok(Homing::Cancelled) => {
+                        m.emergency_stop();
+                        return Ok(Outcome::Cancelled);
+                    }
+                    Ok(Homing::Reached) => Ok(()),
                     // the distance was wrong (the axis was further than the position said): try again with the whole search
-                    Ok(false) if short.is_some() => match m.run_until_home(steps) {
-                        Ok(true) => Ok(()),
-                        Ok(false) => Err(MachineError::HomeNotFound),
-                        Err(e) => Err(e),
-                    },
-                    Ok(false) => Err(MachineError::HomeNotFound),
+                    Ok(Homing::NotReached) if short.is_some() => {
+                        match search_in_pieces(m, steps, hooks) {
+                            Ok(Homing::Reached) => Ok(()),
+                            Ok(Homing::NotReached) => Err(MachineError::HomeNotFound),
+                            Ok(Homing::Cancelled) => {
+                                m.emergency_stop();
+                                return Ok(Outcome::Cancelled);
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    Ok(Homing::NotReached) => Err(MachineError::HomeNotFound),
                     Err(e) => Err(e),
                 }
             }
-            Item::Search(steps) => m.run(steps),
+            Item::Search(steps) => match run_in_pieces(m, steps, hooks) {
+                Ok(true) => Ok(()),
+                Ok(false) => {
+                    m.emergency_stop();
+                    return Ok(Outcome::Cancelled);
+                }
+                Err(e) => Err(e),
+            },
             Item::Seek(steps) if m.home_signal() => {
                 if hooks.cancelled() {
                     m.emergency_stop();
@@ -93,16 +111,31 @@ pub fn run_items<T: Transport>(
                     Ok(inputs) if inputs.limit => Ok(()),
                     Ok(_) => {
                         let steps = hinted(m, steps).map_or(steps.as_slice(), |n| &steps[..n]);
-                        if m.tuning().home_watch_seek {
-                            m.run_until_home(steps).map(|_| ())
+                        let sent = if m.tuning().home_watch_seek {
+                            search_in_pieces(m, steps, hooks).map(|h| h != Homing::Cancelled)
                         } else {
-                            m.run(steps)
+                            run_in_pieces(m, steps, hooks)
+                        };
+                        match sent {
+                            Ok(true) => Ok(()),
+                            Ok(false) => {
+                                m.emergency_stop();
+                                return Ok(Outcome::Cancelled);
+                            }
+                            Err(e) => Err(e),
                         }
                     }
                     Err(e) => Err(e),
                 }
             }
-            Item::Seek(steps) => m.run(steps),
+            Item::Seek(steps) => match run_in_pieces(m, steps, hooks) {
+                Ok(true) => Ok(()),
+                Ok(false) => {
+                    m.emergency_stop();
+                    return Ok(Outcome::Cancelled);
+                }
+                Err(e) => Err(e),
+            },
             Item::Unstick(u) => {
                 if !m.home_signal() {
                     Ok(())
@@ -112,8 +145,19 @@ pub fn run_items<T: Transport>(
                     match m.read_inputs() {
                         Ok(inputs) if inputs.limit || m.tuning().unstick_always => {
                             let parked = inputs.limit;
-                            let moved = m.run(&u.x).and_then(|_| m.run(&u.y));
-                            match moved.and_then(|_| m.read_inputs()) {
+                            let moved = match run_in_pieces(m, &u.x, hooks) {
+                                Ok(true) => run_in_pieces(m, &u.y, hooks),
+                                other => other,
+                            };
+                            let seen = match moved {
+                                Ok(false) => {
+                                    m.emergency_stop();
+                                    return Ok(Outcome::Cancelled);
+                                }
+                                Ok(true) => m.read_inputs(),
+                                Err(e) => Err(e),
+                            };
+                            match seen {
                                 Ok(after) => {
                                     // the line must drop: both axes really left their switches
                                     m.set_search_hint(if parked && !after.limit {
@@ -167,6 +211,74 @@ pub fn run_items<T: Transport>(
     }
     hooks.progress(items.len(), items.len());
     Ok(Outcome::Completed)
+}
+
+/// How a search towards the switches ended.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Homing {
+    Reached,
+    NotReached,
+    Cancelled,
+}
+
+/// Sends `steps` in pieces of `cancel_piece_steps` and asks the cancel hook before each, so a stop is noticed within a piece and not at the end of a move that can last
+/// several seconds. All but the last piece go out ahead (the line does not run dry between them). `Ok(false)` means cancelled: the caller stops the machine.
+fn run_in_pieces<T: Transport>(
+    m: &mut Machine<T>,
+    steps: &[Step],
+    hooks: &mut dyn Hooks,
+) -> Result<bool, MachineError> {
+    let size = (m.tuning().cancel_piece_steps as usize).max(1);
+    let pieces = steps.chunks(size).count();
+    for (k, piece) in steps.chunks(size).enumerate() {
+        if hooks.cancelled() {
+            return Ok(false);
+        }
+        if k + 1 < pieces {
+            m.run_ahead(piece)?;
+        } else {
+            m.run(piece)?;
+        }
+    }
+    Ok(true)
+}
+
+/// A search towards the switches with the cancel hook asked before each piece. With `home_watch_chunk_bytes = 0` (the default) the search is one unbroken stream and the home
+/// line is read once, after the last piece, as it always was: the pieces before it go out ahead. With a watch chunk (or one byte at a time) every piece is watched on its own.
+fn search_in_pieces<T: Transport>(
+    m: &mut Machine<T>,
+    steps: &[Step],
+    hooks: &mut dyn Hooks,
+) -> Result<Homing, MachineError> {
+    let found = |reached: bool| {
+        if reached {
+            Homing::Reached
+        } else {
+            Homing::NotReached
+        }
+    };
+    if steps.is_empty() {
+        return Ok(found(m.run_until_home(steps)?));
+    }
+    let size = (m.tuning().cancel_piece_steps as usize).max(1);
+    // One byte at a time the line is read between small pieces anyway, and a watch chunk asks for it: every piece is watched on its own.
+    let watch = m.tuning().home_watch_chunk_bytes != 0 || m.pacing() == Pacing::Bytes;
+    let pieces = steps.chunks(size).count();
+    for (k, piece) in steps.chunks(size).enumerate() {
+        if hooks.cancelled() {
+            return Ok(Homing::Cancelled);
+        }
+        if watch {
+            if m.run_until_home(piece)? {
+                return Ok(Homing::Reached);
+            }
+        } else if k + 1 < pieces {
+            m.run_ahead(piece)?;
+        } else {
+            return Ok(found(m.run_until_home(piece)?));
+        }
+    }
+    Ok(Homing::NotReached)
 }
 
 /// The number of steps to send of a long search of X or Y when the distance to the switch is known; `None` for any other move.

@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A stop is noticed during the searches towards the switches, the seeks and the move away from them:** these moves used to be sent as one stream and waited for to the end (about ten seconds on X with the default settings) without asking the cancel hook again. They are now cut into pieces of `cancel_piece_steps`, the hook is asked before each piece and the machine is stopped at once. With the default settings the home line is still read once, after the last piece (the earlier pieces go out ahead, so the line does not run dry); with a watch chunk or one byte at a time every piece is watched on its own. Tests cancel in the middle of a search on every connection kind, of a seek, of a watched search and of the move away.
+
 - **A simulation of failures of the link:** `faulty::FaultyLink` wraps the simulator (or any transport) and fails on purpose: a control unit that never answers the handshake, a fault line stuck high, a limit switch that never closes, a cable pulled in the middle of a run, a status that cannot be read and bytes lost on the line, chosen by a seeded generator so the same seed loses the same bytes; `clear` plugs the cable in again. `protocol/tests/faults.rs` checks the error that is told, that nothing moves after a failed connection, that the reference run ends with no limit signal and that a second run works after the recovery. It has not run on a real machine.
 
 ## [0.1.8] - Warning when the token would travel in the clear
