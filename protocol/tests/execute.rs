@@ -535,7 +535,7 @@ fn assert_stopped_early(m: &Machine<Simulator>, outcome: Outcome, whole: i64) {
     assert_eq!(outcome, Outcome::Cancelled);
     assert!(!m.is_armed());
     assert_eq!(*m.transport().sent.last().unwrap(), 0xC0);
-    let x = i64::from(m.transport().x_steps).abs();
+    let x = m.transport().x_steps.abs();
     assert!(x > 0 && x < whole, "moved {x} of {whole} steps");
 }
 
