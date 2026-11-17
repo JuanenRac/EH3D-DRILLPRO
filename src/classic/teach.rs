@@ -49,6 +49,8 @@ pub(crate) struct TeachDlg {
     tool: u8,
     /// Depth of Z in mm.
     max_z: f64,
+    /// Reach of X and Y in mm (the clip of the machine): the head never leaves 0..reach.
+    reach: (f64, f64),
 }
 
 impl TeachDlg {
@@ -60,9 +62,17 @@ impl TeachDlg {
         (self.max_z / MIL_MM).floor() as i32
     }
 
+    fn reach_mil(&self) -> (i32, i32) {
+        (
+            (self.reach.0 / MIL_MM).floor() as i32,
+            (self.reach.1 / MIL_MM).floor() as i32,
+        )
+    }
+
     fn jog(&mut self, dx: i32, dy: i32, dz: i32) {
-        self.x += dx;
-        self.y += dy;
+        let (rx, ry) = self.reach_mil();
+        self.x = (self.x + dx).clamp(0, rx.max(0));
+        self.y = (self.y + dy).clamp(0, ry.max(0));
         self.z = (self.z + dz).clamp(0, self.z_limit());
     }
 
@@ -126,6 +136,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             )
         };
         let max_z = self.engine.settings().map_or(37.3, |m| m.z_max_depth_mm);
+        let reach = self.engine.settings().map_or((495.0, 325.0), |m| m.clip_mm);
         // on a real machine it homes now and follows the window from here on
         self.engine.teach_begin();
         Flow::to(Dialog::Teach(Box::new(TeachDlg {
@@ -138,6 +149,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             points: Vec::new(),
             tool: 1,
             max_z,
+            reach,
         })))
     }
 
@@ -417,5 +429,36 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 self.hit(43, y, 8, 2, Act::Teach(b));
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod reach_tests {
+    use super::*;
+
+    fn dlg(reach: (f64, f64)) -> TeachDlg {
+        TeachDlg {
+            x: 0,
+            y: 0,
+            z: 0,
+            step: 0,
+            teach: false,
+            origin: (0, 0),
+            points: Vec::new(),
+            tool: 1,
+            max_z: 37.3,
+            reach,
+        }
+    }
+
+    #[test]
+    fn the_jog_never_leaves_the_table() {
+        let mut d = dlg((25.4, 12.7)); // 1000 x 500 mil
+        d.jog(-50, -50, 0);
+        assert_eq!((d.x, d.y), (0, 0));
+        d.jog(5000, 5000, 0);
+        assert_eq!((d.x, d.y), (1000, 500));
+        d.jog(-100, -100, 0);
+        assert_eq!((d.x, d.y), (900, 400));
     }
 }
