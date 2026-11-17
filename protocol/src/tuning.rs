@@ -81,6 +81,9 @@ pub struct Tuning {
     pub sanity_tiny_mm: f64,
     /// A file whose work starts further than this from the corner of the table looks like a wrong offset or unit, in mm.
     pub sanity_far_mm: f64,
+    /// The most the correction of a height map may lift or lower Z at any point of a route, in mm. A map with a point further from the
+    /// plane than this is refused instead of moving Z by whatever it says (ROUTEPRO reads it from the same machine file).
+    pub level_max_lift_mm: f64,
 }
 
 impl Default for Tuning {
@@ -121,6 +124,7 @@ impl Default for Tuning {
             dry_run_margin_mm: 0.5,
             sanity_tiny_mm: 5.0,
             sanity_far_mm: 150.0,
+            level_max_lift_mm: 2.0,
         }
     }
 }
@@ -199,6 +203,7 @@ impl Tuning {
             "dry_run_margin_mm" => self.dry_run_margin_mm = number(key, value, 0.0, 20.0)?,
             "sanity_tiny_mm" => self.sanity_tiny_mm = number(key, value, 0.0, 100.0)?,
             "sanity_far_mm" => self.sanity_far_mm = number(key, value, 0.0, 2000.0)?,
+            "level_max_lift_mm" => self.level_max_lift_mm = number(key, value, 0.1, 20.0)?,
             _ => return Ok(false),
         }
         Ok(true)

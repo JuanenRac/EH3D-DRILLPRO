@@ -120,6 +120,8 @@ dry_run_margin_mm = 0.5
 # from the corner of the table looks like a wrong offset or unit. Both only warn.
 sanity_tiny_mm = 5
 sanity_far_mm = 150
+# The most the correction of a height map may lift or lower Z at any point, in mm. A map that asks for more is refused instead of moving Z.
+level_max_lift_mm = 2
 
 # --- Sounds (all optional) ------------------------------------------------------------------------------------------------
 # A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
