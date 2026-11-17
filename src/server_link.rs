@@ -3,6 +3,7 @@
 
 use std::io::{Read, Write};
 use std::net::{TcpStream, ToSocketAddrs};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
 use serde_json::Value;
@@ -11,22 +12,30 @@ use eh3d_fleet::Fleet;
 
 use crate::protocol::connection::ConnectionConfig;
 
+static MAX_ANSWER_MIB: AtomicU64 =
+    AtomicU64::new(crate::protocol::connection::DEFAULT_MAX_ANSWER_MIB);
+
+/// Sets the most MiB of an answer of the server that are read (`server_max_answer_mib` of the machine file, 8 by default; `Client::new` sets it from the file); a server that
+/// sends more is refused, so that a wrong or hostile one cannot fill the memory. It is a setting of the program and not a field of `Client`, so that a `Client` written out
+/// field by field keeps compiling.
+pub fn set_max_answer_mib(mib: u64) {
+    MAX_ANSWER_MIB.store(mib.max(1), Ordering::Relaxed);
+}
+
 /// The server a program talks to: its address (`host:port`), the token of this program and the machine the jobs are for.
 pub struct Client {
     pub address: String,
     pub token: String,
     pub machine: String,
-    /// The most MiB of an answer that are read (`server_max_answer_mib` of the machine file); a server that sends more is refused, so that a wrong or hostile one cannot fill the memory.
-    pub max_answer_mib: u64,
 }
 
 impl Client {
     pub fn new(config: &ConnectionConfig) -> Client {
+        set_max_answer_mib(config.server_max_answer_mib);
         Client {
             address: config.server_address.clone(),
             token: config.server_token.clone(),
             machine: config.server_machine.clone(),
-            max_answer_mib: config.server_max_answer_mib,
         }
     }
 
@@ -81,7 +90,8 @@ impl Client {
         stream
             .write_all(request.as_bytes())
             .map_err(|e| e.to_string())?;
-        let limit = self.max_answer_mib.max(1).saturating_mul(1_048_576);
+        let max_mib = MAX_ANSWER_MIB.load(Ordering::Relaxed).max(1);
+        let limit = max_mib.saturating_mul(1_048_576);
         let mut raw = Vec::new();
         (&mut stream)
             .take(limit + 1)
@@ -90,7 +100,7 @@ impl Client {
         if raw.len() as u64 > limit {
             return Err(format!(
                 "{}: the answer is larger than {} MiB",
-                self.address, self.max_answer_mib
+                self.address, max_mib
             ));
         }
         parse_response(&raw)
@@ -337,7 +347,6 @@ mod tests {
             address: "127.0.0.1:1".into(),
             token: "t\r\nX: y".into(),
             machine: String::new(),
-            max_answer_mib: 8,
         };
         let error = client.call("GET", "/api/v1/fleet", None).unwrap_err();
         assert!(error.contains("the token"), "{error}");
@@ -345,7 +354,6 @@ mod tests {
             address: "127.0.0.1:1".into(),
             token: "t".into(),
             machine: String::new(),
-            max_answer_mib: 8,
         };
         let error = client
             .call("GET", "/api/v1/machines/a b/jobs", None)
@@ -407,14 +415,14 @@ mod tests {
             address: one_answer("200 OK", body),
             token: "secret".into(),
             machine: String::new(),
-            max_answer_mib: 8,
         };
         let big = format!("\"{}\"", "a".repeat(9 * 1_048_576));
         let why = client(&big).call("GET", "/api/v1/fleet", None).unwrap_err();
         assert!(why.contains("larger than 8 MiB"), "{why}");
-        let mut wide = client(&big);
-        wide.max_answer_mib = 12;
-        assert!(wide.call("GET", "/api/v1/fleet", None).is_ok());
+        set_max_answer_mib(12);
+        let wide = client(&big).call("GET", "/api/v1/fleet", None);
+        set_max_answer_mib(8);
+        assert!(wide.is_ok());
         let fine = format!("\"{}\"", "a".repeat(1_048_576));
         let (status, body) = client(&fine).call("GET", "/api/v1/fleet", None).unwrap();
         assert_eq!(
@@ -432,7 +440,6 @@ mod tests {
             address: one_answer("200 OK", body),
             token: "secret".into(),
             machine: String::new(),
-            max_answer_mib: 8,
         };
         let fleet = client.fleet().unwrap();
         assert_eq!(fleet.machines.len(), 2);
@@ -445,7 +452,6 @@ mod tests {
             ),
             token: "secret".into(),
             machine: String::new(),
-            max_answer_mib: 8,
         };
         assert_eq!(client.fleet().unwrap_err(), "unauthorized: no token");
     }
