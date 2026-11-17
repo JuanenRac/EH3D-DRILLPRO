@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The warning that a drill file did not say its unit reads the flag of the file reader:** `DrillFile::units_declared` of the shared library replaces the local copy of the rule about the header, so the rule lives in one place.
+
 - **The machine file has a limit for the correction of a height map:** `level_max_lift_mm` (2 mm by default, 0.1 to 20) is the most the correction may lift or lower Z at any point of a route; the router program reads it from the same file. Tested with the default, the limits and the text of the refusal.
 
 - **A file that does not say its unit is said to be read as mils:** when a drill file has no `METRIC`, `INCH`, `M71` or `M72`, the warning under the job tells that its numbers are read as thousandths of an inch (a file in inches written without a header would otherwise come out ten times larger), in the 37 languages, and the warning `units_supposed` of the server is read and shown the same way. Tested with a file with no unit and one with `INCH`, and with the reading of the code of the server in every language.
