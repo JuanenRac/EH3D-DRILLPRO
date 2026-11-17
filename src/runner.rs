@@ -520,7 +520,8 @@ pub struct TeachSession {
 }
 
 impl TeachSession {
-    pub fn start(config: ConnectionConfig, jm: JobMachine) -> Self {
+    /// `reach_mm` is the travel of X and Y from home: a jog never takes the head outside it.
+    pub fn start(config: ConnectionConfig, jm: JobMachine, reach_mm: (f64, f64)) -> Self {
         let state = Arc::new(Mutex::new(TeachState::Homing));
         let cancel = Arc::new(AtomicBool::new(false));
         let (tx, rx) = std::sync::mpsc::channel::<TeachCmd>();
@@ -561,8 +562,16 @@ impl TeachSession {
                 let (mut pos, mut z) = ((0.0f64, 0.0f64), 0.0f64);
                 loop {
                     match rx.recv() {
+                        Ok(TeachCmd::Jog(..)) if cn.load(Ordering::SeqCst) => {
+                            // the session was dropped: what is still queued never runs
+                            machine.emergency_stop();
+                            return Ok(());
+                        }
                         Ok(TeachCmd::Jog(dx, dy, dz)) => {
-                            let to = (pos.0 + dx, pos.1 + dy);
+                            let to = (
+                                (pos.0 + dx).clamp(0.0, reach_mm.0.max(0.0)),
+                                (pos.1 + dy).clamp(0.0, reach_mm.1.max(0.0)),
+                            );
                             let mut steps = Vec::new();
                             if dx != 0.0 || dy != 0.0 {
                                 steps.extend(rapid_xy(pos, to, &g));

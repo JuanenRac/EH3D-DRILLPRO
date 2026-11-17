@@ -33,11 +33,32 @@ fn the_session_homes_follows_the_jogs_and_homes_again() {
         home_signal: false,
         ..ConnectionConfig::default()
     };
-    let s = TeachSession::start(config, jm);
+    let s = TeachSession::start(config, jm, (495.0, 325.0));
     assert_eq!(s.state(), TeachState::Homing);
     wait_for(&s, TeachState::Ready);
-    s.jog(2.54, -1.27, 0.0);
+    s.jog(2.54, 1.27, 0.0);
     s.jog(0.0, 0.0, 0.5);
+    s.end();
+    wait_for(&s, TeachState::Finished);
+}
+
+#[test]
+fn a_jog_outside_the_reach_or_after_the_session_is_dropped_never_hangs() {
+    let jm = eh3d_drillpro::job::job_machine(
+        None,
+        eh3d_drillpro::protocol::motion::Geometry::default(),
+        &ConnectionConfig::default(),
+        1.6,
+    );
+    let config = ConnectionConfig {
+        home_signal: false,
+        ..ConnectionConfig::default()
+    };
+    let s = TeachSession::start(config, jm, (10.0, 10.0));
+    wait_for(&s, TeachState::Ready);
+    // far beyond the 10 mm of reach and below home: both are cut to the table
+    s.jog(500.0, -500.0, 0.0);
+    s.jog(-500.0, 500.0, 0.0);
     s.end();
     wait_for(&s, TeachState::Finished);
 }
