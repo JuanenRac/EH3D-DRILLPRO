@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The limit on the server answer is no longer a field of `Client`:** the setting `server_max_answer_mib` is kept by the program (set from the machine file by `Client::new`, or with `set_max_answer_mib`), so that a `Client` written out field by field keeps compiling. This replaces the previous entry about the limit as a field.
+
 - **The most the program reads from the server is a setting of the machine file:** `server_max_answer_mib` (8 by default, from 1 to 256; another value is refused naming its line) replaces the fixed limit on the answer of the server, and `docs/machine.cfg.example` lists it. Tested with the key in the file, values out of range and a server answer between the default and a wider limit.
 
 - **The machine file is written whole and private, and the answer of the server is bounded:** saving the connection writes a temporary file (readable by the user only on Unix, as the file holds the token) and renames it over the machine file, so that a failed write leaves the old one; the answer of the server is read up to 8 MiB and a longer one is refused. Tested with a folder in place of the file, the files left in the folder, the mode on Unix and a server that sends 9 MiB.
