@@ -15,6 +15,7 @@
 //! x_search_hz = 2700
 //! xy_hz_limit = 1800      # optional: the most steps per second the X and Y motors keep up with
 //! z_hz_limit = 400        # optional: the same for Z (its motor carries the spindle)
+//! server_max_answer_mib = 8  # the most MiB read from one answer of the server (1 to 256)
 //! home_signal = on          # on | off: stop the reference searches on the control unit's "all home" line (RI)
 //! ```
 //!
@@ -77,6 +78,9 @@ impl HeadNode {
     }
 }
 
+/// The most MiB of an answer of the server that are read when the file does not say.
+pub const DEFAULT_MAX_ANSWER_MIB: u64 = 8;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct ConnectionConfig {
     pub kind: Kind,
@@ -88,6 +92,8 @@ pub struct ConnectionConfig {
     pub server_address: String,
     pub server_token: String,
     pub server_machine: String,
+    /// The most MiB of an answer of the server that are read (`server_max_answer_mib`, 8 by default, from 1 to 256).
+    pub server_max_answer_mib: u64,
     /// The node of the drill head (`head_node`): how it is reached, its address and token (`head_address`, `head_token`) and whether the picture of its camera is shown
     /// (`head_camera`).
     pub head_node: HeadNode,
@@ -126,6 +132,7 @@ impl Default for ConnectionConfig {
             server_address: String::new(),
             server_token: String::new(),
             server_machine: String::new(),
+            server_max_answer_mib: DEFAULT_MAX_ANSWER_MIB,
             head_node: HeadNode::Off,
             head_address: String::new(),
             head_token: String::new(),
@@ -178,6 +185,17 @@ pub fn parse(text: &str) -> Result<ConnectionConfig, String> {
             "server_address" => c.server_address = value,
             "server_token" => c.server_token = value,
             "server_machine" => c.server_machine = value,
+            "server_max_answer_mib" => {
+                c.server_max_answer_mib = match value.parse::<u64>() {
+                    Ok(v) if (1..=256).contains(&v) => v,
+                    _ => {
+                        return Err(format!(
+                    "line {}: server_max_answer_mib must be a whole number of MiB from 1 to 256",
+                    n + 1
+                ))
+                    }
+                }
+            }
             "head_node" => {
                 c.head_node = match value.to_ascii_lowercase().as_str() {
                     "off" => HeadNode::Off,

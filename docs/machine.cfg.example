@@ -25,6 +25,8 @@ node_token = the-access-token-set-in-the-node
 server_address = 192.168.0.200:18200
 server_token = eh3d_the-token-made-for-this-program
 server_machine = bungard
+# The most MiB read from one answer of the server; a longer answer is refused (1 to 256).
+server_max_answer_mib = 8
 
 # The control unit reports "all three axes are on their switches" on the RI line. With it on, the reference run skips a search when
 # the machine is already home and fails if the line never rises; off, every search is sent in full and nothing is checked.
