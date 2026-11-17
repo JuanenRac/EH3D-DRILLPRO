@@ -414,7 +414,34 @@ pub fn save_connection(path: Option<&Path>, config: &ConnectionConfig) -> io::Re
     if let Some(dir) = file.parent() {
         std::fs::create_dir_all(dir)?;
     }
-    std::fs::write(&file, text)
+    write_private_atomic(&file, text.as_bytes())
+}
+
+/// Writes `bytes` to a temporary file beside `file` (private to the user on Unix: the file holds the token of the server) and renames it over `file`, so that a failed write
+/// leaves the old file whole. The temporary file is removed when anything fails.
+fn write_private_atomic(file: &Path, bytes: &[u8]) -> io::Result<()> {
+    use std::io::Write;
+    let mut name = file.as_os_str().to_owned();
+    name.push(format!(".{}.tmp", std::process::id()));
+    let tmp = std::path::PathBuf::from(name);
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create(true).truncate(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let written = options.open(&tmp).and_then(|mut f| {
+        f.write_all(bytes)?;
+        f.sync_all()
+    });
+    match written.and_then(|_| std::fs::rename(&tmp, file)) {
+        Ok(()) => Ok(()),
+        Err(e) => {
+            let _ = std::fs::remove_file(&tmp);
+            Err(e)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -471,6 +498,41 @@ mod machine_file_tests {
             parse("head_node = server").unwrap().head_node,
             HeadNode::Server
         );
+    }
+
+    #[test]
+    fn a_saved_connection_replaces_the_file_whole_leaves_no_temporary_file_and_is_private() {
+        let dir = std::env::temp_dir().join(format!("eh3d-conn-private-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let file = dir.join("machine.cfg");
+        let c = ConnectionConfig {
+            kind: Kind::Node,
+            node_address: "192.168.0.50:5800".into(),
+            ..Default::default()
+        };
+        save_connection(Some(&file), &c).unwrap();
+        save_connection(Some(&file), &c).unwrap();
+        let names: Vec<String> = std::fs::read_dir(&dir)
+            .unwrap()
+            .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+            .collect();
+        assert_eq!(names, ["machine.cfg"]);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = std::fs::metadata(&file).unwrap().permissions().mode();
+            assert_eq!(mode & 0o077, 0, "{mode:o}");
+        }
+        // a folder cannot be replaced by a file: the error is returned and no temporary file stays
+        let folder = dir.join("folder");
+        std::fs::create_dir_all(&folder).unwrap();
+        assert!(save_connection(Some(&folder), &c).is_err());
+        assert!(std::fs::read_dir(&dir).unwrap().all(|e| !e
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .ends_with(".tmp")));
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]

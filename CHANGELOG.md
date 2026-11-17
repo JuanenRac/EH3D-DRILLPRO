@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The machine file is written whole and private, and the answer of the server is bounded:** saving the connection writes a temporary file (readable by the user only on Unix, as the file holds the token) and renames it over the machine file, so that a failed write leaves the old one; the answer of the server is read up to 8 MiB and a longer one is refused. Tested with a folder in place of the file, the files left in the folder, the mode on Unix and a server that sends 9 MiB.
+
 - **`TeachSession::start` keeps its signature:** the limit of X and Y of the Offset jog is taken by the new `TeachSession::start_within(config, job_machine, reach_mm)`; `start` is the same call with no limit of its own, so a program that builds on the library keeps compiling.
 
 - **The Offset jog stays on the table and a closed window stops at once:** the jog of the Offset window limited Z but added X and Y without limit, so the head could be sent past the table or against the home switches with negative values. X and Y are now cut to 0..the clip of the machine both in the window and, as a second guard, in the session that moves the machine. A session that is dropped no longer runs the jogs still waiting in its queue: the cancel flag is read before each jog and the machine is stopped. Tests cover the window clamp and a session with a short reach.

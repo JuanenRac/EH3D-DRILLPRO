@@ -11,6 +11,9 @@ use eh3d_fleet::Fleet;
 
 use crate::protocol::connection::ConnectionConfig;
 
+/// The most bytes of an answer that are read; a server that sends more is refused, so that a wrong or hostile one cannot fill the memory.
+const MAX_ANSWER_BYTES: u64 = 8 * 1_048_576;
+
 /// The server a program talks to: its address (`host:port`), the token of this program and the machine the jobs are for.
 pub struct Client {
     pub address: String,
@@ -79,7 +82,17 @@ impl Client {
             .write_all(request.as_bytes())
             .map_err(|e| e.to_string())?;
         let mut raw = Vec::new();
-        stream.read_to_end(&mut raw).map_err(|e| e.to_string())?;
+        (&mut stream)
+            .take(MAX_ANSWER_BYTES + 1)
+            .read_to_end(&mut raw)
+            .map_err(|e| e.to_string())?;
+        if raw.len() as u64 > MAX_ANSWER_BYTES {
+            return Err(format!(
+                "{}: the answer is larger than {} MiB",
+                self.address,
+                MAX_ANSWER_BYTES / 1_048_576
+            ));
+        }
         parse_response(&raw)
     }
 }
@@ -384,6 +397,24 @@ mod tests {
             }
         });
         address
+    }
+
+    #[test]
+    fn an_answer_past_the_limit_is_refused_and_a_big_one_below_it_is_read() {
+        let client = |body: &str| Client {
+            address: one_answer("200 OK", body),
+            token: "secret".into(),
+            machine: String::new(),
+        };
+        let big = format!("\"{}\"", "a".repeat(9 * 1_048_576));
+        let why = client(&big).call("GET", "/api/v1/fleet", None).unwrap_err();
+        assert!(why.contains("larger than 8 MiB"), "{why}");
+        let fine = format!("\"{}\"", "a".repeat(1_048_576));
+        let (status, body) = client(&fine).call("GET", "/api/v1/fleet", None).unwrap();
+        assert_eq!(
+            (status, body.as_str().map(str::len)),
+            (200, Some(1_048_576))
+        );
     }
 
     #[test]
