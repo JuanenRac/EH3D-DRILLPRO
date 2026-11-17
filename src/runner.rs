@@ -520,8 +520,13 @@ pub struct TeachSession {
 }
 
 impl TeachSession {
+    /// A session with no limit of its own on X and Y (the one of the first versions): the program that calls it keeps the head on the table.
+    pub fn start(config: ConnectionConfig, jm: JobMachine) -> Self {
+        Self::start_within(config, jm, (f64::INFINITY, f64::INFINITY))
+    }
+
     /// `reach_mm` is the travel of X and Y from home: a jog never takes the head outside it.
-    pub fn start(config: ConnectionConfig, jm: JobMachine, reach_mm: (f64, f64)) -> Self {
+    pub fn start_within(config: ConnectionConfig, jm: JobMachine, reach_mm: (f64, f64)) -> Self {
         let state = Arc::new(Mutex::new(TeachState::Homing));
         let cancel = Arc::new(AtomicBool::new(false));
         let (tx, rx) = std::sync::mpsc::channel::<TeachCmd>();

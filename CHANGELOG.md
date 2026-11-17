@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **`TeachSession::start` keeps its signature:** the limit of X and Y of the Offset jog is taken by the new `TeachSession::start_within(config, job_machine, reach_mm)`; `start` is the same call with no limit of its own, so a program that builds on the library keeps compiling.
+
 - **The Offset jog stays on the table and a closed window stops at once:** the jog of the Offset window limited Z but added X and Y without limit, so the head could be sent past the table or against the home switches with negative values. X and Y are now cut to 0..the clip of the machine both in the window and, as a second guard, in the session that moves the machine. A session that is dropped no longer runs the jogs still waiting in its queue: the cancel flag is read before each jog and the machine is stopped. Tests cover the window clamp and a session with a short reach.
 
 - **A stop is noticed during the searches towards the switches, the seeks and the move away from them:** these moves used to be sent as one stream and waited for to the end (about ten seconds on X with the default settings) without asking the cancel hook again. They are now cut into pieces of `cancel_piece_steps`, the hook is asked before each piece and the machine is stopped at once. With the default settings the home line is still read once, after the last piece (the earlier pieces go out ahead, so the line does not run dry); with a watch chunk or one byte at a time every piece is watched on its own. Tests cancel in the middle of a search on every connection kind, of a seek, of a watched search and of the move away.

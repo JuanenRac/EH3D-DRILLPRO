@@ -240,7 +240,11 @@ impl ClassicEngine for App {
     fn teach_begin(&mut self) {
         self.teach = self.connection.is_real().then(|| {
             let reach = self.settings.as_ref().map_or((495.0, 325.0), |m| m.clip_mm);
-            crate::runner::TeachSession::start(self.connection.clone(), self.job_machine(), reach)
+            crate::runner::TeachSession::start_within(
+                self.connection.clone(),
+                self.job_machine(),
+                reach,
+            )
         });
     }
 
