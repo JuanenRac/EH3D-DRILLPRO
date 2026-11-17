@@ -464,6 +464,7 @@ fn a_warning_of_the_server_is_told_in_the_words_of_the_language() {
                 axis: "Z".into(),
                 excess_um: 1,
             },
+            AnswerWarning::UnitsSupposed,
         ] {
             let text = warning_text(&w, lang).unwrap();
             assert!(text.chars().count() > 12, "{lang:?}: {text}");
@@ -549,4 +550,20 @@ fn the_rows_of_the_warnings_fit_the_window_and_say_when_they_were_cut() {
             assert!(str_width(&line) <= 52, "{lang:?}: {line}");
         }
     }
+}
+
+#[test]
+fn the_server_says_when_it_supposed_the_unit_of_the_file() {
+    let job = json!({"view": {"warnings": [{"code": "units_supposed", "values": []}]}});
+    assert_eq!(
+        chain_answer(&job).warnings,
+        vec![AnswerWarning::UnitsSupposed]
+    );
+    assert_eq!(
+        warning_text(&AnswerWarning::UnitsSupposed, Lang::En).unwrap(),
+        "The file does not state its unit; the numbers are read as thousandths of an inch"
+    );
+    assert!(warning_text(&AnswerWarning::UnitsSupposed, Lang::Es)
+        .unwrap()
+        .contains("unidad"));
 }

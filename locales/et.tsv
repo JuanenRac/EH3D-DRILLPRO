@@ -248,6 +248,7 @@ Text.ToolDefaults	Pole tööriistatabelis; tööriista jaoks kasutatakse ettevaa
 Text.RackGap	Tööriistavahetaja kohal pole masinafailis asukohta
 Text.LevelServer	Kõrguskaarti ei saa kasutada, kui töö käib läbi serveri
 Text.IgnoredLines	Failis on piludeid või freesimisliigutusi, mida ei loeta
+Text.UnitsSupposed	Failis pole ühikut märgitud; arve loetakse tolli tuhandikena
 Text.ClipCut	Lõika
 Text.ClipCopy	Kopeeri
 Text.ClipPaste	Aseta

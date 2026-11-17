@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A file that does not say its unit is said to be read as mils:** when a drill file has no `METRIC`, `INCH`, `M71` or `M72`, the warning under the job tells that its numbers are read as thousandths of an inch (a file in inches written without a header would otherwise come out ten times larger), in the 37 languages, and the warning `units_supposed` of the server is read and shown the same way. Tested with a file with no unit and one with `INCH`, and with the reading of the code of the server in every language.
+
 - **The limit on the server answer is no longer a field of `Client`:** the setting `server_max_answer_mib` is kept by the program (set from the machine file by `Client::new`, or with `set_max_answer_mib`), so that a `Client` written out field by field keeps compiling. This replaces the previous entry about the limit as a field.
 
 - **The most the program reads from the server is a setting of the machine file:** `server_max_answer_mib` (8 by default, from 1 to 256; another value is refused naming its line) replaces the fixed limit on the answer of the server, and `docs/machine.cfg.example` lists it. Tested with the key in the file, values out of range and a server answer between the default and a wider limit.

@@ -248,6 +248,7 @@ Text.ToolDefaults	Ekki í verkfæratöflunni; varfærin gildi eru notuð fyrir v
 Text.RackGap	Staður verkfæraskiptarans hefur enga staðsetningu í vélarskránni
 Text.LevelServer	Ekki er hægt að nota hæðarkortið þegar verkið fer um þjóninn
 Text.IgnoredLines	Skráin hefur raufar eða fræsingarhreyfingar sem eru ekki lesnar
+Text.UnitsSupposed	Skráin tilgreinir ekki einingu; tölurnar eru lesnar sem þúsundustu hlutar úr tommu
 Text.ClipCut	Klippa
 Text.ClipCopy	Afrita
 Text.ClipPaste	Líma

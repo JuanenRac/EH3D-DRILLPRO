@@ -133,6 +133,7 @@ pub mod warning {
     pub const RACK_UNKNOWN_FIELD: &str = "rack_unknown_field";
     pub const REQUEST_VERSION_NEWER: &str = "request_version_newer";
     pub const OUT_OF_COURSE: &str = "out_of_course";
+    pub const UNITS_SUPPOSED: &str = "units_supposed";
 }
 
 /// A warning of the server about the request, by its code. A code this program does not know is kept as it came.
@@ -148,6 +149,8 @@ pub enum AnswerWarning {
     RequestVersionNewer(u64),
     /// The work goes past the course of an axis of the machine (`axis`, `X`, `Y` or `Z`, and how far past it in thousandths of a millimetre).
     OutOfCourse { axis: String, excess_um: u64 },
+    /// The file does not say its unit and the server read its numbers as mils.
+    UnitsSupposed,
     /// Any other code (a later version of the server).
     Other(String),
 }
@@ -197,6 +200,7 @@ fn read_warning(entry: &Value) -> Option<AnswerWarning> {
                 },
             }
         }
+        warning::UNITS_SUPPOSED => AnswerWarning::UnitsSupposed,
         other => AnswerWarning::Other(other.to_string()),
     })
 }
@@ -216,6 +220,7 @@ fn plain(text: &str, most: usize) -> String {
 /// sends along (the name of a field, the axis) goes into the line only after its control characters are taken out and its length cut.
 pub fn warning_text(warning: &AnswerWarning, lang: Lang) -> Option<String> {
     use eh3d_view::texts::{tr, Text};
+    let own = lang;
     let lang: eh3d_view::texts::Lang = lang.into();
     Some(match warning {
         AnswerWarning::RackNeedsV2 => tr(lang, Text::WarnRackNeedsV2).to_string(),
@@ -240,6 +245,9 @@ pub fn warning_text(warning: &AnswerWarning, lang: Lang) -> Option<String> {
             excess_um / 1000,
             excess_um % 1000
         ),
+        AnswerWarning::UnitsSupposed => {
+            crate::texts::tr(own, crate::texts::Text::UnitsSupposed).to_string()
+        }
         AnswerWarning::Other(_) => return None,
     })
 }
