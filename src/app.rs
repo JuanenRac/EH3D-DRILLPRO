@@ -138,6 +138,13 @@ pub struct App {
 const MENU_BG: u8 = LIGHT_GRAY;
 const WIN_BG: u8 = CYAN;
 
+/// Whether the header of a drill file says its unit (`METRIC`, `INCH`, `M71` or `M72`): when it does not, its numbers are read as mils.
+pub(crate) fn declares_unit(text: &str) -> bool {
+    text.lines()
+        .map(str::trim)
+        .any(|l| l.starts_with("METRIC") || l.starts_with("INCH") || l == "M71" || l == "M72")
+}
+
 impl App {
     /// `data_dir` is where `DRILLPRO.DTD` and `DRILLPRO.DCF` are looked up.
     pub fn new(lang: Lang, data_dir: &Path) -> Self {
@@ -252,7 +259,7 @@ impl App {
                 );
                 // a file with no unit in its header is read as mils: say so, because a file in inches written without a header comes out ten times larger
                 let unit_supposed =
-                    (!file.units_declared).then(|| tr(self.lang, Text::UnitsSupposed).to_string());
+                    (!declares_unit(&text)).then(|| tr(self.lang, Text::UnitsSupposed).to_string());
                 self.warning = crate::summary::join_warnings(
                     crate::summary::join_warnings(
                         crate::summary::size_warning(verdict, self.lang),
