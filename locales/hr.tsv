@@ -248,6 +248,7 @@ Text.ToolDefaults	Nije u tablici alata; za alat se koriste oprezne vrijednosti
 Text.RackGap	Mjesto izmjenjivača alata nema položaj u datoteci stroja
 Text.LevelServer	Karta visina ne može se koristiti kada posao ide preko poslužitelja
 Text.IgnoredLines	Datoteka ima utore ili glodalačke pokrete koji se ne čitaju
+Text.UnitsSupposed	Datoteka ne navodi mjernu jedinicu; brojevi se čitaju kao tisućinke inča
 Text.ClipCut	Izreži
 Text.ClipCopy	Kopiraj
 Text.ClipPaste	Zalijepi

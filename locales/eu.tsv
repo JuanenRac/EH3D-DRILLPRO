@@ -248,6 +248,7 @@ Text.ToolDefaults	Ez dago erreminta-taulan; kontuz hartutako balioak erabiltzen 
 Text.RackGap	Erreminta-aldatzailearen leku batek ez du posiziorik makinaren fitxategian
 Text.LevelServer	Altuera-mapa ezin da erabili lana zerbitzaritik pasatzen denean
 Text.IgnoredLines	Fitxategiak irakurtzen ez diren zirrikituak edo fresatze-mugimenduak ditu
+Text.UnitsSupposed	Fitxategiak ez du unitaterik adierazten; zenbakiak hazbetearen milaren zati gisa irakurtzen dira
 Text.ClipCut	Ebaki
 Text.ClipCopy	Kopiatu
 Text.ClipPaste	Itsatsi

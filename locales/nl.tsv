@@ -248,6 +248,7 @@ Text.ToolDefaults	Niet in de gereedschapstabel; voor het gereedschap worden voor
 Text.RackGap	Een plaats van de gereedschapswisselaar heeft geen positie in het machinebestand
 Text.LevelServer	De hoogtekaart kan niet worden gebruikt als de taak via de server loopt
 Text.IgnoredLines	Het bestand bevat sleuven of freesbewegingen die niet worden gelezen
+Text.UnitsSupposed	Het bestand vermeldt geen eenheid; de getallen worden gelezen als duizendsten van een inch
 Text.ClipCut	Knippen
 Text.ClipCopy	Kopiëren
 Text.ClipPaste	Plakken

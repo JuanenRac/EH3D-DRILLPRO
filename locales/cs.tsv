@@ -248,6 +248,7 @@ Text.ToolDefaults	Není v tabulce nástrojů; pro nástroj se použijí opatrné
 Text.RackGap	Místo výměníku nástrojů nemá v souboru stroje polohu
 Text.LevelServer	Mapu výšek nelze použít, když úloha prochází serverem
 Text.IgnoredLines	Soubor obsahuje drážky nebo frézovací pohyby, které se nečtou
+Text.UnitsSupposed	Soubor neuvádí jednotku; čísla se čtou jako tisíciny palce
 Text.ClipCut	Vyjmout
 Text.ClipCopy	Kopírovat
 Text.ClipPaste	Vložit

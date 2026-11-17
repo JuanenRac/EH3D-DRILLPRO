@@ -138,6 +138,13 @@ pub struct App {
 const MENU_BG: u8 = LIGHT_GRAY;
 const WIN_BG: u8 = CYAN;
 
+/// Whether the header of a drill file says its unit (`METRIC`, `INCH`, `M71` or `M72`): when it does not, its numbers are read as mils.
+pub(crate) fn declares_unit(text: &str) -> bool {
+    text.lines()
+        .map(str::trim)
+        .any(|l| l.starts_with("METRIC") || l.starts_with("INCH") || l == "M71" || l == "M72")
+}
+
 impl App {
     /// `data_dir` is where `DRILLPRO.DTD` and `DRILLPRO.DCF` are looked up.
     pub fn new(lang: Lang, data_dir: &Path) -> Self {
@@ -250,9 +257,15 @@ impl App {
                     &self.connection.tuning,
                     self.lang,
                 );
+                // a file with no unit in its header is read as mils: say so, because a file in inches written without a header comes out ten times larger
+                let unit_supposed =
+                    (!declares_unit(&text)).then(|| tr(self.lang, Text::UnitsSupposed).to_string());
                 self.warning = crate::summary::join_warnings(
-                    crate::summary::size_warning(verdict, self.lang),
-                    looks_wrong,
+                    crate::summary::join_warnings(
+                        crate::summary::size_warning(verdict, self.lang),
+                        looks_wrong,
+                    ),
+                    unit_supposed,
                 );
                 self.loaded = Some(Loaded {
                     path: path.to_path_buf(),
@@ -1537,6 +1550,46 @@ mod reader_limit_tests {
         assert!(app.loaded.is_some());
         let warning = app.warning.as_deref().unwrap_or_default();
         assert!(warning.contains("The file is big"), "{warning}");
+    }
+
+    #[test]
+    fn a_file_with_no_unit_in_its_header_says_the_unit_was_supposed() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let dir = std::env::temp_dir().join(format!("drillpro_units_{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let bare = dir.join("bare.ncd");
+        std::fs::write(
+            &bare,
+            r#"%
+T01
+X1000Y1000
+X2000Y1000
+M30
+"#,
+        )
+        .unwrap();
+        let said = dir.join("said.ncd");
+        std::fs::write(
+            &said,
+            r#"M48
+INCH
+%
+T01
+X1000Y1000
+X2000Y1000
+M30
+"#,
+        )
+        .unwrap();
+        let mut app = App::new(Lang::En, &data);
+        app.load_file(&bare);
+        let first = app.warning.clone().unwrap_or_default();
+        app.load_file(&said);
+        let second = app.warning.clone().unwrap_or_default();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert!(app.error.is_none(), "{:?}", app.error);
+        assert!(first.contains("does not state its unit"), "{first}");
+        assert!(!second.contains("does not state its unit"), "{second}");
     }
 
     #[test]
