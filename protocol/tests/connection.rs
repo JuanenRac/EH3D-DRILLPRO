@@ -290,3 +290,18 @@ fn the_vacuum_cleaner_can_use_the_auxiliary_output() {
     )
     .is_err());
 }
+
+#[test]
+fn the_most_the_program_reads_from_the_server_is_a_key_of_the_file() {
+    assert_eq!(parse("").unwrap().server_max_answer_mib, 8);
+    assert_eq!(
+        parse("server_max_answer_mib = 32\n")
+            .unwrap()
+            .server_max_answer_mib,
+        32
+    );
+    for bad in ["0", "257", "lots", "-1", "8.5"] {
+        let why = parse(&format!("server_max_answer_mib = {bad}\n")).unwrap_err();
+        assert!(why.contains("line 1") && why.contains("1 to 256"), "{why}");
+    }
+}
