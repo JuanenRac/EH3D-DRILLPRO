@@ -260,12 +260,19 @@ impl App {
                 // a file with no unit in its header is read as mils: say so, because a file in inches written without a header comes out ten times larger
                 let unit_supposed =
                     (!declares_unit(&text)).then(|| tr(self.lang, Text::UnitsSupposed).to_string());
+                // a hole that is there twice is drilled twice unless the job is told to skip the repeats: say how many
+                let repeats = crate::job::duplicate_holes(&holes);
+                let repeated = (repeats > 0)
+                    .then(|| format!("{}: {repeats}", tr(self.lang, Text::DuplicateHoles)));
                 self.warning = crate::summary::join_warnings(
                     crate::summary::join_warnings(
-                        crate::summary::size_warning(verdict, self.lang),
-                        looks_wrong,
+                        crate::summary::join_warnings(
+                            crate::summary::size_warning(verdict, self.lang),
+                            looks_wrong,
+                        ),
+                        unit_supposed,
                     ),
-                    unit_supposed,
+                    repeated,
                 );
                 self.loaded = Some(Loaded {
                     path: path.to_path_buf(),
@@ -408,6 +415,22 @@ impl App {
     /// the course of the machine file (none when the folder has no machine file) and the sanity checks, said in the language of the screen. The lines are always the same for the
     /// same files, so a program or a test can compare them with a stored copy. An error says why no plan could be made.
     pub fn plan_report(&self) -> Result<Vec<String>, String> {
+        self.plan_report_with(false).map(|(lines, _)| lines)
+    }
+
+    /// Chooses how the holes of a file are ordered for the plan and the job.
+    pub fn set_sorting(&mut self, sorting: Sorting) {
+        self.sorting = sorting;
+    }
+
+    /// Sets what the form adds to a job (the vectors to do, the tools switched off, the repeats left out ...).
+    pub fn set_job_options(&mut self, options: crate::job::JobOptions) {
+        self.job_options = options;
+    }
+
+    /// The plan of `plan_report`, with a line for each tool (its holes and the travel of the drill between them) when `per_tool` is set, and whether the exact plan stays
+    /// inside the course of every axis of the machine file (always true when the folder has no machine file). With `per_tool` off the lines are those of `plan_report`.
+    pub fn plan_report_with(&self, per_tool: bool) -> Result<(Vec<String>, bool), String> {
         let l = self.loaded.as_ref().ok_or_else(|| {
             self.error
                 .clone()
@@ -430,6 +453,7 @@ impl App {
         let selection =
             crate::job::select_holes(&l.file, self.sorting, &area_options, unit_mm, scale, offset);
         let skipped = selection.skipped;
+        let repeats = selection.duplicates;
         let job_holes: Vec<JobHole> = selection.holes;
         let tools: Vec<JobTool> = self
             .tools
@@ -481,8 +505,19 @@ impl App {
             format!("steps: {}", items.len()),
             format!("left out: {skipped}"),
         ];
+        if repeats > 0 {
+            out.push(format!("repeats left out: {repeats}"));
+        }
+        if per_tool {
+            for line in crate::job::tool_lines(&job_holes) {
+                out.push(format!(
+                    "tool {}: {} holes, {:.1} mm of travel",
+                    line.tool, line.holes, line.travel_mm
+                ));
+            }
+        }
         out.extend(summary.lines(self.lang));
-        Ok(out)
+        Ok((out, summary.within_course()))
     }
 
     pub(crate) fn start(&mut self) {
@@ -1629,6 +1664,64 @@ M30
                 "{name}: error {:?}, holes {holes:?}",
                 app.error
             );
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_file_with_a_hole_drilled_twice_says_how_many_and_the_plan_can_skip_them() {
+        let data = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("testdata");
+        let dir = std::env::temp_dir().join(format!("drillpro_repeats_{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let twice = dir.join("twice.ncd");
+        std::fs::write(
+            &twice,
+            "%\nT01\nX1000Y1000\nX2000Y1000\nX1000Y1000\nT02\nX1000Y1000\nM30\n",
+        )
+        .unwrap();
+        let once = dir.join("once.ncd");
+        std::fs::write(&once, "%\nT01\nX1000Y1000\nX2000Y1000\nM30\n").unwrap();
+        let mut app = App::new(Lang::En, &data);
+        app.load_file(&twice);
+        let said = app.warning.clone().unwrap_or_default();
+        let wanted = format!("{}: 1", tr(Lang::En, Text::DuplicateHoles));
+        assert!(said.contains(&wanted), "{said}");
+        // as the file says: all four holes are in the plan, and no line about repeats
+        let (lines, fits) = app.plan_report_with(true).unwrap();
+        assert!(fits);
+        assert!(lines.contains(&"holes: 4".to_string()), "{lines:?}");
+        assert!(!lines.iter().any(|l| l.starts_with("repeats left out")));
+        assert!(
+            lines.iter().any(|l| l.starts_with("tool 1: 3 holes, ")),
+            "{lines:?}"
+        );
+        assert_eq!(
+            app.plan_report().unwrap(),
+            app.plan_report_with(false).unwrap().0
+        );
+        // with the repeats left out the job has one hole less for the tool that has one
+        app.set_job_options(crate::job::JobOptions {
+            skip_duplicates: true,
+            ..Default::default()
+        });
+        let (lines, _) = app.plan_report_with(true).unwrap();
+        assert!(lines.contains(&"holes: 3".to_string()), "{lines:?}");
+        assert!(
+            lines.contains(&"repeats left out: 1".to_string()),
+            "{lines:?}"
+        );
+        assert!(
+            lines
+                .iter()
+                .any(|l| l.starts_with("tool 1: 2 holes, 25.4 mm of travel")),
+            "{lines:?}"
+        );
+        // a file without repeats has no warning about them, in any language
+        for l in Lang::ALL {
+            let mut other = App::new(l, &data);
+            other.load_file(&once);
+            let w = other.warning.clone().unwrap_or_default();
+            assert!(!w.contains(tr(l, Text::DuplicateHoles)), "{l:?}: {w}");
         }
         let _ = std::fs::remove_dir_all(&dir);
     }

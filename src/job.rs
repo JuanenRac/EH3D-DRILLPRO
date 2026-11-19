@@ -16,6 +16,29 @@ pub enum Sorting {
     Special,
 }
 
+impl Sorting {
+    /// The sorting a name stands for (`none`, `x`, `y` or `special`, in any case; `x-first`, `y-first` and `meander` are the same), or `None` for any other word.
+    pub fn parse(name: &str) -> Option<Sorting> {
+        match name.trim().to_ascii_lowercase().as_str() {
+            "none" | "file" => Some(Sorting::None),
+            "x" | "x-first" | "xfirst" => Some(Sorting::XFirst),
+            "y" | "y-first" | "yfirst" => Some(Sorting::YFirst),
+            "special" | "meander" => Some(Sorting::Special),
+            _ => None,
+        }
+    }
+
+    /// The name `parse` reads back.
+    pub fn name(self) -> &'static str {
+        match self {
+            Sorting::None => "none",
+            Sorting::XFirst => "x",
+            Sorting::YFirst => "y",
+            Sorting::Special => "special",
+        }
+    }
+}
+
 pub use crate::protocol::motion::Geometry;
 
 /// Orders holes by tool (in order of first use), then by the chosen strategy within each tool.
@@ -59,6 +82,59 @@ fn meander(mut group: Vec<Hole>) -> Vec<Hole> {
         i = j;
     }
     out
+}
+
+/// How many holes repeat the place of an earlier hole of the same tool (the same tool at the same place, to the mil): a hole drilled twice costs time and wears the drill.
+pub fn duplicate_holes(holes: &[Hole]) -> usize {
+    let mut seen = std::collections::HashSet::new();
+    holes
+        .iter()
+        .filter(|h| !seen.insert((h.tool, h.x_mil, h.y_mil)))
+        .count()
+}
+
+/// The holes without the repeats (the first hole at each place of each tool stays, in the order of the file) and how many were left out.
+pub fn without_duplicates(holes: &[Hole]) -> (Vec<Hole>, usize) {
+    let mut seen = std::collections::HashSet::new();
+    let kept: Vec<Hole> = holes
+        .iter()
+        .filter(|h| seen.insert((h.tool, h.x_mil, h.y_mil)))
+        .cloned()
+        .collect();
+    let dropped = holes.len() - kept.len();
+    (kept, dropped)
+}
+
+/// What one tool does in a job: how many holes it drills and how far the drill travels between them (from the first hole of the tool to the last, in the order given).
+#[derive(Debug, Clone, PartialEq)]
+pub struct ToolLine {
+    pub tool: u8,
+    pub holes: usize,
+    pub travel_mm: f64,
+}
+
+/// One line for each tool of a job, in the order the tools first appear.
+pub fn tool_lines(holes: &[crate::protocol::job::JobHole]) -> Vec<ToolLine> {
+    let mut lines: Vec<ToolLine> = Vec::new();
+    let mut last: Vec<(f64, f64)> = Vec::new();
+    for h in holes {
+        match lines.iter().position(|l| l.tool == h.tool) {
+            Some(i) => {
+                lines[i].holes += 1;
+                lines[i].travel_mm += (h.x_mm - last[i].0).hypot(h.y_mm - last[i].1);
+                last[i] = (h.x_mm, h.y_mm);
+            }
+            None => {
+                lines.push(ToolLine {
+                    tool: h.tool,
+                    holes: 1,
+                    travel_mm: 0.0,
+                });
+                last.push((h.x_mm, h.y_mm));
+            }
+        }
+    }
+    lines
 }
 
 /// Total rapid travel in mm for a visiting order starting at the origin.
@@ -518,6 +594,8 @@ pub struct JobOptions {
     pub skip: usize,
     /// The tools (drills, or pens of the router) that are switched off: their holes and paths are left out of the job.
     pub skip_tools: Vec<u8>,
+    /// A hole that repeats the place of an earlier hole of the same tool is left out of the job (off: every hole of the file is drilled, as the file says).
+    pub skip_duplicates: bool,
     /// The height map of the table: the holes are drilled to the same depth into the board wherever the table is high or low.
     pub table: Option<eh3d_levelling::HeightMap>,
     /// The tool changer, when the job is one of several that share a load of the rack (the drilling and then the routing): how many places the tools of the
@@ -561,6 +639,8 @@ pub struct Selection {
     pub holes: Vec<crate::protocol::job::JobHole>,
     /// Holes left out because they fall outside the working area.
     pub skipped: usize,
+    /// Holes left out because they repeat the place of an earlier hole of the same tool (only when `skip_duplicates` is on).
+    pub duplicates: usize,
 }
 
 /// Picks and orders the holes of `file` for a job. Coordinates are scaled, and the offset decides what falls outside the
@@ -584,6 +664,11 @@ pub fn select_holes(
         .filter(|(_, h)| !opts.skip_tools.contains(&h.tool))
         .map(|(_, h)| h.clone())
         .collect();
+    let (kept, duplicates) = if opts.skip_duplicates {
+        without_duplicates(&kept)
+    } else {
+        (kept, 0)
+    };
     let mut tools: Vec<u8> = Vec::new();
     for h in &kept {
         if !tools.contains(&h.tool) {
@@ -640,6 +725,7 @@ pub fn select_holes(
     Selection {
         holes: out,
         skipped,
+        duplicates,
     }
 }
 
@@ -761,6 +847,139 @@ mod tab_tests {
             ..tabs
         };
         assert_eq!(cut_tabs(&long, &none), vec![long.clone()]);
+    }
+}
+
+#[cfg(test)]
+mod repeated_hole_tests {
+    use super::*;
+    use crate::protocol::job::JobHole;
+
+    fn hole(tool: u8, x: i32, y: i32) -> Hole {
+        Hole {
+            tool,
+            x_mil: x,
+            y_mil: y,
+        }
+    }
+
+    fn file(holes: Vec<Hole>) -> DrillFile {
+        let mut tools: Vec<u8> = Vec::new();
+        for h in &holes {
+            if !tools.contains(&h.tool) {
+                tools.push(h.tool);
+            }
+        }
+        DrillFile {
+            holes,
+            tools,
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn a_hole_at_the_place_of_an_earlier_hole_of_the_same_tool_is_a_repeat() {
+        let holes = vec![
+            hole(1, 100, 100),
+            hole(1, 200, 100),
+            hole(1, 100, 100),
+            hole(2, 100, 100),
+            hole(1, 100, 100),
+        ];
+        assert_eq!(duplicate_holes(&holes), 2);
+        let (kept, dropped) = without_duplicates(&holes);
+        assert_eq!(dropped, 2);
+        assert_eq!(
+            kept.iter()
+                .map(|h| (h.tool, h.x_mil, h.y_mil))
+                .collect::<Vec<_>>(),
+            [(1, 100, 100), (1, 200, 100), (2, 100, 100)]
+        );
+        assert_eq!(duplicate_holes(&[]), 0);
+        assert_eq!(without_duplicates(&[]).1, 0);
+        // a hole one mil away is another hole
+        assert_eq!(duplicate_holes(&[hole(1, 5, 5), hole(1, 6, 5)]), 0);
+    }
+
+    #[test]
+    fn the_job_leaves_the_repeats_out_only_when_asked_and_counts_them() {
+        let f = file(vec![
+            hole(1, 1000, 1000),
+            hole(1, 2000, 1000),
+            hole(1, 1000, 1000),
+            hole(2, 1000, 1000),
+        ]);
+        let as_is = select_holes(
+            &f,
+            Sorting::None,
+            &JobOptions::default(),
+            MIL_MM,
+            (1.0, 1.0),
+            (0.0, 0.0),
+        );
+        assert_eq!((as_is.holes.len(), as_is.duplicates), (4, 0));
+        let opts = JobOptions {
+            skip_duplicates: true,
+            ..Default::default()
+        };
+        let cut = select_holes(&f, Sorting::None, &opts, MIL_MM, (1.0, 1.0), (0.0, 0.0));
+        assert_eq!((cut.holes.len(), cut.duplicates), (3, 1));
+        // the vectors asked for are counted in the file, before the repeats go: vector 3 alone is the repeat of vector 1 and is its own first hole there
+        let third = JobOptions {
+            from: 3,
+            to: 3,
+            skip_duplicates: true,
+            ..Default::default()
+        };
+        let one = select_holes(&f, Sorting::None, &third, MIL_MM, (1.0, 1.0), (0.0, 0.0));
+        assert_eq!((one.holes.len(), one.duplicates), (1, 0));
+    }
+
+    #[test]
+    fn a_sorting_is_read_from_its_name_and_the_name_reads_back() {
+        for s in [
+            Sorting::None,
+            Sorting::XFirst,
+            Sorting::YFirst,
+            Sorting::Special,
+        ] {
+            assert_eq!(Sorting::parse(s.name()), Some(s));
+        }
+        assert_eq!(Sorting::parse(" Meander "), Some(Sorting::Special));
+        assert_eq!(Sorting::parse("Y-First"), Some(Sorting::YFirst));
+        assert_eq!(Sorting::parse("file"), Some(Sorting::None));
+        assert_eq!(Sorting::parse("shortest"), None);
+        assert_eq!(Sorting::parse(""), None);
+    }
+
+    #[test]
+    fn each_tool_has_its_holes_and_the_travel_between_them() {
+        let jh = |tool: u8, x: f64, y: f64| JobHole {
+            tool,
+            x_mm: x,
+            y_mm: y,
+        };
+        let holes = [
+            jh(3, 0.0, 0.0),
+            jh(3, 3.0, 4.0),
+            jh(3, 3.0, 10.0),
+            jh(1, 50.0, 50.0),
+            jh(1, 50.0, 60.0),
+        ];
+        let lines = tool_lines(&holes);
+        assert_eq!(lines.len(), 2);
+        assert_eq!((lines[0].tool, lines[0].holes), (3, 3));
+        assert!(
+            (lines[0].travel_mm - 11.0).abs() < 1e-9,
+            "{}",
+            lines[0].travel_mm
+        );
+        assert_eq!((lines[1].tool, lines[1].holes), (1, 2));
+        assert!((lines[1].travel_mm - 10.0).abs() < 1e-9);
+        assert!(tool_lines(&[]).is_empty());
+        // a tool that comes back later keeps counting from where it stopped
+        let back = tool_lines(&[jh(1, 0.0, 0.0), jh(2, 9.0, 9.0), jh(1, 0.0, 6.0)]);
+        assert_eq!((back[0].holes, back[0].travel_mm), (2, 6.0));
     }
 }
 
