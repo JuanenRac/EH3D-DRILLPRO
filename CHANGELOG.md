@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.0] - Repeated holes, plan options and a per tool report
+
 - **A file that drills a hole twice says so when it is loaded:** a hole at the same place as an earlier hole of the same tool (to the mil) is a repeat, and the warning under the job tells how many (`job::duplicate_holes`), in the eight languages of the program; the files of `locales/` carry the text in their languages. Nothing is left out unless asked. Tested with repeats of one tool, the same place for another tool, a hole one mil away and a file without repeats in every language.
 - **Holes drilled twice can be left out of a job:** the job option `skip_duplicates` (off by default, so every hole of the file is drilled as the file says) leaves a hole that repeats the place of an earlier hole of the same tool out of the selection, after the vectors asked for are taken and before the holes are ordered; `Selection::duplicates` counts them and the plan prints `repeats left out` when there are some (`job::without_duplicates`). Tested through the selection, with a vector range, and through the plan.
 - **The plan on paper takes the options of the form:** `drillpro-plan` accepts `--sort none|x|y|special` (`Sorting::parse` and `Sorting::name`, read back by name), `--from N` and `--to N`, `--skip-tool T` (more than once) and `--skip-duplicates`, so a plan can be made for the same part of the job a start would do; a value that is not a whole number or a sorting that does not exist is refused naming the option. Without options the lines are the stored ones. `App::set_sorting` and `App::set_job_options` do the same for a program that uses the library.
