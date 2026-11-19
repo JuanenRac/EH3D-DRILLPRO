@@ -259,3 +259,4 @@ Text.RackOutside	Bod lišty je mimo dosah stroje
 Text.SumTitle	Kontrola před spuštěním
 Text.BtnStartJob	Spustit úlohu
 Text.BtnCancel	Zrušit
+Text.DuplicateHoles	Otvory, které opakují místo dřívějšího otvoru stejného nástroje (vrtané dvakrát)

@@ -259,3 +259,4 @@ Text.RackOutside	A sor egy pontja a gép hatókörén kívül esik
 Text.SumTitle	Ellenőrzés indítás előtt
 Text.BtnStartJob	Munka indítása
 Text.BtnCancel	Mégse
+Text.DuplicateHoles	Furatok, amelyek ugyanannak a szerszámnak egy korábbi furata helyét ismétlik (kétszer fúrva)

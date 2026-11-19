@@ -259,3 +259,4 @@ Text.RackOutside	Un punt de la barra és fora de l'abast de la màquina
 Text.SumTitle	Revisa abans de començar
 Text.BtnStartJob	Inicia la feina
 Text.BtnCancel	Cancel·la
+Text.DuplicateHoles	Forats que repeteixen el lloc d'un forat anterior de la mateixa eina (foradats dues vegades)

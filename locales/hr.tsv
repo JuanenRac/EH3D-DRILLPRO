@@ -259,3 +259,4 @@ Text.RackOutside	Točka letve izvan je dosega stroja
 Text.SumTitle	Provjera prije početka
 Text.BtnStartJob	Pokreni posao
 Text.BtnCancel	Odustani
+Text.DuplicateHoles	Rupe koje ponavljaju mjesto ranije rupe istog alata (bušene dvaput)

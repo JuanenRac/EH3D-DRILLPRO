@@ -259,3 +259,4 @@ Text.RackOutside	Et punkt på listen ligger uden for maskinens rækkevidde
 Text.SumTitle	Kontrollér før start
 Text.BtnStartJob	Start opgaven
 Text.BtnCancel	Annullér
+Text.DuplicateHoles	Huller, der gentager stedet for et tidligere hul med det samme værktøj (boret to gange)

@@ -259,3 +259,4 @@ Text.RackOutside	Een punt van de balk ligt buiten het bereik van de machine
 Text.SumTitle	Controleer vóór de start
 Text.BtnStartJob	Taak starten
 Text.BtnCancel	Annuleren
+Text.DuplicateHoles	Gaten die de plaats van een eerder gat van hetzelfde gereedschap herhalen (twee keer geboord)

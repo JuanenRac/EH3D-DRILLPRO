@@ -259,3 +259,4 @@ Text.RackOutside	Točka letve je zunaj dosega stroja
 Text.SumTitle	Preverite pred začetkom
 Text.BtnStartJob	Zaženi opravilo
 Text.BtnCancel	Prekliči
+Text.DuplicateHoles	Luknje, ki ponavljajo mesto prejšnje luknje istega orodja (vrtane dvakrat)

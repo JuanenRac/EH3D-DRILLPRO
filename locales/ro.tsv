@@ -259,3 +259,4 @@ Text.RackOutside	Un punct al barei este în afara razei de acțiune a mașinii
 Text.SumTitle	Verificați înainte de pornire
 Text.BtnStartJob	Pornește lucrarea
 Text.BtnCancel	Anulează
+Text.DuplicateHoles	Găuri care repetă locul unei găuri anterioare a aceleiași scule (găurite de două ori)

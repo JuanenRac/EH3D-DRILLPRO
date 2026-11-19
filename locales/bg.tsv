@@ -259,3 +259,4 @@ Text.RackOutside	Точка от лентата е извън обсега на 
 Text.SumTitle	Проверка преди старт
 Text.BtnStartJob	Старт на задачата
 Text.BtnCancel	Отказ
+Text.DuplicateHoles	Отвори, които повтарят мястото на по-ранен отвор на същия инструмент (пробити два пъти)

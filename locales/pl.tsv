@@ -259,3 +259,4 @@ Text.RackOutside	Punkt listwy jest poza zasięgiem maszyny
 Text.SumTitle	Sprawdź przed startem
 Text.BtnStartJob	Uruchom zadanie
 Text.BtnCancel	Anuluj
+Text.DuplicateHoles	Otwory powtarzające miejsce wcześniejszego otworu tego samego narzędzia (wiercone dwa razy)

@@ -259,3 +259,4 @@ Text.RackOutside	Riba üks punkt jääb masina ulatusest välja
 Text.SumTitle	Kontrolli enne algust
 Text.BtnStartJob	Alusta tööd
 Text.BtnCancel	Tühista
+Text.DuplicateHoles	Augud, mis kordavad sama tööriista varasema augu asukohta (puuritud kaks korda)

@@ -259,3 +259,4 @@ Text.RackOutside	Palkin yksi piste on koneen ulottumattomissa
 Text.SumTitle	Tarkista ennen aloitusta
 Text.BtnStartJob	Aloita työ
 Text.BtnCancel	Peruuta
+Text.DuplicateHoles	Reiät, jotka toistavat saman työkalun aiemman reiän paikan (porattu kahdesti)
