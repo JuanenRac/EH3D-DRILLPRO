@@ -16,6 +16,7 @@ pub use eh3d_drillpro_protocol as protocol;
 pub mod runner;
 pub mod screen;
 pub mod server_link;
+pub mod server_wire;
 pub mod summary;
 pub mod textapp;
 pub mod texts;

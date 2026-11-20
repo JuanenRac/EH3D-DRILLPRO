@@ -21,6 +21,9 @@ fn main() -> eframe::Result {
     if o.machines {
         std::process::exit(cli::print_fleet(&o));
     }
+    if o.server_status {
+        std::process::exit(cli::print_server_status(&o));
+    }
     let capture = o.shot.clone().map(|file| gui::Capture {
         keys: gui::parse_keys(&o.keys),
         file,

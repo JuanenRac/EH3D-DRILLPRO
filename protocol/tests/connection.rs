@@ -305,3 +305,37 @@ fn the_most_the_program_reads_from_the_server_is_a_key_of_the_file() {
         assert!(why.contains("line 1") && why.contains("1 to 256"), "{why}");
     }
 }
+
+#[test]
+fn the_limits_of_the_link_to_the_server_are_keys_of_the_file_with_their_ranges() {
+    let c = parse("").unwrap();
+    assert_eq!(
+        (c.server_timeout_s, c.server_retries, c.server_mdns),
+        (15, 2, false)
+    );
+    let c = parse("server_timeout_s = 120\nserver_retries = 5\nserver_mdns = on\n").unwrap();
+    assert_eq!(
+        (c.server_timeout_s, c.server_retries, c.server_mdns),
+        (120, 5, true)
+    );
+    let c = parse("server_timeout_s = 1\nserver_retries = 0\nserver_mdns = OFF\n").unwrap();
+    assert_eq!(
+        (c.server_timeout_s, c.server_retries, c.server_mdns),
+        (1, 0, false)
+    );
+    for (key, bad, says) in [
+        ("server_timeout_s", "0", "1 to 120"),
+        ("server_timeout_s", "121", "1 to 120"),
+        ("server_timeout_s", "soon", "1 to 120"),
+        ("server_retries", "6", "0 to 5"),
+        ("server_retries", "-1", "0 to 5"),
+        ("server_retries", "2.5", "0 to 5"),
+        ("server_mdns", "maybe", "on or off"),
+    ] {
+        let why = parse(&format!("{key} = {bad}\n")).unwrap_err();
+        assert!(
+            why.contains("line 1") && why.contains(says),
+            "{key} {bad}: {why}"
+        );
+    }
+}

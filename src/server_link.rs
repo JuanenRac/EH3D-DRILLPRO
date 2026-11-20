@@ -1,41 +1,54 @@
-//! The way to the EH3D server: a small HTTP client (plain HTTP/1.1, one request per connection) and the reading of what the server answers.
-//! A job sent to the server is planned and run there, on the machine's node; the program only sends it, follows it and answers its dialogs.
-
-use std::io::{Read, Write};
-use std::net::{TcpStream, ToSocketAddrs};
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::Duration;
+//! The way to the EH3D server: the requests of a job and the reading of what the server answers. The link itself is the client of the suite
+//! (`eh3d-serverclient` of EH3D-COMMON, reached through [`crate::server_wire`]): a time limit and retries with growing pauses on each request (a `POST` is
+//! never sent twice), the state of the link, and the refusals told by their code in the language of the person. A job sent to the server is planned and run
+//! there, on the machine's node; the program only sends it, follows it and answers its dialogs.
 
 use serde_json::Value;
 
 use eh3d_fleet::Fleet;
+use eh3d_serverclient as sc;
 
 use crate::protocol::connection::ConnectionConfig;
+use crate::server_wire::{self, Link};
 
-static MAX_ANSWER_MIB: AtomicU64 =
-    AtomicU64::new(crate::protocol::connection::DEFAULT_MAX_ANSWER_MIB);
+pub use sc::transport::check_request_part;
+pub use sc::{path_segment, plain_token_warning};
 
-/// Sets the most MiB of an answer of the server that are read (`server_max_answer_mib` of the machine file, 8 by default; `Client::new` sets it from the file); a server that
-/// sends more is refused, so that a wrong or hostile one cannot fill the memory. It is a setting of the program and not a field of `Client`, so that a `Client` written out
-/// field by field keeps compiling.
-pub fn set_max_answer_mib(mib: u64) {
-    MAX_ANSWER_MIB.store(mib.max(1), Ordering::Relaxed);
-}
-
-/// The server a program talks to: its address (`host:port`), the token of this program and the machine the jobs are for.
+/// The server a program talks to: its address (`host:port`), the token of this program, the machine the jobs are for and the limits of the link (the time
+/// of one try, how many more tries after a failure of the network, whether to look for the server on the network, the most MiB read from an answer).
 pub struct Client {
     pub address: String,
     pub token: String,
     pub machine: String,
+    pub timeout_s: u64,
+    pub retries: u32,
+    pub mdns: bool,
+    pub max_answer_mib: u64,
 }
 
 impl Client {
     pub fn new(config: &ConnectionConfig) -> Client {
-        set_max_answer_mib(config.server_max_answer_mib);
         Client {
             address: config.server_address.clone(),
             token: config.server_token.clone(),
             machine: config.server_machine.clone(),
+            timeout_s: config.server_timeout_s,
+            retries: config.server_retries,
+            mdns: config.server_mdns,
+            max_answer_mib: config.server_max_answer_mib,
+        }
+    }
+
+    /// The values of the link, for the client of the suite.
+    pub fn link(&self) -> Link {
+        Link {
+            address: self.address.clone(),
+            token: self.token.clone(),
+            machine: self.machine.clone(),
+            timeout_s: self.timeout_s,
+            retries: self.retries,
+            mdns: self.mdns,
+            max_answer_mib: self.max_answer_mib,
         }
     }
 
@@ -48,9 +61,10 @@ impl Client {
         Fleet::from_json(&body)
     }
 
-    /// One request; the answer is the status and the JSON body (`null` when the body is not JSON). The request goes in plain HTTP, so the token of the program travels
-    /// in the clear: use it on a network that can be trusted or through a tunnel (SSH, VPN). What is written into the lines of the request (the path, the address and the
-    /// token) must not hold a space, a control character or a line break, which would change the request: such a request is refused before it is sent.
+    /// One request; the answer is the status and the JSON body (`null` when the body is not JSON). A refusal of the server is an answer, with its status; a
+    /// request that never got one is the error, told in the language of the person. The request goes in plain HTTP, so the token of the program travels in the
+    /// clear: use it on a network that can be trusted or through a tunnel (SSH, VPN). What is written into the lines of the request (the path, the address and
+    /// the token) must not hold a space, a control character or a line break, which would change the request: such a request is refused before it is sent.
     pub fn call(
         &self,
         method: &str,
@@ -58,168 +72,34 @@ impl Client {
         body: Option<&Value>,
     ) -> Result<(u16, Value), String> {
         check_request_part("the path", path)?;
-        check_request_part("the address of the server", &self.address)?;
-        check_request_part("the token", &self.token)?;
-        let target = self
-            .address
-            .to_socket_addrs()
-            .map_err(|e| format!("{}: {e}", self.address))?
-            .next()
-            .ok_or_else(|| format!("{}: no address", self.address))?;
-        let mut stream = TcpStream::connect_timeout(&target, Duration::from_secs(5))
-            .map_err(|e| format!("{}: {e}", self.address))?;
-        stream
-            .set_read_timeout(Some(Duration::from_secs(15)))
-            .and_then(|_| stream.set_write_timeout(Some(Duration::from_secs(15))))
-            .map_err(|e| e.to_string())?;
-        let payload = body.map(|b| b.to_string()).unwrap_or_default();
-        let mut request = format!(
-            "{method} {path} HTTP/1.1\r\nHost: {}\r\nAuthorization: Bearer {}\r\nConnection: close\r\nAccept: application/json\r\n",
-            self.address, self.token
-        );
-        if body.is_some() {
-            request.push_str(&format!(
-                "Content-Type: application/json\r\nContent-Length: {}\r\n",
-                payload.len()
-            ));
-        } else if method == "POST" || method == "PUT" {
-            request.push_str("Content-Length: 0\r\n");
-        }
-        request.push_str("\r\n");
-        request.push_str(&payload);
-        stream
-            .write_all(request.as_bytes())
-            .map_err(|e| e.to_string())?;
-        let max_mib = MAX_ANSWER_MIB.load(Ordering::Relaxed).max(1);
-        let limit = max_mib.saturating_mul(1_048_576);
-        let mut raw = Vec::new();
-        (&mut stream)
-            .take(limit + 1)
-            .read_to_end(&mut raw)
-            .map_err(|e| e.to_string())?;
-        if raw.len() as u64 > limit {
-            return Err(format!(
-                "{}: the answer is larger than {} MiB",
-                self.address, max_mib
-            ));
-        }
-        parse_response(&raw)
+        let mut client = sc::Client::connect(self.link().settings()?);
+        self.call_with(&mut client, method, path, body)
     }
-}
 
-/// True when the token of the program would travel in the clear over a network that is not the user's own: the client speaks plain HTTP, so an address that is not
-/// this computer (`127.x`, `::1`, `localhost`) or a private network (`10.x`, `172.16` to `172.31`, `192.168.x`, link-local `169.254.x` and `fe80::`, unique-local
-/// `fc00::/7`, and names ending in `.local`) deserves a warning in the window of the connection. An address with `https://` (a tunnel or a proxy in front of the
-/// server) and an empty address give no warning. The address is `host:port`, with or without a scheme and a path.
-pub fn plain_token_warning(address: &str) -> bool {
-    let text = address.trim();
-    if text.is_empty() {
-        return false;
+    /// The same request over a client already made (a server in memory for the tests, a tunnel).
+    pub fn call_with(
+        &self,
+        client: &mut sc::Client,
+        method: &str,
+        path: &str,
+        body: Option<&Value>,
+    ) -> Result<(u16, Value), String> {
+        check_request_part("the path", path)?;
+        let text = body.map(Value::to_string);
+        let (status, raw) = server_wire::exchange(
+            client,
+            method,
+            path,
+            text.as_deref(),
+            server_wire::language(),
+        )?;
+        Ok((status, serde_json::from_str(&raw).unwrap_or(Value::Null)))
     }
-    let lower = text.to_ascii_lowercase();
-    if lower.starts_with("https://") {
-        return false;
-    }
-    let rest = lower.strip_prefix("http://").unwrap_or(&lower);
-    let authority = rest.split(['/', '?', '#']).next().unwrap_or("");
-    let authority = authority.rsplit_once('@').map_or(authority, |(_, h)| h);
-    // [v6]:port, host:port or a bare v6 address
-    let host = if let Some(inner) = authority.strip_prefix('[') {
-        inner.split(']').next().unwrap_or("")
-    } else if authority.matches(':').count() > 1 {
-        authority
-    } else {
-        authority.split(':').next().unwrap_or("")
-    };
-    let host = host.trim_end_matches('.');
-    if host.is_empty() {
-        return false;
-    }
-    if host == "localhost" || host.ends_with(".local") || host.ends_with(".localhost") {
-        return false;
-    }
-    if let Ok(v4) = host.parse::<std::net::Ipv4Addr>() {
-        return !(v4.is_loopback() || v4.is_private() || v4.is_link_local());
-    }
-    if let Ok(v6) = host.parse::<std::net::Ipv6Addr>() {
-        let first = v6.segments()[0];
-        let unique_local = first & 0xfe00 == 0xfc00;
-        let link_local = first & 0xffc0 == 0xfe80;
-        return !(v6.is_loopback() || unique_local || link_local);
-    }
-    true
-}
 
-/// A part of a request line or header refuses a space, a control character or anything that is not ASCII (a carriage return or a line feed would end the line and let
-/// the rest pass for another header or request).
-pub fn check_request_part(what: &str, text: &str) -> Result<(), String> {
-    if text.bytes().any(|b| b <= b' ' || b == 0x7f || b >= 0x80) {
-        return Err(format!(
-            "{what} has a space, a control character or a letter that cannot be sent"
-        ));
-    }
-    Ok(())
-}
-
-/// A name (a machine, a job) as one segment of a path: everything but letters, digits and `-._~` is written as `%XX`, so a slash, a question mark, a space or a line
-/// break in a name cannot change where the request goes.
-pub fn path_segment(name: &str) -> String {
-    let mut out = String::new();
-    for b in name.bytes() {
-        if b.is_ascii_alphanumeric() || matches!(b, b'-' | b'.' | b'_' | b'~') {
-            out.push(b as char);
-        } else {
-            out.push_str(&format!("%{b:02X}"));
-        }
-    }
-    out
-}
-
-/// The status and the JSON body of an HTTP response (a body sent in chunks is put together).
-pub fn parse_response(raw: &[u8]) -> Result<(u16, Value), String> {
-    let split = raw
-        .windows(4)
-        .position(|w| w == b"\r\n\r\n")
-        .ok_or("the answer of the server is incomplete")?;
-    let head = String::from_utf8_lossy(&raw[..split]).to_string();
-    let status: u16 = head
-        .lines()
-        .next()
-        .and_then(|l| l.split_whitespace().nth(1))
-        .and_then(|s| s.parse().ok())
-        .ok_or("the answer of the server has no status")?;
-    let body = &raw[split + 4..];
-    let chunked = head.lines().any(|l| {
-        l.to_ascii_lowercase().starts_with("transfer-encoding:")
-            && l.to_ascii_lowercase().contains("chunked")
-    });
-    let body = if chunked {
-        unchunk(body)?
-    } else {
-        body.to_vec()
-    };
-    Ok((status, serde_json::from_slice(&body).unwrap_or(Value::Null)))
-}
-
-fn unchunk(mut rest: &[u8]) -> Result<Vec<u8>, String> {
-    let mut out = Vec::new();
-    loop {
-        let eol = rest
-            .windows(2)
-            .position(|w| w == b"\r\n")
-            .ok_or("a chunk of the answer is cut")?;
-        let size = usize::from_str_radix(String::from_utf8_lossy(&rest[..eol]).trim(), 16)
-            .map_err(|_| "a chunk of the answer has a bad size")?;
-        rest = &rest[eol + 2..];
-        if size == 0 {
-            return Ok(out);
-        }
-        // a size that is bigger than anything that could come must not overflow (nor index past the end)
-        if rest.len() < 2 || size > rest.len() - 2 {
-            return Err("a chunk of the answer is cut".into());
-        }
-        out.extend_from_slice(&rest[..size]);
-        rest = &rest[size + 2..];
+    /// What the server answers at `/health` and the metrics of the requests (what `--server-status` prints).
+    pub fn status(&self) -> Result<String, String> {
+        let mut client = sc::Client::connect(self.link().settings()?);
+        server_wire::status_text(&mut client, server_wire::language())
     }
 }
 
@@ -331,6 +211,18 @@ mod tests {
         assert!(!chain_refused(200) && !chain_refused(401) && !chain_refused(500));
     }
 
+    fn client_at(address: String, token: &str) -> Client {
+        Client {
+            address,
+            token: token.into(),
+            machine: String::new(),
+            timeout_s: 15,
+            retries: 0,
+            mdns: false,
+            max_answer_mib: 8,
+        }
+    }
+
     #[test]
     fn names_become_one_safe_segment_and_a_request_cannot_be_split() {
         assert_eq!(path_segment("bench-1_a.b~c"), "bench-1_a.b~c");
@@ -343,44 +235,14 @@ mod tests {
         for bad in ["/a b", "/a\r\nHost: x", "/a\n", "/ñ", "/a\0"] {
             assert!(check_request_part("the path", bad).is_err(), "{bad:?}");
         }
-        let client = Client {
-            address: "127.0.0.1:1".into(),
-            token: "t\r\nX: y".into(),
-            machine: String::new(),
-        };
+        let client = client_at("127.0.0.1:1".into(), "t\r\nX: y");
         let error = client.call("GET", "/api/v1/fleet", None).unwrap_err();
-        assert!(error.contains("the token"), "{error}");
-        let client = Client {
-            address: "127.0.0.1:1".into(),
-            token: "t".into(),
-            machine: String::new(),
-        };
+        assert!(error.contains("server_token"), "{error}");
+        let client = client_at("127.0.0.1:1".into(), "t");
         let error = client
             .call("GET", "/api/v1/machines/a b/jobs", None)
             .unwrap_err();
         assert!(error.contains("the path"), "{error}");
-    }
-
-    #[test]
-    fn a_response_is_split_into_status_and_json() {
-        let raw = b"HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: 14\r\n\r\n{\"id\":\"j1234\"}";
-        let (status, body) = parse_response(raw).unwrap();
-        assert_eq!((status, body["id"].as_str()), (200, Some("j1234")));
-    }
-
-    #[test]
-    fn a_chunked_body_is_put_together() {
-        // the body {"error":"x"} in two chunks of 6 and 7 bytes
-        let raw = b"HTTP/1.1 422 Unprocessable\r\ntransfer-encoding: chunked\r\n\r\n6\r\n{\"erro\r\n7\r\nr\":\"x\"}\r\n0\r\n\r\n";
-        let (status, body) = parse_response(raw).unwrap();
-        assert_eq!((status, body["error"].as_str()), (422, Some("x")));
-    }
-
-    #[test]
-    fn a_cut_answer_is_an_error_and_a_body_that_is_not_json_is_null() {
-        assert!(parse_response(b"HTTP/1.1 200 OK\r\ncontent-le").is_err());
-        let (status, body) = parse_response(b"HTTP/1.1 502 Bad Gateway\r\n\r\nnot json").unwrap();
-        assert_eq!((status, body), (502, Value::Null));
     }
 
     /// A server that answers one request with `body` and goes away.
@@ -411,20 +273,18 @@ mod tests {
 
     #[test]
     fn an_answer_past_the_limit_is_refused_and_a_big_one_below_it_is_read() {
-        let client = |body: &str| Client {
-            address: one_answer("200 OK", body),
-            token: "secret".into(),
-            machine: String::new(),
-        };
         let big = format!("\"{}\"", "a".repeat(9 * 1_048_576));
-        let why = client(&big).call("GET", "/api/v1/fleet", None).unwrap_err();
-        assert!(why.contains("larger than 8 MiB"), "{why}");
-        set_max_answer_mib(12);
-        let wide = client(&big).call("GET", "/api/v1/fleet", None);
-        set_max_answer_mib(8);
-        assert!(wide.is_ok());
+        let why = client_at(one_answer("200 OK", &big), "secret")
+            .call("GET", "/api/v1/fleet", None)
+            .unwrap_err();
+        assert!(why.contains("too large"), "{why}");
+        let mut wide = client_at(one_answer("200 OK", &big), "secret");
+        wide.max_answer_mib = 12;
+        assert!(wide.call("GET", "/api/v1/fleet", None).is_ok());
         let fine = format!("\"{}\"", "a".repeat(1_048_576));
-        let (status, body) = client(&fine).call("GET", "/api/v1/fleet", None).unwrap();
+        let (status, body) = client_at(one_answer("200 OK", &fine), "secret")
+            .call("GET", "/api/v1/fleet", None)
+            .unwrap();
         assert_eq!(
             (status, body.as_str().map(str::len)),
             (200, Some(1_048_576))
@@ -436,24 +296,75 @@ mod tests {
         let body = r#"{"stations":[{"id":"bench","machines":["m1","m2"]}],"machines":[
             {"id":"m1","name":"M1","station":"bench","connection":"demo","state":"busy","job":{"id":"j","name":"board","kind":"drill","items_done":1,"items_total":4,"percent":25},"ready":0},
             {"id":"m2","name":"M2","station":"bench","connection":"demo","state":"idle","job":null,"ready":2}]}"#;
-        let client = Client {
-            address: one_answer("200 OK", body),
-            token: "secret".into(),
-            machine: String::new(),
-        };
+        let client = client_at(one_answer("200 OK", body), "secret");
         let fleet = client.fleet().unwrap();
         assert_eq!(fleet.machines.len(), 2);
         assert_eq!(fleet.pick_free("bench").unwrap().id, "m2");
         assert_eq!(fleet.find("m1").unwrap().job.as_ref().unwrap().percent, 25);
-        let client = Client {
-            address: one_answer(
+        let client = client_at(
+            one_answer(
                 "401 Unauthorized",
                 r#"{"error":"unauthorized","detail":"no token"}"#,
             ),
-            token: "secret".into(),
-            machine: String::new(),
-        };
+            "secret",
+        );
         assert_eq!(client.fleet().unwrap_err(), "unauthorized: no token");
+    }
+
+    #[test]
+    fn a_refusal_keeps_its_status_and_its_code_over_the_client_of_the_suite() {
+        use sc::sim::{Fault, SimServer};
+        let sim = SimServer::new();
+        let client = client_at("127.0.0.1:18200".into(), "program-token");
+        let mut link = sc::Client::new(client.link().settings().unwrap(), Box::new(sim.clone()))
+            .with_sleeper(Box::new(sim.sleeper()));
+        // a route the server in memory does not have: the 404 and its code come back as an answer
+        let (status, body) = client
+            .call_with(&mut link, "GET", "/api/v1/nothing", None)
+            .unwrap();
+        assert_eq!((status, body["error"].as_str()), (404, Some("not_found")));
+        // a server that is busy is asked again for a GET
+        sim.script(vec![Fault::Status(503, "busy")]);
+        let (status, _) = client
+            .call_with(&mut link, "GET", "/api/v1/echo", None)
+            .unwrap();
+        assert_eq!(status, 200);
+        assert_eq!(sim.pauses().len(), 1);
+        // a POST is sent once: a time-out is the error of that request
+        sim.script(vec![Fault::Timeout]);
+        let before = sim.pauses().len();
+        let why = client
+            .call_with(
+                &mut link,
+                "POST",
+                "/api/v1/echo",
+                Some(&serde_json::json!({"a": 1})),
+            )
+            .unwrap_err();
+        assert!(!why.is_empty());
+        assert_eq!(sim.pauses().len(), before);
+    }
+
+    #[test]
+    fn the_limits_of_the_link_come_from_the_machine_file() {
+        let config = ConnectionConfig {
+            server_address: "10.0.0.5:18200".into(),
+            server_timeout_s: 40,
+            server_retries: 4,
+            server_mdns: true,
+            ..ConnectionConfig::default()
+        };
+        let link = Client::new(&config).link();
+        let settings = link.settings().unwrap();
+        assert_eq!(
+            (
+                settings.server_timeout_s,
+                settings.server_retries,
+                settings.server_mdns
+            ),
+            (40, 4, true)
+        );
+        assert_eq!(settings.server_address, "10.0.0.5:18200");
     }
 
     #[test]

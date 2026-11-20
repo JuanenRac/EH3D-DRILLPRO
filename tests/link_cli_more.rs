@@ -1,132 +1,11 @@
-//! The answers of the server as they come on the wire, the names that go into a request and the command line, from their edges: cut answers, chunks that lie, names that try to split a
-//! request, and options that are written wrong.
+//! The answers of the server as the program tells them, the names that go into a request and the command line, from their edges: names that try to split a request, and options that are
+//! written wrong.
 
 use eh3d_drillpro::cli::{parse_from, parse_prefs, render_prefs, Prefs};
 use eh3d_drillpro::i18n::Lang;
-use eh3d_drillpro::server_link::{check_request_part, error_text, parse_response, path_segment};
+use eh3d_drillpro::server_link::{check_request_part, error_text, path_segment};
 use serde_json::{json, Value};
 use std::path::PathBuf;
-
-fn http(status_line: &str, headers: &str, body: &[u8]) -> Vec<u8> {
-    let mut v = format!("{status_line}\r\n{headers}\r\n").into_bytes();
-    v.extend_from_slice(body);
-    v
-}
-
-#[test]
-fn a_plain_answer_has_its_status_and_its_json() {
-    let (status, body) = parse_response(&http(
-        "HTTP/1.1 200 OK",
-        "Content-Type: application/json\r\n",
-        br#"{"ok":true,"n":[1,2]}"#,
-    ))
-    .unwrap();
-    assert_eq!(status, 200);
-    assert_eq!(body, json!({"ok": true, "n": [1, 2]}));
-    let (status, body) = parse_response(&http("HTTP/1.1 204 No Content", "", b"")).unwrap();
-    assert_eq!((status, body), (204, Value::Null));
-    let (status, _) = parse_response(&http(
-        "HTTP/1.0 503 Service Unavailable",
-        "",
-        b"<html>gateway</html>",
-    ))
-    .unwrap();
-    assert_eq!(status, 503);
-}
-
-#[test]
-fn a_body_that_is_not_json_is_nothing_and_not_an_error() {
-    for body in [&b"not json"[..], b"", b"{\"cut\":", b"\xFF\xFE\x00"] {
-        let (status, value) = parse_response(&http("HTTP/1.1 200 OK", "", body)).unwrap();
-        assert_eq!((status, value), (200, Value::Null), "{body:?}");
-    }
-}
-
-#[test]
-fn an_answer_that_is_cut_or_has_no_status_is_refused_with_a_reason() {
-    let cases: &[(&[u8], &str)] = &[
-        (b"", "incomplete"),
-        (b"HTTP/1.1 200 OK\r\nContent-Length: 2", "incomplete"),
-        (b"HTTP/1.1 200 OK\r\n\r", "incomplete"),
-        (b"\r\n\r\n{}", "no status"),
-        (b"HTTP/1.1\r\n\r\n{}", "no status"),
-        (b"HTTP/1.1 OK 200\r\n\r\n{}", "no status"),
-        (b"HTTP/1.1 99999 Huge\r\n\r\n{}", "no status"),
-        (b"HTTP/1.1 -5 Neg\r\n\r\n{}", "no status"),
-    ];
-    for (raw, want) in cases {
-        let e = parse_response(raw).unwrap_err();
-        assert!(e.contains(want), "{:?}: {e}", String::from_utf8_lossy(raw));
-    }
-}
-
-#[test]
-fn a_body_sent_in_chunks_is_put_together_in_any_case_of_the_header() {
-    let chunks = b"5\r\n{\"a\":\r\n4\r\n[1]}\r\n0\r\n\r\n";
-    for header in [
-        "Transfer-Encoding: chunked\r\n",
-        "transfer-encoding: Chunked\r\n",
-        "TRANSFER-ENCODING: gzip, chunked\r\n",
-    ] {
-        let (status, body) = parse_response(&http("HTTP/1.1 200 OK", header, chunks)).unwrap();
-        assert_eq!((status, body), (200, json!({"a": [1]})), "{header}");
-    }
-    // a chunk may be bigger than nine bytes and its size is in hexadecimal, in either case
-    let big = format!("{{\"k\":\"{}\"}}", "x".repeat(2));
-    let raw = format!("{:X}\r\n{big}\r\n0\r\n\r\n", big.len());
-    assert_eq!(
-        parse_response(&http(
-            "HTTP/1.1 200 OK",
-            "Transfer-Encoding: chunked\r\n",
-            raw.as_bytes()
-        ))
-        .unwrap()
-        .1["k"]
-            .as_str()
-            .unwrap()
-            .len(),
-        2
-    );
-    let raw_lower = format!("{:x}\r\n{big}\r\n0\r\n\r\n", big.len());
-    assert!(parse_response(&http(
-        "HTTP/1.1 200 OK",
-        "Transfer-Encoding: chunked\r\n",
-        raw_lower.as_bytes()
-    ))
-    .is_ok());
-    // the last chunk with nothing after it is enough
-    assert_eq!(
-        parse_response(&http(
-            "HTTP/1.1 200 OK",
-            "Transfer-Encoding: chunked\r\n",
-            b"2\r\n{}\r\n0\r\n"
-        ))
-        .unwrap()
-        .1,
-        json!({})
-    );
-}
-
-#[test]
-fn a_chunked_body_that_lies_is_refused_and_never_stops_the_program() {
-    let header = "Transfer-Encoding: chunked\r\n";
-    let cases: &[(&[u8], &str)] = &[
-        (b"zz\r\n{}\r\n0\r\n\r\n", "bad size"),
-        (b"5\r\n{}\r\n0\r\n\r\n", "bad size"),
-        (b"2\r\n{}", "cut"),
-        (b"2\r\n{}\r\n", "cut"),
-        (b"", "cut"),
-        (b"FFFFFFFFFFFFFFFF\r\nabc\r\n", "cut"),
-        (b"FFFFFFFFFFFFFFFE\r\nabc\r\n", "cut"),
-        (b"7FFFFFFFFFFFFFFF\r\nabc\r\n", "cut"),
-        (b"FFFFFFFFFFFFFFFFFFFF\r\nabc", "bad size"),
-        (b"-2\r\n{}\r\n0\r\n\r\n", "bad size"),
-    ];
-    for (body, want) in cases {
-        let e = parse_response(&http("HTTP/1.1 200 OK", header, body)).unwrap_err();
-        assert!(e.contains(want), "{:?}: {e}", String::from_utf8_lossy(body));
-    }
-}
 
 #[test]
 fn the_error_of_the_server_is_one_line_with_the_code_and_the_detail_when_there_is_one() {
@@ -356,4 +235,14 @@ fn the_pointer_of_the_pictures_is_a_column_a_row_and_optionally_down() {
 #[test]
 fn the_last_file_on_the_command_line_is_the_one_that_is_opened() {
     assert_eq!(args(&["a.ncd", "b.ncd"]).file, Some(PathBuf::from("b.ncd")));
+}
+
+#[test]
+fn the_server_status_is_an_option_that_is_off_unless_it_is_given() {
+    assert!(!args(&[]).server_status);
+    assert!(args(&["--server-status"]).server_status);
+    // it does not take the next word as a value, so a file after it is still the file
+    let o = args(&["--server-status", "job.ncd"]);
+    assert!(o.server_status);
+    assert_eq!(o.file, Some(PathBuf::from("job.ncd")));
 }

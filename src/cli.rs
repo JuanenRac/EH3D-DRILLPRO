@@ -82,6 +82,8 @@ pub struct Options {
     pub machines: bool,
     /// The machine of the server the jobs are for, instead of the one in the machine file (`--machine ID`).
     pub machine: Option<String>,
+    /// Asks the server how it is and prints the metrics of the link, then leaves (`--server-status`).
+    pub server_status: bool,
 }
 
 /// Reads the arguments. `settings` names the file that remembers the language; `data_file` is the configuration file
@@ -109,6 +111,7 @@ pub fn parse_from(
         wait: 8,
         machines: false,
         machine: None,
+        server_status: false,
     };
     let mut args = args.into_iter();
     while let Some(a) = args.next() {
@@ -127,6 +130,7 @@ pub fn parse_from(
             "--dump" => o.dump = true,
             "--machines" => o.machines = true,
             "--machine" => o.machine = args.next(),
+            "--server-status" => o.server_status = true,
             "--modern" => o.modern = true,
             "--classic" => o.modern = false,
             "--keys" => o.keys = args.next().unwrap_or_default(),
@@ -206,6 +210,31 @@ pub fn print_fleet(o: &Options) -> i32 {
                 "{} machines: {} free, {} busy, {} waiting for the operator; {} stations",
                 s.machines, s.idle, s.busy, s.waiting, s.stations
             );
+            0
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            1
+        }
+    }
+}
+
+/// `--server-status`: asks the server how it is (`/health`) and prints it with the metrics of the requests of the link. Returns the code the program leaves with.
+pub fn print_server_status(o: &Options) -> i32 {
+    let config = match crate::protocol::connection::load(o.connection.as_deref()) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("{e}");
+            return 2;
+        }
+    };
+    if config.server_address.is_empty() {
+        eprintln!("the machine file has no server_address: there is no server to ask");
+        return 2;
+    }
+    match crate::server_link::Client::new(&config).status() {
+        Ok(text) => {
+            print!("{text}");
             0
         }
         Err(e) => {
