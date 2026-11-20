@@ -308,14 +308,17 @@ mod tests {
             ),
             "secret",
         );
-        assert_eq!(client.fleet().unwrap_err(), "unauthorized: no token");
+        // the client of the suite keeps the code of a 401 and drops its detail, so the line is the code alone
+        assert_eq!(client.fleet().unwrap_err(), "unauthorized");
     }
 
     #[test]
     fn a_refusal_keeps_its_status_and_its_code_over_the_client_of_the_suite() {
         use sc::sim::{Fault, SimServer};
         let sim = SimServer::new();
-        let client = client_at("127.0.0.1:18200".into(), "program-token");
+        let mut client = client_at("127.0.0.1:18200".into(), "program-token");
+        // the helper builds a client with no retries; this test needs the default ones
+        client.retries = 2;
         let mut link = sc::Client::new(client.link().settings().unwrap(), Box::new(sim.clone()))
             .with_sleeper(Box::new(sim.sleeper()));
         // a route the server in memory does not have: the 404 and its code come back as an answer
