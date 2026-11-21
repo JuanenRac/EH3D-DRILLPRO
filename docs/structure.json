@@ -263,6 +263,58 @@
       },
       "rows": [
         {
+          "name": "NOT_YET.md",
+          "desc": {
+            "en": "good ideas that are left out of this version, with why and when",
+            "es": "buenas ideas fuera de esta versión, con el porqué y el cuándo",
+            "de": "gute Ideen außerhalb dieser Version, mit Grund und Zeitpunkt",
+            "fr": "de bonnes idées hors de cette version, avec pourquoi et quand",
+            "it": "buone idee fuori da questa versione, con il perché e il quando",
+            "ja": "このバージョンに含めない良いアイデアとその理由、再検討の時期",
+            "zh": "本版本暂不包含的好想法及其原因和时机",
+            "pt": "boas ideias fora desta versão, com o porquê e o quando"
+          }
+        },
+        {
+          "name": "REQUIREMENTS.md",
+          "desc": {
+            "en": "the register of requirements: state, evidence and the test of each",
+            "es": "el registro de requisitos: estado, evidencia y la prueba de cada uno",
+            "de": "das Register der Anforderungen: Stand, Nachweis und Test jeder einzelnen",
+            "fr": "le registre des exigences : état, preuve et test de chacune",
+            "it": "il registro dei requisiti: stato, evidenza e test di ciascuno",
+            "ja": "要件の一覧：それぞれの状態、証拠、テスト",
+            "zh": "需求登记表：每项的状态、证据和测试",
+            "pt": "o registo de requisitos: estado, evidência e teste de cada um"
+          }
+        },
+        {
+          "name": "SCOPE.md",
+          "desc": {
+            "en": "what the program is for, what it will not do and what it never decides",
+            "es": "para qué sirve, qué no hará y qué no decide nunca",
+            "de": "wofür es da ist, was es nicht tut und was es nie entscheidet",
+            "fr": "à quoi il sert, ce qu'il ne fera pas et ce qu'il ne décide jamais",
+            "it": "a cosa serve, cosa non farà e cosa non decide mai",
+            "ja": "目的、行わないこと、決して判断しないこと",
+            "zh": "用途、不做什么以及永远不由它决定的事",
+            "pt": "para que serve, o que não fará e o que nunca decide"
+          }
+        },
+        {
+          "name": "STATUS.md",
+          "desc": {
+            "en": "what exists, what is missing and what is still open",
+            "es": "qué existe, qué falta y qué sigue abierto",
+            "de": "was es gibt, was fehlt und was offen ist",
+            "fr": "ce qui existe, ce qui manque et ce qui reste ouvert",
+            "it": "cosa esiste, cosa manca e cosa è ancora aperto",
+            "ja": "存在するもの、足りないもの、未決のこと",
+            "zh": "已有的、缺少的和仍未决定的",
+            "pt": "o que existe, o que falta e o que continua em aberto"
+          }
+        },
+        {
           "name": "PROTOCOL.md",
           "desc": {
             "en": "what is known about the control unit, and what is a hypothesis",
@@ -500,6 +552,19 @@
             "ja": "各バージョンの変更点",
             "zh": "每个版本的变更",
             "pt": "o que mudou em cada versão"
+          }
+        },
+        {
+          "name": "AGENTS.md",
+          "desc": {
+            "en": "the rules for anyone who changes the repository",
+            "es": "las reglas para quien cambie el repositorio",
+            "de": "die Regeln für alle, die das Repository ändern",
+            "fr": "les règles pour qui modifie le dépôt",
+            "it": "le regole per chi modifica il repository",
+            "ja": "リポジトリを変更する人のための規則",
+            "zh": "修改本仓库的人需要遵守的规则",
+            "pt": "as regras para quem altera o repositório"
           }
         },
         {
