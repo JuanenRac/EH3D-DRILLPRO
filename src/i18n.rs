@@ -433,7 +433,7 @@ pub fn fold_key(c: char) -> char {
 /// The Latin keys of a keyboard and the letters the standard layout of a language puts on the same places (key, letter, key, letter...).
 const RU_LAYOUT: &str = "qйwцeуrкtеyнuгiшoщpзaфsыdвfаgпhрjоkлlдzяxчcсvмbиnтmь";
 const UK_LAYOUT: &str = "qйwцeуrкtеyнuгiшoщpзaфsіdвfаgпhрjоkлlдzяxчcсvмbиnтmь";
-const EL_LAYOUT: &str = "eεrρtτyυuθiιoοpπaασsσdδfφgγhηjξkκlλzζxχcψvωbβnνmμ";
+const EL_LAYOUT: &str = "eεrρtτyυuθiιoοpπaαsσdδfφgγhηjξkκlλzζxχcψvωbβnνmμ";
 
 impl Lang {
     fn layout(self) -> &'static str {
