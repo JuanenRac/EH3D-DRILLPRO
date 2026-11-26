@@ -4,9 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.4] - Safer spindle and chuck waits, emergency stop and server jobs (not tried on a machine)
+
 - **Pauses of the spindle and of the chuck last their whole time on the node (safety):** the waits of the latch sequences are no longer ended by the node saying it has put the bytes out.
 - **A stop also releases the run bit of the spindle (safety):** when the spindle was started with the output latches. Seen on the simulator only; to be confirmed on a machine.
 - **A job on the server is not started after a stop** pressed, or after the program was closed, while it was still being made.
+
 ## [0.2.3] - Asks before a signature is removed and never replaces one result with another
 
 - **The screens ask before they remove a signature:** `Ctrl+S` on a project that is signed, or whose branch `drillpro/` is, shows what would be removed and writes nothing until it is agreed (`Enter` and `Esc` leave the project as it is), in the window and in the terminal, in both looks.
