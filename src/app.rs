@@ -270,10 +270,21 @@ impl App {
             .plan_report()
             .and_then(|lines| eh3dfile::save_plan(&job.path, &job.layer, &lines));
         match saved {
-            Ok(_) => {
-                let name = eh3dfile::result_name(&job.layer);
+            Ok(said) => {
+                let name = eh3dfile::plan_name(&job.path, &job.layer);
+                let code = self.lang.code();
+                // a signature that the write removed is told first, in the language of the screen
+                let (words, other) = eh3d_project::suiteview::notices(&said);
+                let kept = ProjectJob::saved_notice(&name, code);
+                let line = words
+                    .iter()
+                    .map(|w| w.text(code))
+                    .chain(other)
+                    .chain(std::iter::once(kept))
+                    .collect::<Vec<_>>()
+                    .join(". ");
                 self.error = None;
-                self.warning = Some(ProjectJob::saved_notice(&name, self.lang.code()));
+                self.warning = Some(line);
             }
             Err(why) => self.error = Some(why),
         }

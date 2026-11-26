@@ -197,3 +197,96 @@ fn what_a_window_says_of_a_project_is_in_the_language_of_the_screen() {
     assert!(job.notice("es").contains("capa 1 de 2"));
     assert!(ProjectJob::saved_notice("a.txt", "de").contains("a.txt"));
 }
+
+/// A job whose drill layers have these paths inside `manufacturing/`.
+fn write_layers(path: &Path, files: &[(&str, &str)]) {
+    let layers: Vec<String> = files
+        .iter()
+        .map(|(rel, _)| format!(r#"{{"path":"{rel}","kind":"drill","name":"{rel}"}}"#))
+        .collect();
+    let record = format!(
+        r#"{{"format_version":"1.0.0","layers":[{}]}}"#,
+        layers.join(",")
+    );
+    let mut entries: Vec<(&str, &[u8])> = vec![("project.json", record.as_bytes())];
+    entries.extend(files.iter().map(|(rel, text)| (*rel, text.as_bytes())));
+    write_branch(path, SOURCE_BRANCH, &entries);
+}
+
+#[test]
+fn two_layers_with_the_same_stem_each_keep_their_own_plan() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = project(dir.path());
+    write_layers(
+        &path,
+        &[("layers/board.drl", HOLES), ("layers/board.xln", OTHER)],
+    );
+    let out = run(&path, &["plan"]);
+    assert_eq!(
+        out.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let mut both = [
+        "drill+board.drl.txt".to_string(),
+        "drill+board.xln.txt".to_string(),
+    ];
+    both.sort();
+    assert_eq!(suite::state(&KIT, &path).unwrap().results, both);
+    for ext in ["drl", "xln"] {
+        let name = format!("drill+board.{ext}.txt");
+        let plan = String::from_utf8(suite::read_result(&KIT, &path, &name).unwrap()).unwrap();
+        assert!(plan.contains(&format!("board.{ext}")), "{name}: {plan}");
+    }
+    // the screen that opens the project keeps the plan under the same name
+    let mut app = App::new(Lang::En, &data());
+    app.load_file(&path);
+    app.save_project();
+    let shown = text(&app);
+    assert!(shown.contains("drill+board.drl.txt"), "{shown}");
+    assert_eq!(suite::state(&KIT, &path).unwrap().results, both);
+}
+
+#[test]
+fn a_file_name_that_two_layers_share_is_not_chosen_by_guess() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = project(dir.path());
+    write_layers(
+        &path,
+        &[("layers/a/top.drl", HOLES), ("layers/b/top.drl", OTHER)],
+    );
+    let layers = eh3dfile::drill_layers(&path).unwrap();
+    let why = eh3dfile::choose(&layers, "top.drl").unwrap_err();
+    assert!(
+        why.contains("layers/a/top.drl") && why.contains("layers/b/top.drl"),
+        "{why}"
+    );
+    let second = eh3dfile::choose(&layers, "layers/b/top.drl").unwrap();
+    assert_eq!(
+        eh3dfile::result_name(&layers, second),
+        "drill+b+top.drl.txt"
+    );
+    let before = std::fs::read(&path).unwrap();
+    assert!(!run(&path, &["plan", "--layer", "top.drl"]).status.success());
+    assert_eq!(std::fs::read(&path).unwrap(), before);
+}
+
+#[test]
+fn the_screen_says_when_keeping_a_plan_removed_the_signature_of_the_project() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = project(dir.path());
+    let signer = eh3d_project::Ed25519Signer::from_seed(&[7; 32]);
+    Project::open(&path, &OpenOptions::default())
+        .unwrap()
+        .sign_project(&signer, &SaveOptions::default())
+        .unwrap();
+    let mut app = App::new(Lang::En, &data());
+    app.load_file(&path);
+    app.save_project();
+    let shown = text(&app);
+    assert!(
+        shown.contains("signature of the project was removed"),
+        "{shown}"
+    );
+}

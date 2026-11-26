@@ -18,19 +18,52 @@ pub fn drill_layers(path: &Path) -> Result<Vec<JobFile>, String> {
     suite::layers_of(path, "drill")
 }
 
-/// The drill layer of the job called `layer` (its path inside the job or its file name).
+/// The drill layer of the job called `layer` (its path inside the job or its file name). A file name that two layers share is refused: the path says which.
 pub fn choose<'a>(layers: &'a [JobFile], layer: &str) -> Result<&'a JobFile, String> {
+    let shared: Vec<&str> = layers
+        .iter()
+        .filter(|f| f.file_name() == layer)
+        .map(|f| f.rel.as_str())
+        .collect();
+    if shared.len() > 1 {
+        return Err(format!(
+            "{layer} is the name of more than one drill layer of the job ({}): give its path",
+            shared.join(", ")
+        ));
+    }
     suite::choose(layers, "drill", layer)
 }
 
-/// The name of the plan of a layer inside `result/`: `drill-<name of the layer>.txt`.
-pub fn result_name(layer: &JobFile) -> String {
-    suite::result_name("drill", layer, "txt")
+/// The name of the plan of a layer inside `result/`: `drill-<name of the layer>.txt`. When another of the `layers` would get the same name (`board.drl` and `board.xln`), the
+/// whole path of the layer is kept after `drill+`, so that the plan of one layer never takes the place of the plan of another.
+pub fn result_name(layers: &[JobFile], layer: &JobFile) -> String {
+    let short = suite::result_name("drill", layer, "txt");
+    let shared = layers.iter().any(|other| {
+        other.rel != layer.rel
+            && suite::result_name("drill", other, "txt").to_lowercase() == short.to_lowercase()
+    });
+    if !shared {
+        return short;
+    }
+    let whole = layer.rel.strip_prefix("layers/").unwrap_or(&layer.rel);
+    format!("drill+{}.txt", whole.replace('/', "+"))
+}
+
+/// [`result_name`] with the layers of the job as the project at `path` has them now.
+pub fn plan_name(path: &Path, layer: &JobFile) -> String {
+    let layers = drill_layers(path).unwrap_or_default();
+    result_name(&layers, layer)
 }
 
 /// Keeps the plan of one layer in the branch of this program. The plans of the other layers stay while the job is the one they were made from. Returns what a person should be told.
 pub fn save_plan(path: &Path, layer: &JobFile, lines: &[String]) -> Result<Vec<String>, String> {
-    suite::keep_result(&KIT, path, layer, &result_name(layer), plan_bytes(lines))
+    suite::keep_result(
+        &KIT,
+        path,
+        layer,
+        &plan_name(path, layer),
+        plan_bytes(lines),
+    )
 }
 
 /// The bytes of a plan as it is kept: one line of the report on each line.
