@@ -25,6 +25,8 @@ pub trait TextApp {
     fn scroll(&mut self, _lines: isize) {}
     fn lang(&self) -> Lang;
     fn wants_quit(&self) -> bool;
+    /// Keeps the work in the `.eh3d` project it was opened from (Ctrl+S). Nothing happens without one.
+    fn save_project(&mut self) {}
     /// The field being edited, when there is one.
     fn field_state(&self) -> Option<FieldState> {
         None

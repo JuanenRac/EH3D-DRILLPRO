@@ -143,6 +143,11 @@ impl<A: TextApp> Gui<A> {
                         self.app.field_select_all();
                         continue;
                     }
+                    // Ctrl+S keeps the work in the project it was opened from
+                    if modifiers.command && key == Key::S {
+                        self.app.save_project();
+                        continue;
+                    }
                     if key == Key::F11 {
                         if let Some(on) = self.app.fullscreen() {
                             self.app.set_fullscreen(!on);

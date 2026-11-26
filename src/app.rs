@@ -3,6 +3,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::config::{self, Config};
+use crate::eh3dfile::{self, ProjectJob};
 use crate::i18n::{str_width, Lang};
 use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
@@ -16,6 +17,7 @@ use crate::textapp::TextApp;
 use crate::texts::{tr, Text};
 use crate::tools::{self, Tool};
 use eh3d_bungard_formats::limits::ReaderLimits;
+use eh3d_project::manufacturing::JobFile;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Input {
@@ -103,6 +105,8 @@ impl Run {
 }
 
 pub struct App {
+    /// The layer of a project that is loaded, when the job came from an `.eh3d` file.
+    project: Option<ProjectJob>,
     pub lang: Lang,
     /// The machine moved by hand while the Offset Teach window is open (a real connection only).
     pub(crate) teach: Option<crate::runner::TeachSession>,
@@ -178,6 +182,7 @@ impl App {
             });
         let board_mm = settings.as_ref().map_or(1.0, |m| m.board_mm);
         let mut app = App {
+            project: None,
             lang,
             mode: Mode::Main,
             dir: data_dir.to_path_buf(),
@@ -209,19 +214,78 @@ impl App {
         app
     }
 
+    /// Loads a drill file, or the first drill layer of the job of an `.eh3d` project. What was loaded stays when the new one cannot be read.
     pub fn load_file(&mut self, path: &Path) {
+        if eh3d_project::manufacturing::is_project(path) {
+            self.load_project(path);
+            return;
+        }
         self.warning = None;
-        let text: String = match std::fs::read(path) {
-            Ok(b) => b.iter().map(|&c| c as char).collect(),
-            Err(e) => {
-                self.error = Some(format!("{}: {e}", tr(self.lang, Text::ErrRead)));
-                return;
+        match std::fs::read(path) {
+            Ok(bytes) => {
+                // a drill file of its own takes the place of the layer of a project
+                if self.load_bytes(path, &bytes) {
+                    self.project = None;
+                }
             }
+            Err(e) => self.error = Some(format!("{}: {e}", tr(self.lang, Text::ErrRead))),
+        }
+    }
+
+    fn load_project(&mut self, path: &Path) {
+        self.warning = None;
+        match ProjectJob::open(&eh3dfile::KIT, path, "drill") {
+            Ok(job) => {
+                // the plan names the layer, and the dialogs stay in the folder of the project
+                let shown = path.with_file_name(job.layer.file_name());
+                if self.load_bytes(&shown, &job.layer.bytes) {
+                    self.warning = crate::summary::join_warnings(
+                        Some(job.notice(self.lang.code())),
+                        self.warning.take(),
+                    );
+                    self.project = Some(job);
+                }
+            }
+            Err(why) => self.error = Some(why),
+        }
+    }
+
+    /// Loads one drill layer of the job of a project, for a plan; the reason when it is not taken.
+    pub fn load_layer(&mut self, project: &Path, layer: &JobFile) -> Result<(), String> {
+        self.warning = None;
+        if self.load_bytes(&project.with_file_name(layer.file_name()), &layer.bytes) {
+            Ok(())
+        } else {
+            let why = self.error.clone().unwrap_or_default();
+            Err(format!("{}: {why}", layer.rel))
+        }
+    }
+
+    /// Keeps the plan of the layer of the project that is loaded in the branch `drillpro/` of the project, and says on the screen how it went. Nothing happens without a project.
+    pub fn keep_plan(&mut self) {
+        let Some(job) = self.project.clone() else {
+            return;
         };
+        let saved = self
+            .plan_report()
+            .and_then(|lines| eh3dfile::save_plan(&job.path, &job.layer, &lines));
+        match saved {
+            Ok(_) => {
+                let name = eh3dfile::result_name(&job.layer);
+                self.error = None;
+                self.warning = Some(ProjectJob::saved_notice(&name, self.lang.code()));
+            }
+            Err(why) => self.error = Some(why),
+        }
+    }
+
+    /// Reads the drill file in `bytes`, named by `path`, and says whether it was taken.
+    fn load_bytes(&mut self, path: &Path, bytes: &[u8]) -> bool {
+        let text: String = bytes.iter().map(|&c| c as char).collect();
         // a file that is far too big, not text or with absurd numbers is turned down with its code and line before the reader sees it
         if let Err(problem) = crate::input_guard::check(crate::input_guard::InputKind::Ncd, &text) {
             self.error = Some(format!("{}: {problem}", tr(self.lang, Text::ErrRead)));
-            return;
+            return false;
         }
         // the size limits of the readers (kept in reader_limits.cfg of the shared crate): a file past a hard limit is refused, one past a warning limit is read and said
         match ncd::parse_limited(&text, &ReaderLimits::default()) {
@@ -278,6 +342,7 @@ impl App {
                     path: path.to_path_buf(),
                     file,
                 });
+                return true;
             }
             Err(e) => {
                 self.error = Some(format!(
@@ -287,6 +352,7 @@ impl App {
                 ))
             }
         }
+        false
     }
 
     pub(crate) fn refresh_entries(&mut self) {
@@ -300,7 +366,8 @@ impl App {
                 .filter_map(|e| {
                     let name = e.file_name().to_string_lossy().into_owned();
                     let dir = e.path().is_dir();
-                    let ok = dir || name.to_ascii_lowercase().ends_with(".ncd");
+                    let lower = name.to_ascii_lowercase();
+                    let ok = dir || lower.ends_with(".ncd") || lower.ends_with(".eh3d");
                     ok.then_some(Entry { name, dir })
                 })
                 .collect();
@@ -968,6 +1035,9 @@ impl App {
             (None, None) => tr(self.lang, Text::NoFile).to_string(),
         };
         s.text(2, 5, &msg, WHITE, BLUE);
+        if let (Some(_), Some(said), None) = (&self.project, &self.warning, &self.error) {
+            s.text(2, 6, said, YELLOW, BLUE);
+        }
         if self.connection.is_real() {
             // A connection other than demo: the job moves the real machine. Say so, in red, with where it goes.
             let line = tr(self.lang, Text::RealMachine).replace("{}", &self.connection.describe());
@@ -1420,6 +1490,12 @@ impl App {
 }
 
 impl TextApp for App {
+    fn save_project(&mut self) {
+        if matches!(self.mode, Mode::Main | Mode::Vectors) {
+            self.keep_plan();
+        }
+    }
+
     fn handle(&mut self, input: Input) {
         App::handle(self, input)
     }

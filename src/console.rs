@@ -146,7 +146,10 @@ fn event_loop<A: TextApp>(app: &mut A, settings: &str, out: &mut io::Stdout) -> 
                     if k.code == KeyCode::Char('c') && k.modifiers.contains(KeyModifiers::CONTROL) {
                         return Ok(());
                     }
-                    if let Some(i) = map_key(k) {
+                    if k.code == KeyCode::Char('s') && k.modifiers.contains(KeyModifiers::CONTROL)
+                    {
+                        app.save_project();
+                    } else if let Some(i) = map_key(k) {
                         app.handle(i);
                     }
                 }
