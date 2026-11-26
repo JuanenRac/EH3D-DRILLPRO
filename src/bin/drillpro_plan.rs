@@ -107,7 +107,7 @@ fn project(
             let layers = eh3dfile::drill_layers(file)?;
             let chosen = match layer {
                 Some(name) => vec![eh3dfile::choose(&layers, name)?.clone()],
-                None => layers,
+                None => layers.clone(),
             };
             // every plan is made before one is kept, so a refusal leaves the project as it was
             let mut made = Vec::new();
@@ -131,7 +131,7 @@ fn project(
                 }
                 println!(
                     "{} kept in the branch {} of {}",
-                    eh3dfile::result_name(&layer),
+                    eh3dfile::result_name(&layers, &layer),
                     eh3dfile::KIT.branch,
                     file.display()
                 );
