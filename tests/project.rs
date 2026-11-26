@@ -4,7 +4,7 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use eh3d_drillpro::app::App;
+use eh3d_drillpro::app::{App, Input};
 use eh3d_drillpro::classic::ClassicApp;
 use eh3d_drillpro::eh3dfile::{self, ProjectJob, KIT};
 use eh3d_drillpro::i18n::Lang;
@@ -283,10 +283,72 @@ fn the_screen_says_when_keeping_a_plan_removed_the_signature_of_the_project() {
         .unwrap();
     let mut app = App::new(Lang::En, &data());
     app.load_file(&path);
+    // the screen asks first, and nothing is written until the person agrees
+    let before = std::fs::read(&path).unwrap();
     app.save_project();
+    assert!(app.is_asking());
+    let shown = text(&app);
+    assert!(
+        shown.contains("writing removes the signature") && shown.contains("Write to this project?"),
+        "{shown}"
+    );
+    assert_eq!(std::fs::read(&path).unwrap(), before);
+    // Enter, Esc and any other letter leave the project as it is
+    for no in [Input::Enter, Input::Esc, Input::Char('n')] {
+        app.save_project();
+        app.handle(no);
+        assert!(!app.is_asking());
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+    }
+    // opening again forgets the question
+    app.save_project();
+    app.load_file(&path);
+    assert!(!app.is_asking());
+    app.handle(Input::Char('y'));
+    assert_eq!(std::fs::read(&path).unwrap(), before);
+    // agreeing writes and tells what was removed
+    app.save_project();
+    app.handle(Input::Char('y'));
     let shown = text(&app);
     assert!(
         shown.contains("signature of the project was removed"),
         "{shown}"
     );
+    assert_ne!(std::fs::read(&path).unwrap(), before);
+    // with no signature left there is nothing to ask
+    app.save_project();
+    assert!(!app.is_asking());
+}
+
+#[test]
+fn the_classic_screen_asks_before_removing_a_signature() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = project(dir.path());
+    let signer = eh3d_project::Ed25519Signer::from_seed(&[7; 32]);
+    Project::open(&path, &OpenOptions::default())
+        .unwrap()
+        .sign_project(&signer, &SaveOptions::default())
+        .unwrap();
+    let mut classic = ClassicApp::new(Lang::En, &data());
+    classic.load_file(&path);
+    let before = std::fs::read(&path).unwrap();
+    classic.save_project();
+    let shown = text(&classic);
+    assert!(
+        shown.contains("writing removes the signature") && shown.contains("Write to this project?"),
+        "{shown}"
+    );
+    // `No` has the focus: Enter and Esc leave the project as it is
+    for no in [Input::Enter, Input::Esc] {
+        classic.save_project();
+        classic.handle(no);
+        assert!(!text(&classic).contains("Write to this project?"));
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+    }
+    // choosing `Yes` writes
+    classic.save_project();
+    classic.handle(Input::Left);
+    classic.handle(Input::Enter);
+    assert_ne!(std::fs::read(&path).unwrap(), before);
+    assert!(suite::state(&KIT, &path).unwrap().results == ["drill-plated.txt"]);
 }

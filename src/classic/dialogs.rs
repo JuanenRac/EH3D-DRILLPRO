@@ -19,6 +19,11 @@ pub(crate) enum Dialog {
     SaveAsk {
         yes: bool,
     },
+    /// A write into the project that would remove a signature, with what it would take away.
+    ProjectAsk {
+        yes: bool,
+        lines: Vec<String>,
+    },
     /// "Delete old offset?" before the Offset Teach window.
     OffsetAsk {
         yes: bool,
@@ -443,6 +448,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(p) => self.panel_key(p, input),
             Dialog::Quit { yes } => self.yes_no_key(yes, input, false),
             Dialog::SaveAsk { yes } => self.yes_no_key(yes, input, true),
+            Dialog::ProjectAsk { yes, .. } => self.project_ask_key(yes, input),
             Dialog::OffsetAsk { yes } => self.offset_ask_key(yes, input),
             Dialog::Teach(t) => self.teach_key(t, input),
             Dialog::TeachWrite { yes, teach } => self.teach_write_key(yes, teach, input),
@@ -480,6 +486,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(p) => self.panel_click(p, act),
             Dialog::Quit { yes } => self.yes_no_click(yes, act, false),
             Dialog::SaveAsk { yes } => self.yes_no_click(yes, act, true),
+            Dialog::ProjectAsk { .. } => self.project_ask_click(act),
             Dialog::OffsetAsk { .. } => self.offset_ask_click(act),
             Dialog::Teach(t) => self.teach_click(t, act),
             Dialog::TeachWrite { teach, .. } => self.teach_write_click(teach, act),
@@ -505,6 +512,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::Panel(d) => self.render_panel(s, d),
             Dialog::Quit { yes } => self.render_yes_no(s, *yes, self.t(CText::QAsk), true),
             Dialog::SaveAsk { yes } => self.render_yes_no(s, *yes, self.t(CText::BackupAsk), false),
+            Dialog::ProjectAsk { yes, lines } => self.render_project_ask(s, *yes, lines),
             Dialog::OffsetAsk { yes } => self.render_sign(
                 s,
                 *yes,
@@ -649,6 +657,62 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::None => Flow::Close,
             other => Flow::to(other),
         }
+    }
+
+    fn project_ask_key(&mut self, yes: &mut bool, input: Input) -> Flow {
+        let hot_yes = self.hot(CText::BYes);
+        let hot_no = self.hot(CText::BNo);
+        let write = match input {
+            Input::Enter => *yes,
+            Input::Esc => false,
+            Input::Left | Input::Right | Input::Up | Input::Down | Input::Tab | Input::BackTab => {
+                *yes = !*yes;
+                return Flow::Stay;
+            }
+            Input::Char(c) | Input::Alt(c) => {
+                let c = self.lang().hot_key(c);
+                if Some(c) == hot_yes {
+                    true
+                } else if Some(c) == hot_no {
+                    false
+                } else {
+                    return Flow::Stay;
+                }
+            }
+            _ => return Flow::Stay,
+        };
+        if write {
+            self.engine.save_to_project();
+        }
+        Flow::Close
+    }
+
+    fn project_ask_click(&mut self, act: Act) -> Flow {
+        match act {
+            Act::Dlg(Dlg::Yes) => {
+                self.engine.save_to_project();
+                Flow::Close
+            }
+            Act::Dlg(Dlg::No) => Flow::Close,
+            _ => Flow::Stay,
+        }
+    }
+
+    fn render_project_ask(&self, s: &mut Screen, yes: bool, lines: &[String]) {
+        let title = eh3d_project::suitetext::S::ConfirmTitle.tr(self.lang().code());
+        let w = (lines.iter().map(|l| str_width(l)).max().unwrap_or(0) + 4)
+            .max(str_width(title) + 6)
+            .clamp(30, COLS - 2);
+        let (x, y, h) = ((COLS - w) / 2, 7, lines.len() + 6);
+        window(s, x, y, w, h, title, true);
+        for (i, line) in lines.iter().enumerate() {
+            s.text_centered(y + 2 + i, x, w, line, INK, GREY);
+        }
+        let (row, left, right) = (y + h - 3, COLS / 2 - 12, COLS / 2 + 1);
+        button(s, left, row, 10, self.t(CText::BYes), yes, true);
+        button(s, right, row, 10, self.t(CText::BNo), !yes, true);
+        self.hit(left, row, 11, 2, Act::Dlg(Dlg::Yes));
+        self.hit(right, row, 11, 2, Act::Dlg(Dlg::No));
     }
 
     fn render_yes_no(&self, s: &mut Screen, yes: bool, ask: &str, stop_sign: bool) {
