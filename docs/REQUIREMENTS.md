@@ -2,7 +2,7 @@
 
 This register is the single source of the state of each capability: `STATUS.md` and the README files cite it and never state a state that it does not. A state is one of `planned`, `prototype`, `implemented` and `validated`. `validated` means that a person has run the capability on a real machine and the evidence of the manifest says `bench` or `field`; nothing here is validated, because a whole drilling job has not run on a real machine, and the manifest of the repository records the evidence as `simulator`.
 
-The register has 43 requirements: 29 implemented, 8 prototype, 6 planned and 0 validated. By progress: 29 done, 8 partial, 0 pending and 6 blocked. High coverage is not proof of correctness, so each row says how it is checked: the test that names it, and what it shows.
+The register has 47 requirements: 32 implemented, 9 prototype, 6 planned and 0 validated. By progress: 32 done, 9 partial, 0 pending and 6 blocked. High coverage is not proof of correctness, so each row says how it is checked: the test that names it, and what it shows.
 
 ## How to read the register
 
@@ -82,3 +82,12 @@ The check is `tests/reqs.rs`: it reads this table, finds each test and fails whe
 | DRPR-041 | The readers are tried with files from real boards. | planned | blocked | none | `planned:real_boards::files_from_real_boards_are_read` | Needs files from a person. |
 | DRPR-042 | The hypotheses of `docs/PROTOCOL.md` are confirmed on the machine. | planned | blocked | none | `planned:protocol_hypotheses::each_hypothesis_of_the_protocol_is_confirmed` | Needs a machine and a recording. |
 | DRPR-043 | The server drives a real machine. | planned | blocked | none | `planned:real_server::the_server_drives_a_real_machine` | Needs the server and a machine. |
+
+## The project of the suite
+
+| ID | Requirement | State | Progress | Evidence | Test | Limits |
+|---|---|---|---|---|---|---|
+| DRPR-044 | The drill layers are read from the job of a `.eh3d` project and each plan is kept in the branch `drillpro/` only. | implemented | done | host-test | `project::plan_keeps_a_plan_for_each_drill_layer_in_its_own_branch_only` | Invented files; no job of a real board. The plan is a text, not a file for the machine. |
+| DRPR-045 | A job that changes makes the plans out of date, and a plan made again keeps the others only while the job is the same. | implemented | done | host-test | `project::a_job_that_changes_makes_the_plans_out_of_date_until_they_are_made_again` | - |
+| DRPR-046 | A refused plan leaves the project as it was. | implemented | done | host-test | `project::a_refused_plan_leaves_the_project_as_it_was` | - |
+| DRPR-047 | The screens open the first drill layer of a project, say when its plans are out of date and keep its plan with `Ctrl+S`. | prototype | partial | host-test | `project::the_screens_open_the_first_drill_layer_and_keep_its_plan` | Tested without a screen; only the first drill layer of the job is opened; no person has tried it. |

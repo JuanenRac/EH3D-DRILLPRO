@@ -5,6 +5,7 @@ pub mod classic;
 pub mod cli;
 pub mod crash;
 pub mod dryrun;
+pub mod eh3dfile;
 pub use eh3d_bungard_formats::config;
 pub mod i18n;
 pub mod input_guard;

@@ -75,6 +75,19 @@
           }
         },
         {
+          "name": "eh3dfile.rs",
+          "desc": {
+            "en": "the .eh3d project: job in, plans out",
+            "es": "proyecto .eh3d: entra el trabajo, salen planes",
+            "de": ".eh3d-Projekt: Auftrag hinein, Pläne heraus",
+            "fr": "projet .eh3d : le travail entre, les plans sortent",
+            "it": "progetto .eh3d: entra il lavoro, escono i piani",
+            "ja": ".eh3d プロジェクト：ジョブから計画へ",
+            "zh": ".eh3d 项目：读入作业，存入计划",
+            "pt": "projeto .eh3d: entra o trabalho, saem planos"
+          }
+        },
+        {
           "name": "i18n.rs  texts.rs",
           "tree_name": "i18n.rs texts.rs",
           "desc": {

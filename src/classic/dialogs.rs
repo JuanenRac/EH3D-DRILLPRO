@@ -1113,7 +1113,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Purpose::Job => {
                 let mut v = vec![self.engine.pattern()];
                 v.extend(self.engine.extra_patterns());
-                v.extend(["*.ZIP", "*.*"]);
+                v.extend(["*.ZIP", "*.*", "*.EH3D"]);
                 v
             }
             p => vec![self.purpose_pattern(p), "*.*"],

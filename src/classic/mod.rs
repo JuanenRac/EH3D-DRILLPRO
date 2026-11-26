@@ -789,6 +789,13 @@ pub(crate) fn split_two(text: &str, width: usize) -> (String, String) {
 }
 
 impl<E: ClassicEngine> TextApp for ClassicApp<E> {
+    fn save_project(&mut self) {
+        // only from the main screen: not while a dialog or a job is open
+        if matches!(self.dialog, Dialog::None) {
+            self.engine.save_to_project();
+        }
+    }
+
     fn handle(&mut self, input: Input) {
         self.handle_input(input);
     }

@@ -106,6 +106,8 @@ pub trait ClassicEngine {
     /// The board thickness the job is planned with.
     fn set_board(&mut self, mm: f64);
     fn load(&mut self, path: &Path);
+    /// Keeps the work in the `.eh3d` project the job was loaded from. Nothing happens without one.
+    fn save_to_project(&mut self) {}
     fn file_loaded(&self) -> bool;
     /// Name of the loaded file in capitals, as the original shows it.
     fn file_name(&self) -> Option<String>;
@@ -363,6 +365,10 @@ impl ClassicEngine for App {
 
     fn load(&mut self, path: &Path) {
         self.load_file(path);
+    }
+
+    fn save_to_project(&mut self) {
+        self.keep_plan();
     }
 
     fn file_loaded(&self) -> bool {

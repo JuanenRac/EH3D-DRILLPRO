@@ -29,6 +29,8 @@ eh3d-levelling = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/levelling"
 eh3d-summary = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/summary" }
 eh3d-view = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/view" }
 eh3d-serverclient = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/serverclient" }
+# the `.eh3d` project of the suite, one file with a branch for each program: this program writes only `drillpro/`
+eh3d-project = { version = ">=0.0.1", path = "../EH3D-COMMON/crates/project" }
 eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts", "clipboard"], optional = true }
 
 png = { version = "0.17", optional = true }
@@ -61,6 +63,8 @@ required-features = ["console"]
 [dev-dependencies]
 zip = { version = "9", default-features = false, features = ["deflate-flate2"] }
 flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+# the tests make their own project files
+tempfile = "3"
 
 [profile.dev]
 # a lighter debug build: the file and line of a panic stay, the full debug symbols (the bulk of the target folder) do not
