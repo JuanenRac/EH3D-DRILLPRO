@@ -171,11 +171,17 @@ class Workflow:
             if rest:
                 found.update(x.strip(" \"'") for x in rest.strip("[]").split(",") if x.strip())
                 return found
+            event_indent = None
             for _, sub in lines[pos + 1:]:
                 if sub and not sub[0].isspace():
                     break
+                if not sub.strip():
+                    continue
+                if event_indent is None:
+                    event_indent = indent_of(sub)
                 mm = re.match(r"^\s{1,4}-?\s*([\w-]+)\s*:?\s*$", sub) or re.match(r"^\s{1,4}([\w-]+)\s*:", sub)
-                if mm and indent_of(sub) <= 4:
+                # only the keys at the indent of the first entry are events; deeper ones (branches, types, paths) are filters
+                if mm and indent_of(sub) <= 4 and indent_of(sub) == event_indent:
                     found.add(mm.group(1))
             return found
         return found
