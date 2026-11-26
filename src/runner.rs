@@ -770,12 +770,17 @@ mod server_stop_tests {
             kind: crate::protocol::connection::Kind::Server,
             server_address: stand_in(release.clone(), seen.clone()),
             server_machine: "m".into(),
+            server_token: "t".into(),
             ..Default::default()
         };
         let run = RealRun::start_on_server(config, serde_json::json!({"kind": "drill"}), vec![], 1);
         let limit = std::time::Instant::now() + Duration::from_secs(20);
         while seen.lock().unwrap().is_empty() {
-            assert!(std::time::Instant::now() < limit, "the job was not asked");
+            assert!(
+                std::time::Instant::now() < limit,
+                "not asked: {:?}",
+                run.state()
+            );
             thread::sleep(Duration::from_millis(5));
         }
         run.cancel();
