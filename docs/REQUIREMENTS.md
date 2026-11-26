@@ -2,7 +2,7 @@
 
 This register is the single source of the state of each capability: `STATUS.md` and the README files cite it and never state a state that it does not. A state is one of `planned`, `prototype`, `implemented` and `validated`. `validated` means that a person has run the capability on a real machine and the evidence of the manifest says `bench` or `field`; nothing here is validated, because a whole drilling job has not run on a real machine, and the manifest of the repository records the evidence as `simulator`.
 
-The register has 47 requirements: 32 implemented, 9 prototype, 6 planned and 0 validated. By progress: 32 done, 9 partial, 0 pending and 6 blocked. High coverage is not proof of correctness, so each row says how it is checked: the test that names it, and what it shows.
+The register has 48 requirements: 33 implemented, 9 prototype, 6 planned and 0 validated. By progress: 33 done, 9 partial, 0 pending and 6 blocked. High coverage is not proof of correctness, so each row says how it is checked: the test that names it, and what it shows.
 
 ## How to read the register
 
@@ -91,3 +91,4 @@ The check is `tests/reqs.rs`: it reads this table, finds each test and fails whe
 | DRPR-045 | A job that changes makes the plans out of date, and a plan made again keeps the others only while the job is the same. | implemented | done | host-test | `project::a_job_that_changes_makes_the_plans_out_of_date_until_they_are_made_again` | - |
 | DRPR-046 | A refused plan leaves the project as it was. | implemented | done | host-test | `project::a_refused_plan_leaves_the_project_as_it_was` | - |
 | DRPR-047 | The screens open the first drill layer of a project, say when its plans are out of date and keep its plan with `Ctrl+S`. | prototype | partial | host-test | `project::the_screens_open_the_first_drill_layer_and_keep_its_plan` | Tested without a screen; only the first drill layer of the job is opened; no person has tried it. |
+| DRPR-048 | The screens ask before a write that would remove a signature of the project and write nothing unless it is agreed. | implemented | done | host-test | `project::the_classic_screen_asks_before_removing_a_signature` | The screens are tested without a window; no person has tried them. |

@@ -6,7 +6,7 @@ EH3D-DRILLPRO is a working program on a computer: the screens of the original in
 
 ## Capabilities
 
-The official state of each capability is in `REQUIREMENTS.md`. The register has 47 requirements: 32 implemented, 9 prototype, 6 planned and 0 validated. By progress: 32 done, 9 partial, 0 pending and 6 blocked. This page never states a state that `REQUIREMENTS.md` does not.
+The official state of each capability is in `REQUIREMENTS.md`. The register has 48 requirements: 33 implemented, 9 prototype, 6 planned and 0 validated. By progress: 33 done, 9 partial, 0 pending and 6 blocked. This page never states a state that `REQUIREMENTS.md` does not.
 
 ## Open questions
 

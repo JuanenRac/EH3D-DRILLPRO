@@ -792,7 +792,13 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
     fn save_project(&mut self) {
         // only from the main screen: not while a dialog or a job is open
         if matches!(self.dialog, Dialog::None) {
-            self.engine.save_to_project();
+            let lines = self.engine.project_question();
+            if lines.is_empty() {
+                self.engine.save_to_project();
+            } else {
+                // `No` is the button in focus: Enter alone never removes a signature
+                self.dialog = Dialog::ProjectAsk { yes: false, lines };
+            }
         }
     }
 

@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use eh3d_project::appbranch::BranchKit;
 use eh3d_project::manufacturing::{self as suite, JobFile};
 use eh3d_project::suitetext::{fill, S};
+use eh3d_project::suiteview;
 
 /// The branch of this program.
 pub const KIT: BranchKit<'static> =
@@ -64,6 +65,16 @@ pub fn save_plan(path: &Path, layer: &JobFile, lines: &[String]) -> Result<Vec<S
         &plan_name(path, layer),
         plan_bytes(lines),
     )
+}
+
+/// What keeping a plan in the project at `path` would take away (its signature, or the one of the branch of this program), in the language of a code such as `es`: the person has to
+/// agree to it before anything is written. Empty when there is nothing to ask.
+pub fn signature_warnings(path: &Path, code: &str) -> Result<Vec<String>, String> {
+    let own = KIT.branch;
+    let seen = suiteview::view(path, own)?.own_hash;
+    // the project as it is now, so that only what is said about its signatures is left to say
+    let said = suiteview::warnings(path, Some(path), seen.as_deref(), own)?;
+    Ok(said.iter().map(|w| w.text(code)).collect())
 }
 
 /// The bytes of a plan as it is kept: one line of the report on each line.

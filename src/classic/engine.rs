@@ -108,6 +108,11 @@ pub trait ClassicEngine {
     fn load(&mut self, path: &Path);
     /// Keeps the work in the `.eh3d` project the job was loaded from. Nothing happens without one.
     fn save_to_project(&mut self) {}
+    /// What keeping the work would take away from the project (a signature): the screen asks it first and calls [`ClassicEngine::save_to_project`] only when the person agrees.
+    /// Empty when there is nothing to ask.
+    fn project_question(&mut self) -> Vec<String> {
+        Vec::new()
+    }
     fn file_loaded(&self) -> bool;
     /// Name of the loaded file in capitals, as the original shows it.
     fn file_name(&self) -> Option<String>;
@@ -369,6 +374,10 @@ impl ClassicEngine for App {
 
     fn save_to_project(&mut self) {
         self.keep_plan();
+    }
+
+    fn project_question(&mut self) -> Vec<String> {
+        self.signature_question()
     }
 
     fn file_loaded(&self) -> bool {
