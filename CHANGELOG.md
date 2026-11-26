@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.3] - Asks before a signature is removed and never replaces one result with another
+
 - **The screens ask before they remove a signature:** `Ctrl+S` on a project that is signed, or whose branch `drillpro/` is, shows what would be removed and writes nothing until it is agreed (`Enter` and `Esc` leave the project as it is), in the window and in the terminal, in both looks.
 - 1 new test.
 - **The plan of one layer no longer takes the place of another:** two drill layers with the same name but for the extension (`board.drl` and `board.xln`) were both kept as `drill-board.txt`, so the second silently replaced the first. When two layers would share a name, each is now kept with its whole name (`drill+board.drl.txt`). A file name that two layers share is no longer chosen by guess with `--layer`: the path says which.
