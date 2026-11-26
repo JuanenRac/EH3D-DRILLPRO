@@ -304,3 +304,28 @@ fn a_queued_spindle_command_carries_the_flag_and_the_status_says_when_the_node_i
     assert_eq!(t.spindle(), (12_000, true));
     assert!(!t.draining());
 }
+
+#[test]
+fn a_pause_the_machine_needs_is_not_cut_short_when_the_node_has_put_the_byte_out() {
+    use eh3d_drillpro_protocol::latches::{run_ops, Op};
+    let node = fake_node("t", 4096);
+    let mut t = NodeTransport::connect(node.addr, "t").unwrap();
+    t.arm().unwrap();
+    let start = Instant::now();
+    // the spindle's run bit, and the time it takes to reach its speed
+    run_ops(
+        &mut t,
+        &[Op::Send(0x90), Op::WaitUs(600_000), Op::Send(0x9F)],
+    )
+    .unwrap();
+    assert!(
+        start.elapsed() >= Duration::from_millis(600),
+        "waited {:?}",
+        start.elapsed()
+    );
+    let limit = Instant::now() + Duration::from_secs(5);
+    while node.received.lock().unwrap().len() < 2 && Instant::now() < limit {
+        thread::sleep(Duration::from_millis(10));
+    }
+    assert_eq!(node.received.lock().unwrap().as_slice(), [0x90, 0x9F]);
+}

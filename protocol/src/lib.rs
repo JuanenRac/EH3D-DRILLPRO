@@ -122,6 +122,11 @@ pub trait Transport {
     fn write_byte(&mut self, byte: u8) -> io::Result<()>;
     fn status(&mut self) -> io::Result<ModemStatus>;
     fn sleep_us(&mut self, us: u64);
+    /// A pause the machine itself needs (the spindle reaching its speed or braking, the chuck settling). Unlike [`Transport::sleep_us`], which a link may end
+    /// as soon as it has put its bytes out, it lasts the whole time.
+    fn wait_us(&mut self, us: u64) {
+        self.sleep_us(us)
+    }
     /// Writes several bytes back to back. A transport with a real UART behind it should send them in
     /// one call so that the UART, not the PC clock, spaces them.
     fn write_bytes(&mut self, bytes: &[u8]) -> io::Result<()> {
@@ -172,6 +177,9 @@ impl<T: Transport + ?Sized> Transport for Box<T> {
     }
     fn sleep_us(&mut self, us: u64) {
         (**self).sleep_us(us)
+    }
+    fn wait_us(&mut self, us: u64) {
+        (**self).wait_us(us)
     }
     fn write_bytes(&mut self, bytes: &[u8]) -> io::Result<()> {
         (**self).write_bytes(bytes)

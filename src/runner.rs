@@ -384,6 +384,17 @@ fn follow_on_server(
         n.chain_dropped = chain_dropped;
         n.warnings = crate::work_contract::chain_answer(&job).warnings;
     }
+    // a stop pressed, or the program closed, while the job was being made: the machine is never started
+    let stop_asked = shared.cancel.load(Ordering::SeqCst);
+    if stop_asked || shared.stop_following.load(Ordering::SeqCst) {
+        let _ = client.call(
+            "POST",
+            &format!("/api/v1/jobs/{}/cancel", path_segment(&id)),
+            None,
+        );
+        shared.set(RunState::Cancelled);
+        return Ok(());
+    }
     let (status, answer) = client.call(
         "POST",
         &format!("/api/v1/jobs/{}/start", path_segment(&id)),
@@ -693,5 +704,93 @@ mod server_notes_tests {
         assert_eq!(n.head_line().as_deref(), Some("18000 rpm  35.2 \u{b0}C"));
         n.head_rpm = None;
         assert_eq!(n.head_line().as_deref(), Some("35.2 \u{b0}C"));
+    }
+}
+
+#[cfg(test)]
+mod server_stop_tests {
+    use super::*;
+    use std::io::{Read, Write};
+
+    /// A stand-in for the server that answers every request, holds the answer to the new job until `release` is set and keeps the request lines.
+    fn stand_in(release: Arc<AtomicBool>, seen: Arc<Mutex<Vec<String>>>) -> String {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap().to_string();
+        thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut s) = stream else { return };
+                let mut request = Vec::new();
+                let mut buf = [0u8; 4096];
+                loop {
+                    let n = s.read(&mut buf).unwrap_or(0);
+                    request.extend_from_slice(&buf[..n]);
+                    let text = String::from_utf8_lossy(&request);
+                    let whole = text.split_once("\r\n\r\n").is_some_and(|(head, body)| {
+                        let length = head
+                            .lines()
+                            .filter_map(|l| l.split_once(':'))
+                            .find(|(k, _)| k.eq_ignore_ascii_case("content-length"))
+                            .and_then(|(_, v)| v.trim().parse::<usize>().ok())
+                            .unwrap_or(0);
+                        body.len() >= length
+                    });
+                    if n == 0 || whole {
+                        break;
+                    }
+                }
+                let text = String::from_utf8_lossy(&request);
+                let line = text
+                    .lines()
+                    .next()
+                    .unwrap_or("")
+                    .rsplit_once(' ')
+                    .map_or("", |(l, _)| l)
+                    .to_string();
+                let new_job = line.ends_with("/jobs");
+                seen.lock().unwrap().push(line);
+                while new_job && !release.load(Ordering::SeqCst) {
+                    thread::sleep(Duration::from_millis(5));
+                }
+                let body = r#"{"id":"j1","view":{}}"#;
+                let _ = write!(
+                    s,
+                    "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\nconnection: close\r\ncontent-length: {}\r\n\r\n{body}",
+                    body.len()
+                );
+            }
+        });
+        address
+    }
+
+    #[test]
+    fn a_stop_pressed_while_the_job_is_being_made_never_starts_the_machine() {
+        let release = Arc::new(AtomicBool::new(false));
+        let seen = Arc::new(Mutex::new(Vec::new()));
+        let config = ConnectionConfig {
+            kind: crate::protocol::connection::Kind::Server,
+            server_address: stand_in(release.clone(), seen.clone()),
+            server_machine: "m".into(),
+            ..Default::default()
+        };
+        let run = RealRun::start_on_server(config, serde_json::json!({"kind": "drill"}), vec![], 1);
+        let limit = std::time::Instant::now() + Duration::from_secs(20);
+        while seen.lock().unwrap().is_empty() {
+            assert!(std::time::Instant::now() < limit, "the job was not asked");
+            thread::sleep(Duration::from_millis(5));
+        }
+        run.cancel();
+        release.store(true, Ordering::SeqCst);
+        while !run.finished() {
+            assert!(std::time::Instant::now() < limit, "{:?}", run.state());
+            thread::sleep(Duration::from_millis(5));
+        }
+        assert_eq!(run.state(), RunState::Cancelled);
+        assert_eq!(
+            seen.lock().unwrap().as_slice(),
+            [
+                "POST /api/v1/machines/m/jobs",
+                "POST /api/v1/jobs/j1/cancel"
+            ]
+        );
     }
 }

@@ -158,4 +158,8 @@ impl<T: Transport> Transport for FaultyLink<T> {
     fn sleep_us(&mut self, us: u64) {
         self.inner.sleep_us(us);
     }
+
+    fn wait_us(&mut self, us: u64) {
+        self.inner.wait_us(us);
+    }
 }

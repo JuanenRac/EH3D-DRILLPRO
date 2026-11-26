@@ -166,7 +166,7 @@ pub fn run_ops<T: Transport>(t: &mut T, ops: &[Op]) -> io::Result<()> {
     for op in ops {
         match *op {
             Op::Send(b) => t.write_byte(b)?,
-            Op::WaitUs(us) => t.sleep_us(us),
+            Op::WaitUs(us) => t.wait_us(us),
         }
     }
     Ok(())
