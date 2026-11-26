@@ -3,6 +3,9 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+
+## [0.2.2] - Plans drilling from the shared project of the suite
+
 - **The project of the suite (`.eh3d`):** `drillpro-plan project info FILE.eh3d` shows the layers of the job (the branch `manufacturing/`, a `.eh3dproj` package) and the plans kept in the project (exit 2 when they are out of date), and `drillpro-plan project plan FILE.eh3d [--layer NAME]` plans each drill layer of the job and keeps the plans in the branch `drillpro/` only, with a copy of each layer and a reference to the content of the job. The screens (window and terminal, classic and menus) open a `.eh3d` file with the first drill layer of its job and `Ctrl+S` keeps its plan; the file list offers `*.EH3D`.
 - The crate `eh3d-project` of EH3D-COMMON is now used.
 - **Behaviour tests at the exact edge, and the keys of the Greek layout fixed:** `protocol/tests/behaviour.rs` and `tests/behaviour.rs` add 58 deterministic tests: the bytes, the number of steps and the ramp of a move (the simulator ends where the plan says), the rounding of the original, the geometry and its speeds, the levels of Z, the paced stream, the limits of the files that are read (at the byte, the line and the digit), the codes and the order of the languages, the width and the hot keys of the typed letters, the choice of a text and the progress of a plan with its time left. They found a misplaced letter in the Greek keyboard layout: the keys from S to M of a Greek keyboard did not reach their hot letters (a stray sigma shifted every pair after A); the layout is now the standard one.
