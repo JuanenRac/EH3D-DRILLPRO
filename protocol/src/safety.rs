@@ -6,7 +6,7 @@
 
 use std::io;
 
-use crate::latches::{run_ops, Latches, Op, Sequence};
+use crate::latches::{run_ops, Latches, Op, Sequence, A_LEVEL_MASK, A_SPINDLE_RUN};
 use crate::{
     connect, run_paced_until_home, run_paced_with, run_steps, ConnectError, ModemStatus, Pacing,
     Step, Transport,
@@ -95,6 +95,8 @@ pub struct Machine<T: Transport> {
     home_signal: bool,
     tuning: crate::tuning::Tuning,
     search_hint: Option<(u32, u32)>,
+    /// The first output latch as the bytes sent leave it (it holds the run bit of the spindle).
+    latch_a: u8,
 }
 
 impl<T: Transport> Machine<T> {
@@ -108,6 +110,7 @@ impl<T: Transport> Machine<T> {
             home_signal: false,
             tuning: crate::tuning::Tuning::default(),
             search_hint: None,
+            latch_a: crate::latches::A_IDLE,
         }
     }
 
@@ -192,7 +195,8 @@ impl<T: Transport> Machine<T> {
         let _ = self.transport.disarm_link();
     }
 
-    /// Stops everything now: the queue held far from here is emptied and the stepper drivers are switched off.
+    /// Stops everything now: the queue held far from here is emptied, the stepper drivers are switched off and, when the spindle was started with the output
+    /// latches, its run bit is released.
     /// Works whether or not the machine is armed; the machine is disarmed afterwards.
     pub fn emergency_stop(&mut self) {
         self.armed = false;
@@ -201,6 +205,13 @@ impl<T: Transport> Machine<T> {
         // 0xC0 is the latch value that switches the drivers off; a transport that is not armed refuses it, which is fine
         // because its abort has already done the same.
         let _ = self.transport.write_byte(crate::bits::LATCH_B_IDLE);
+        // the byte above does not reach the other latch, where the spindle was told to run; the auxiliary output stays as it is (it holds the chuck)
+        if self.latch_a & A_SPINDLE_RUN != 0 {
+            let off = self.latch_a & !(A_SPINDLE_RUN | A_LEVEL_MASK);
+            if self.transport.write_byte(off).is_ok() {
+                self.latch_a = off;
+            }
+        }
     }
 
     pub fn is_armed(&self) -> bool {
@@ -356,7 +367,22 @@ impl<T: Transport> Machine<T> {
         if !self.armed {
             return Err(MachineError::NotArmed);
         }
-        Ok(run_ops(&mut self.transport, ops)?)
+        for op in ops {
+            // a byte with bit 7 set and bit 6 clear writes the first latch
+            let latch_a = match *op {
+                Op::Send(b) if b & 0xC0 == 0x80 => Some(b),
+                _ => None,
+            };
+            // a byte that starts the spindle counts even if sending it fails: it may have arrived
+            if let Some(b) = latch_a.filter(|b| b & A_SPINDLE_RUN != 0) {
+                self.latch_a = b;
+            }
+            run_ops(&mut self.transport, std::slice::from_ref(op))?;
+            if let Some(b) = latch_a {
+                self.latch_a = b;
+            }
+        }
+        Ok(())
     }
 
     /// Sets the spindle of the node (see [`Transport::set_spindle`]). Refused unless armed.

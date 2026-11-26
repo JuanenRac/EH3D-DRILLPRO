@@ -605,3 +605,35 @@ fn a_stop_while_moving_away_from_the_switches_is_noticed_within_a_piece() {
     let outcome = run_items(&mut m, &items, &mut h).unwrap();
     assert_stopped_early(&m, outcome, 10_000);
 }
+
+// ---- what an emergency stop leaves in the output latches ----
+
+/// The bytes an armed simulator was sent by `ops` and by the emergency stop after them.
+fn stopped_after(ops: &[eh3d_drillpro_protocol::latches::Op]) -> Vec<u8> {
+    let mut m = armed_machine(Pacing::Bytes);
+    let before = m.transport().sent.len();
+    m.run_ops(ops).unwrap();
+    m.emergency_stop();
+    assert!(!m.is_armed());
+    m.transport().sent[before..].to_vec()
+}
+
+#[test]
+fn an_emergency_stop_with_the_spindle_running_releases_its_run_bit() {
+    use eh3d_drillpro_protocol::latches::Latches;
+    let drivers = Latches::default().drivers_on().next;
+    let on = drivers.spindle_on(15, 1_000);
+    // drivers off first (the second latch), then the first latch with the run bit and the speed gone
+    assert_eq!(stopped_after(&on.ops), [0xF8, 0x90, 0x9F, 0xC0, 0x80]);
+    // the auxiliary output stays as it is
+    let mut with_aux = on.ops.clone();
+    with_aux.extend(on.next.vacuum_on(15).ops);
+    assert_eq!(
+        stopped_after(&with_aux),
+        [0xF8, 0x90, 0x9F, 0xBF, 0xC0, 0xA0]
+    );
+    // a spindle that was stopped by its own sequence needs no more bytes
+    let mut stopped = on.ops.clone();
+    stopped.extend(on.next.spindle_off(1_000).ops);
+    assert_eq!(stopped_after(&stopped).last(), Some(&0xC0));
+}

@@ -470,6 +470,21 @@ impl Transport for NodeTransport {
         Ok(self.lines)
     }
 
+    /// Waits the whole `us` microseconds: the node putting a latch byte out says nothing about the spindle or the chuck having done what it asks.
+    fn wait_us(&mut self, us: u64) {
+        let start = Instant::now();
+        let total = Duration::from_micros(us);
+        while start.elapsed() < total {
+            let _ = self.pump();
+            let _ = self.keep_alive();
+            std::thread::sleep(
+                total
+                    .saturating_sub(start.elapsed())
+                    .min(Duration::from_millis(2)),
+            );
+        }
+    }
+
     /// Waits `us` microseconds, or less when the node has already put out everything written (the
     /// stream is its own clock). Pings meanwhile so the node does not stop an armed session.
     fn sleep_us(&mut self, us: u64) {
