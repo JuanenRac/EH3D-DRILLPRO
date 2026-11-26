@@ -10,11 +10,8 @@ use eh3d_project::manufacturing::{self as suite, JobFile};
 use eh3d_project::suitetext::{fill, S};
 
 /// The branch of this program.
-pub const KIT: BranchKit<'static> = suite::kit(
-    "drillpro",
-    "drillpro.json",
-    env!("CARGO_PKG_VERSION"),
-);
+pub const KIT: BranchKit<'static> =
+    suite::kit("drillpro", "drillpro.json", env!("CARGO_PKG_VERSION"));
 
 /// The drill layers of the job of a project; an error when the job has none.
 pub fn drill_layers(path: &Path) -> Result<Vec<JobFile>, String> {
