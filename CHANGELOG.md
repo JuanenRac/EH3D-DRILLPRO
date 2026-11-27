@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The program speaks the eight languages of the project and no more:** English, Spanish, Italian, German, French, Portuguese of Portugal, Chinese and Japanese. The 29 other languages are removed, with their files in `locales/`, the tool that placed their hot keys and the Russian, Ukrainian and Greek keyboard layouts. A settings file that names `pt-br` or `fr-ca` is read as Portuguese or French (also by `--lang`); one that names another language that is gone starts in English.
+- **The failures the program words itself are said in the language of the screen** (the arming, reference run, job, server and configuration file messages, and the notice of a terminal that is too small); the detail given by the system or by the link is shown as it comes, and the command line output is as before.
+- For a program that uses this one as a library: `Lang` has eight values, `Lang::fallback`, `Lang::latin_key`, `CORE_LANGS` and the reading of language files are gone, and `texts::failure_text` is new.
+
 ## [0.2.4] - Safer spindle and chuck waits, emergency stop and server jobs (not tried on a machine)
 
 - **Pauses of the spindle and of the chuck last their whole time on the node (safety):** the waits of the latch sequences are no longer ended by the node saying it has put the bytes out.

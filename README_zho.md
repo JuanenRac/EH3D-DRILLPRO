@@ -5,7 +5,7 @@
 # <img src="images/brand/icon-64.png" alt="" width="40" height="40" align="absmiddle"> EH3D-DRILLPRO
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | 🇨🇳 <b>中文</b> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### 用 Rust 跨平台重新实现 Bungard CCD 机器经典 DOS 软件的钻孔流程，提供类似原版的文本模式界面，支持37 种语言
+### 用 Rust 跨平台重新实现 Bungard CCD 机器经典 DOS 软件的钻孔流程，提供类似原版的文本模式界面，支持八种语言
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -44,10 +44,10 @@
 | 领域 | 状态 | 在这里的含义 |
 |---|---|---|
 | 软件 | 🟡 | 带 80x25 文本界面的 Rust 程序读取钻孔文件、刀具表和机床文件，排列孔的顺序，并在模拟器上运行整个作业；机床文件指定时则在真实机床上运行。 |
-| 测试 | 🟡 | 522 项测试通过（`cargo test --workspace`）：各种格式、作业规划、模拟器上的协议以及37 种语言的界面。 |
+| 测试 | 🟡 | 522 项测试通过（`cargo test --workspace`）：各种格式、作业规划、模拟器上的协议以及八种语言的界面。 |
 | 文件读取器 | 🟡 | 可读取钻孔文件 `.NCD`、刀具表 `DRILLPRO.DTD` 和机床文件 `DRILLPRO.DCF`；只用为测试编写的小型样例文件验证过，没有用过真实电路板的文件。 |
 | 机床协议 | 🟠 | 控制单元的字节协议是通过逆向工程重建的，`docs/PROTOCOL.md` 中仍有属于假设的部分；协议层在上膛之前拒绝移动任何东西。 |
-| 界面 | 🟡 | 文本界面、菜单、文件对话框和孔的矢量视图支持全部37 种语言（已测试）；中文和日文需要系统中有 CJK 字体。 |
+| 界面 | 🟡 | 文本界面、菜单、文件对话框和孔的矢量视图支持全部八种语言（已测试）；中文和日文需要系统中有 CJK 字体。 |
 | 真实硬件 | 🟠 | 在一台 Bungard CCD MTC 上试过三个轴的参考点回零和每个轴的移动；整个钻孔作业没有运行过，每毫米步数只与原版配置核对过，主轴和吸尘器输出尚未试过。 |
 | 使用安全 | 🟡 | 按 `Esc` 可在极短时间内停止作业并关闭步进驱动器，限位开关由机床自己的控制单元监视；软件本身没有急停。 |
 | 服务器连接 | 🟠 | 设置 `connection = server` 后，程序把作业发给 EH3D-SERVER 并跟踪进度；这条路径只在模拟器上跑过。 |
@@ -96,7 +96,7 @@
 | 新增 | 以上都没有 | 可运行整个作业的模拟器、作业结束和请求刀具的提示音、通过服务器同时管理多台机床、ZIP 作业压缩包、DXF 和 Gerber 轮廓、闪烁光标，以及每次改动都会运行的测试集 |
 | 源码与许可 | 闭源、专有 | 开源（GPL-3.0-or-later），用 Rust 编写 |
 | 成熟度 | 在真实机床上使用多年 | 年轻得多：参考回零和各轴运动已在一台真实的 Bungard CCD MTC 上试过；整个作业尚未在机床上运行过，ATC 型号的换刀器也未在真机上运行过 |
-* **37 种语言：** 文本界面、菜单和对话框支持英语、西班牙语、意大利语、德语、法语、葡萄牙语、中文、日语、保加利亚语、克罗地亚语、捷克语、丹麦语、荷兰语、爱沙尼亚语、芬兰语、希腊语、匈牙利语、爱尔兰语、拉脱维亚语、立陶宛语、马耳他语、波兰语、罗马尼亚语、斯洛伐克语、斯洛文尼亚语、瑞典语、挪威语、冰岛语、乌克兰语、俄语、塞尔维亚语、阿尔巴尼亚语、加泰罗尼亚语、加利西亚语、巴斯克语、巴西葡萄牙语和加拿大法语。 前八种之外的 29 种语言由模型翻译，等待母语者审校；某种语言缺少的文本以英文显示。
+* **八种语言：** 文本界面、菜单和对话框支持英语、西班牙语、意大利语、德语、法语、葡萄牙语（葡萄牙）、中文和日语，程序自己写出的故障信息也一样（系统或连接给出的细节按原样显示）。写着 `pt-br` 或 `fr-ca` 的设置文件按葡萄牙语或法语读取；写着程序以前有、现在没有的语言时以英语启动。
 
 ## 🧩 在 EH3D 中的角色
 
@@ -148,7 +148,7 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-用 `run.bat`（Windows）或 `./run.sh`（Linux 和 macOS）运行；两者都会在需要时先构建程序：`run.bat [文件.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` 是存放 `DRILLPRO.DTD` 和 `DRILLPRO.DCF` 的文件夹（默认：`testdata/`），`--dump` 将屏幕以纯文本输出。按键：`Alt` 加高亮字母打开菜单，方向键移动，`Enter` 确认，`Esc` 返回；也可以点击菜单栏。从文件读取的 29 种语言中，高亮字母由 `tools/make_hotkeys.py` 写入（每个控件一个字母，同一屏幕上不重复）；西里尔字母或希腊字母用该文字的键盘输入（俄语、乌克兰语和希腊语也接受位于同一位置的拉丁字母键；保加利亚语和塞尔维亚语需要各自的键盘布局）。中文和日文需要系统字体中有 CJK 字体。 `--connection FILE` 指向不同于默认的机器文件（Windows 上默认为 `%APPDATA%\EH3D\machine.cfg`，其他系统为 `~/.config/eh3d/machine.cfg`）；没有机器文件时程序在模拟器上运行。 `--modern` 启动菜单式界面，而不是经典界面。
+用 `run.bat`（Windows）或 `./run.sh`（Linux 和 macOS）运行；两者都会在需要时先构建程序：`run.bat [文件.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` 是存放 `DRILLPRO.DTD` 和 `DRILLPRO.DCF` 的文件夹（默认：`testdata/`），`--dump` 将屏幕以纯文本输出。按键：`Alt` 加高亮字母打开菜单，方向键移动，`Enter` 确认，`Esc` 返回；也可以点击菜单栏。中文和日文需要系统字体中有 CJK 字体。 `--connection FILE` 指向不同于默认的机器文件（Windows 上默认为 `%APPDATA%\EH3D\machine.cfg`，其他系统为 `~/.config/eh3d/machine.cfg`）；没有机器文件时程序在模拟器上运行。 `--modern` 启动菜单式界面，而不是经典界面。
 
 ## 🧪 测试
 
@@ -178,7 +178,7 @@ EH3D-DRILLPRO/
 │   ├── job.rs runner.rs                         排列孔位，并在独立线程中运行作业
 │   ├── app.rs screen.rs textapp.rs              80x25 文本屏幕和现代菜单
 │   ├── eh3dfile.rs                              .eh3d 项目：读入作业，存入计划
-│   ├── i18n.rs texts.rs                         37 种语言及其文本
+│   ├── i18n.rs texts.rs                         八种语言及其文本
 │   ├── gui.rs console.rs bin/                   窗口、终端版本和可执行文件
 │   └── server_link.rs cli.rs                    与 EH3D-SERVER 的连接和命令行
 ├── protocol/src/
@@ -193,8 +193,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    为测试编写的小型示例文件
 ├── config/                                      逐行解释的基本配置
 ├── examples/                                    示例：从1个孔到2万个孔
-├── locales/                                     从文件读取的 29 种语言的文字，每种语言一个文件
-├── tools/                                       CI 检查、README 检查、快捷键写入和图片工具
+├── tools/                                       CI 检查、README 检查和图片工具
 ├── images/                                      横幅图、两张图片和屏幕截图
 ├── .github/                                     CI 与发布工作流、Issue 和 PR 模板
 ├── build.sh build.bat                           构建和测试脚本

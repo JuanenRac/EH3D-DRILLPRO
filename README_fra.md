@@ -5,7 +5,7 @@
 # <img src="images/brand/icon-64.png" alt="" width="40" height="40" align="absmiddle"> EH3D-DRILLPRO
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | 🇫🇷 <b>Français</b> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Une réimplémentation multiplateforme en Rust du flux de perçage du logiciel DOS classique des machines Bungard CCD, avec une interface en mode texte qui rappelle l'original, en 37 langues
+### Une réimplémentation multiplateforme en Rust du flux de perçage du logiciel DOS classique des machines Bungard CCD, avec une interface en mode texte qui rappelle l'original, en huit langues
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -44,10 +44,10 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Logiciel | 🟡 | Un programme Rust à écran texte 80x25 lit le fichier de perçage, la table d'outils et le fichier de la machine, ordonne les trous et exécute tout le travail sur un simulateur, ou sur une vraie machine si le fichier de la machine le dit. |
-| Tests | 🟡 | 522 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les 37 langues. |
+| Tests | 🟡 | 522 tests réussissent (`cargo test --workspace`) : les formats, la planification du travail, le protocole sur le simulateur et les écrans dans les huit langues. |
 | Lecteurs de fichiers | 🟡 | Le fichier de perçage `.NCD`, la table d'outils `DRILLPRO.DTD` et le fichier de la machine `DRILLPRO.DCF` sont lus ; seulement avec de petits fichiers d'exemple écrits pour les tests, pas avec des fichiers de vraies cartes. |
 | Protocole de la machine | 🟠 | Le protocole d'octets de l'unité de commande a été reconstruit par rétro-ingénierie et `docs/PROTOCOL.md` liste encore des parties qui sont des hypothèses ; la couche de protocole refuse de bouger quoi que ce soit avant d'être armée. |
-| Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les 37 langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
+| Interface | 🟡 | L'écran texte, les menus, la boîte de fichiers et la vue vectorielle des trous parlent les huit langues (testé) ; le chinois et le japonais demandent une police CJK dans le système. |
 | Matériel réel | 🟠 | Sur une Bungard CCD MTC, la prise de référence des trois axes et les déplacements de chaque axe ont été essayés ; un travail de perçage complet n'a pas tourné, les pas par millimètre ne sont comparés qu'à la configuration de l'original, et les sorties de broche et d'aspirateur n'ont pas été essayées. |
 | Sécurité d'emploi | 🟡 | `Esc` arrête le travail en une fraction de seconde et coupe les pilotes de moteurs, et l'unité de commande de la machine surveille les fins de course ; le logiciel n'a pas d'arrêt d'urgence propre. |
 | Connexion au serveur | 🟠 | Avec `connection = server`, le programme envoie le travail à EH3D-SERVER et suit sa progression ; ce chemin n'a été exercé que sur le simulateur. |
@@ -96,7 +96,7 @@ L'original est le programme fermé pour MS-DOS de Bungard qui pilote les machine
 | Ajouts | Aucun de ceux-ci | Un simulateur qui exécute un travail entier, des sons pour la fin du travail et la demande d'outil, plusieurs machines à la fois via le serveur, des archives ZIP de travail, des contours DXF et Gerber, un curseur clignotant et une suite de tests lancée à chaque modification |
 | Source et licence | Fermé, propriétaire | Open source (GPL-3.0-or-later), écrit en Rust |
 | Maturité | Des années d'usage sur de vraies machines | Bien plus jeune : la course de référence et les mouvements de chaque axe ont été essayés sur une vraie Bungard CCD MTC ; un travail entier n'a pas encore tourné sur une machine, et le changeur d'outils des modèles ATC n'a pas tourné sur une vraie |
-* **37 langues :** les écrans de texte, les menus et les dialogues parlent anglais, espagnol, italien, allemand, français, portugais, chinois, japonais, bulgare, croate, tchèque, danois, néerlandais, estonien, finnois, grec, hongrois, irlandais, letton, lituanien, maltais, polonais, roumain, slovaque, slovène, suédois, norvégien, islandais, ukrainien, russe, serbe, albanais, catalan, galicien, basque, portugais du Brésil et français du Canada. Les mots des 29 langues au-delà des huit premières sont traduits par le modèle et attendent la relecture de locuteurs natifs ; un texte qu'une langue n'a pas s'affiche en anglais.
+* **Huit langues :** les écrans de texte, les menus et les dialogues parlent anglais, espagnol, italien, allemand, français, portugais du Portugal, chinois et japonais, de même que les échecs que le programme formule lui-même (le détail donné par le système ou la liaison est affiché tel quel). Un fichier de réglages qui nomme `pt-br` ou `fr-ca` est lu comme portugais ou français ; s'il nomme une langue que le programme avait et n'a plus, le programme démarre en anglais.
 
 ## 🧩 Rôle dans EH3D
 
@@ -148,7 +148,7 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-Lancez-le avec `run.bat` (Windows) ou `./run.sh` (Linux et macOS) ; les deux compilent d'abord le programme si nécessaire : `run.bat [FICHIER.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` est le dossier contenant `DRILLPRO.DTD` et `DRILLPRO.DCF` (par défaut : `testdata/`) et `--dump` affiche l'écran en texte brut. Touches : `Alt` plus la lettre en surbrillance ouvre un menu, les flèches déplacent, `Entrée` valide, `Échap` revient ; la barre de menus est aussi cliquable. Dans les 29 langues lues dans des fichiers, les lettres en surbrillance sont écrites par `tools/make_hotkeys.py`, une lettre par contrôle et jamais deux identiques sur un écran ; une lettre cyrillique ou grecque se tape avec le clavier de cet alphabet (le russe, l'ukrainien et le grec acceptent aussi la touche latine placée au même endroit ; le bulgare et le serbe demandent leur propre disposition). Le chinois et le japonais nécessitent une police CJK parmi les polices du système. `--connection FILE` désigne un autre fichier de machine que celui par défaut (`%APPDATA%\EH3D\machine.cfg` sous Windows, `~/.config/eh3d/machine.cfg` ailleurs) ; sans fichier de machine, le programme s'exécute sur le simulateur. `--modern` lance l'interface à menus au lieu des écrans classiques.
+Lancez-le avec `run.bat` (Windows) ou `./run.sh` (Linux et macOS) ; les deux compilent d'abord le programme si nécessaire : `run.bat [FICHIER.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` est le dossier contenant `DRILLPRO.DTD` et `DRILLPRO.DCF` (par défaut : `testdata/`) et `--dump` affiche l'écran en texte brut. Touches : `Alt` plus la lettre en surbrillance ouvre un menu, les flèches déplacent, `Entrée` valide, `Échap` revient ; la barre de menus est aussi cliquable. Le chinois et le japonais nécessitent une police CJK parmi les polices du système. `--connection FILE` désigne un autre fichier de machine que celui par défaut (`%APPDATA%\EH3D\machine.cfg` sous Windows, `~/.config/eh3d/machine.cfg` ailleurs) ; sans fichier de machine, le programme s'exécute sur le simulateur. `--modern` lance l'interface à menus au lieu des écrans classiques.
 
 ## 🧪 Tests
 
@@ -178,7 +178,7 @@ EH3D-DRILLPRO/
 │   ├── job.rs runner.rs                         ordonner les trous et exécuter le travail dans son propre fil
 │   ├── app.rs screen.rs textapp.rs              l'écran texte de 80x25 et les menus modernes
 │   ├── eh3dfile.rs                              projet .eh3d : le travail entre, les plans sortent
-│   ├── i18n.rs texts.rs                         les 37 langues et leurs textes
+│   ├── i18n.rs texts.rs                         les huit langues et leurs textes
 │   ├── gui.rs console.rs bin/                   la fenêtre, la version terminal et les exécutables
 │   └── server_link.rs cli.rs                    le lien avec EH3D-SERVER et la ligne de commande
 ├── protocol/src/
@@ -193,8 +193,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    petits fichiers d'exemple écrits pour les tests
 ├── config/                                      la configuration de base, expliquée ligne par ligne
 ├── examples/                                    exemples, d'un trou à 20000
-├── locales/                                     les mots des 29 langues lues dans des fichiers, un fichier par langue
-├── tools/                                       contrôle de CI, du README, écriture des raccourcis et outils d'images
+├── tools/                                       contrôle de CI, du README et outils d'images
 ├── images/                                      bannière, les deux images et les captures d'écran
 ├── .github/                                     workflows de CI et de publication, modèles d'issues et de pull requests
 ├── build.sh build.bat                           scripts de compilation et de test

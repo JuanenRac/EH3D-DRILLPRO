@@ -1,5 +1,7 @@
+use eh3d_drillpro::classic::texts::{ctr, ALL_CTEXTS};
+use eh3d_drillpro::cli::parse_prefs;
 use eh3d_drillpro::i18n::*;
-use eh3d_drillpro::texts::{tr, ALL_TEXTS};
+use eh3d_drillpro::texts::{failure_text, tr, Text, ALL_TEXTS};
 
 #[test]
 fn every_text_exists_in_all_eight_languages() {
@@ -75,43 +77,114 @@ fn language_codes_round_trip() {
 }
 
 #[test]
-fn every_new_language_has_all_the_texts_of_the_program() {
-    use eh3d_drillpro::classic::texts::locale_coverage as classic;
-    use eh3d_drillpro::texts::locale_coverage;
-    for l in Lang::ALL.into_iter().skip(CORE_LANGS) {
-        let variant = l.fallback().is_some();
-        for (have, total) in [locale_coverage(l), classic(l)] {
-            if variant {
-                assert!(have < total, "{l:?}");
-            } else {
-                assert_eq!(have, total, "{l:?}");
-            }
+fn the_project_has_eight_languages() {
+    let codes: Vec<&str> = Lang::ALL.iter().map(|l| l.code()).collect();
+    assert_eq!(codes, ["en", "es", "it", "de", "fr", "pt", "zh", "ja"]);
+}
+
+#[test]
+fn a_settings_file_with_a_code_of_an_earlier_version_is_still_read() {
+    for (written, read) in [
+        ("pt-br", Some(Lang::Pt)),
+        ("fr-ca\nfullscreen=1\n", Some(Lang::Fr)),
+        ("pt", Some(Lang::Pt)),
+        // a language the program has no more: the default is used, nothing fails
+        ("ru", None),
+        ("eu\n", None),
+    ] {
+        assert_eq!(parse_prefs(written).lang, read, "{written:?}");
+    }
+    assert!(parse_prefs("fr-ca\nfullscreen=1\n").fullscreen);
+}
+
+/// The same holes in every language: `{}` is filled by the program.
+#[test]
+fn every_text_has_the_same_holes_in_every_language() {
+    for &k in ALL_TEXTS {
+        let en = tr(Lang::En, k).matches("{}").count();
+        for l in Lang::ALL {
+            assert_eq!(tr(l, k).matches("{}").count(), en, "{k:?} {l:?}");
+        }
+    }
+    for &k in ALL_CTEXTS {
+        let en = ctr(Lang::En, k).matches("{}").count();
+        for l in Lang::ALL {
+            assert!(!ctr(l, k).trim().is_empty(), "{k:?} empty in {l:?}");
+            assert_eq!(ctr(l, k).matches("{}").count(), en, "{k:?} {l:?}");
         }
     }
 }
 
 #[test]
-fn the_files_of_the_languages_name_only_texts_that_exist() {
-    assert!(eh3d_drillpro::texts::locale_problems().is_empty());
-    assert!(eh3d_drillpro::classic::texts::locale_problems().is_empty());
+fn the_failures_of_the_program_are_said_in_the_language_of_the_screen() {
+    // English, and a text the program did not word, stay as they are
+    for why in ["arming the machine: no reply", "the server answered 503"] {
+        assert_eq!(failure_text(Lang::En, why), why);
+    }
+    assert_eq!(
+        failure_text(Lang::Es, "port COM9 not found"),
+        "port COM9 not found"
+    );
+    assert_eq!(
+        failure_text(Lang::Es, "arming the machine: no reply"),
+        "al armar la máquina: no reply"
+    );
+    assert_eq!(
+        failure_text(Lang::De, "the job failed on the server"),
+        "der Auftrag ist auf dem Server fehlgeschlagen"
+    );
+    assert_eq!(
+        failure_text(Lang::Pt, "internal error: the table of tools is damaged"),
+        "erro interno: the table of tools is damaged"
+    );
+    assert_eq!(
+        failure_text(
+            Lang::Fr,
+            "lost the server (time out); the job may still be running on it"
+        ),
+        "serveur perdu (time out) ; le travail est peut-être encore en cours"
+    );
+    assert_eq!(
+        failure_text(Lang::It, "a.zip: no file of this kind in the archive"),
+        "a.zip: nessun file di questo tipo nell'archivio"
+    );
+    for l in Lang::ALL {
+        for k in [
+            Text::FailNoConfig,
+            Text::FailNotSupported,
+            Text::FailInternal,
+        ] {
+            assert_eq!(failure_text(l, tr(Lang::En, k)), tr(l, k), "{l:?}");
+        }
+    }
+}
+
+/// A screen of text has 80 columns: the message of a terminal that is too small and a failure the program words fit.
+#[test]
+fn the_messages_fit_the_screen() {
+    use Text::*;
+    for l in Lang::ALL {
+        let small = tr(l, SmallTerminal)
+            .replacen("{}", "999", 1)
+            .replacen("{}", "999", 1);
+        assert!(str_width(&small) <= 80, "{l:?}: {small}");
+        for k in [
+            FailInternal,
+            FailServerJob,
+            FailNoJobId,
+            FailNotSupported,
+            FailNoConfig,
+            FailBadConfig,
+            FailNoArchiveFile,
+        ] {
+            assert!(str_width(tr(l, k)) <= 74, "{l:?} {k:?}: {}", tr(l, k));
+        }
+    }
 }
 
 #[test]
 fn typed_letters_are_folded_to_the_hot_letter() {
-    // case, the Greek accent and the final sigma do not matter
-    assert_eq!(fold_key('Ж'), 'ж');
-    assert_eq!(fold_key('Ł'), 'ł');
-    assert_eq!(fold_key('Έ'), 'ε');
-    assert_eq!(fold_key('ς'), 'σ');
-    // a Latin key stands for the letter on it in the layout of Russian, Ukrainian and Greek, and nowhere else
-    assert_eq!(Lang::Ru.hot_key('D'), 'в');
-    assert_eq!(Lang::Uk.hot_key('s'), 'і');
-    assert_eq!(Lang::Ru.hot_key('s'), 'ы');
-    assert_eq!(Lang::El.hot_key('a'), 'α');
-    assert_eq!(Lang::Pl.hot_key('a'), 'a');
-    assert_eq!(Lang::Bg.hot_key('a'), 'a');
-    // and back, for the keys that stand for a place
-    assert_eq!(Lang::Ru.latin_key('в'), 'd');
-    assert_eq!(Lang::El.latin_key('ε'), 'e');
-    assert_eq!(Lang::En.latin_key('x'), 'x');
+    assert_eq!(fold_key('Q'), 'q');
+    assert_eq!(fold_key('É'), 'é');
+    assert_eq!(Lang::Pt.hot_key('S'), 's');
 }

@@ -50,7 +50,7 @@
       "lines": [
         "classic 80x25 screens, checked",
         "cell by cell; --modern menus;",
-        "37 languages"
+        "eight languages"
       ],
       "code": [
         "src/classic/mod.rs",

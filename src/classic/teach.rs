@@ -175,10 +175,8 @@ impl<E: ClassicEngine> ClassicApp<E> {
     }
 
     fn teach_char(&self, t: &TeachDlg, c: char) -> Option<TeachBtn> {
-        // the keys of the arrows are places on the keyboard: a Cyrillic or Greek layout types the letter that sits there
-        let lang = self.lang();
-        let key = lang.latin_key(c);
-        let c = lang.hot_key(c);
+        let key = fold_key(c);
+        let c = self.lang().hot_key(c);
         if let Some(d) = key.to_digit(10) {
             return (1..=4).contains(&d).then(|| TeachBtn::Step(d as usize - 1));
         }
@@ -388,7 +386,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 label(s, 9, 20, self.t(CText::HomingXy));
             }
             Some(crate::runner::TeachState::Failed(e)) => {
-                let e: String = e.chars().take(44).collect();
+                let e: String = crate::texts::failure_text(self.lang(), &e)
+                    .chars()
+                    .take(44)
+                    .collect();
                 label(s, 9, 20, &e);
             }
             _ => {}

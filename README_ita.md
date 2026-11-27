@@ -5,7 +5,7 @@
 # <img src="images/brand/icon-64.png" alt="" width="40" height="40" align="absmiddle"> EH3D-DRILLPRO
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | 🇮🇹 <b>Italiano</b> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Una reimplementazione multipiattaforma in Rust del flusso di foratura del classico software DOS per le macchine Bungard CCD, con un'interfaccia in modalità testo simile all'originale in 37 lingue
+### Una reimplementazione multipiattaforma in Rust del flusso di foratura del classico software DOS per le macchine Bungard CCD, con un'interfaccia in modalità testo simile all'originale in otto lingue
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -96,7 +96,7 @@ L'originale è il programma chiuso per MS-DOS di Bungard che comanda le macchine
 | Aggiunte | Nessuna di queste | Un simulatore che esegue un lavoro intero, suoni per la fine del lavoro e per la richiesta di utensile, più macchine insieme tramite il server, archivi ZIP di lavoro, contorni DXF e Gerber, un cursore lampeggiante e una suite di test che gira a ogni modifica |
 | Sorgente e licenza | Chiuso, proprietario | Open source (GPL-3.0-or-later), scritto in Rust |
 | Maturità | Anni di uso su macchine reali | Molto più giovane: la corsa di riferimento e i movimenti di ogni asse sono stati provati su una Bungard CCD MTC reale; un lavoro intero non è ancora stato eseguito su una macchina, e il cambio utensile dei modelli ATC non ha ancora funzionato su una reale |
-* **37 lingue:** le schermate di testo, i menu e i dialoghi parlano inglese, spagnolo, italiano, tedesco, francese, portoghese, cinese, giapponese, bulgaro, croato, ceco, danese, olandese, estone, finlandese, greco, ungherese, irlandese, lettone, lituano, maltese, polacco, rumeno, slovacco, sloveno, svedese, norvegese, islandese, ucraino, russo, serbo, albanese, catalano, galiziano, basco, portoghese del Brasile e francese del Canada. Le parole dei 29 lingue oltre le prime otto sono tradotte dal modello e attendono la revisione di madrelingua; un testo che manca a una lingua appare in inglese.
+* **Otto lingue:** le schermate di testo, i menu e i dialoghi parlano inglese, spagnolo, italiano, tedesco, francese, portoghese del Portogallo, cinese e giapponese, e così i guasti formulati dal programma stesso (il dettaglio dato dal sistema o dal collegamento appare così com'è). Un file di impostazioni che indica `pt-br` o `fr-ca` è letto come portoghese o francese; uno che indica una lingua che il programma aveva e non ha più parte in inglese.
 
 ## 🧩 Ruolo in EH3D
 
@@ -148,7 +148,7 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-Avvialo con `run.bat` (Windows) o `./run.sh` (Linux e macOS); entrambi compilano prima il programma se serve: `run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` è la cartella con `DRILLPRO.DTD` e `DRILLPRO.DCF` (predefinita: `testdata/`) e `--dump` stampa lo schermo come testo semplice. Tasti: `Alt` più la lettera evidenziata apre un menu, le frecce spostano, `Invio` accetta, `Esc` torna indietro; la barra dei menu si può anche cliccare. Nelle 29 lingue lette da file, le lettere evidenziate le scrive `tools/make_hotkeys.py`, una lettera per controllo e mai due uguali in una schermata; una lettera cirillica o greca si digita con la tastiera di quell'alfabeto (russo, ucraino e greco accettano anche il tasto latino nella stessa posizione; bulgaro e serbo richiedono il proprio layout). Cinese e giapponese richiedono un font CJK tra quelli di sistema. `--connection FILE` indica un file della macchina diverso da quello predefinito (`%APPDATA%\EH3D\machine.cfg` su Windows, `~/.config/eh3d/machine.cfg` altrove); senza file della macchina il programma gira sul simulatore. `--modern` avvia l'interfaccia a menu al posto delle schermate classiche.
+Avvialo con `run.bat` (Windows) o `./run.sh` (Linux e macOS); entrambi compilano prima il programma se serve: `run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` è la cartella con `DRILLPRO.DTD` e `DRILLPRO.DCF` (predefinita: `testdata/`) e `--dump` stampa lo schermo come testo semplice. Tasti: `Alt` più la lettera evidenziata apre un menu, le frecce spostano, `Invio` accetta, `Esc` torna indietro; la barra dei menu si può anche cliccare. Cinese e giapponese richiedono un font CJK tra quelli di sistema. `--connection FILE` indica un file della macchina diverso da quello predefinito (`%APPDATA%\EH3D\machine.cfg` su Windows, `~/.config/eh3d/machine.cfg` altrove); senza file della macchina il programma gira sul simulatore. `--modern` avvia l'interfaccia a menu al posto delle schermate classiche.
 
 ## 🧪 Test
 
@@ -178,7 +178,7 @@ EH3D-DRILLPRO/
 │   ├── job.rs runner.rs                         ordinare i fori ed eseguire il lavoro nel suo thread
 │   ├── app.rs screen.rs textapp.rs              lo schermo di testo 80x25 e i menu moderni
 │   ├── eh3dfile.rs                              progetto .eh3d: entra il lavoro, escono i piani
-│   ├── i18n.rs texts.rs                         le 37 lingue e i loro testi
+│   ├── i18n.rs texts.rs                         le otto lingue e i loro testi
 │   ├── gui.rs console.rs bin/                   la finestra, la versione da terminale e gli eseguibili
 │   └── server_link.rs cli.rs                    il collegamento con EH3D-SERVER e la riga di comando
 ├── protocol/src/
@@ -193,8 +193,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    piccoli file di esempio scritti per i test
 ├── config/                                      la configurazione base, spiegata riga per riga
 ├── examples/                                    esempi, da un foro a 20000
-├── locales/                                     le parole delle 29 lingue lette da file, un file per lingua
-├── tools/                                       controllo di CI, del README, scrittura dei tasti rapidi e strumenti per le immagini
+├── tools/                                       controllo di CI, del README e strumenti per le immagini
 ├── images/                                      banner, le due immagini e le schermate
 ├── .github/                                     workflow di CI e di rilascio, modelli di issue e pull request
 ├── build.sh build.bat                           script di compilazione e test

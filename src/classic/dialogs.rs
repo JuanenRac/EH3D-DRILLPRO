@@ -526,6 +526,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             }
             Dialog::About => self.render_about(s),
             Dialog::Message(m) => {
+                let m = &crate::texts::failure_text(self.lang(), m);
                 let w = (str_width(m) + 6).min(COLS);
                 let x = (COLS - w) / 2;
                 window(s, x, 10, w, 5, "", false);
@@ -1044,7 +1045,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
 
     fn files_load(&mut self, path: PathBuf) -> Flow {
         let purpose = std::mem::take(&mut self.file_purpose);
-        let say = |e: String| Flow::to(Dialog::Message(e.chars().take(70).collect()));
+        let lang = self.lang();
+        let say = move |e: String| {
+            let shown = crate::texts::failure_text(lang, &e);
+            Flow::to(Dialog::Message(shown.chars().take(70).collect()))
+        };
         match purpose {
             Purpose::Tools => {
                 return match self.engine.load_tools_from(&path) {

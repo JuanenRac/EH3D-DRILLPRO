@@ -1138,7 +1138,7 @@ impl App {
         s.text(2, 2, "DRILLPRO", YELLOW, BLUE);
         s.text(2, 3, "Bungard CCD", LIGHT_CYAN, BLUE);
         let msg = match (&self.error, &self.loaded) {
-            (Some(e), _) => e.clone(),
+            (Some(e), _) => crate::texts::failure_text(self.lang, e),
             (None, Some(l)) => format!("{}: {}", tr(self.lang, Text::LblFile), l.path.display()),
             (None, None) => tr(self.lang, Text::NoFile).to_string(),
         };
@@ -1426,7 +1426,10 @@ impl App {
         );
         if let Some(RunState::Failed(why)) = &real {
             let max = w - 4;
-            let shown: String = why.chars().take(max).collect();
+            let shown: String = crate::texts::failure_text(self.lang, why)
+                .chars()
+                .take(max)
+                .collect();
             s.text(x + 2, y + 3, &shown, RED, WIN_BG);
         }
         s.text(

@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use eh3d_drillpro::app::Input;
 use eh3d_drillpro::classic::texts::{ctr, CText, ALL_CTEXTS};
 use eh3d_drillpro::classic::{hot_letter, ClassicApp};
-use eh3d_drillpro::i18n::{str_width, Lang, CORE_LANGS};
+use eh3d_drillpro::i18n::{str_width, Lang};
 use eh3d_drillpro::screen::Screen;
 use eh3d_drillpro::textapp::TextApp;
 
@@ -34,7 +34,7 @@ fn plain(label: &str) -> String {
     label.chars().filter(|&c| c != '~').collect()
 }
 
-/// The controls that share a screen: no two of them may need the same key, in any of the 37 languages.
+/// The controls that share a screen: no two of them may need the same key, in any of the eight languages.
 fn screens() -> Vec<(&'static str, Vec<CText>)> {
     let parameter = |first: CText| {
         vec![
@@ -89,8 +89,7 @@ fn screens() -> Vec<(&'static str, Vec<CText>)> {
     ]
 }
 
-/// Controls that share a screen must have different hot letters in every language (the letter a key types, so a Latin O and a Cyrillic O
-/// of a Russian screen count as the keys they are).
+/// Controls that share a screen must have different hot letters in every language (the letter a key types).
 #[test]
 fn hot_letters_are_unique_on_every_screen() {
     for lang in Lang::ALL {
@@ -120,14 +119,14 @@ fn every_classic_text_has_its_hot_letter_in_every_language() {
             let n = t.matches('~').count();
             assert!(n == 0 || n == 2, "{lang:?} {k:?}: {t:?}");
             // the Chinese and Japanese texts of the original have no mark on a few labels
-            if lang as usize >= CORE_LANGS {
+            if !matches!(lang, Lang::Zh | Lang::Ja) {
                 assert_eq!(en, n > 0, "{lang:?} {k:?}: {t:?}");
             }
         }
     }
 }
 
-/// The teach window keeps six keys for the arrows: no hot letter of its buttons may be one of them (in the layout of the language).
+/// The teach window keeps six keys for the arrows: no hot letter of its buttons may be one of them (in any language).
 #[test]
 fn teach_buttons_leave_the_arrow_keys_free() {
     for lang in Lang::ALL {
@@ -144,24 +143,17 @@ fn teach_buttons_leave_the_arrow_keys_free() {
     }
 }
 
-/// A letter of the Cyrillic or Greek alphabet works when it is typed, in either case, and so does the Latin key that sits where it is.
+/// A hot letter works in either case.
 #[test]
-fn a_cyrillic_or_greek_hot_letter_works_when_typed() {
-    // Russian: Quit is the "В" of "Выход"; "d" is the key of "в" in the Russian layout
-    for typed in ['в', 'В', 'd', 'D'] {
-        let mut a = app(Lang::Ru);
-        a.handle(Input::Char(typed));
-        let q = ctr(Lang::Ru, CText::QAsk);
-        let first: String = q.chars().take(8).collect();
-        assert!(text(&a).contains(&first), "{typed:?}");
-    }
-    // Greek: Quit is the "Έ" of "Έξοδος"; the accent does not have to be typed and "e" is the key of "ε"
-    for typed in ['Έ', 'έ', 'ε', 'e'] {
-        let mut a = app(Lang::El);
-        a.handle(Input::Char(typed));
-        let q = ctr(Lang::El, CText::QAsk);
-        let first: String = q.chars().take(8).collect();
-        assert!(text(&a).contains(&first), "{typed:?}");
+fn a_hot_letter_works_in_either_case() {
+    for lang in Lang::ALL {
+        let hot = hot_letter(ctr(lang, CText::BtnQuit)).unwrap();
+        for typed in [hot.to_ascii_lowercase(), hot.to_ascii_uppercase()] {
+            let mut a = app(lang);
+            a.handle(Input::Char(typed));
+            let first: String = ctr(lang, CText::QAsk).chars().take(8).collect();
+            assert!(text(&a).contains(&first), "{lang:?} {typed:?}");
+        }
     }
 }
 

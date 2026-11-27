@@ -5,7 +5,7 @@
 # <img src="images/brand/icon-64.png" alt="" width="40" height="40" align="absmiddle"> EH3D-DRILLPRO
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | 🇵🇹 <b>Português</b></p>
 
-### Uma reimplementação multiplataforma em Rust do fluxo de furação do clássico software DOS das máquinas Bungard CCD, com uma interface em modo de texto semelhante à original, em 37 línguas
+### Uma reimplementação multiplataforma em Rust do fluxo de furação do clássico software DOS das máquinas Bungard CCD, com uma interface em modo de texto semelhante à original, em oito línguas
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -44,10 +44,10 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Software | 🟡 | Um programa Rust com ecrã de texto de 80x25 lê o ficheiro de furação, a tabela de ferramentas e o ficheiro da máquina, ordena os furos e executa o trabalho inteiro num simulador, ou numa máquina real se o ficheiro da máquina o indicar. |
-| Testes | 🟡 | Passam 522 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nos 37 línguas. |
+| Testes | 🟡 | Passam 522 testes (`cargo test --workspace`): os formatos, o planeamento do trabalho, o protocolo no simulador e os ecrãs nas oito línguas. |
 | Leitores de ficheiros | 🟡 | Leem-se o ficheiro de furação `.NCD`, a tabela de ferramentas `DRILLPRO.DTD` e o ficheiro da máquina `DRILLPRO.DCF`; só com pequenos ficheiros de exemplo escritos para os testes, não com ficheiros de placas reais. |
 | Protocolo da máquina | 🟠 | O protocolo de bytes da unidade de controlo foi reconstruído por engenharia inversa e o `docs/PROTOCOL.md` ainda lista partes que são hipóteses; a camada de protocolo recusa mover o que quer que seja até ser armada. |
-| Interface | 🟡 | O ecrã de texto, os menus, o diálogo de ficheiros e a vista vetorial dos furos falam os 37 línguas (testado); o chinês e o japonês precisam de um tipo de letra CJK no sistema. |
+| Interface | 🟡 | O ecrã de texto, os menus, o diálogo de ficheiros e a vista vetorial dos furos falam as oito línguas (testado); o chinês e o japonês precisam de um tipo de letra CJK no sistema. |
 | Hardware real | 🟠 | Numa Bungard CCD MTC foram experimentados o movimento de referência dos três eixos e os movimentos de cada eixo; um trabalho de furação completo não correu, os passos por milímetro só foram comparados com a configuração do original, e as saídas do fuso e do aspirador não foram experimentadas. |
 | Segurança de utilização | 🟡 | `Esc` pára o trabalho numa fração de segundo e desliga os drivers dos motores, e a própria unidade de controlo da máquina vigia os fins de curso; o software não tem paragem de emergência própria. |
 | Ligação ao servidor | 🟠 | Com `connection = server` o programa envia o trabalho ao EH3D-SERVER e acompanha o progresso; este caminho só foi exercitado contra o simulador. |
@@ -96,7 +96,7 @@ O original é o programa fechado para MS-DOS da Bungard que comanda as máquinas
 | Extras | Nenhum destes | Um simulador que executa um trabalho inteiro, sons para o fim do trabalho e para o pedido de ferramenta, várias máquinas ao mesmo tempo através do servidor, arquivos ZIP de trabalho, contornos DXF e Gerber, um cursor intermitente e um conjunto de testes que corre a cada alteração |
 | Código e licença | Fechado, proprietário | Código aberto (GPL-3.0-or-later), escrito em Rust |
 | Maturidade | Anos de uso em máquinas reais | Muito mais jovem: o percurso de referência e os movimentos de cada eixo foram experimentados numa Bungard CCD MTC real; um trabalho inteiro ainda não correu numa máquina, e o trocador de ferramentas dos modelos ATC não funcionou numa real |
-* **37 línguas:** os ecrãs de texto, os menus e os diálogos falam inglês, espanhol, italiano, alemão, francês, português, chinês, japonês, búlgaro, croata, checo, dinamarquês, neerlandês, estónio, finlandês, grego, húngaro, irlandês, letão, lituano, maltês, polaco, romeno, eslovaco, esloveno, sueco, norueguês, islandês, ucraniano, russo, sérvio, albanês, catalão, galego, basco, português do Brasil e francês do Canadá. As palavras das 29 línguas além das oito primeiras foram traduzidas pelo modelo e aguardam a revisão de falantes nativos; um texto que falte numa língua aparece em inglês.
+* **Oito línguas:** os ecrãs de texto, os menus e os diálogos falam inglês, espanhol, italiano, alemão, francês, português de Portugal, chinês e japonês, tal como as falhas redigidas pelo próprio programa (o pormenor dado pelo sistema ou pela ligação é mostrado como chega). Um ficheiro de definições que indique `pt-br` ou `fr-ca` é lido como português ou francês; um que indique uma língua que o programa tinha e já não tem arranca em inglês.
 
 ## 🧩 Papel no EH3D
 
@@ -148,7 +148,7 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-Execute-o com `run.bat` (Windows) ou `./run.sh` (Linux e macOS); ambos compilam primeiro o programa, se for preciso: `run.bat [FICHEIRO.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` é a pasta com `DRILLPRO.DTD` e `DRILLPRO.DCF` (por omissão: `testdata/`) e `--dump` imprime o ecrã como texto simples. Teclas: `Alt` mais a letra realçada abre um menu, as setas movem, `Enter` aceita, `Esc` volta atrás; a barra de menus também se pode clicar. Nas 29 línguas lidas de ficheiros, as letras realçadas são escritas por `tools/make_hotkeys.py`, uma letra por controlo e nunca duas iguais num ecrã; uma letra cirílica ou grega escreve-se com o teclado desse alfabeto (russo, ucraniano e grego aceitam também a tecla latina que está no mesmo sítio; búlgaro e sérvio precisam do seu próprio esquema). O chinês e o japonês precisam de um tipo de letra CJK entre os do sistema. `--connection FILE` indica outro ficheiro de máquina que não o predefinido (`%APPDATA%\EH3D\machine.cfg` no Windows, `~/.config/eh3d/machine.cfg` nos restantes); sem ficheiro de máquina o programa corre no simulador. `--modern` inicia a interface de menus em vez dos ecrãs clássicos.
+Execute-o com `run.bat` (Windows) ou `./run.sh` (Linux e macOS); ambos compilam primeiro o programa, se for preciso: `run.bat [FICHEIRO.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` é a pasta com `DRILLPRO.DTD` e `DRILLPRO.DCF` (por omissão: `testdata/`) e `--dump` imprime o ecrã como texto simples. Teclas: `Alt` mais a letra realçada abre um menu, as setas movem, `Enter` aceita, `Esc` volta atrás; a barra de menus também se pode clicar. O chinês e o japonês precisam de um tipo de letra CJK entre os do sistema. `--connection FILE` indica outro ficheiro de máquina que não o predefinido (`%APPDATA%\EH3D\machine.cfg` no Windows, `~/.config/eh3d/machine.cfg` nos restantes); sem ficheiro de máquina o programa corre no simulador. `--modern` inicia a interface de menus em vez dos ecrãs clássicos.
 
 ## 🧪 Testes
 
@@ -178,7 +178,7 @@ EH3D-DRILLPRO/
 │   ├── job.rs runner.rs                         ordenar os furos e executar o trabalho na sua própria thread
 │   ├── app.rs screen.rs textapp.rs              o ecrã de texto de 80x25 e os menus modernos
 │   ├── eh3dfile.rs                              projeto .eh3d: entra o trabalho, saem planos
-│   ├── i18n.rs texts.rs                         os 37 línguas e os seus textos
+│   ├── i18n.rs texts.rs                         as oito línguas e os seus textos
 │   ├── gui.rs console.rs bin/                   a janela, a versão de terminal e os executáveis
 │   └── server_link.rs cli.rs                    a ligação ao EH3D-SERVER e a linha de comandos
 ├── protocol/src/
@@ -193,8 +193,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    pequenos ficheiros de exemplo escritos para os testes
 ├── config/                                      a configuração básica, explicada linha a linha
 ├── examples/                                    exemplos, de um furo a 20000
-├── locales/                                     as palavras das 29 línguas lidas de ficheiros, um ficheiro por língua
-├── tools/                                       verificação de CI, do README, escrita das teclas de atalho e ferramentas de imagens
+├── tools/                                       verificação de CI, do README e ferramentas de imagens
 ├── images/                                      faixa, as duas imagens e as capturas de ecrã
 ├── .github/                                     fluxos de CI e de publicação, modelos de issues e pull requests
 ├── build.sh build.bat                           scripts de compilação e testes

@@ -10,7 +10,7 @@ The program of the suite for the Bungard CCD drilling machines (MTC and CCD/2 MT
 
 * Reads Excellon `.NCD` files (with or without the `M48` header, modal coordinates, imperial units), the tool table `DRILLPRO.DTD` and the machine file `DRILLPRO.DCF`, and refuses files that are too big or damaged with a message.
 * Plans the job (the holes in the order of the file, X first, Y first or the shortest path; grouped by tool; panels; tabs; a job that goes on after a stop) and prints it on paper with `drillpro-plan` with no machine.
-* Shows the classic screens, checked cell by cell against the original, with the keyboard and the mouse, in 37 languages, and a console version for a terminal.
+* Shows the classic screens, checked cell by cell against the original, with the keyboard and the mouse, in eight languages, and a console version for a terminal.
 * Drives the machine through the protocol crate: byte transport, motion planning in millimetres with acceleration ramps, a reference run, and a safety gate that refuses motion until it is armed; the whole job runs to the end on the simulator.
 * Chooses how the job reaches the machine (simulator, serial port, USB adapter, EH3D node or EH3D server) from the machine file and the Config window, with a visible warning when the token would go over a plain connection.
 * Checks the plan before it starts (the summary and the dry run, the course of the machine, the tool table and the rack) and refuses a plan the server would refuse.

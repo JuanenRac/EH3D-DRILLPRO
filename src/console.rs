@@ -114,10 +114,10 @@ fn event_loop<A: TextApp>(app: &mut A, settings: &str, out: &mut io::Stdout) -> 
         let size = crossterm::terminal::size()?;
         let origin = origin_for(size);
         let frame = if size.0 < COLS as u16 || size.1 < ROWS as u16 {
-            format!(
-                "\x1b[2J\x1b[1;1HThe terminal needs 80 columns by 25 rows (it has {}x{}).",
-                size.0, size.1
-            )
+            let said = crate::texts::tr(app.lang(), crate::texts::Text::SmallTerminal)
+                .replacen("{}", &size.0.to_string(), 1)
+                .replacen("{}", &size.1.to_string(), 1);
+            format!("\x1b[2J\x1b[1;1H{said}")
         } else {
             app.render(&mut screen);
             ansi_frame(&screen, origin)
