@@ -1224,7 +1224,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if let Some(problem) = d.problem.as_deref().or(self.engine.error()) {
             let code: String = problem
                 .chars()
-                .take(66usize.saturating_sub(str_width(&file)))
+                .take(62usize.saturating_sub(str_width(&file)))
                 .collect();
             s.text(10 + str_width(&file), 2, &code, RED, GREY);
         }
