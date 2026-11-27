@@ -127,7 +127,7 @@ jobs:
           name="drillpro-${version}-${MATRIX_LABEL}"
           mkdir "$name"
           cp "target/${MATRIX_TARGET}/release/drillpro${MATRIX_EXT}" "$name/"
-          cp LICENSE README.md CHANGELOG.md "$name/"
+          cp LICENSE README.md CHANGELOG.md docs/THIRD_PARTY_NOTICES "$name/"
           # the basic configuration (explained line by line) and the examples, from one hole to twenty thousand
           cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$name/"
           cp -r examples "$name/examples"
@@ -145,7 +145,7 @@ jobs:
           cname="drillpro-${version}-console-${MATRIX_LABEL}"
           mkdir "$cname"
           cp "target/${MATRIX_TARGET}/release/drillpro-console${MATRIX_EXT}" "$cname/"
-          cp LICENSE README.md CHANGELOG.md "$cname/"
+          cp LICENSE README.md CHANGELOG.md docs/THIRD_PARTY_NOTICES "$cname/"
           cp config/DRILLPRO.DCF config/DRILLPRO.DTD config/machine.cfg.example config/GUIDE_*.txt "$cname/"
           cp -r examples "$cname/examples"
           if [ "${MATRIX_ARCHIVE}" = "zip" ]; then

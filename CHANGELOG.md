@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Third-party notices in every package (`docs/THIRD_PARTY_NOTICES`):** the packages of the releases now carry the copyright notices and licence texts of the Rust crates and of the data the program is built with, and the CI fails when a new dependency or licence is not in the file.
+
 - **The format window keeps the error inside its frame**, and the picture of the Parameter window in the README was taken again.
 
 - **A refused drill file now asks for its format on the screen:** when a file does not declare how its numbers are written, a window of the classic screens and of the menu screens offers the formats with their explanation in the eight languages, keeps the one chosen in `DRILLPRO.FMT` of the data folder and reads the file with it. No format is in focus at first, so `Enter` or `Esc` alone leave the file refused. The choice can be changed later in the Parameter window (menu screens: `F` in the configuration). 3 new tests; not tried on a machine.
