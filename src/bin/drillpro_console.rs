@@ -1,6 +1,6 @@
 //! DRILLPRO front end (console): the same screens in a terminal, with the keyboard and the mouse; no window system needed.
 //!
-//! Usage: `drillpro-console [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--connection FILE] [--modern] [--dump]`
+//! Usage: `drillpro-console [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--connection FILE] [--drill-format NAME] [--modern] [--dump]`
 //!
 //! The terminal must be at least 80 columns by 25 rows. `Ctrl+C` leaves at once.
 

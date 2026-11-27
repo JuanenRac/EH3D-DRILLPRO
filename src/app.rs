@@ -3,6 +3,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::config::{self, Config};
+use crate::drill_format::NumberFormat;
 use crate::eh3dfile::{self, Changed, Choice, ProjectJob};
 use crate::i18n::{str_width, Lang};
 use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
@@ -16,6 +17,7 @@ use crate::screen::*;
 use crate::textapp::TextApp;
 use crate::texts::{tr, Text};
 use crate::tools::{self, Tool};
+use eh3d_bungard_formats::error::Code;
 use eh3d_bungard_formats::limits::ReaderLimits;
 use eh3d_project::manufacturing::JobFile;
 use eh3d_project::suitetext::S;
@@ -131,6 +133,8 @@ pub struct App {
     pub(crate) connection: ConnectionConfig,
     /// The folder of `DRILLPRO.DTD` and `DRILLPRO.DCF`, and the text of both files as they were read (to write them back).
     pub(crate) data_dir: PathBuf,
+    /// How a drill file that does not declare its number format is read; `None` refuses it.
+    drill_format: Option<NumberFormat>,
     pub(crate) config_text: Option<String>,
     pub(crate) tools_text: Option<String>,
     /// What the main form and the Panelization dialog add to the job.
@@ -147,13 +151,6 @@ pub struct App {
 
 const MENU_BG: u8 = LIGHT_GRAY;
 const WIN_BG: u8 = CYAN;
-
-/// Whether the header of a drill file says its unit (`METRIC`, `INCH`, `M71` or `M72`): when it does not, its numbers are read as mils.
-pub(crate) fn declares_unit(text: &str) -> bool {
-    text.lines()
-        .map(str::trim)
-        .any(|l| l.starts_with("METRIC") || l.starts_with("INCH") || l == "M71" || l == "M72")
-}
 
 impl App {
     /// `data_dir` is where `DRILLPRO.DTD` and `DRILLPRO.DCF` are looked up.
@@ -200,6 +197,7 @@ impl App {
             tools_found: tool_text.is_some(),
             tools: tool_text.as_deref().map(tools::parse).unwrap_or_default(),
             data_dir: data_dir.to_path_buf(),
+            drill_format: crate::drill_format::load(data_dir).unwrap_or(None),
             config_text,
             tools_text: tool_text,
             job_options: crate::job::JobOptions::default(),
@@ -220,6 +218,16 @@ impl App {
         app.dir = crate::config::work_dir(data_dir, app.config.as_ref());
         app.refresh_entries();
         app
+    }
+
+    /// How a drill file that does not declare its number format is read; `None` refuses it.
+    pub fn drill_format(&self) -> Option<NumberFormat> {
+        self.drill_format
+    }
+
+    /// Changes [`App::drill_format`] for the files loaded from now on; [`crate::drill_format::save`] keeps it.
+    pub fn set_drill_format(&mut self, chosen: Option<NumberFormat>) {
+        self.drill_format = chosen;
     }
 
     /// Loads a drill file, or the first drill layer of the job of an `.eh3d` project. What was loaded stays when the new one cannot be read.
@@ -474,7 +482,8 @@ impl App {
             return false;
         }
         // the size limits of the readers (kept in reader_limits.cfg of the shared crate): a file past a hard limit is refused, one past a warning limit is read and said
-        match ncd::parse_limited(&text, &ReaderLimits::default()) {
+        // a file that does not declare its format is refused, unless the person has chosen how to read it
+        match ncd::parse_as_limited(&text, self.drill_format, &ReaderLimits::default()) {
             Ok((file, _)) if !file.ignored.is_empty() => {
                 // a slot or a routed move would vanish from the job: the file is not taken
                 let first = &file.ignored[0];
@@ -507,9 +516,11 @@ impl App {
                     &self.connection.tuning,
                     self.lang,
                 );
-                // a file with no unit in its header is read as mils: say so, because a file in inches written without a header comes out ten times larger
-                let unit_supposed =
-                    (!declares_unit(&text)).then(|| tr(self.lang, Text::UnitsSupposed).to_string());
+                // a file that was read with the chosen format says so: with another format its holes would be elsewhere
+                let unit_supposed = self
+                    .drill_format
+                    .filter(|_| !ncd::diagnose(&text).is_empty())
+                    .map(|f| format!("{}: {}", tr(self.lang, Text::FormatChosen), f.name()));
                 // a hole that is there twice is drilled twice unless the job is told to skip the repeats: say how many
                 let repeats = crate::job::duplicate_holes(&holes);
                 let repeated = (repeats > 0)
@@ -531,11 +542,15 @@ impl App {
                 return true;
             }
             Err(e) => {
-                self.error = Some(format!(
+                let mut why = format!(
                     "{}: {}",
                     tr(self.lang, Text::ErrRead),
                     crate::summary::refusal_message(&e, self.lang)
-                ))
+                );
+                if e.code == Code::NcdFormatAssumed {
+                    why = format!("{why}. {}", crate::drill_format::help(self.lang));
+                }
+                self.error = Some(why);
             }
         }
         false
@@ -1912,14 +1927,25 @@ M30
         )
         .unwrap();
         let mut app = App::new(Lang::En, &data);
+        app.set_drill_format(None);
         app.load_file(&bare);
-        let first = app.warning.clone().unwrap_or_default();
+        let refused = app.error.clone().unwrap_or_default();
+        assert!(app.loaded.is_none());
         app.load_file(&said);
-        let second = app.warning.clone().unwrap_or_default();
+        let plain_inch = app.error.clone().unwrap_or_default();
+        // the choice is kept in the data folder and read again by the next start
+        crate::drill_format::save(&dir, Some(NumberFormat::Mils)).unwrap();
+        let mut app = App::new(Lang::En, &dir);
+        assert_eq!(app.drill_format(), Some(NumberFormat::Mils));
+        app.load_file(&said);
+        let warned = app.warning.clone().unwrap_or_default();
         let _ = std::fs::remove_dir_all(&dir);
+        for why in [&refused, &plain_inch] {
+            assert!(why.contains("EH3D-FORMATS-014"), "{why}");
+            assert!(why.contains("--drill-format"), "{why}");
+        }
         assert!(app.error.is_none(), "{:?}", app.error);
-        assert!(first.contains("does not state its unit"), "{first}");
-        assert!(!second.contains("does not state its unit"), "{second}");
+        assert!(warned.contains("chosen one: mils"), "{warned}");
     }
 
     #[test]

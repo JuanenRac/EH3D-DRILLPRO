@@ -4,6 +4,7 @@ pub mod app;
 pub mod classic;
 pub mod cli;
 pub mod crash;
+pub mod drill_format;
 pub mod dryrun;
 pub mod eh3dfile;
 pub use eh3d_bungard_formats::config;
