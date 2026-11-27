@@ -217,6 +217,7 @@ fn atc_app() -> ClassicApp {
     )
     .unwrap();
     std::fs::copy(testdata().join("DRILLPRO.DTD"), dir.join("DRILLPRO.DTD")).unwrap();
+    std::fs::copy(testdata().join("DRILLPRO.FMT"), dir.join("DRILLPRO.FMT")).unwrap();
     ClassicApp::new(Lang::En, &dir)
 }
 

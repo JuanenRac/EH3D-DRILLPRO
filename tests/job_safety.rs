@@ -12,6 +12,7 @@ fn scratch(tag: &str, table: &str, file: &str) -> PathBuf {
     std::fs::create_dir_all(&dir).unwrap();
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
     std::fs::copy(testdata.join("DRILLPRO.DCF"), dir.join("DRILLPRO.DCF")).unwrap();
+    std::fs::copy(testdata.join("DRILLPRO.FMT"), dir.join("DRILLPRO.FMT")).unwrap();
     std::fs::write(
         dir.join("DRILLPRO.DTD"),
         format!("{}{table}", ";\r\n".repeat(19)),

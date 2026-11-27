@@ -41,7 +41,7 @@ fn tree(name: &str) -> PathBuf {
     std::fs::create_dir_all(dir.join("jobs").join("deeper")).unwrap();
     std::fs::create_dir_all(dir.join("archive")).unwrap();
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
-    for f in ["DRILLPRO.DCF", "DRILLPRO.DTD", "T1.NCD"] {
+    for f in ["DRILLPRO.DCF", "DRILLPRO.FMT", "DRILLPRO.DTD", "T1.NCD"] {
         std::fs::copy(testdata.join(f), dir.join(f)).unwrap();
     }
     std::fs::copy(testdata.join("T1.NCD"), dir.join("jobs").join("INSIDE.NCD")).unwrap();

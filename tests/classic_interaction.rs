@@ -19,7 +19,13 @@ fn scratch(name: &str) -> PathBuf {
     let dir = std::env::temp_dir().join(format!("eh3d-drillpro-{name}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    for f in ["DRILLPRO.DCF", "DRILLPRO.DTD", "T1.NCD", "100THOU.NCD"] {
+    for f in [
+        "DRILLPRO.DCF",
+        "DRILLPRO.FMT",
+        "DRILLPRO.DTD",
+        "T1.NCD",
+        "100THOU.NCD",
+    ] {
         std::fs::copy(testdata().join(f), dir.join(f)).unwrap();
     }
     dir
