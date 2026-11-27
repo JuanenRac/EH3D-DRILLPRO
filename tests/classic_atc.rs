@@ -16,6 +16,7 @@ fn scratch(tag: &str) -> PathBuf {
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
     std::fs::copy(testdata.join("DRILLPRO_CNCA.DCF"), dir.join("DRILLPRO.DCF")).unwrap();
     std::fs::copy(testdata.join("DRILLPRO.DTD"), dir.join("DRILLPRO.DTD")).unwrap();
+    std::fs::copy(testdata.join("DRILLPRO.FMT"), dir.join("DRILLPRO.FMT")).unwrap();
     std::fs::write(
         dir.join("THREE.NCD"),
         "%\nT01\nX500Y500\nX3000Y500\nT02\nX1000Y2500\nX2000Y1500\nT03\nX2500Y3000\nM30\n",
@@ -57,7 +58,7 @@ fn the_manual_machines_have_no_autochg_box() {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
-    for f in ["DRILLPRO.DCF", "DRILLPRO.DTD"] {
+    for f in ["DRILLPRO.DCF", "DRILLPRO.FMT", "DRILLPRO.DTD"] {
         std::fs::copy(testdata.join(f), dir.join(f)).unwrap();
     }
     let mut a = ClassicApp::new(Lang::En, &dir);

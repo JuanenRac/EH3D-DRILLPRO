@@ -148,7 +148,7 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-`run.bat`（Windows）または `./run.sh`（Linux と macOS）で実行します。どちらも必要ならプログラムを先にビルドします：`run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` は `DRILLPRO.DTD` と `DRILLPRO.DCF` があるフォルダー（既定：`testdata/`）、`--dump` は画面をプレーンテキストで出力します。キー：`Alt` とハイライトされた文字でメニューを開き、矢印で移動、`Enter` で決定、`Esc` で戻ります。メニューバーはクリックもできます。中国語と日本語にはシステムフォントに CJK フォントが必要です。 `--connection FILE` で既定とは別の機械ファイルを指定できます（既定は Windows では `%APPDATA%\EH3D\machine.cfg`、その他では `~/.config/eh3d/machine.cfg`）。機械ファイルがなければプログラムはシミュレーターで動きます。 `--modern` でクラシック画面の代わりにメニュー式の画面を起動します。
+`run.bat`（Windows）または `./run.sh`（Linux と macOS）で実行します。どちらも必要ならプログラムを先にビルドします：`run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`。`--data` は `DRILLPRO.DTD` と `DRILLPRO.DCF` があるフォルダー（既定：`testdata/`）、`--dump` は画面をプレーンテキストで出力します。キー：`Alt` とハイライトされた文字でメニューを開き、矢印で移動、`Enter` で決定、`Esc` で戻ります。メニューバーはクリックもできます。中国語と日本語にはシステムフォントに CJK フォントが必要です。 `--connection FILE` で既定とは別の機械ファイルを指定できます（既定は Windows では `%APPDATA%\EH3D\machine.cfg`、その他では `~/.config/eh3d/machine.cfg`）。機械ファイルがなければプログラムはシミュレーターで動きます。 `--modern` でクラシック画面の代わりにメニュー式の画面を起動します。数値の書き方を宣言していないドリルファイル（ヘッダーのない機械のファイル、`INCH` のみ）は、書式を選ぶまで拒否されます：`--drill-format mils|inch-2.4-tz|inch-2.4-lz|metric-3.3-tz|metric-3.3-lz`。選択はデータフォルダーの `DRILLPRO.FMT` に保存されます（`ask` で解除）。
 
 ## 🧪 テスト
 

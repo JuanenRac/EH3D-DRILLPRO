@@ -14,7 +14,7 @@ fn scratch(tag: &str) -> PathBuf {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
-    for f in ["DRILLPRO.DCF", "DRILLPRO.DTD"] {
+    for f in ["DRILLPRO.DCF", "DRILLPRO.FMT", "DRILLPRO.DTD"] {
         std::fs::copy(testdata.join(f), dir.join(f)).unwrap();
     }
     dir
@@ -119,6 +119,11 @@ fn teach_in_records_positions_and_writes_a_file_the_program_reads() {
     press(&mut a, "y");
     let written = std::fs::read_to_string(a.engine.dir().join("TEACH.NCD")).expect("the file");
     assert!(written.contains("BUNGARD CCD TEACH-IN FILE"), "{written}");
+    // the file declares its number format, so no reader has to suppose it
+    assert!(
+        eh3d_drillpro::ncd::parse_as(&written, None).is_ok(),
+        "{written}"
+    );
     assert!(
         written.contains("T01") && written.contains("M30"),
         "{written}"

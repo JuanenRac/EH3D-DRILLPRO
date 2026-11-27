@@ -326,6 +326,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
             .map_or(CoordUnit::Mil, |m| m.unit)
             .mm();
         let mut out = String::from("BUNGARD CCD TEACH-IN FILE\r\n%\r\n");
+        // whole mils are declared (`ncd::MILS_DECLARATION`), so the file is read again without a choice; another coordinate unit of the machine cannot be declared
+        if (unit - CoordUnit::Mil.mm()).abs() < 1e-12 {
+            out.push_str(&crate::ncd::MILS_DECLARATION.replace('\n', "\r\n"));
+        }
         out.push_str(&format!("T{:02}\r\n", t.tool));
         for (x, y) in &t.points {
             let u = |mil: i32| (TeachDlg::mm(mil) / unit).round() as i64;

@@ -1,6 +1,6 @@
 //! DRILLPRO front end (window).
 //!
-//! Usage: `drillpro [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--connection FILE] [--modern] [--dump]`
+//! Usage: `drillpro [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--connection FILE] [--drill-format NAME] [--modern] [--dump]`
 //!
 //! The classic screens of the MS-DOS program are the default; `--modern` starts the menu-driven interface.
 //! Without `--data` the files are looked for in the current folder, the folder of the program and the user's

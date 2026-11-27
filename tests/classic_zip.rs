@@ -14,7 +14,7 @@ fn scratch(tag: &str) -> PathBuf {
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
     let testdata = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata");
-    for f in ["DRILLPRO.DCF", "DRILLPRO.DTD"] {
+    for f in ["DRILLPRO.DCF", "DRILLPRO.FMT", "DRILLPRO.DTD"] {
         std::fs::copy(testdata.join(f), dir.join(f)).unwrap();
     }
     let ncd =

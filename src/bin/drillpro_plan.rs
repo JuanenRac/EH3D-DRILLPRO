@@ -21,7 +21,7 @@ use eh3d_drillpro::i18n::Lang;
 use eh3d_drillpro::job::{JobOptions, Sorting};
 use eh3d_project::manufacturing as suite;
 
-const USAGE: &str = "usage: drillpro-plan FILE.NCD [--data DIR] [--lang CODE] [--sort none|x|y|special] [--from N] [--to N] [--skip-tool T] [--skip-duplicates] [--per-tool] [--check]\n       drillpro-plan project info FILE.eh3d\n       drillpro-plan project plan FILE.eh3d [--layer NAME] [the options above]";
+const USAGE: &str = "usage: drillpro-plan FILE.NCD [--data DIR] [--lang CODE] [--drill-format NAME] [--sort none|x|y|special] [--from N] [--to N] [--skip-tool T] [--skip-duplicates] [--per-tool] [--check]\n       drillpro-plan project info FILE.eh3d\n       drillpro-plan project plan FILE.eh3d [--layer NAME] [the options above]";
 
 /// Takes `name VALUE` out of the arguments (the first one) and gives the value.
 fn take_value(args: &mut Vec<String>, name: &str) -> Result<Option<String>, String> {
@@ -151,6 +151,16 @@ fn run(mut args: Vec<String>) -> Result<u8, String> {
         None => Lang::En,
     };
     let data = take_value(&mut args, "--data")?.map_or_else(|| PathBuf::from("."), PathBuf::from);
+    let format = take_value(&mut args, "--drill-format")?
+        .map(|n| {
+            eh3d_drillpro::drill_format::NumberFormat::from_setting(&n).map_err(|wrong| {
+                format!(
+                    "--drill-format '{wrong}': {}",
+                    eh3d_drillpro::drill_format::how_to_choose(lang.code())
+                )
+            })
+        })
+        .transpose()?;
     let (options, sorting) = job_asked(&mut args)?;
     let per_tool = take_flag(&mut args, "--per-tool");
     let check = take_flag(&mut args, "--check");
@@ -160,6 +170,10 @@ fn run(mut args: Vec<String>) -> Result<u8, String> {
     }
     let new_app = || {
         let mut app = App::new(lang, &data);
+        // for this run only: DRILLPRO.FMT of the data folder is not changed
+        if let Some(f) = format {
+            app.set_drill_format(f);
+        }
         if let Some(s) = sorting {
             app.set_sorting(s);
         }

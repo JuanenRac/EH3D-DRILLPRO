@@ -114,6 +114,7 @@ pub fn parse_from(
         server_status: false,
     };
     let mut args = args.into_iter();
+    let mut drill_format = None;
     while let Some(a) = args.next() {
         match a.as_str() {
             "--lang" => {
@@ -126,6 +127,7 @@ pub fn parse_from(
                     o.data = PathBuf::from(d);
                 }
             }
+            "--drill-format" => drill_format = Some(args.next().unwrap_or_default()),
             "--connection" => o.connection = args.next().map(PathBuf::from),
             "--dump" => o.dump = true,
             "--machines" => o.machines = true,
@@ -150,6 +152,19 @@ pub fn parse_from(
                 }
             }
             other => o.file = Some(PathBuf::from(other)),
+        }
+    }
+    if let Some(name) = drill_format {
+        match crate::drill_format::NumberFormat::from_setting(&name) {
+            Ok(chosen) => {
+                if let Err(e) = crate::drill_format::save(&o.data, chosen) {
+                    eprintln!("{}: {e}", crate::drill_format::FILE);
+                }
+            }
+            Err(wrong) => eprintln!(
+                "--drill-format '{wrong}': {}",
+                crate::drill_format::how_to_choose(o.lang.code())
+            ),
         }
     }
     o
