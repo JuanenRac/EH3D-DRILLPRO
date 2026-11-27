@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.6] - Drill files ask for their number format and are never read by guess (not tried on a machine)
+
 - **The workflows take EH3D-COMMON at its tag v0.4.0** instead of a commit; no code changes.
 
 - **Third-party notices in every package (`docs/THIRD_PARTY_NOTICES`):** the packages of the releases now carry the copyright notices and licence texts of the Rust crates and of the data the program is built with, and the CI fails when a new dependency or licence is not in the file.
