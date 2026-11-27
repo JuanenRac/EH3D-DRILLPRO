@@ -11,7 +11,7 @@ pub(crate) enum Dialog {
     None,
     Files(FileDlg),
     Tools(ToolDlg),
-    Parameter(ParamDlg),
+    Parameter(Box<ParamDlg>),
     Panel(PanelDlg),
     Quit {
         yes: bool,
@@ -1966,7 +1966,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         let current = self.engine.drill_format();
         let formats = crate::drill_format::choices(current);
         ring.extend([Dlg::Load, Dlg::Save, Dlg::Ok, Dlg::Abort].map(Ctl::Btn));
-        Dialog::Parameter(ParamDlg {
+        Dialog::Parameter(Box::new(ParamDlg {
             values,
             unit,
             sorting,
@@ -1981,7 +1981,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             error: None,
             status: None,
             conn: super::connect::ConnState::from_config(&self.engine.connection()),
-        })
+        }))
     }
 
     /// Takes the typed text of the focused field into its value; false (with the error shown) when it is not valid.
