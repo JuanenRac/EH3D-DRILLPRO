@@ -5,7 +5,7 @@
 # <img src="images/brand/icon-64.png" alt="" width="40" height="40" align="absmiddle"> EH3D-DRILLPRO
 <p align="center">🇺🇸 <b>English</b> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### A cross-platform Rust re-implementation of the drilling workflow of the classic DOS software for Bungard CCD machines, with a text-mode look-alike interface in 37 languages
+### A cross-platform Rust re-implementation of the drilling workflow of the classic DOS software for Bungard CCD machines, with a text-mode look-alike interface in eight languages
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -17,7 +17,7 @@
 
 ---
 
-**Honesty check - what actually runs today:** a Rust program with an 80x25 text-mode interface that reads Excellon `.NCD` drill files, the tool table and the machine configuration, orders the holes, shows them and runs the whole job either **against a simulator** (the default) or, when the machine file says so, **on a real machine** through the computer's serial port, a USB serial adapter or the EH3D-NODE-BUNGARD. 522 tests run on a computer. On one real Bungard CCD MTC the reference run of the three axes (Z, X and Y to their limit switches, with the control unit's "all three home" signal confirmed live) and the moves of every axis have been tried; **a whole drilling job has not run on the machine yet**, and the steps per millimetre are only checked against the original's configuration. The screens you get by default are the classic ones of the MS-DOS program, checked cell by cell against the original; `--modern` starts the menu-driven interface instead. They work with the keyboard and the mouse, the window can be maximized (the screen scales from 640x400 up to 1080p and beyond), the configuration and tool table files are edited and saved from the dialogs, and the About button lists the Bungard CCD and CCD/2 machines (MTC and ATC supported). A console version (`drillpro-console`) draws the same screens in a terminal, with the keyboard and the mouse and no window system (SSH, a text console, an old PC). The release packages carry the basic configuration, explained line by line, and an `examples` folder from one hole to twenty thousand. The tool changer of the ATC models (automatic tool change) works from a recording of the original and has not run on a real machine.
+**Honesty check - what actually runs today:** a Rust program with an 80x25 text-mode interface that reads Excellon `.NCD` drill files, the tool table and the machine configuration, orders the holes, shows them and runs the whole job either **against a simulator** (the default) or, when the machine file says so, **on a real machine** through the computer's serial port, a USB serial adapter or the EH3D-NODE-BUNGARD. 521 tests run on a computer. On one real Bungard CCD MTC the reference run of the three axes (Z, X and Y to their limit switches, with the control unit's "all three home" signal confirmed live) and the moves of every axis have been tried; **a whole drilling job has not run on the machine yet**, and the steps per millimetre are only checked against the original's configuration. The screens you get by default are the classic ones of the MS-DOS program, checked cell by cell against the original; `--modern` starts the menu-driven interface instead. They work with the keyboard and the mouse, the window can be maximized (the screen scales from 640x400 up to 1080p and beyond), the configuration and tool table files are edited and saved from the dialogs, and the About button lists the Bungard CCD and CCD/2 machines (MTC and ATC supported). A console version (`drillpro-console`) draws the same screens in a terminal, with the keyboard and the mouse and no window system (SSH, a text console, an old PC). The release packages carry the basic configuration, explained line by line, and an `examples` folder from one hole to twenty thousand. The tool changer of the ATC models (automatic tool change) works from a recording of the original and has not run on a real machine.
 
 ---
 
@@ -29,7 +29,7 @@
 |---|---|
 | Version | `0.2.4` |
 | Maturity | Scaffolding |
-| Tests | 522 |
+| Tests | 521 |
 | Stack | Rust |
 | On real hardware | Yes, on one Bungard CCD MTC: the reference run and the moves of every axis; a whole job has not run yet. Without a machine file it runs on the simulator |
 
@@ -44,10 +44,10 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Software | 🟡 | A Rust program with an 80x25 text-mode screen reads the drill file, the tool table and the machine file, orders the holes and runs the whole job against a simulator, or on a real machine when the machine file says so. |
-| Tests | 🟡 | 522 tests pass (`cargo test --workspace`): the formats, the job planning, the protocol on the simulator and the screens in all 37 languages. |
+| Tests | 🟡 | 521 tests pass (`cargo test --workspace`): the formats, the job planning, the protocol on the simulator and the screens in all eight languages. |
 | File readers | 🟡 | The `.NCD` drill file, the tool table `DRILLPRO.DTD` and the machine file `DRILLPRO.DCF` are read; only with small sample files written for the tests, not with files from real boards. |
 | Machine protocol | 🟠 | The byte protocol of the control unit was rebuilt by reverse engineering and `docs/PROTOCOL.md` still lists parts that are hypotheses; the protocol layer refuses to move anything until it has been armed. |
-| Interface | 🟡 | The text-mode screen, the menus, the file dialog and the vector view of the holes speak all 37 languages (tested); Chinese and Japanese need a CJK font in the system. |
+| Interface | 🟡 | The text-mode screen, the menus, the file dialog and the vector view of the holes speak all eight languages (tested); Chinese and Japanese need a CJK font in the system. |
 | Real hardware | 🟠 | On one Bungard CCD MTC the reference run of the three axes and the moves of every axis have been tried; a whole drilling job has not run, the steps per millimetre are only checked against the original's configuration, and the spindle and vacuum outputs are untried. |
 | Safety in use | 🟡 | `Esc` stops the job within a fraction of a second and switches the stepper drivers off, and the machine's own control unit watches the limit switches; the software has no emergency stop of its own. |
 | Server connection | 🟠 | With `connection = server` the program sends the job to EH3D-SERVER and follows its progress; this path has only been exercised against the simulator. |
@@ -96,7 +96,7 @@ The original is the closed MS-DOS program of Bungard that drives the CCD machine
 | Extras | None of these | A simulator that runs a whole job, sounds for the end of the job and for a tool request, several machines at once through the server, ZIP job archives, DXF and Gerber outlines, a blinking cursor, and a test suite that runs on every change |
 | Source and licence | Closed, proprietary | Open source (GPL-3.0-or-later), written in Rust |
 | Maturity | Years of use on real machines | Much younger: the reference run and the moves of every axis have been tried on one real Bungard CCD MTC; a whole job has not run on a machine yet, and the tool changer of the ATC models has not run on a real one |
-* **37 languages:** the text screens, menus and dialogs speak English, Spanish, Italian, German, French, Portuguese, Chinese, Japanese, Bulgarian, Croatian, Czech, Danish, Dutch, Estonian, Finnish, Greek, Hungarian, Irish, Latvian, Lithuanian, Maltese, Polish, Romanian, Slovak, Slovenian, Swedish, Norwegian, Icelandic, Ukrainian, Russian, Serbian, Albanian, Catalan, Galician, Basque, Brazilian Portuguese and Canadian French. The words of the 29 languages beyond the first eight are translated by the model and wait for a review by native speakers; a text that a language does not have is shown in English.
+* **Eight languages:** the text screens, menus and dialogs speak English, Spanish, Italian, German, French, Portuguese of Portugal, Chinese and Japanese, and so do the failures the program words itself (the detail given by the system or the link is shown as it comes). A settings file that names `pt-br` or `fr-ca` is read as Portuguese or French; one that names a language the program had before and has no more starts in English.
 
 ## 🧩 Role in EH3D
 
@@ -148,11 +148,11 @@ cargo fmt --all --check
 python -I tools/ci_validate.py
 ```
 
-Run it with `run.bat` (Windows) or `./run.sh` (Linux and macOS); both build the program first if needed: `run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` is the folder with `DRILLPRO.DTD` and `DRILLPRO.DCF` (default: `testdata/`) and `--dump` prints the screen as plain text. Keys: `Alt` plus the highlighted letter opens a menu, arrows move, `Enter` accepts, `Esc` goes back; the menu bar can also be clicked. In the 29 languages read from files the highlighted letters are written by `tools/make_hotkeys.py`, one letter for each control and no two alike on a screen; a Cyrillic or Greek letter is typed on the keyboard of that alphabet (Russian, Ukrainian and Greek also take the Latin key that sits in the same place; Bulgarian and Serbian need their own layout). Chinese and Japanese need a CJK font among the system fonts. `--connection FILE` points to another machine file than the default one (`%APPDATA%\EH3D\machine.cfg` on Windows, `~/.config/eh3d/machine.cfg` elsewhere); without a machine file the program runs on the simulator. `--modern` starts the menu-driven interface instead of the classic screens.
+Run it with `run.bat` (Windows) or `./run.sh` (Linux and macOS); both build the program first if needed: `run.bat [FILE.NCD] [--lang en|es|it|de|fr|pt|zh|ja] [--data DIR] [--dump]`. `--data` is the folder with `DRILLPRO.DTD` and `DRILLPRO.DCF` (default: `testdata/`) and `--dump` prints the screen as plain text. Keys: `Alt` plus the highlighted letter opens a menu, arrows move, `Enter` accepts, `Esc` goes back; the menu bar can also be clicked. Chinese and Japanese need a CJK font among the system fonts. `--connection FILE` points to another machine file than the default one (`%APPDATA%\EH3D\machine.cfg` on Windows, `~/.config/eh3d/machine.cfg` elsewhere); without a machine file the program runs on the simulator. `--modern` starts the menu-driven interface instead of the classic screens.
 
 ## 🧪 Testing
 
-The suite has 522 tests (`cargo test --workspace`). They check the file formats (the drill file, the tool table and the machine file, and writing them back), the job planning, the protocol on the simulator (bytes, motion, the reference run, the latch bits, the link to the node and the safety gate that refuses to move until armed), the classic screens cell by cell and the screens in all eight languages. The CI also runs `cargo fmt --check` and `cargo clippy` with warnings as errors, and `python -I tools/ci_validate.py` checks the manifest, the versions, the changelog and the eight READMEs. A simulation of failures (`eh3d_drillpro_protocol::faulty`) wraps the simulator and makes the link fail on purpose - a unit that does not answer, a fault line stuck high, a limit switch that never closes, a cable pulled in the middle of a run, a status that cannot be read and bytes lost with a fixed seed - and the tests check the message, the stop and the recovery. It has not run on a real machine.
+The suite has 521 tests (`cargo test --workspace`). They check the file formats (the drill file, the tool table and the machine file, and writing them back), the job planning, the protocol on the simulator (bytes, motion, the reference run, the latch bits, the link to the node and the safety gate that refuses to move until armed), the classic screens cell by cell and the screens in all eight languages. The CI also runs `cargo fmt --check` and `cargo clippy` with warnings as errors, and `python -I tools/ci_validate.py` checks the manifest, the versions, the changelog and the eight READMEs. A simulation of failures (`eh3d_drillpro_protocol::faulty`) wraps the simulator and makes the link fail on purpose - a unit that does not answer, a fault line stuck high, a limit switch that never closes, a cable pulled in the middle of a run, a status that cannot be read and bytes lost with a fixed seed - and the tests check the message, the stop and the recovery. It has not run on a real machine.
 
 Self-test for the day the program meets the machine: `python tools/machine_selftest.py` reads the machine file (`DRILLPRO.DCF`) and the tool table and checks them against the model (speeds against the serial line, acceleration, spindle start time, tool speeds, depth); `--measure` guides a stopwatch measurement and writes a proposed machine file as a new file, never over yours. It sends nothing to the machine. Its tests run in the CI (`python -I -m unittest discover -s tools -p "test_*.py"`). The steps to do by hand are in [docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md).
 
@@ -178,7 +178,7 @@ EH3D-DRILLPRO/
 │   ├── job.rs runner.rs                         ordering the holes and running the job on its own thread
 │   ├── app.rs screen.rs textapp.rs              the 80x25 text-mode screen and the modern menus
 │   ├── eh3dfile.rs                              the .eh3d project: job in, plans out
-│   ├── i18n.rs texts.rs                         the 37 languages and their texts
+│   ├── i18n.rs texts.rs                         the eight languages and their texts
 │   ├── gui.rs console.rs bin/                   the window, the terminal version and the executables
 │   └── server_link.rs cli.rs                    the link to EH3D-SERVER and the command line
 ├── protocol/src/
@@ -193,8 +193,7 @@ EH3D-DRILLPRO/
 ├── testdata/                                    small sample files written for the tests
 ├── config/                                      the basic configuration, explained line by line
 ├── examples/                                    example files, from one hole to 20000
-├── locales/                                     the words of the 29 languages that are read from files, one file per language
-├── tools/                                       CI check, README check, hot-key writer and the picture tools
+├── tools/                                       CI check, README check and the picture tools
 ├── images/                                      banner, the two pictures and the screenshots
 ├── .github/                                     CI and release workflows, issue and pull-request templates
 ├── build.sh build.bat                           build and test scripts

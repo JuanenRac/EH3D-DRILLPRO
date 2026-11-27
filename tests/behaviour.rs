@@ -1,8 +1,6 @@
 //! Behaviour of the checks of the files that are read, of the languages and their keys, and of the progress of a plan, at the exact edge of each rule. Seeded and without a clock.
 
-use eh3d_drillpro::i18n::{
-    cell_width, fold_key, load_locales, pick, str_width, Lang, Locales, CORE_LANGS,
-};
+use eh3d_drillpro::i18n::{cell_width, fold_key, str_width, Lang};
 use eh3d_drillpro::input_guard::{
     check, check_len, InputKind, InputProblem, MAX_INPUT_BYTES, MAX_LINE_CHARS, MAX_NUMBER_DIGITS,
 };
@@ -11,7 +9,6 @@ use eh3d_drillpro::protocol::job::{Item, Pause};
 use eh3d_drillpro::protocol::latches::Op;
 use eh3d_drillpro::protocol::motion::Geometry;
 use eh3d_drillpro::protocol::{bits, Step};
-use std::collections::HashMap;
 
 const KINDS: [InputKind; 4] = [
     InputKind::Ncd,
@@ -173,9 +170,9 @@ fn seeded_garbage_is_judged_without_a_panic_and_a_clean_text_is_always_allowed()
 // ---------------------------------------------------------------- the languages and their keys
 
 #[test]
-fn the_eight_core_languages_come_first_in_the_fixed_order_and_every_language_has_its_place() {
-    let first: Vec<&str> = Lang::ALL[..CORE_LANGS].iter().map(|l| l.code()).collect();
-    assert_eq!(first, vec!["en", "es", "it", "de", "fr", "pt", "zh", "ja"]);
+fn the_eight_languages_are_in_the_fixed_order_and_every_language_has_its_place() {
+    let codes: Vec<&str> = Lang::ALL.iter().map(|l| l.code()).collect();
+    assert_eq!(codes, vec!["en", "es", "it", "de", "fr", "pt", "zh", "ja"]);
     for (i, lang) in Lang::ALL.iter().enumerate() {
         assert_eq!(*lang as usize, i);
     }
@@ -194,16 +191,20 @@ fn the_codes_and_the_names_of_the_languages_are_all_different() {
 }
 
 #[test]
-fn a_code_of_a_locale_gives_its_language_and_a_region_that_is_not_a_variant_gives_the_main_one() {
+fn a_code_of_a_locale_gives_its_language_and_a_region_gives_the_main_one() {
     for (text, lang) in [
         ("es_ES.UTF-8", Some(Lang::Es)),
         ("PT-pt", Some(Lang::Pt)),
-        ("pt_BR", Some(Lang::PtBr)),
-        ("fr_CA.UTF-8", Some(Lang::FrCa)),
+        ("pt-br", Some(Lang::Pt)),
+        ("pt_BR", Some(Lang::Pt)),
+        ("fr-ca", Some(Lang::Fr)),
+        ("fr_CA.UTF-8", Some(Lang::Fr)),
         ("fr_CH", Some(Lang::Fr)),
         ("  de  ", Some(Lang::De)),
         ("JA_JP.eucJP", Some(Lang::Ja)),
         ("zh-Hans-CN", Some(Lang::Zh)),
+        ("ru", None),
+        ("pl_PL.UTF-8", None),
         ("xx", None),
         ("", None),
         ("C", None),
@@ -212,20 +213,9 @@ fn a_code_of_a_locale_gives_its_language_and_a_region_that_is_not_a_variant_give
     }
     assert_eq!(Lang::from_locale("POSIX"), Lang::En);
     assert_eq!(Lang::from_locale("it_IT"), Lang::It);
+    assert_eq!(Lang::from_locale("ru_RU"), Lang::En);
     for lang in Lang::ALL {
         assert_eq!(Lang::from_code(lang.code()), Some(lang));
-    }
-}
-
-#[test]
-fn only_the_two_variants_have_a_main_language_to_fall_back_on() {
-    for lang in Lang::ALL {
-        let expected = match lang {
-            Lang::PtBr => Some(Lang::Pt),
-            Lang::FrCa => Some(Lang::Fr),
-            _ => None,
-        };
-        assert_eq!(lang.fallback(), expected, "{}", lang.code());
     }
 }
 
@@ -271,98 +261,21 @@ fn the_width_of_a_text_ignores_the_marks_of_the_hot_key() {
 }
 
 #[test]
-fn a_typed_letter_is_folded_to_lower_case_and_a_greek_accent_or_final_sigma_is_removed() {
+fn a_typed_letter_is_folded_to_lower_case() {
     for (typed, folded) in [
         ('A', 'a'),
         ('z', 'z'),
-        ('\u{386}', '\u{3B1}'),
-        ('\u{3AC}', '\u{3B1}'),
-        ('\u{3C2}', '\u{3C3}'),
-        ('\u{3A3}', '\u{3C3}'),
-        ('\u{390}', '\u{3B9}'),
+        ('\u{C9}', '\u{E9}'),
         ('1', '1'),
         ('~', '~'),
     ] {
         assert_eq!(fold_key(typed), folded, "{typed}");
     }
-    for c in ['a', 'q', '\u{3B1}', '9', ' '] {
-        assert_eq!(fold_key(fold_key(c)), fold_key(c));
-    }
-}
-
-#[test]
-fn a_latin_key_means_the_letter_of_the_layout_of_its_language_and_the_way_back_agrees() {
-    assert_eq!(Lang::Ru.hot_key('q'), '\u{439}');
-    assert_eq!(Lang::Ru.hot_key('Q'), '\u{439}');
-    assert_eq!(Lang::Ru.hot_key('s'), '\u{44B}');
-    assert_eq!(Lang::Uk.hot_key('s'), '\u{456}');
-    assert_eq!(Lang::El.hot_key('e'), '\u{3B5}');
-    assert_eq!(Lang::El.hot_key('q'), 'q');
-    for (key, letter) in [
-        ('a', '\u{3B1}'),
-        ('s', '\u{3C3}'),
-        ('d', '\u{3B4}'),
-        ('m', '\u{3BC}'),
-    ] {
-        assert_eq!(Lang::El.hot_key(key), letter, "{key}");
-        assert_eq!(Lang::El.latin_key(letter), key, "{key}");
-    }
-    assert_eq!(Lang::En.hot_key('Q'), 'q');
-    assert_eq!(Lang::Ja.hot_key('\u{44F}'), '\u{44F}');
-    for lang in [Lang::Ru, Lang::Uk, Lang::El, Lang::En, Lang::De, Lang::Zh] {
-        for key in 'a'..='z' {
-            let letter = lang.hot_key(key);
-            if letter != key {
-                assert_eq!(lang.latin_key(letter), key, "{} {key}", lang.code());
-            }
+    for lang in Lang::ALL {
+        for key in 'A'..='Z' {
+            assert_eq!(lang.hot_key(key), key.to_ascii_lowercase());
         }
     }
-    assert_eq!(Lang::Ru.latin_key('\u{439}'), 'q');
-    assert_eq!(Lang::De.latin_key('X'), 'x');
-}
-
-fn locales_with(entries: &[(Lang, &'static str, &'static str)]) -> Locales {
-    let mut all: Locales = vec![HashMap::new(); Lang::ALL.len()];
-    for (lang, key, text) in entries {
-        all[*lang as usize].insert(*key, *text);
-    }
-    all
-}
-
-#[test]
-fn a_text_is_picked_from_the_row_of_the_core_languages_then_from_the_file_then_from_english() {
-    let row = ["en", "es", "it", "de", "fr", "pt", "zh", "ja"];
-    let none = locales_with(&[]);
-    for (i, lang) in Lang::ALL[..CORE_LANGS].iter().enumerate() {
-        assert_eq!(pick(*lang, row, "K", &none), row[i]);
-    }
-    let some = locales_with(&[(Lang::Bg, "K", "bulgarian"), (Lang::PtBr, "K", "brasil")]);
-    assert_eq!(pick(Lang::Bg, row, "K", &some), "bulgarian");
-    assert_eq!(pick(Lang::Bg, row, "OTHER", &some), "en");
-    assert_eq!(pick(Lang::Hr, row, "K", &some), "en");
-    assert_eq!(pick(Lang::PtBr, row, "K", &some), "brasil");
-    assert_eq!(pick(Lang::PtBr, row, "OTHER", &some), "pt");
-    assert_eq!(pick(Lang::FrCa, row, "K", &some), "fr");
-    assert_eq!(pick(Lang::Es, row, "K", &some), "es");
-}
-
-#[test]
-fn the_files_of_the_languages_skip_comments_blank_values_and_lines_without_a_tab() {
-    fn source(lang: Lang) -> &'static str {
-        match lang {
-            Lang::En => "# comment\nA\tone\r\n  B  \ttwo\\nlines\nC\t   \nno tab here\nD\ta\tb\n",
-            _ => "",
-        }
-    }
-    let locales = load_locales(source);
-    assert_eq!(locales.len(), Lang::ALL.len());
-    let en = &locales[Lang::En as usize];
-    assert_eq!(en.get("A"), Some(&"one"));
-    assert_eq!(en.get("B"), Some(&"two\nlines"));
-    assert_eq!(en.get("D"), Some(&"a\tb"));
-    assert!(en.get("C").is_none());
-    assert_eq!(en.len(), 3);
-    assert!(locales[Lang::Es as usize].is_empty());
 }
 
 // ---------------------------------------------------------------- the progress of a plan

@@ -1,6 +1,7 @@
 //! User-visible texts of DRILLPRO in the eight supported languages.
 //! Order: English (default), Spanish, Italian, German, French, Portuguese, Chinese, Japanese.
 
+use crate::i18n::Lang;
 use crate::translations;
 
 translations! { Text, tr, ALL_TEXTS;
@@ -98,4 +99,75 @@ translations! { Text, tr, ALL_TEXTS;
     SumTitle => ["Check before starting", "Revisa antes de empezar", "Controlla prima di avviare", "Vor dem Start prüfen", "Vérifiez avant de démarrer", "Verifique antes de iniciar", "开始前请检查", "開始前に確認"],
     BtnStartJob => ["Start the job", "Iniciar el trabajo", "Avvia il lavoro", "Auftrag starten", "Démarrer le travail", "Iniciar o trabalho", "开始作业", "ジョブを開始"],
     BtnCancel => ["Cancel", "Cancelar", "Annulla", "Abbrechen", "Annuler", "Cancelar", "取消", "キャンセル"],
+    FailInternal => ["internal error", "error interno", "errore interno", "interner Fehler", "erreur interne", "erro interno", "内部错误", "内部エラー"],
+    FailConnecting => ["connecting", "al conectar", "connessione", "beim Verbinden", "connexion", "ao ligar", "连接时", "接続中"],
+    FailArming => ["arming the machine", "al armar la máquina", "attivazione della macchina", "beim Scharfschalten der Maschine", "armement de la machine", "ao armar a máquina", "机器就绪时", "機械の有効化中"],
+    FailRunning => ["running the job", "al ejecutar el trabajo", "esecuzione del lavoro", "beim Ausführen des Auftrags", "exécution du travail", "ao executar o trabalho", "执行作业时", "ジョブの実行中"],
+    FailReference => ["reference run", "recorrido de referencia", "ricerca del riferimento", "Referenzfahrt", "prise de référence", "ida à referência", "回参考点", "原点復帰"],
+    FailMoving => ["moving the head", "al mover el cabezal", "movimento della testa", "beim Bewegen des Kopfes", "déplacement de la tête", "ao mover a cabeça", "移动机头时", "ヘッドの移動中"],
+    FailLifting => ["lifting the head", "al levantar el cabezal", "sollevamento della testa", "beim Anheben des Kopfes", "levée de la tête", "ao levantar a cabeça", "抬起机头时", "ヘッドの上昇中"],
+    FailOrigin => ["returning to the origin", "al volver al origen", "ritorno all'origine", "bei der Rückfahrt zum Ursprung", "retour à l'origine", "no regresso à origem", "返回原点时", "原点へ戻る途中"],
+    FailServerJob => ["the job failed on the server", "el trabajo falló en el servidor", "il lavoro è fallito sul server", "der Auftrag ist auf dem Server fehlgeschlagen", "le travail a échoué sur le serveur", "o trabalho falhou no servidor", "作业在服务器上失败", "サーバーでジョブが失敗しました"],
+    FailNoServerSet => ["server_address and server_machine are not set in the connection file", "server_address y server_machine no están definidos en el archivo de conexión", "server_address e server_machine non sono impostati nel file di connessione", "server_address und server_machine fehlen in der Verbindungsdatei", "server_address et server_machine ne sont pas définis dans le fichier de connexion", "server_address e server_machine não estão definidos no ficheiro de ligação", "连接文件中未设置 server_address 和 server_machine", "接続ファイルに server_address と server_machine がありません"],
+    FailNoJobId => ["the server did not give the job an id", "el servidor no dio un identificador al trabajo", "il server non ha dato un identificativo al lavoro", "der Server hat dem Auftrag keine Kennung gegeben", "le serveur n'a pas donné d'identifiant au travail", "o servidor não deu um identificador ao trabalho", "服务器没有给作业分配编号", "サーバーがジョブに識別子を付けませんでした"],
+    FailTeachServer => ["the Offset window does not move a machine through the server", "la ventana Offset no mueve una máquina a través del servidor", "la finestra Offset non muove una macchina tramite il server", "das Fenster Versatz bewegt keine Maschine über den Server", "la fenêtre Décalage ne déplace pas une machine par le serveur", "a janela Desfase não move uma máquina através do servidor", "偏移窗口不能通过服务器移动机器", "オフセット画面はサーバー経由では機械を動かしません"],
+    FailLostServer => ["lost the server ({}); the job may still be running on it", "se perdió el servidor ({}); el trabajo puede seguir en marcha en él", "server perso ({}); il lavoro può essere ancora in corso", "Server verloren ({}); der Auftrag läuft dort vielleicht noch", "serveur perdu ({}) ; le travail est peut-être encore en cours", "servidor perdido ({}); o trabalho pode continuar em execução nele", "与服务器失去联系（{}）；作业可能仍在服务器上运行", "サーバーとの接続が切れました（{}）。ジョブは実行中の可能性があります"],
+    FailNotSupported => ["not supported", "no disponible", "non supportato", "nicht unterstützt", "non pris en charge", "não suportado", "不支持", "対応していません"],
+    FailNoConfig => ["no configuration file", "no hay archivo de configuración", "nessun file di configurazione", "keine Konfigurationsdatei", "aucun fichier de configuration", "não há ficheiro de configuração", "没有配置文件", "設定ファイルがありません"],
+    FailBadConfig => ["the configuration file is not in the expected layout", "el archivo de configuración no tiene el formato esperado", "il file di configurazione non ha il formato previsto", "die Konfigurationsdatei hat nicht den erwarteten Aufbau", "le fichier de configuration n'a pas la disposition attendue", "o ficheiro de configuração não tem o formato esperado", "配置文件的格式不符合要求", "設定ファイルの形式が想定と異なります"],
+    FailNoArchiveFile => ["no file of this kind in the archive", "no hay ningún archivo de este tipo en el comprimido", "nessun file di questo tipo nell'archivio", "keine Datei dieser Art im Archiv", "aucun fichier de ce type dans l'archive", "não há nenhum ficheiro deste tipo no arquivo comprimido", "压缩包中没有此类文件", "アーカイブにこの種類のファイルがありません"],
+    SmallTerminal => ["The terminal needs 80 columns by 25 rows (it has {}x{}).", "El terminal necesita 80 columnas por 25 filas (tiene {}x{}).", "Il terminale richiede 80 colonne per 25 righe (ne ha {}x{}).", "Das Terminal braucht 80 Spalten und 25 Zeilen (es hat {}x{}).", "Le terminal a besoin de 80 colonnes sur 25 lignes (il a {}x{}).", "O terminal precisa de 80 colunas por 25 linhas (tem {}x{}).", "终端需要 80 列 25 行（当前为 {}x{}）。", "端末は 80 桁 25 行が必要です（現在 {}x{}）。"],
+}
+
+/// The failures the program words itself that carry a detail after a colon (`connecting: <detail>`).
+const FAILED_STEPS: [Text; 8] = [
+    Text::FailInternal,
+    Text::FailConnecting,
+    Text::FailArming,
+    Text::FailRunning,
+    Text::FailReference,
+    Text::FailMoving,
+    Text::FailLifting,
+    Text::FailOrigin,
+];
+
+/// The failures the program words itself that are a whole sentence.
+const FAILED_WHOLE: [Text; 8] = [
+    Text::FailInternal,
+    Text::FailServerJob,
+    Text::FailNoServerSet,
+    Text::FailNoJobId,
+    Text::FailTeachServer,
+    Text::FailNotSupported,
+    Text::FailNoConfig,
+    Text::FailBadConfig,
+];
+
+/// An error as a screen shows it: the sentences the program words itself in the language of the screen, with the detail of the system or of the link as it came. The
+/// error itself is not changed (it is what the logs, the command line and other programs read); a text that is not one of these is shown as it is.
+pub fn failure_text(lang: Lang, why: &str) -> String {
+    if lang == Lang::En {
+        return why.to_string();
+    }
+    if let Some(k) = FAILED_WHOLE.into_iter().find(|k| tr(Lang::En, *k) == why) {
+        return tr(lang, k).to_string();
+    }
+    for k in FAILED_STEPS {
+        if let Some(detail) = why
+            .strip_prefix(tr(Lang::En, k))
+            .and_then(|rest| rest.strip_prefix(": "))
+        {
+            return format!("{}: {}", tr(lang, k), failure_text(lang, detail));
+        }
+    }
+    if let Some((head, tail)) = tr(Lang::En, Text::FailLostServer).split_once("{}") {
+        if let Some(detail) = why.strip_prefix(head).and_then(|r| r.strip_suffix(tail)) {
+            return tr(lang, Text::FailLostServer).replace("{}", detail);
+        }
+    }
+    let archive = format!(": {}", tr(Lang::En, Text::FailNoArchiveFile));
+    if let Some(path) = why.strip_suffix(archive.as_str()) {
+        return format!("{path}: {}", tr(lang, Text::FailNoArchiveFile));
+    }
+    why.to_string()
 }
