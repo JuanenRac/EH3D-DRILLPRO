@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The workflows take EH3D-COMMON at its tag v0.4.0** instead of a commit; no code changes.
+
 - **Third-party notices in every package (`docs/THIRD_PARTY_NOTICES`):** the packages of the releases now carry the copyright notices and licence texts of the Rust crates and of the data the program is built with, and the CI fails when a new dependency or licence is not in the file.
 
 - **The format window keeps the error inside its frame**, and the picture of the Parameter window in the README was taken again.
