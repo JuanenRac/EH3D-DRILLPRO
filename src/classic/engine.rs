@@ -78,6 +78,10 @@ pub trait ClassicEngine {
     }
     /// Shows a problem found at start-up on the main screen.
     fn set_error(&mut self, message: String);
+    /// How the engine reads a drill file that does not declare its number format; `None` refuses it (and an engine that reads no drill files has none).
+    fn drill_format(&self) -> Option<crate::drill_format::NumberFormat> {
+        None
+    }
     /// The Offset Teach window moves the head by these steps of 1 mil (0.001 inch) in X, Y and Z (Z positive = down). The
     /// simulation only follows the position on the screen; an engine on a real machine moves it.
     fn jog(&mut self, _dx: i32, _dy: i32, _dz: i32) {}
@@ -378,6 +382,10 @@ impl ClassicEngine for App {
 
     fn load(&mut self, path: &Path) {
         self.load_file(path);
+    }
+
+    fn drill_format(&self) -> Option<crate::drill_format::NumberFormat> {
+        App::drill_format(self)
     }
 
     fn save_to_project(&mut self) {
