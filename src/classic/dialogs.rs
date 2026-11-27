@@ -11,7 +11,7 @@ pub(crate) enum Dialog {
     None,
     Files(FileDlg),
     Tools(ToolDlg),
-    Parameter(ParamDlg),
+    Parameter(Box<ParamDlg>),
     Panel(PanelDlg),
     Quit {
         yes: bool,
@@ -36,6 +36,8 @@ pub(crate) enum Dialog {
     },
     About,
     Message(String),
+    /// A drill file was refused because it declares no number format: which one is it? Nothing is chosen until a person does.
+    Format(FormatDlg),
     /// The summary of the job, before a machine that moves is started.
     Summary,
     Running,
@@ -55,6 +57,16 @@ impl Flow {
 }
 
 // ---------------------------------------------------------------------------------------------- state
+
+/// The window that asks for the number format of a drill file.
+pub(crate) struct FormatDlg {
+    /// The file that is read again with the choice.
+    path: PathBuf,
+    /// The entry in focus; the first one is no format, so that Enter alone never chooses a scale.
+    sel: usize,
+    /// Why the choice could not be kept, or why the last one did not read the file.
+    problem: Option<String>,
+}
 
 /// What the Select File window is open for.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -120,6 +132,8 @@ enum Ctl {
     Full,
     /// The connection with the machine: Enter or a click opens its window.
     Conn,
+    /// The number format of the drill files that declare none (the drilling program).
+    Format,
     Btn(Dlg),
 }
 
@@ -132,6 +146,9 @@ pub(crate) struct ParamDlg {
     auto: Option<bool>,
     /// The state of the Full screen check box.
     full: bool,
+    /// The place of the number format of the drill files in `formats`.
+    format: usize,
+    formats: Vec<Option<crate::drill_format::NumberFormat>>,
     ring: Vec<Ctl>,
     focus: Option<usize>,
     edit: Option<LineEdit>,
@@ -455,6 +472,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::ProjectAsk { yes, .. } => self.project_ask_key(yes, input),
             Dialog::OffsetAsk { yes } => self.offset_ask_key(yes, input),
             Dialog::Teach(t) => self.teach_key(t, input),
+            Dialog::Format(f) => self.format_key(f, input),
             Dialog::TeachWrite { yes, teach } => self.teach_write_key(yes, teach, input),
             Dialog::About => match input {
                 Input::Enter | Input::Esc | Input::Char(_) | Input::Alt(_) => Flow::Close,
@@ -493,6 +511,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Dialog::ProjectAsk { .. } => self.project_ask_click(act),
             Dialog::OffsetAsk { .. } => self.offset_ask_click(act),
             Dialog::Teach(t) => self.teach_click(t, act),
+            Dialog::Format(f) => self.format_click(f, act),
             Dialog::TeachWrite { teach, .. } => self.teach_write_click(teach, act),
             Dialog::About => match act {
                 Act::Dlg(_) => Flow::Close,
@@ -525,6 +544,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                 9,
             ),
             Dialog::Teach(t) => self.render_teach(s, t),
+            Dialog::Format(f) => self.render_format(s, f),
             Dialog::TeachWrite { yes, .. } => {
                 self.render_sign(s, *yes, self.t(CText::QTeachWrite), self.t(CText::QInfo), 8)
             }
@@ -1094,6 +1114,15 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Purpose::Job => {}
         }
         self.load_file(&path);
+        self.after_job_load(&path)
+    }
+
+    /// What follows the reading of a job file: the format window, the error or the tool data.
+    fn after_job_load(&mut self, path: &std::path::Path) -> Flow {
+        // a file refused for its number format asks for one
+        if self.engine.format_refused() {
+            return Flow::to(self.open_format(path));
+        }
         // a file that cannot be read is said so in a window, as the original does; otherwise its tool data follow
         if !self.engine.file_loaded() {
             if let Some(e) = self.engine.error() {
@@ -1103,6 +1132,129 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         // the original shows its tool data right after loading
         Flow::to(self.open_tools())
+    }
+
+    // ------------------------------------------------------------------------------------------ number format
+
+    pub(crate) fn open_format(&self, path: &std::path::Path) -> Dialog {
+        Dialog::Format(FormatDlg {
+            path: path.to_path_buf(),
+            sel: 0,
+            problem: None,
+        })
+    }
+
+    /// Takes the entry in focus: no format leaves the file refused; a format is kept and the file read again with it.
+    fn format_accept(&mut self, d: &FormatDlg) -> Flow {
+        let chosen = crate::drill_format::choices(self.engine.drill_format())
+            .get(d.sel)
+            .copied()
+            .flatten();
+        let Some(chosen) = chosen else {
+            return Flow::Close;
+        };
+        let kept = self.engine.choose_drill_format(Some(chosen));
+        self.load_file(&d.path);
+        let mut flow = self.after_job_load(&d.path);
+        let Err(e) = kept else {
+            return flow;
+        };
+        if let Flow::To(next) = &mut flow {
+            if let Dialog::Format(f) = next.as_mut() {
+                f.problem = Some(e);
+                return flow;
+            }
+        }
+        Flow::to(Dialog::Message(e.chars().take(70).collect()))
+    }
+
+    fn format_key(&mut self, d: &mut FormatDlg, input: Input) -> Flow {
+        let last = crate::drill_format::choices(self.engine.drill_format()).len() - 1;
+        match input {
+            Input::Up | Input::Left | Input::BackTab => {
+                d.sel = d.sel.saturating_sub(1);
+                Flow::Stay
+            }
+            Input::Down | Input::Right | Input::Tab => {
+                d.sel = (d.sel + 1).min(last);
+                Flow::Stay
+            }
+            Input::Enter => self.format_accept(d),
+            Input::Esc => Flow::Close,
+            Input::Char(c) | Input::Alt(c) => {
+                let c = self.lang().hot_key(c);
+                if Some(c) == self.hot(CText::BOk) {
+                    self.format_accept(d)
+                } else if Some(c) == self.hot(CText::BAbort) {
+                    Flow::Close
+                } else {
+                    Flow::Stay
+                }
+            }
+            _ => Flow::Stay,
+        }
+    }
+
+    fn format_click(&mut self, d: &mut FormatDlg, act: Act) -> Flow {
+        match act {
+            Act::Item(i) => {
+                d.sel = i;
+                Flow::Stay
+            }
+            Act::Dlg(Dlg::Ok) => self.format_accept(d),
+            Act::Dlg(Dlg::Abort) => Flow::Close,
+            _ => Flow::Stay,
+        }
+    }
+
+    fn render_format(&self, s: &mut Screen, d: &FormatDlg) {
+        use crate::drill_format::{choices, how_to_choose, label as name_of, wrap};
+        use crate::texts::{tr, Text};
+        let lang = self.lang();
+        window(s, 5, 0, 70, 22, "", false);
+        let title = tr(lang, Text::FormatTitle);
+        label(
+            s,
+            5 + (70usize.saturating_sub(str_width(title))) / 2,
+            1,
+            title,
+        );
+        let file = file_label_of(&d.path);
+        s.text(8, 2, &file, INK, GREY);
+        if let Some(problem) = d.problem.as_deref().or(self.engine.error()) {
+            let code: String = problem
+                .chars()
+                .take(66usize.saturating_sub(str_width(&file)))
+                .collect();
+            s.text(10 + str_width(&file), 2, &code, RED, GREY);
+        }
+        for (i, line) in wrap(how_to_choose(lang.code()), 64)
+            .iter()
+            .take(7)
+            .enumerate()
+        {
+            s.text(8, 4 + i, line, INK, GREY);
+        }
+        for (i, choice) in choices(self.engine.drill_format())
+            .into_iter()
+            .take(7)
+            .enumerate()
+        {
+            let row = 11 + i;
+            let (fg, bg) = if i == d.sel {
+                (WHITE, BLACK)
+            } else {
+                (BLACK, CYAN)
+            };
+            s.fill(26, row, 28, 1, ' ', fg, bg);
+            s.text(28, row, &name_of(lang, choice), fg, bg);
+            self.hit(26, row, 28, 1, Act::Item(i));
+        }
+        s.text(8, 18, tr(lang, Text::FormatKept), INK, GREY);
+        button(s, 24, 19, 12, self.t(CText::BOk), true, true);
+        button(s, 43, 19, 12, self.t(CText::BAbort), false, true);
+        self.hit(24, 19, 13, 2, Act::Dlg(Dlg::Ok));
+        self.hit(43, 19, 13, 2, Act::Dlg(Dlg::Abort));
     }
 
     /// Enter in the name field: a pattern filters the list, a name opens the file.
@@ -1808,21 +1960,28 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         ring.push(Ctl::Full);
         ring.push(Ctl::Lang);
+        if !route {
+            ring.push(Ctl::Format);
+        }
+        let current = self.engine.drill_format();
+        let formats = crate::drill_format::choices(current);
         ring.extend([Dlg::Load, Dlg::Save, Dlg::Ok, Dlg::Abort].map(Ctl::Btn));
-        Dialog::Parameter(ParamDlg {
+        Dialog::Parameter(Box::new(ParamDlg {
             values,
             unit,
             sorting,
             lang,
             auto,
             full: self.fullscreen,
+            format: formats.iter().position(|c| *c == current).unwrap_or(0),
+            formats,
             ring,
             focus: None,
             edit: None,
             error: None,
             status: None,
             conn: super::connect::ConnState::from_config(&self.engine.connection()),
-        })
+        }))
     }
 
     /// Takes the typed text of the focused field into its value; false (with the error shown) when it is not valid.
@@ -1901,6 +2060,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
             Ctl::Unit => d.unit = step(d.unit, 4),
             Ctl::Sort => d.sorting = step(d.sorting, 4),
             Ctl::Auto => d.auto = d.auto.map(|a| !a),
+            Ctl::Format => d.format = step(d.format, d.formats.len()),
             // the window changes at once, so that the choice can be seen
             Ctl::Full => {
                 d.full = !d.full;
@@ -1919,6 +2079,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
     fn param_apply(&mut self, d: &ParamDlg) -> Result<(), String> {
         let route = self.engine.kind() == Kind::Route;
         let num = |i: usize| -> f64 { d.values[i].trim().parse().unwrap_or(0.0) };
+        // the format of the drill files is not a key of the machine file: it has its own file in the data folder
+        let format = d.formats.get(d.format).copied().flatten();
+        if format != self.engine.drill_format() {
+            self.engine.choose_drill_format(format)?;
+        }
         let Some(m) = self.engine.settings_mut() else {
             return Err("no configuration file".into());
         };
@@ -2081,14 +2246,18 @@ impl<E: ClassicEngine> ClassicApp<E> {
             },
             Input::Down | Input::Right => {
                 match cur {
-                    Some(c @ (Ctl::Unit | Ctl::Sort | Ctl::Lang)) => self.param_cycle(d, c, 1),
+                    Some(c @ (Ctl::Unit | Ctl::Sort | Ctl::Lang | Ctl::Format)) => {
+                        self.param_cycle(d, c, 1)
+                    }
                     _ => self.param_step(d, 1),
                 }
                 Flow::Stay
             }
             Input::Up | Input::Left => {
                 match cur {
-                    Some(c @ (Ctl::Unit | Ctl::Sort | Ctl::Lang)) => self.param_cycle(d, c, -1),
+                    Some(c @ (Ctl::Unit | Ctl::Sort | Ctl::Lang | Ctl::Format)) => {
+                        self.param_cycle(d, c, -1)
+                    }
                     _ => self.param_step(d, -1),
                 }
                 Flow::Stay
@@ -2136,7 +2305,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
                     self.conn_open(d);
                 }
                 // the language is chosen by clicking its field: each click takes the next one
-                if matches!(d.ring[i], Ctl::Lang | Ctl::Auto | Ctl::Full) {
+                if matches!(d.ring[i], Ctl::Lang | Ctl::Auto | Ctl::Full | Ctl::Format) {
                     self.param_cycle(d, d.ring[i], 1);
                 }
                 Flow::Stay
@@ -2306,6 +2475,22 @@ impl<E: ClassicEngine> ClassicApp<E> {
             );
             s.text(55, 16, &format!("[{mark}] {name}"), ink, CYAN);
             self.hit(54, 16, 19, 1, Act::Ctl(ring_at(Ctl::Full)));
+        }
+        // the number format of the drill files that declare none, an option of ours in the free row on the left
+        if !route {
+            caption(
+                s,
+                11,
+                18,
+                crate::texts::tr(self.engine.lang(), crate::texts::Text::FormatLabel),
+                focused(Ctl::Format),
+            );
+            let name = crate::drill_format::label(
+                self.engine.lang(),
+                d.formats.get(d.format).copied().flatten(),
+            );
+            field(s, 29, 18, 18, &name, focused(Ctl::Format));
+            self.hit(11, 18, 38, 1, Act::Ctl(ring_at(Ctl::Format)));
         }
         // the language, an option of ours in the free place under the spindle
         caption(

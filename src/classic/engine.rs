@@ -82,6 +82,17 @@ pub trait ClassicEngine {
     fn drill_format(&self) -> Option<crate::drill_format::NumberFormat> {
         None
     }
+    /// Whether the last file asked for was refused for its number format: the screens then ask for one.
+    fn format_refused(&self) -> bool {
+        false
+    }
+    /// Takes the format a person chose and keeps it where the engine keeps it.
+    fn choose_drill_format(
+        &mut self,
+        _chosen: Option<crate::drill_format::NumberFormat>,
+    ) -> Result<(), String> {
+        Ok(())
+    }
     /// The Offset Teach window moves the head by these steps of 1 mil (0.001 inch) in X, Y and Z (Z positive = down). The
     /// simulation only follows the position on the screen; an engine on a real machine moves it.
     fn jog(&mut self, _dx: i32, _dy: i32, _dz: i32) {}
@@ -386,6 +397,17 @@ impl ClassicEngine for App {
 
     fn drill_format(&self) -> Option<crate::drill_format::NumberFormat> {
         App::drill_format(self)
+    }
+
+    fn format_refused(&self) -> bool {
+        App::format_refused(self)
+    }
+
+    fn choose_drill_format(
+        &mut self,
+        chosen: Option<crate::drill_format::NumberFormat>,
+    ) -> Result<(), String> {
+        App::choose_drill_format(self, chosen)
     }
 
     fn save_to_project(&mut self) {

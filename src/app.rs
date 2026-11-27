@@ -54,6 +54,8 @@ pub(crate) enum Mode {
     Language,
     Running,
     ConfirmQuit,
+    /// The window that asks for the number format of the drill files that declare none.
+    Format,
     /// The summary of the job (what it does, how long, how far the axes go, what looks wrong) waits for Enter before a machine that moves is started.
     ConfirmStart,
 }
@@ -135,6 +137,10 @@ pub struct App {
     pub(crate) data_dir: PathBuf,
     /// How a drill file that does not declare its number format is read; `None` refuses it.
     drill_format: Option<NumberFormat>,
+    /// The last file asked for was refused because it does not declare its number format and the chosen one (or none) cannot read it.
+    format_refused: bool,
+    /// The file the format window of the menu screens reads again once a format is chosen.
+    format_path: Option<PathBuf>,
     pub(crate) config_text: Option<String>,
     pub(crate) tools_text: Option<String>,
     /// What the main form and the Panelization dialog add to the job.
@@ -198,6 +204,8 @@ impl App {
             tools: tool_text.as_deref().map(tools::parse).unwrap_or_default(),
             data_dir: data_dir.to_path_buf(),
             drill_format: crate::drill_format::load(data_dir).unwrap_or(None),
+            format_refused: false,
+            format_path: None,
             config_text,
             tools_text: tool_text,
             job_options: crate::job::JobOptions::default(),
@@ -230,8 +238,50 @@ impl App {
         self.drill_format = chosen;
     }
 
+    /// Whether the last file asked for was refused for its number format: a window then offers to choose one. Nothing is chosen by itself.
+    pub fn format_refused(&self) -> bool {
+        self.format_refused
+    }
+
+    /// Takes the format a person chose in a window and keeps it in the data folder. It is in use even when it cannot be kept; the error says why it was not.
+    pub fn choose_drill_format(&mut self, chosen: Option<NumberFormat>) -> Result<(), String> {
+        self.drill_format = chosen;
+        crate::drill_format::save(&self.data_dir, chosen)
+            .map_err(|e| format!("{}: {e}", crate::drill_format::FILE))
+    }
+
+    /// Opens the format window of the menu screens when the last file was refused for its format, to read `path` again with the choice.
+    pub fn offer_drill_format(&mut self, path: &Path) {
+        if self.format_refused {
+            self.format_path = Some(path.to_path_buf());
+            self.sel = 0;
+            self.mode = Mode::Format;
+        }
+    }
+
+    /// The choice made in the format window of the menu screens: no format keeps the file refused.
+    fn accept_format(&mut self) {
+        let chosen = crate::drill_format::choices(self.drill_format)
+            .get(self.sel)
+            .copied()
+            .flatten();
+        self.mode = Mode::Main;
+        let kept = self.choose_drill_format(chosen);
+        if let (Some(path), Some(_)) = (self.format_path.take(), chosen) {
+            self.load_file(&path);
+            if self.error.is_none() {
+                self.mode = Mode::Vectors;
+            }
+            self.offer_drill_format(&path);
+        }
+        if let Err(e) = kept {
+            self.error = Some(e);
+        }
+    }
+
     /// Loads a drill file, or the first drill layer of the job of an `.eh3d` project. What was loaded stays when the new one cannot be read.
     pub fn load_file(&mut self, path: &Path) {
+        self.format_refused = false;
         if eh3d_project::manufacturing::is_project(path) {
             self.load_project(path);
             return;
@@ -548,6 +598,7 @@ impl App {
                     crate::summary::refusal_message(&e, self.lang)
                 );
                 if e.code == Code::NcdFormatAssumed {
+                    self.format_refused = true;
                     why = format!("{why}. {}", crate::drill_format::help(self.lang));
                 }
                 self.error = Some(why);
@@ -1160,6 +1211,28 @@ impl App {
                     _ => {}
                 }
             }
+            Mode::Format => {
+                let last = crate::drill_format::choices(self.drill_format).len() - 1;
+                match input {
+                    Input::Up => self.sel = self.sel.saturating_sub(1),
+                    Input::Down => self.sel = (self.sel + 1).min(last),
+                    Input::Enter => self.accept_format(),
+                    Input::Esc => {
+                        self.format_path = None;
+                        self.mode = Mode::Main;
+                    }
+                    _ => {}
+                }
+            }
+            // the format of the drill files that declare none can be changed from the configuration at any time
+            Mode::Config if matches!(input, Input::Char('f' | 'F')) => {
+                self.format_path = None;
+                self.sel = crate::drill_format::choices(self.drill_format)
+                    .iter()
+                    .position(|c| *c == self.drill_format)
+                    .unwrap_or(0);
+                self.mode = Mode::Format;
+            }
             Mode::Vectors | Mode::Tools | Mode::Config => {
                 if matches!(input, Input::Esc | Input::Enter) {
                     self.mode = Mode::Main;
@@ -1210,6 +1283,7 @@ impl App {
                     } else {
                         Mode::Main
                     };
+                    self.offer_drill_format(&path);
                 }
             }
             _ => {}
@@ -1238,6 +1312,13 @@ impl App {
                 self.render_list(s, Text::TitleLanguage, &names)
             }
             Mode::Running => self.render_run(s),
+            Mode::Format => {
+                let names: Vec<String> = crate::drill_format::choices(self.drill_format)
+                    .into_iter()
+                    .map(|c| crate::drill_format::label(self.lang, c))
+                    .collect();
+                self.render_list(s, Text::FormatTitle, &names);
+            }
             Mode::ConfirmQuit => self.render_quit(s),
             Mode::ConfirmStart => self.render_summary(s),
         }
@@ -1419,6 +1500,17 @@ impl App {
                 "{}: {}",
                 tr(self.lang, Text::LblLink),
                 self.connection.describe()
+            ),
+            BLACK,
+            WIN_BG,
+        );
+        s.text(
+            x + 2,
+            y + 10,
+            &format!(
+                "F  {}: {}",
+                tr(self.lang, Text::FormatLabel),
+                crate::drill_format::label(self.lang, self.drill_format)
             ),
             BLACK,
             WIN_BG,
@@ -1946,6 +2038,39 @@ M30
         }
         assert!(app.error.is_none(), "{:?}", app.error);
         assert!(warned.contains("chosen one: mils"), "{warned}");
+    }
+
+    #[test]
+    fn a_refused_file_asks_for_its_format_and_nothing_is_chosen_by_itself() {
+        let dir = std::env::temp_dir().join(format!("eh3d-drillpro-ask-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let bare = dir.join("bare.ncd");
+        std::fs::write(&bare, "%\r\nT01\r\nX1000Y2000\r\nM30\r\n").unwrap();
+        let mut app = App::new(Lang::En, &dir);
+        app.load_file(&bare);
+        app.offer_drill_format(&bare);
+        assert!(app.mode == Mode::Format);
+        let mut screen = Screen::default();
+        app.render(&mut screen);
+        let shown = screen.to_text();
+        // the first entry is no format: Enter alone keeps the file refused
+        app.handle(Input::Enter);
+        let after_enter = (app.loaded.is_some(), app.drill_format());
+        app.load_file(&bare);
+        app.offer_drill_format(&bare);
+        app.handle(Input::Down);
+        app.handle(Input::Enter);
+        let chosen = (app.loaded.is_some(), app.drill_format());
+        let kept = crate::drill_format::load(&dir);
+        let _ = std::fs::remove_dir_all(&dir);
+        assert!(
+            shown.contains("Number format of this drill file"),
+            "{shown}"
+        );
+        assert!(shown.contains("metric-3.3-lz"), "{shown}");
+        assert_eq!(after_enter, (false, None));
+        assert_eq!(chosen, (true, Some(NumberFormat::Mils)));
+        assert_eq!(kept, Ok(Some(NumberFormat::Mils)));
     }
 
     #[test]

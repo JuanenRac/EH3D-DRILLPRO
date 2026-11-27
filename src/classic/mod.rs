@@ -344,6 +344,14 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if self.engine.file_loaded() {
             self.button = Button::Start;
         }
+        if self.engine.format_refused() {
+            self.dialog = self.open_format(path);
+        }
+    }
+
+    /// Whether the window that asks for the number format of a drill file is open.
+    pub fn asks_for_format(&self) -> bool {
+        matches!(self.dialog, Dialog::Format(_))
     }
 
     /// The hot key of a label, as the keyboard of the language types it.
