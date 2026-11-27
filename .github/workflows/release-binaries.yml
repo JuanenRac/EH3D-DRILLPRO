@@ -100,7 +100,7 @@ jobs:
           ref: ${{ github.sha }}
       - name: Check out the sibling EH3D-COMMON (a path dependency)
         shell: bash
-        run: git init -q ../EH3D-COMMON && git -C ../EH3D-COMMON fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git 503c8bca82a8e74d801a8cd0d9b9fac7a460eba2 && git -C ../EH3D-COMMON checkout -q FETCH_HEAD
+        run: git init -q ../EH3D-COMMON && git -C ../EH3D-COMMON fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git 6e3c7b0d71f9c93c6fe77ed3c1fc0e02c7c6f7dd && git -C ../EH3D-COMMON checkout -q FETCH_HEAD
       - name: Linux libraries of the window
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev
