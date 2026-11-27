@@ -3,7 +3,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::config::{self, Config};
-use crate::eh3dfile::{self, ProjectJob};
+use crate::eh3dfile::{self, Changed, Choice, ProjectJob};
 use crate::i18n::{str_width, Lang};
 use crate::job::{bounds_mm, sort_holes, travel_mm, Geometry, Sorting};
 use crate::ncd::{self, DrillFile};
@@ -19,6 +19,7 @@ use crate::tools::{self, Tool};
 use eh3d_bungard_formats::limits::ReaderLimits;
 use eh3d_project::manufacturing::JobFile;
 use eh3d_project::suitetext::S;
+use eh3d_project::suiteview;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Input {
@@ -140,6 +141,8 @@ pub struct App {
     pub quit: bool,
     /// What a person is being asked to agree to before the plan is written into the project; `None` while nothing is asked.
     asking: Option<Vec<String>>,
+    /// The window of a project that another program saved since it was read; `None` while there is nothing to say.
+    changed: Option<Changed>,
 }
 
 const MENU_BG: u8 = LIGHT_GRAY;
@@ -212,6 +215,7 @@ impl App {
             summary_ok: false,
             quit: false,
             asking: None,
+            changed: None,
         };
         app.dir = crate::config::work_dir(data_dir, app.config.as_ref());
         app.refresh_entries();
@@ -267,20 +271,107 @@ impl App {
 
     /// What keeping the plan would take away from the project (a signature), in the language of the screen; empty when there is nothing to ask. A project that cannot be read asks
     /// nothing: the write says why it cannot be done.
-    pub fn signature_question(&self) -> Vec<String> {
-        self.project
-            .as_ref()
-            .and_then(|job| eh3dfile::signature_warnings(&job.path, self.lang.code()).ok())
-            .unwrap_or_default()
+    pub fn signature_question(&mut self) -> Vec<String> {
+        let Some(job) = &self.project else {
+            return Vec::new();
+        };
+        let path = job.path.clone();
+        match eh3dfile::signature_warnings(&path, &job.seen, self.lang.code()) {
+            Ok(asked) => asked,
+            Err(why) => {
+                if suiteview::is_changed_refusal(&why) {
+                    self.refused(&path, why);
+                }
+                Vec::new()
+            }
+        }
+    }
+
+    /// The window of a project that another program saved, while it is open.
+    pub fn changed(&self) -> Option<&Changed> {
+        self.changed.as_ref()
+    }
+
+    /// A write that failed. When the reason is that another program saved the project, it is said in the language of the screen and the screen offers to
+    /// read it again, to save a copy under another name or to close.
+    fn refused(&mut self, project: &Path, why: String) {
+        if suiteview::is_changed_refusal(&why) {
+            let changed = Changed::new(project);
+            self.asking = None;
+            self.warning = None;
+            self.error = Some(changed.message(self.lang));
+            self.changed = Some(changed);
+        } else {
+            self.error = Some(why);
+        }
+    }
+
+    fn choose_changed(&mut self, choice: Choice) {
+        let Some(mut changed) = self.changed.take() else {
+            return;
+        };
+        match choice {
+            Choice::Close => {}
+            Choice::ReadAgain => {
+                self.load_project(changed.path());
+                // a project that cannot be read now is said, and the choice stays
+                if let Some(why) = self.error.clone() {
+                    changed.say(why);
+                    self.changed = Some(changed);
+                }
+            }
+            Choice::SaveAs => self.save_project_as(changed),
+        }
+    }
+
+    /// Keeps the plan in a copy of the project under the name of the box, with every branch as it is now.
+    fn save_project_as(&mut self, mut changed: Changed) {
+        let Some(job) = self.project.clone() else {
+            return;
+        };
+        let copy = match changed.copy(self.lang) {
+            Ok(copy) => copy,
+            Err(why) => {
+                changed.say(why);
+                self.changed = Some(changed);
+                return;
+            }
+        };
+        let mut moved = job.clone();
+        moved.path = copy.clone();
+        moved.seen = eh3dfile::mark_of(&eh3dfile::KIT, &copy).unwrap_or_default();
+        self.project = Some(moved);
+        self.error = None;
+        self.ask_keep_plan();
+        if let (None, Some(why)) = (&self.asking, self.error.clone()) {
+            // a copy that could not be written to is not left behind
+            let _ = std::fs::remove_file(&copy);
+            self.project = Some(job);
+            changed.say(why);
+            self.changed = Some(changed);
+        }
     }
 
     /// Keeps the plan as [`App::keep_plan`] does, but asks first when writing would remove a signature of the project: nothing is written unless the person agrees.
     pub fn ask_keep_plan(&mut self) {
         let asked = self.signature_question();
+        if self.changed.is_some() {
+            return;
+        }
         if asked.is_empty() {
             self.keep_plan();
         } else {
             self.asking = Some(asked);
+        }
+    }
+
+    /// The windows about the project alone, for the classic screens: the question of a write and the one of a project saved by another program.
+    pub(crate) fn render_prompt(&self, s: &mut Screen) {
+        if let Some(lines) = &self.asking {
+            self.render_asking(s, lines);
+        }
+        if let Some(changed) = &self.changed {
+            changed.render(s, self.lang);
         }
     }
 
@@ -347,9 +438,12 @@ impl App {
         };
         let saved = self
             .plan_report()
-            .and_then(|lines| eh3dfile::save_plan(&job.path, &job.layer, &lines));
+            .and_then(|lines| eh3dfile::save_plan_since(&job.path, &job.seen, &job.layer, &lines));
         match saved {
             Ok(said) => {
+                if let Some(open) = &mut self.project {
+                    open.seen = eh3dfile::mark_of(&eh3dfile::KIT, &job.path).unwrap_or_default();
+                }
                 let name = eh3dfile::plan_name(&job.path, &job.layer);
                 let code = self.lang.code();
                 // a signature that the write removed is told first, in the language of the screen
@@ -365,13 +459,14 @@ impl App {
                 self.error = None;
                 self.warning = Some(line);
             }
-            Err(why) => self.error = Some(why),
+            Err(why) => self.refused(&job.path, why),
         }
     }
 
     /// Reads the drill file in `bytes`, named by `path`, and says whether it was taken.
     fn load_bytes(&mut self, path: &Path, bytes: &[u8]) -> bool {
         self.asking = None;
+        self.changed = None;
         let text: String = bytes.iter().map(|&c| c as char).collect();
         // a file that is far too big, not text or with absurd numbers is turned down with its code and line before the reader sees it
         if let Err(problem) = crate::input_guard::check(crate::input_guard::InputKind::Ncd, &text) {
@@ -509,6 +604,12 @@ impl App {
     }
 
     pub fn click(&mut self, col: usize, row: usize) {
+        if let Some(changed) = &self.changed {
+            if let Some(choice) = changed.click(col, row, self.lang) {
+                self.choose_changed(choice);
+            }
+            return;
+        }
         if self.asking.is_some() {
             return self.click_asking(col, row);
         }
@@ -978,6 +1079,12 @@ impl App {
     }
 
     pub fn handle(&mut self, input: Input) {
+        if let Some(changed) = &mut self.changed {
+            if let Some(choice) = changed.input(input) {
+                self.choose_changed(choice);
+            }
+            return;
+        }
         if self.asking.is_some() {
             // a signature is removed only by a clear yes: Enter and Esc leave the project as it is
             match input {
@@ -1119,9 +1226,7 @@ impl App {
             Mode::ConfirmQuit => self.render_quit(s),
             Mode::ConfirmStart => self.render_summary(s),
         }
-        if let Some(lines) = &self.asking {
-            self.render_asking(s, lines);
-        }
+        self.render_prompt(s);
         s.fill(0, ROWS - 1, COLS, 1, ' ', BLACK, MENU_BG);
         s.text(1, ROWS - 1, tr(self.lang, Text::StatusMain), BLACK, MENU_BG);
     }
@@ -1602,7 +1707,10 @@ impl App {
 
 impl TextApp for App {
     fn save_project(&mut self) {
-        if matches!(self.mode, Mode::Main | Mode::Vectors) && self.asking.is_none() {
+        if matches!(self.mode, Mode::Main | Mode::Vectors)
+            && self.asking.is_none()
+            && self.changed.is_none()
+        {
             self.ask_keep_plan();
         }
     }

@@ -225,6 +225,10 @@ impl<E: ClassicEngine> ClassicApp<E> {
     // ------------------------------------------------------------------------------------------ dispatch
 
     pub(crate) fn handle_input(&mut self, input: Input) {
+        if self.engine.project_prompt_open() {
+            self.engine.project_prompt_input(input);
+            return;
+        }
         match self.dialog {
             Dialog::None => self.key_main(input),
             Dialog::Running => self.running_key(input),
