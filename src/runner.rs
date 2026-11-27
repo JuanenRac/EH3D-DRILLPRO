@@ -111,6 +111,10 @@ struct Shared {
     total: AtomicUsize,
     cancel: AtomicBool,
     confirmed: AtomicBool,
+    /// A job on the server: the identifier of the question it asks now (`pause.question`; none from a server of an earlier version).
+    asked: Mutex<Option<String>>,
+    /// The identifier of the question the operator answered, until it is sent.
+    answering: Mutex<Option<String>>,
     /// A job on the server goes on when this program closes; only the following of it ends.
     stop_following: AtomicBool,
 }
@@ -174,6 +178,8 @@ impl RealRun {
             total: AtomicUsize::new(items.len()),
             cancel: AtomicBool::new(false),
             confirmed: AtomicBool::new(false),
+            asked: Mutex::new(None),
+            answering: Mutex::new(None),
             stop_following: AtomicBool::new(false),
         });
         let worker = shared.clone();
@@ -233,6 +239,8 @@ impl RealRun {
             total: AtomicUsize::new(items_total),
             cancel: AtomicBool::new(false),
             confirmed: AtomicBool::new(false),
+            asked: Mutex::new(None),
+            answering: Mutex::new(None),
             stop_following: AtomicBool::new(false),
         });
         let worker = shared.clone();
@@ -277,6 +285,12 @@ impl RealRun {
 
     /// The operator answered the dialog.
     pub fn confirm(&self) {
+        // the question on the screen now is the one this answers, whatever the job asks when the answer is sent
+        if let (Ok(asked), Ok(mut answering)) =
+            (self.shared.asked.lock(), self.shared.answering.lock())
+        {
+            answering.clone_from(&asked);
+        }
         self.shared.confirmed.store(true, Ordering::SeqCst);
     }
 
@@ -450,10 +464,13 @@ fn follow_on_server(
             }
         }
         if shared.confirmed.swap(false, Ordering::SeqCst) {
+            // the server refuses the answer when the job asks something else by then; the next reading shows what it asks
+            let question = shared.answering.lock().ok().and_then(|mut q| q.take());
+            let body = question.map(|q| serde_json::json!({ "question": q }));
             let _ = client.call(
                 "POST",
                 &format!("/api/v1/jobs/{}/confirm", path_segment(&id)),
-                None,
+                body.as_ref(),
             );
         }
         match client.call("GET", &format!("/api/v1/jobs/{}", path_segment(&id)), None) {
@@ -462,6 +479,10 @@ fn follow_on_server(
                 shared
                     .next
                     .store(local_step(&job, hole_ends, items_total), Ordering::SeqCst);
+                // kept before the state is shown, so that what is answered is never older than what is on the screen
+                if let Ok(mut asked) = shared.asked.lock() {
+                    *asked = job["pause"]["question"].as_str().map(str::to_string);
+                }
                 let state = state_of(&job);
                 let finished = state.finished();
                 if finished && state == RunState::Done {
@@ -713,7 +734,12 @@ mod server_stop_tests {
     use std::io::{Read, Write};
 
     /// A stand-in for the server that answers every request, holds the answer to the new job until `release` is set and keeps the request lines.
-    fn stand_in(release: Arc<AtomicBool>, seen: Arc<Mutex<Vec<String>>>) -> String {
+    fn stand_in(
+        release: Arc<AtomicBool>,
+        seen: Arc<Mutex<Vec<String>>>,
+        body: &'static str,
+        sent: Arc<Mutex<Vec<String>>>,
+    ) -> String {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let address = listener.local_addr().unwrap().to_string();
         thread::spawn(move || {
@@ -747,11 +773,14 @@ mod server_stop_tests {
                     .map_or("", |(l, _)| l)
                     .to_string();
                 let new_job = line.ends_with("/jobs");
+                if line.ends_with("/confirm") {
+                    let said = text.split_once("\r\n\r\n").map_or("", |(_, b)| b);
+                    sent.lock().unwrap().push(said.to_string());
+                }
                 seen.lock().unwrap().push(line);
                 while new_job && !release.load(Ordering::SeqCst) {
                     thread::sleep(Duration::from_millis(5));
                 }
-                let body = r#"{"id":"j1","view":{}}"#;
                 let _ = write!(
                     s,
                     "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\nconnection: close\r\ncontent-length: {}\r\n\r\n{body}",
@@ -768,7 +797,12 @@ mod server_stop_tests {
         let seen = Arc::new(Mutex::new(Vec::new()));
         let config = ConnectionConfig {
             kind: crate::protocol::connection::Kind::Server,
-            server_address: stand_in(release.clone(), seen.clone()),
+            server_address: stand_in(
+                release.clone(),
+                seen.clone(),
+                r#"{"id":"j1","view":{}}"#,
+                Arc::default(),
+            ),
             server_machine: "m".into(),
             server_token: "t".into(),
             ..Default::default()
@@ -797,5 +831,35 @@ mod server_stop_tests {
                 "POST /api/v1/jobs/j1/cancel"
             ]
         );
+    }
+
+    #[test]
+    fn a_confirmation_names_the_question_that_was_on_the_screen() {
+        let seen = Arc::new(Mutex::new(Vec::new()));
+        let sent = Arc::new(Mutex::new(Vec::new()));
+        let config = ConnectionConfig {
+            kind: crate::protocol::connection::Kind::Server,
+            server_address: stand_in(
+                Arc::new(AtomicBool::new(true)),
+                seen,
+                r#"{"id":"j1","view":{},"state":"waiting_operator","pause":{"kind":"spindle_start","question":"q0a1b2c3"}}"#,
+                sent.clone(),
+            ),
+            server_machine: "m".into(),
+            server_token: "t".into(),
+            ..Default::default()
+        };
+        let run = RealRun::start_on_server(config, serde_json::json!({"kind": "drill"}), vec![], 1);
+        let limit = std::time::Instant::now() + Duration::from_secs(20);
+        while run.state() != RunState::WaitPause(Pause::SpindleStart) {
+            assert!(std::time::Instant::now() < limit, "{:?}", run.state());
+            thread::sleep(Duration::from_millis(5));
+        }
+        run.confirm();
+        while sent.lock().unwrap().is_empty() {
+            assert!(std::time::Instant::now() < limit, "no confirmation sent");
+            thread::sleep(Duration::from_millis(5));
+        }
+        assert_eq!(sent.lock().unwrap()[0], r#"{"question":"q0a1b2c3"}"#);
     }
 }

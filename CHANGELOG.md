@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A confirmation names the question it answers (safety):** for a job on EH3D-SERVER, the program sends back the identifier of the question that was on the screen (`pause.question`), so a server that asks something else by then refuses the answer instead of taking it. A server of an earlier version is answered as before. Checked by the tests against a stand-in of the server.
+
 ## [0.2.5] - No program is kept over a project saved meanwhile, in the eight languages (not tried on a machine)
 
 - **A project saved by another program is not written over:** the mark of the project is taken when it is opened, before its layers are read, and after each write; a plan is refused (`EH3D-PKG-025`), also after a question about a signature, when another program saved the file since. The screens say it in the eight languages and offer to read the project again, to keep the plan in a copy under a name that can be typed, never over a file that is there, or to close; `Enter` closes unless another choice was taken. `drillpro-plan project plan` is refused in the same way. 5 new tests.
