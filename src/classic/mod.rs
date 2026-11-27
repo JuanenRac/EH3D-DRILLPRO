@@ -791,8 +791,12 @@ pub(crate) fn split_two(text: &str, width: usize) -> (String, String) {
 impl<E: ClassicEngine> TextApp for ClassicApp<E> {
     fn save_project(&mut self) {
         // only from the main screen: not while a dialog or a job is open
-        if matches!(self.dialog, Dialog::None) {
+        if matches!(self.dialog, Dialog::None) && !self.engine.project_prompt_open() {
             let lines = self.engine.project_question();
+            // the question itself may find that another program saved the project
+            if self.engine.project_prompt_open() {
+                return;
+            }
             if lines.is_empty() {
                 self.engine.save_to_project();
             } else {
@@ -807,6 +811,10 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
     }
 
     fn click(&mut self, col: usize, row: usize) {
+        if self.engine.project_prompt_open() {
+            self.engine.project_prompt_click(col, row);
+            return;
+        }
         // the clickable places of the screen as it is now
         self.render(&mut Screen::default());
         let act = self
@@ -855,7 +863,10 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
     fn render(&self, screen: &mut Screen) {
         self.hits.borrow_mut().clear();
         // the dialogs replace the main screen: only the desktop stays behind them
-        if matches!(self.dialog, Dialog::None) {
+        if self.engine.project_prompt_open() {
+            desktop(screen);
+            self.engine.render_project_prompt(screen);
+        } else if matches!(self.dialog, Dialog::None) {
             self.render_main(screen);
         } else {
             desktop(screen);

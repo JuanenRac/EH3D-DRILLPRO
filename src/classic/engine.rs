@@ -113,6 +113,14 @@ pub trait ClassicEngine {
     fn project_question(&mut self) -> Vec<String> {
         Vec::new()
     }
+    /// Whether the engine has a window of its own open about the project (another program saved it, or a question that follows saving a copy): the screen
+    /// shows it and gives it the keys and the clicks.
+    fn project_prompt_open(&self) -> bool {
+        false
+    }
+    fn project_prompt_input(&mut self, _input: crate::app::Input) {}
+    fn project_prompt_click(&mut self, _col: usize, _row: usize) {}
+    fn render_project_prompt(&self, _screen: &mut crate::screen::Screen) {}
     fn file_loaded(&self) -> bool;
     /// Name of the loaded file in capitals, as the original shows it.
     fn file_name(&self) -> Option<String>;
@@ -378,6 +386,22 @@ impl ClassicEngine for App {
 
     fn project_question(&mut self) -> Vec<String> {
         self.signature_question()
+    }
+
+    fn project_prompt_open(&self) -> bool {
+        self.is_asking() || self.changed().is_some()
+    }
+
+    fn project_prompt_input(&mut self, input: crate::app::Input) {
+        App::handle(self, input);
+    }
+
+    fn project_prompt_click(&mut self, col: usize, row: usize) {
+        App::click(self, col, row);
+    }
+
+    fn render_project_prompt(&self, screen: &mut crate::screen::Screen) {
+        self.render_prompt(screen);
     }
 
     fn file_loaded(&self) -> bool {
