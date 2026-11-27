@@ -44,7 +44,7 @@ jobs:
           persist-credentials: false
       - name: Check out the sibling EH3D-COMMON (a path dependency)
         shell: bash
-        run: git init -q ../EH3D-COMMON && git -C ../EH3D-COMMON fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git 6e3c7b0d71f9c93c6fe77ed3c1fc0e02c7c6f7dd && git -C ../EH3D-COMMON checkout -q FETCH_HEAD
+        run: git init -q ../EH3D-COMMON && git -C ../EH3D-COMMON fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git refs/tags/v0.4.0 && git -C ../EH3D-COMMON checkout -q FETCH_HEAD
       - name: Rust toolchain
         shell: bash
         run: rustup toolchain install "$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" --profile minimal --component rustfmt,clippy
@@ -66,9 +66,9 @@ jobs:
       - name: Every dependency is in the third-party notices
         if: runner.os == 'Linux'
         shell: bash
-        # the tool is EH3D-COMMON's, fetched by commit so that it does not depend on the sibling tag this build uses
+        # the tool is EH3D-COMMON's, fetched by tag in a folder of its own so that it does not depend on the sibling checked out to build
         run: |
           git init -q "$RUNNER_TEMP/notices"
-          git -C "$RUNNER_TEMP/notices" fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git ea71ffba79e0b9f37b1d6c80e992df662332eb8a
+          git -C "$RUNNER_TEMP/notices" fetch -q --depth 1 https://github.com/JuanenRac/EH3D-COMMON.git refs/tags/v0.4.0
           git -C "$RUNNER_TEMP/notices" checkout -q FETCH_HEAD
           python3 -I "$RUNNER_TEMP/notices/tools/third_party_notices.py" --output docs/THIRD_PARTY_NOTICES --check
