@@ -329,3 +329,44 @@ fn the_dialogs_leave_with_escape_and_the_keyboard_alone() {
         );
     }
 }
+
+#[test]
+fn a_refused_file_asks_for_its_format_keeps_the_choice_and_the_parameters_change_it() {
+    use eh3d_drillpro::drill_format::{load, NumberFormat};
+    let dir = scratch("format");
+    std::fs::remove_file(dir.join("DRILLPRO.FMT")).unwrap();
+    let bare = dir.join("BARE.NCD");
+    std::fs::write(&bare, "%\r\nT01\r\nX1000Y2000\r\nM30\r\n").unwrap();
+    let mut a = app_in(&dir);
+    a.load_file(&bare);
+    assert!(a.asks_for_format(), "{}", text(&a));
+    let shown = text(&a);
+    for word in [
+        "Number format of this drill file",
+        "None (refuse)",
+        "inch-2.4-tz",
+        "metric-3.3-lz",
+    ] {
+        assert!(shown.contains(word), "{word}\n{shown}");
+    }
+    // Enter alone chooses nothing and the file stays refused
+    a.handle(Input::Enter);
+    assert!(!a.asks_for_format());
+    assert!(!a.engine.file_loaded());
+    assert_eq!(load(&dir), Ok(None));
+    // a click on a format and on OK reads the file with it and keeps it
+    a.load_file(&bare);
+    click_on(&mut a, "mils (");
+    assert!(a.asks_for_format(), "a click on the help chooses nothing");
+    a.handle(Input::Down);
+    a.handle(Input::Enter);
+    assert!(!a.asks_for_format(), "{}", text(&a));
+    assert!(a.engine.file_loaded());
+    assert_eq!(load(&dir), Ok(Some(NumberFormat::Mils)));
+    // the Parameter window shows the kept choice
+    a.handle(Input::Esc);
+    press(&mut a, "c");
+    assert!(text(&a).contains("Drill format"), "{}", text(&a));
+    assert!(text(&a).contains("mils"), "{}", text(&a));
+    let _ = std::fs::remove_dir_all(&dir);
+}

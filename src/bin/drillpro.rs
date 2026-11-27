@@ -43,6 +43,7 @@ fn main() -> eframe::Result {
         }
         if let Some(f) = &o.file {
             app.load_file(f);
+            app.offer_drill_format(f);
         }
         if o.dump {
             let mut s = eh3d_drillpro::screen::Screen::default();
