@@ -496,3 +496,19 @@ fn two_steps_closer_than_a_byte_still_go_out_one_after_the_other() {
     assert_eq!(s.iter().filter(|b| **b != 0).count(), 4, "{s:?}");
     assert!(s.len() >= 4);
 }
+
+#[test]
+fn the_cutter_of_a_tool_is_its_own_or_the_one_for_all() {
+    let mut t = Tuning::default();
+    assert_eq!(t.cutter_of(3), 0.0);
+    assert_eq!(t.set("cutter_mm", "2"), Ok(true));
+    assert_eq!(t.set("cutter_mm_t3", "0.8"), Ok(true));
+    assert_eq!(t.cutter_of(1), 2.0);
+    assert!((t.cutter_of(3) - 0.8).abs() < 1e-6);
+    assert_eq!(t.cutter_of(200), 2.0);
+    assert!(t.set("cutter_mm", "21").is_err());
+    assert!(t.set("cutter_mm_t2", "-1").is_err());
+    for unknown in ["cutter_mm_t0", "cutter_mm_t32", "cutter_mm_tx", "cutter"] {
+        assert_eq!(t.set(unknown, "1"), Ok(false), "{unknown}");
+    }
+}

@@ -90,7 +90,13 @@ pub struct Tuning {
     pub job_log_max_kb: u32,
     /// A pause the operator asks for also stops the spindle; going on starts it, waits for its speed and asks again before the head goes down. Off by default.
     pub pause_stops_spindle: bool,
+    /// The diameter of the router's cutter in mm, by tool number (entry 0 is `cutter_mm`, for the tools with no value of their own). ROUTEPRO moves closed
+    /// paths by half of it; unset or 0 cuts along the path as drawn.
+    pub cutter_mm: [Option<f32>; CUTTER_TOOLS],
 }
+
+/// The tool numbers `cutter_mm_tN` takes are 1 to one less than this.
+pub const CUTTER_TOOLS: usize = 32;
 
 impl Default for Tuning {
     fn default() -> Self {
@@ -134,11 +140,22 @@ impl Default for Tuning {
             job_log: true,
             job_log_max_kb: 1024,
             pause_stops_spindle: false,
+            cutter_mm: [None; CUTTER_TOOLS],
         }
     }
 }
 
 impl Tuning {
+    /// The diameter of the cutter of a tool, in mm; 0 when the machine file gives none.
+    pub fn cutter_of(&self, tool: u8) -> f64 {
+        self.cutter_mm
+            .get(usize::from(tool))
+            .copied()
+            .flatten()
+            .or(self.cutter_mm[0])
+            .map_or(0.0, f64::from)
+    }
+
     /// How long to wait for the spindle to reach `rpm` after starting it.
     pub fn spindle_start_wait(&self, rpm: u32) -> u32 {
         if self.spindle_start_ms_per_10000 > 0 {
@@ -216,7 +233,17 @@ impl Tuning {
             "job_log" => self.job_log = choice(key, value, "on", "off")?,
             "pause_spindle" => self.pause_stops_spindle = choice(key, value, "stop", "run")?,
             "job_log_max_kb" => self.job_log_max_kb = number(key, value, 16.0, 1_048_576.0)? as u32,
-            _ => return Ok(false),
+            "cutter_mm" => self.cutter_mm[0] = Some(number(key, value, 0.0, 20.0)? as f32),
+            _ => {
+                let tool = key
+                    .strip_prefix("cutter_mm_t")
+                    .and_then(|n| n.parse::<usize>().ok())
+                    .filter(|n| (1..CUTTER_TOOLS).contains(n));
+                match tool {
+                    Some(n) => self.cutter_mm[n] = Some(number(key, value, 0.0, 20.0)? as f32),
+                    None => return Ok(false),
+                }
+            }
         }
         Ok(true)
     }
