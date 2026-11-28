@@ -136,8 +136,8 @@ pause_spindle = run
 
 # --- The radius of the cutter (ROUTEPRO) ------------------------------------------------------------------------------------
 # With the diameter of the cutter, in mm, a closed outline is cut outside the line drawn and a cut-out inside it, so the part keeps
-# its size. 0 (or no line) cuts along the path as drawn. cutter_mm is for every tool; cutter_mm_t2 = 1 gives tool 2 its own.
-cutter_mm = 0
+# its size. With no line (or 0) the cut goes along the path as drawn. cutter_mm is for every tool; cutter_mm_t2 = 1 gives tool 2 its own.
+# cutter_mm = 2
 
 # --- Sounds (all optional) ------------------------------------------------------------------------------------------------
 # A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
