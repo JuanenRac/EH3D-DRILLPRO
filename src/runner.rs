@@ -171,6 +171,15 @@ pub fn caught<T>(f: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
 impl RealRun {
     /// Starts the job on the machine of `config`. Returns at once; follow it with [`RealRun::state`].
     pub fn start(config: ConnectionConfig, items: Vec<Item>) -> Self {
+        Self::start_recorded(config, items, None)
+    }
+
+    /// [`RealRun::start`] that also writes the job in the record of the data folder (see [`crate::runlog`]).
+    pub fn start_recorded(
+        config: ConnectionConfig,
+        items: Vec<Item>,
+        record: Option<crate::runlog::Record>,
+    ) -> Self {
         let shared = Arc::new(Shared {
             notes: Mutex::new(ServerNotes::default()),
             state: Mutex::new(RunState::Connecting),
@@ -184,6 +193,7 @@ impl RealRun {
         });
         let worker = shared.clone();
         let handle = thread::spawn(move || {
+            let open = record.map(|r| r.begin(&config.describe()));
             let result = caught(|| -> Result<Outcome, String> {
                 let link = config
                     .open()
@@ -209,6 +219,17 @@ impl RealRun {
                     }
                 }
             });
+            if let Some(open) = open {
+                let (item, total) = (
+                    worker.next.load(Ordering::SeqCst),
+                    worker.total.load(Ordering::SeqCst),
+                );
+                match &result {
+                    Ok(Outcome::Completed) => open.end("done", item, total, None),
+                    Ok(Outcome::Cancelled) => open.end("cancelled", item, total, None),
+                    Err(why) => open.end("failed", item, total, Some(why)),
+                }
+            }
             worker.set(match result {
                 Ok(Outcome::Completed) => RunState::Done,
                 Ok(Outcome::Cancelled) => RunState::Cancelled,
@@ -861,5 +882,37 @@ mod server_stop_tests {
             thread::sleep(Duration::from_millis(5));
         }
         assert_eq!(sent.lock().unwrap()[0], r#"{"question":"q0a1b2c3"}"#);
+    }
+
+    #[test]
+    fn a_recorded_run_writes_where_it_started_and_how_it_ended() {
+        let folder = std::env::temp_dir().join(format!("eh3d-recorded-run-{}", std::process::id()));
+        std::fs::create_dir_all(&folder).unwrap();
+        let _ = std::fs::remove_file(folder.join(crate::runlog::FILE_NAME));
+        let config = ConnectionConfig::default();
+        let record = crate::runlog::Record::new(
+            &folder,
+            &config.tuning,
+            crate::runlog::Facts {
+                file: &folder.join("none.drl"),
+                offset_mm: (0.0, 0.0),
+                board_mm: 1.6,
+                unit: "holes",
+                marks: &[],
+                left_out: 0,
+                items: 0,
+                estimate_s: 0.0,
+            },
+        );
+        let run = RealRun::start_recorded(config, Vec::new(), record);
+        while !run.finished() {
+            std::thread::sleep(std::time::Duration::from_millis(5));
+        }
+        drop(run);
+        let text = std::fs::read_to_string(folder.join(crate::runlog::FILE_NAME)).unwrap();
+        assert_eq!(text.lines().count(), 2, "{text}");
+        assert!(text.contains(" connection=\"demo\" "), "{text}");
+        assert!(text.contains(" end run="), "{text}");
+        let _ = std::fs::remove_dir_all(&folder);
     }
 }

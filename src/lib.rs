@@ -15,6 +15,7 @@ pub mod progress;
 pub use eh3d_bungard_formats::ncd;
 /// The machine protocol library, re-exported under its old path.
 pub use eh3d_drillpro_protocol as protocol;
+pub mod runlog;
 pub mod runner;
 pub mod screen;
 pub mod server_link;
