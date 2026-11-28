@@ -88,6 +88,8 @@ pub struct Tuning {
     pub job_log: bool,
     /// The size, in KiB, at which that record is closed and kept once.
     pub job_log_max_kb: u32,
+    /// A pause the operator asks for also stops the spindle; going on starts it, waits for its speed and asks again before the head goes down. Off by default.
+    pub pause_stops_spindle: bool,
 }
 
 impl Default for Tuning {
@@ -131,6 +133,7 @@ impl Default for Tuning {
             level_max_lift_mm: 2.0,
             job_log: true,
             job_log_max_kb: 1024,
+            pause_stops_spindle: false,
         }
     }
 }
@@ -211,6 +214,7 @@ impl Tuning {
             "sanity_far_mm" => self.sanity_far_mm = number(key, value, 0.0, 2000.0)?,
             "level_max_lift_mm" => self.level_max_lift_mm = number(key, value, 0.1, 20.0)?,
             "job_log" => self.job_log = choice(key, value, "on", "off")?,
+            "pause_spindle" => self.pause_stops_spindle = choice(key, value, "stop", "run")?,
             "job_log_max_kb" => self.job_log_max_kb = number(key, value, 16.0, 1_048_576.0)? as u32,
             _ => return Ok(false),
         }

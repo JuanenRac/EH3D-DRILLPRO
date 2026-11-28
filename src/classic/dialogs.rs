@@ -262,7 +262,7 @@ impl<E: ClassicEngine> ClassicApp<E> {
         match self.dialog {
             Dialog::None => self.click_main(act),
             Dialog::Running if self.interrupted => match act {
-                Act::Dlg(Dlg::Ok) => self.interrupted = false,
+                Act::Dlg(Dlg::Ok) => self.continue_job(),
                 Act::Dlg(Dlg::Abort) => self.abort_job(),
                 _ => {}
             },
@@ -295,12 +295,12 @@ impl<E: ClassicEngine> ClassicApp<E> {
             let cont = self.hot(CText::BCont);
             let abort = self.hot(CText::BAbort);
             match input {
-                Input::Enter => self.interrupted = false,
+                Input::Enter => self.continue_job(),
                 Input::Esc => self.abort_job(),
                 Input::Char(c) | Input::Alt(c) => {
                     let c = self.lang().hot_key(c);
                     if Some(c) == cont {
-                        self.interrupted = false;
+                        self.continue_job();
                     } else if Some(c) == abort {
                         self.abort_job();
                     }
@@ -312,8 +312,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
         if self.engine.question().is_none() {
             if input == Input::Esc {
                 if self.engine.started() {
-                    // drilling: the original asks what next before it stops
+                    // drilling: the original asks what next before it stops; a machine that moves holds meanwhile at the end of the hole
                     self.interrupted = true;
+                    if self.engine.is_real_job() {
+                        self.engine.pause_job();
+                    }
                 } else {
                     self.abort_job();
                 }
@@ -344,6 +347,12 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
     }
 
+    /// Cont. of the window after Esc: the job goes on (a pause that stopped the spindle then asks again before the head moves).
+    fn continue_job(&mut self) {
+        self.interrupted = false;
+        self.engine.resume_job();
+    }
+
     fn abort_job(&mut self) {
         self.interrupted = false;
         self.engine.stop();
@@ -367,6 +376,17 @@ impl<E: ClassicEngine> ClassicApp<E> {
             10,
             ask,
         );
+        // what the machine does meanwhile
+        if self.engine.is_real_job() {
+            if let Some(line) = crate::hold::status_text(self.lang(), self.engine.hold()) {
+                label(
+                    s,
+                    19 + (41usize.saturating_sub(str_width(line))) / 2,
+                    11,
+                    line,
+                );
+            }
+        }
         button(s, 24, 13, 12, self.t(CText::BCont), true, true);
         button(s, 43, 13, 12, self.t(CText::BAbort), false, true);
         self.hit(24, 13, 13, 2, Act::Dlg(Dlg::Ok));
@@ -390,6 +410,11 @@ impl<E: ClassicEngine> ClassicApp<E> {
         }
         let ask = match q {
             engine::Question::SpindleStart => self.t(CText::QSpindleAsk).to_string(),
+            engine::Question::SpindleRestarted => {
+                crate::hold::status_text(self.lang(), crate::hold::Hold::SpindleRestarted)
+                    .unwrap_or_default()
+                    .to_string()
+            }
             engine::Question::ToolChange(n) => {
                 self.t(CText::QToolAsk).replace("{}", &format!("{n:02}"))
             }

@@ -850,8 +850,8 @@ impl<E: ClassicEngine> TextApp for ClassicApp<E> {
 
     fn tick(&mut self) -> bool {
         if matches!(self.dialog, Dialog::Running) {
-            if self.interrupted {
-                // the job waits for the operator
+            if self.interrupted && !self.engine.is_real_job() {
+                // the simulated job waits for the operator; a real one was asked to pause and is still followed
                 return true;
             }
             let more = self.engine.tick(1);

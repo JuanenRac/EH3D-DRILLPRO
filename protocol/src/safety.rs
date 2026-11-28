@@ -413,6 +413,11 @@ impl<T: Transport> Machine<T> {
         &self.transport
     }
 
+    /// Tells the far end of the link that the program is still there (see [`Transport::keep_alive`]). Allowed without arming.
+    pub fn keep_alive(&mut self) -> Result<(), MachineError> {
+        Ok(self.transport.keep_alive()?)
+    }
+
     /// Waits `us` microseconds on the link's own clock (a simulated link does not really wait).
     pub fn sleep_us(&mut self, us: u64) {
         self.transport.sleep_us(us);

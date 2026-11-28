@@ -412,6 +412,13 @@ impl NodeTransport {
 }
 
 impl Transport for NodeTransport {
+    /// Reads what the node says and pings it, so an armed session is not stopped for being quiet.
+    fn keep_alive(&mut self) -> io::Result<()> {
+        self.pump()?;
+        self.fail_if_error()?;
+        NodeTransport::keep_alive(self)
+    }
+
     fn set_dtr(&mut self, on: bool) -> io::Result<()> {
         self.send(kind::DTR, &[on as u8])
     }

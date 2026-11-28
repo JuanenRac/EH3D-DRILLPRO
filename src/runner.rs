@@ -12,7 +12,7 @@ use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
 use crate::protocol::connection::ConnectionConfig;
-use crate::protocol::execute::{run_items, Hooks, Outcome};
+use crate::protocol::execute::{run_items, run_items_resting, Hooks, Outcome, Rest};
 use crate::protocol::job::{Item, JobBuilder, JobMachine, Pause};
 use crate::protocol::motion::{rapid_xy, z_move};
 use crate::protocol::safety::{Machine, Verified};
@@ -25,6 +25,12 @@ pub enum RunState {
     Running,
     /// A dialog for the operator; [`RealRun::confirm`] continues.
     WaitPause(Pause),
+    /// Paused by the operator with the head clear of the work; [`RealRun::resume`] goes on.
+    Paused {
+        spindle_stopped: bool,
+    },
+    /// The spindle was started again after a pause; [`RealRun::confirm`] lets the head move.
+    SpindleRestarted,
     Done,
     /// Stopped by the operator.
     Cancelled,
@@ -111,6 +117,8 @@ struct Shared {
     total: AtomicUsize,
     cancel: AtomicBool,
     confirmed: AtomicBool,
+    /// The operator asked for a pause that has not happened yet.
+    pause_asked: AtomicBool,
     /// A job on the server: the identifier of the question it asks now (`pause.question`; none from a server of an earlier version).
     asked: Mutex<Option<String>>,
     /// The identifier of the question the operator answered, until it is sent.
@@ -129,10 +137,11 @@ impl Shared {
 
 struct WorkerHooks(Arc<Shared>);
 
-impl Hooks for WorkerHooks {
-    fn pause(&mut self, pause: Pause) -> bool {
+impl WorkerHooks {
+    /// Shows `state` until the operator confirms (true) or cancels (false).
+    fn wait_for_operator(&mut self, state: RunState, idle: &mut dyn FnMut()) -> bool {
         self.0.confirmed.store(false, Ordering::SeqCst);
-        self.0.set(RunState::WaitPause(pause));
+        self.0.set(state);
         loop {
             if self.0.cancel.load(Ordering::SeqCst) {
                 return false;
@@ -141,8 +150,31 @@ impl Hooks for WorkerHooks {
                 self.0.set(RunState::Running);
                 return true;
             }
+            idle();
             thread::sleep(Duration::from_millis(30));
         }
+    }
+}
+
+impl Hooks for WorkerHooks {
+    fn pause(&mut self, pause: Pause) -> bool {
+        self.pause_waiting(pause, &mut || {})
+    }
+
+    fn pause_waiting(&mut self, pause: Pause, idle: &mut dyn FnMut()) -> bool {
+        self.wait_for_operator(RunState::WaitPause(pause), idle)
+    }
+
+    fn pause_requested(&mut self) -> bool {
+        self.0.pause_asked.swap(false, Ordering::SeqCst)
+    }
+
+    fn rest(&mut self, rest: Rest, idle: &mut dyn FnMut()) -> bool {
+        let state = match rest {
+            Rest::Paused { spindle_stopped } => RunState::Paused { spindle_stopped },
+            Rest::SpindleUp => RunState::SpindleRestarted,
+        };
+        self.wait_for_operator(state, idle)
     }
 
     fn progress(&mut self, next: usize, total: usize) {
@@ -171,13 +203,15 @@ pub fn caught<T>(f: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
 impl RealRun {
     /// Starts the job on the machine of `config`. Returns at once; follow it with [`RealRun::state`].
     pub fn start(config: ConnectionConfig, items: Vec<Item>) -> Self {
-        Self::start_recorded(config, items, None)
+        Self::start_job(config, items, Vec::new(), None)
     }
 
-    /// [`RealRun::start`] that also writes the job in the record of the data folder (see [`crate::runlog`]).
-    pub fn start_recorded(
+    /// [`RealRun::start`] that the operator can pause after any of the items of `safe` (the item that ends each hole or path) and that writes the job
+    /// in the record of the data folder (see [`crate::runlog`]).
+    pub fn start_job(
         config: ConnectionConfig,
         items: Vec<Item>,
+        safe: Vec<usize>,
         record: Option<crate::runlog::Record>,
     ) -> Self {
         let shared = Arc::new(Shared {
@@ -187,6 +221,7 @@ impl RealRun {
             total: AtomicUsize::new(items.len()),
             cancel: AtomicBool::new(false),
             confirmed: AtomicBool::new(false),
+            pause_asked: AtomicBool::new(false),
             asked: Mutex::new(None),
             answering: Mutex::new(None),
             stop_following: AtomicBool::new(false),
@@ -208,7 +243,12 @@ impl RealRun {
                     .map_err(|e| format!("arming the machine: {e}"))?;
                 worker.set(RunState::Running);
                 let ran = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                    run_items(&mut machine, &items, &mut WorkerHooks(worker.clone()))
+                    run_items_resting(
+                        &mut machine,
+                        &items,
+                        &safe,
+                        &mut WorkerHooks(worker.clone()),
+                    )
                 }));
                 match ran {
                     Ok(r) => r.map_err(|e| format!("running the job: {e}")),
@@ -260,6 +300,7 @@ impl RealRun {
             total: AtomicUsize::new(items_total),
             cancel: AtomicBool::new(false),
             confirmed: AtomicBool::new(false),
+            pause_asked: AtomicBool::new(false),
             asked: Mutex::new(None),
             answering: Mutex::new(None),
             stop_following: AtomicBool::new(false),
@@ -313,6 +354,31 @@ impl RealRun {
             answering.clone_from(&asked);
         }
         self.shared.confirmed.store(true, Ordering::SeqCst);
+    }
+
+    /// Asks for a pause: the job holds at the next end of a hole or path, with the head clear of the work. A job on the server cannot be paused from here.
+    pub fn pause(&self) {
+        if !self.on_server && !self.finished() {
+            self.shared.pause_asked.store(true, Ordering::SeqCst);
+        }
+    }
+
+    /// Takes back a pause that has not happened yet, or goes on from one that has.
+    pub fn resume(&self) {
+        self.shared.pause_asked.store(false, Ordering::SeqCst);
+        if matches!(self.state(), RunState::Paused { .. }) {
+            self.confirm();
+        }
+    }
+
+    /// True from [`RealRun::pause`] until the machine holds (or the pause is taken back).
+    pub fn pause_pending(&self) -> bool {
+        self.shared.pause_asked.load(Ordering::SeqCst)
+    }
+
+    /// Whether this job can be paused at all.
+    pub fn can_pause(&self) -> bool {
+        !self.on_server && !self.finished()
     }
 
     /// Stops the machine (drivers off). The state becomes `Cancelled` once it has stopped.
@@ -619,7 +685,15 @@ impl TeachSession {
                 let g = jm.geometry;
                 let (mut pos, mut z) = ((0.0f64, 0.0f64), 0.0f64);
                 loop {
-                    match rx.recv() {
+                    let next = match rx.recv_timeout(Duration::from_millis(300)) {
+                        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                            // a node stops a session it hears nothing from, and the person may take their time
+                            let _ = machine.keep_alive();
+                            continue;
+                        }
+                        other => other,
+                    };
+                    match next {
                         Ok(TeachCmd::Jog(..)) if cn.load(Ordering::SeqCst) => {
                             // the session was dropped: what is still queued never runs
                             machine.emergency_stop();
@@ -904,7 +978,7 @@ mod server_stop_tests {
                 estimate_s: 0.0,
             },
         );
-        let run = RealRun::start_recorded(config, Vec::new(), record);
+        let run = RealRun::start_job(config, Vec::new(), Vec::new(), record);
         while !run.finished() {
             std::thread::sleep(std::time::Duration::from_millis(5));
         }

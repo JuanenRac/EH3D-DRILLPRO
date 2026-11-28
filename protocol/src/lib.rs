@@ -122,6 +122,11 @@ pub trait Transport {
     fn write_byte(&mut self, byte: u8) -> io::Result<()>;
     fn status(&mut self) -> io::Result<ModemStatus>;
     fn sleep_us(&mut self, us: u64);
+    /// Called every few tens of milliseconds while the program has nothing to send (a dialog, a pause). A link whose far end stops the machine when it
+    /// hears nothing (the node) says it is still there; a cable has nothing to do.
+    fn keep_alive(&mut self) -> io::Result<()> {
+        Ok(())
+    }
     /// A pause the machine itself needs (the spindle reaching its speed or braking, the chuck settling). Unlike [`Transport::sleep_us`], which a link may end
     /// as soon as it has put its bytes out, it lasts the whole time.
     fn wait_us(&mut self, us: u64) {
@@ -177,6 +182,9 @@ impl<T: Transport + ?Sized> Transport for Box<T> {
     }
     fn sleep_us(&mut self, us: u64) {
         (**self).sleep_us(us)
+    }
+    fn keep_alive(&mut self) -> io::Result<()> {
+        (**self).keep_alive()
     }
     fn wait_us(&mut self, us: u64) {
         (**self).wait_us(us)

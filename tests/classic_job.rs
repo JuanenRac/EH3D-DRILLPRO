@@ -73,6 +73,7 @@ fn the_job_stops_at_the_spindle_and_at_each_tool_change_until_the_operator_answe
                 "{t}"
             );
         }
+        Question::SpindleRestarted => panic!("no pause was asked"),
         Question::SpindleStart => {
             assert!(
                 t.contains("Attention!") && t.contains("start the spindle"),

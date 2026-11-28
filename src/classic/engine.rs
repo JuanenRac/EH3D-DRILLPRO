@@ -57,6 +57,8 @@ pub enum Question {
     ToolChange(u8),
     /// Confirm that the spindle may start.
     SpindleStart,
+    /// After a pause that stopped the spindle: it runs again and the head waits.
+    SpindleRestarted,
 }
 
 /// What the About dialog says about the program (the texts around it belong to the front end).
@@ -191,6 +193,18 @@ pub trait ClassicEngine {
     /// window that marks what the router has cut uses it to tell the head that cuts from the head that travels.
     fn depth_below_surface_mm(&self) -> Option<f64> {
         None
+    }
+    /// Where the job is with respect to a pause (an engine that cannot pause is never in one).
+    fn hold(&self) -> crate::hold::Hold {
+        crate::hold::Hold::Off
+    }
+    /// Asks the job to hold at the end of the hole or path it is on.
+    fn pause_job(&mut self) {}
+    /// Takes back a pause that has not happened yet, or goes on from one that has.
+    fn resume_job(&mut self) {}
+    /// Whether a machine is moving for this job (a simulated one does not).
+    fn is_real_job(&self) -> bool {
+        false
     }
     /// The dialog the job is waiting at, if any.
     fn question(&self) -> Option<Question>;
@@ -626,6 +640,10 @@ impl ClassicEngine for App {
     fn question(&self) -> Option<Question> {
         use crate::protocol::job::Pause;
         let run = self.run.as_ref()?;
+        if crate::hold::hold_of(run.real.as_ref(), &run.hold) == crate::hold::Hold::SpindleRestarted
+        {
+            return Some(Question::SpindleRestarted);
+        }
         let pause = match run.real.as_ref().map(|r| r.state()) {
             Some(crate::runner::RunState::WaitPause(p)) => Some(p),
             Some(_) => None,
@@ -648,7 +666,11 @@ impl ClassicEngine for App {
             return;
         }
         if ok {
-            run.waiting = None;
+            if run.hold.resting() {
+                run.hold.confirm();
+            } else {
+                run.waiting = None;
+            }
         } else {
             self.stop();
         }
@@ -705,6 +727,22 @@ impl ClassicEngine for App {
     fn stop(&mut self) {
         self.run = None;
         self.mode = Mode::Main;
+    }
+
+    fn hold(&self) -> crate::hold::Hold {
+        App::hold(self)
+    }
+
+    fn pause_job(&mut self) {
+        App::pause_job(self);
+    }
+
+    fn resume_job(&mut self) {
+        App::resume_job(self);
+    }
+
+    fn is_real_job(&self) -> bool {
+        self.run.as_ref().is_some_and(|r| r.real.is_some())
     }
 }
 

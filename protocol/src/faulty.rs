@@ -116,6 +116,13 @@ impl<T: Transport> FaultyLink<T> {
 }
 
 impl<T: Transport> Transport for FaultyLink<T> {
+    fn keep_alive(&mut self) -> io::Result<()> {
+        if self.cable_pulled() {
+            return Err(io::Error::new(io::ErrorKind::BrokenPipe, "cable pulled"));
+        }
+        self.inner.keep_alive()
+    }
+
     fn set_dtr(&mut self, on: bool) -> io::Result<()> {
         if self.cable_pulled() {
             return Err(io::Error::new(io::ErrorKind::BrokenPipe, "cable pulled"));
