@@ -131,6 +131,12 @@ sanity_far_mm = 150
 # The most the correction of a height map may lift or lower Z at any point, in mm. A map that asks for more is refused instead of moving Z.
 level_max_lift_mm = 2
 
+# --- The record of the jobs ---------------------------------------------------------------------------------------------------
+# on: each job run directly on a machine from this computer is written to eh3d-jobs.log of the data folder (a line when it starts and
+# one when it ends, with the item it reached and the reason of a failure). The file is closed at job_log_max_kb and kept once.
+job_log = on
+job_log_max_kb = 1024
+
 # --- Sounds (all optional) ------------------------------------------------------------------------------------------------
 # A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
 # ("default"), or a sound file of your own: write the full path of a WAV file. Nothing is played when the line is missing or says off.

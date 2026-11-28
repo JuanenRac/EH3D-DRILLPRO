@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A record of the jobs run directly on a machine:** `eh3d-jobs.log` in the data folder gets a line when a job starts (program, connection, file name with its size and a hash, offset, thickness, holes or paths, estimated time) and one when it ends (done, cancelled or failed, the item reached, the holes or paths finished, the time and the reason). No token is written; a folder that cannot be written does not stop the job. `job_log = off` in the machine file turns it off and `job_log_max_kb` (1024) is when the file is closed and kept once. The router program and the modern interface write the same record through this library. 5 new tests; not tried on a machine.
+
 ## [0.2.6] - Drill files ask for their number format and are never read by guess (not tried on a machine)
 
 - **The workflows take EH3D-COMMON at its tag v0.4.0** instead of a commit; no code changes.

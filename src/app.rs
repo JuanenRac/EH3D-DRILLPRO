@@ -1004,9 +1004,27 @@ impl App {
                 )),
             )
         } else if self.connection.is_real() {
+            let record = crate::runlog::Record::new(
+                &self.data_dir,
+                &self.connection.tuning,
+                crate::runlog::Facts {
+                    file: &l.path,
+                    offset_mm: offset,
+                    board_mm: self.board_mm,
+                    unit: "holes",
+                    marks: &marks,
+                    left_out: skipped,
+                    items: items.len(),
+                    estimate_s: progress.total_seconds(),
+                },
+            );
             (
                 true,
-                Some(RealRun::start(self.connection.clone(), items.clone())),
+                Some(RealRun::start_recorded(
+                    self.connection.clone(),
+                    items.clone(),
+                    record,
+                )),
             )
         } else {
             (connect(&mut sim).is_ok(), None)

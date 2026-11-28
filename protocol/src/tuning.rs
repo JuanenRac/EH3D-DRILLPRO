@@ -84,6 +84,10 @@ pub struct Tuning {
     /// The most the correction of a height map may lift or lower Z at any point of a route, in mm. A map with a point further from the
     /// plane than this is refused instead of moving Z by whatever it says (ROUTEPRO reads it from the same machine file).
     pub level_max_lift_mm: f64,
+    /// The jobs run directly on a machine from this computer are recorded in `eh3d-jobs.log` of the data folder. On by default.
+    pub job_log: bool,
+    /// The size, in KiB, at which that record is closed and kept once.
+    pub job_log_max_kb: u32,
 }
 
 impl Default for Tuning {
@@ -125,6 +129,8 @@ impl Default for Tuning {
             sanity_tiny_mm: 5.0,
             sanity_far_mm: 150.0,
             level_max_lift_mm: 2.0,
+            job_log: true,
+            job_log_max_kb: 1024,
         }
     }
 }
@@ -204,6 +210,8 @@ impl Tuning {
             "sanity_tiny_mm" => self.sanity_tiny_mm = number(key, value, 0.0, 100.0)?,
             "sanity_far_mm" => self.sanity_far_mm = number(key, value, 0.0, 2000.0)?,
             "level_max_lift_mm" => self.level_max_lift_mm = number(key, value, 0.1, 20.0)?,
+            "job_log" => self.job_log = choice(key, value, "on", "off")?,
+            "job_log_max_kb" => self.job_log_max_kb = number(key, value, 16.0, 1_048_576.0)? as u32,
             _ => return Ok(false),
         }
         Ok(true)
