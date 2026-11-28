@@ -77,6 +77,7 @@ Speeds are in steps per second: the control unit takes one byte per step, and th
 | `search_hint_margin_steps` | 300 | steps added to the known distance of the short search (if RI still does not rise, the whole search is repeated) |
 | `travel_ramp_steps` | 400 | ramp of the moves between holes and paths |
 | `confirm_start` | on | the summary of the job is shown, and has to be accepted, before a job starts on a machine that moves |
+| `pause_spindle` | run | what a pause does with the spindle: `run` leaves it turning; `stop` stops it, and going on starts it, waits for its speed and asks again before the head moves |
 | `job_log` | on | each job run directly on a machine from this computer is written to `eh3d-jobs.log` of the data folder: a line at the start (file name, size and hash, connection, offset, thickness, holes or paths, estimated time) and one at the end (result, item reached, time, reason of a failure). Jobs on EH3D-SERVER are recorded by the server |
 | `job_log_max_kb` | 1024 | the size at which that file is closed and kept once as `eh3d-jobs.log.1` (16 to 1048576) |
 | `dry_run` | reject | an axis that the exact steps of the plan would take past its course: `reject` refuses the job, `warn` only says so |

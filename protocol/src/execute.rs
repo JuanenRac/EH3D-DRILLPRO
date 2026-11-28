@@ -19,6 +19,29 @@ pub trait Hooks {
     fn progress(&mut self, next: usize, total: usize);
     /// Polled between pieces of a move; true cancels the job.
     fn cancelled(&mut self) -> bool;
+    /// [`Hooks::pause`] for a front end that waits: it calls `idle` every few tens of milliseconds so the link stays alive while the operator takes their time.
+    fn pause_waiting(&mut self, pause: Pause, idle: &mut dyn FnMut()) -> bool {
+        let _ = idle;
+        self.pause(pause)
+    }
+    /// The operator asked to pause. Only looked at where the tool is clear of the work (see [`run_items_resting`]).
+    fn pause_requested(&mut self) -> bool {
+        false
+    }
+    /// Waits for the operator at a step of a pause, calling `idle` as in [`Hooks::pause_waiting`]. Return false to cancel the job.
+    fn rest(&mut self, rest: Rest, idle: &mut dyn FnMut()) -> bool {
+        let _ = (rest, idle);
+        true
+    }
+}
+
+/// The two places a pause waits for the operator.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Rest {
+    /// The head is clear of the work and does not move. `spindle_stopped` says whether the pause also stopped the spindle.
+    Paused { spindle_stopped: bool },
+    /// The spindle was started again and had its time to reach speed; the head moves on once this is confirmed.
+    SpindleUp,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -30,6 +53,17 @@ pub enum Outcome {
 pub fn run_items<T: Transport>(
     m: &mut Machine<T>,
     items: &[Item],
+    hooks: &mut dyn Hooks,
+) -> Result<Outcome, MachineError> {
+    run_items_resting(m, items, &[], hooks)
+}
+
+/// [`run_items`] that can be paused by the operator. `safe` are the indexes of the items after which the tool is clear of the work (the item that ends
+/// each hole or path, as the planners mark them): a pause asked for at any other time waits for the next of them.
+pub fn run_items_resting<T: Transport>(
+    m: &mut Machine<T>,
+    items: &[Item],
+    safe: &[usize],
     hooks: &mut dyn Hooks,
 ) -> Result<Outcome, MachineError> {
     for (i, item) in items.iter().enumerate() {
@@ -197,7 +231,11 @@ pub fn run_items<T: Transport>(
                 started
             }
             Item::Pause(p) => {
-                if !hooks.pause(*p) {
+                let go_on = hooks.pause_waiting(*p, &mut || {
+                    // a link that fails here says so at the next order
+                    let _ = m.keep_alive();
+                });
+                if !go_on {
                     m.emergency_stop();
                     return Ok(Outcome::Cancelled);
                 }
@@ -208,9 +246,162 @@ pub fn run_items<T: Transport>(
             m.emergency_stop();
             return Err(e);
         }
+        if i + 1 < items.len() && safe.contains(&i) && hooks.pause_requested() {
+            match rest_here(m, &items[..=i], hooks) {
+                Ok(true) => {}
+                Ok(false) => {
+                    m.emergency_stop();
+                    return Ok(Outcome::Cancelled);
+                }
+                Err(e) => {
+                    m.emergency_stop();
+                    return Err(e);
+                }
+            }
+        }
     }
     hooks.progress(items.len(), items.len());
     Ok(Outcome::Completed)
+}
+
+/// The spindle as the items already run have left it, with what it takes to stop it and to bring it back exactly as it was.
+enum Spinning {
+    /// The spindle of the node: its speed and the time it is given to reach it.
+    Node { rpm: u32, wait_ms: u32 },
+    /// The spindle of the control unit: the last byte written to each output latch.
+    Latches { a: u8, b: u8 },
+}
+
+fn spinning(done: &[Item]) -> Option<Spinning> {
+    use crate::latches::{Op, A_IDLE, A_SPINDLE_RUN, B_IDLE};
+    let (mut a, mut b, mut node) = (A_IDLE, B_IDLE, None);
+    for item in done {
+        match item {
+            Item::Latch(ops) => {
+                for op in ops {
+                    if let Op::Send(byte) = *op {
+                        match byte & 0xC0 {
+                            0x80 => a = byte,
+                            0xC0 => b = byte,
+                            _ => {}
+                        }
+                    }
+                }
+            }
+            Item::Spindle { rpm, wait_ms } => node = (*rpm > 0).then_some((*rpm, *wait_ms)),
+            _ => {}
+        }
+    }
+    match node {
+        Some((rpm, wait_ms)) => Some(Spinning::Node { rpm, wait_ms }),
+        None => (a & A_SPINDLE_RUN != 0).then_some(Spinning::Latches { a, b }),
+    }
+}
+
+/// The pause itself. `Ok(false)` means the operator cancelled: the caller stops the machine.
+fn rest_here<T: Transport>(
+    m: &mut Machine<T>,
+    done: &[Item],
+    hooks: &mut dyn Hooks,
+) -> Result<bool, MachineError> {
+    let spindle = if m.tuning().pause_stops_spindle {
+        spinning(done)
+    } else {
+        None
+    };
+    if let Some(s) = &spindle {
+        stop_spindle(m, s)?;
+    }
+    let wait = |m: &mut Machine<T>, hooks: &mut dyn Hooks, rest: Rest| {
+        hooks.rest(rest, &mut || {
+            let _ = m.keep_alive();
+        })
+    };
+    let spindle_stopped = spindle.is_some();
+    if !wait(m, hooks, Rest::Paused { spindle_stopped }) {
+        return Ok(false);
+    }
+    // the link may have been lost while waiting: say so now and not half way into a move
+    m.keep_alive()?;
+    let Some(s) = spindle else {
+        return Ok(true);
+    };
+    if !start_spindle(m, &s, hooks)? {
+        return Ok(false);
+    }
+    Ok(wait(m, hooks, Rest::SpindleUp))
+}
+
+/// Stops the spindle the way the plan does: brake, release the run bit, release the brake (or speed 0 on the node).
+fn stop_spindle<T: Transport>(m: &mut Machine<T>, s: &Spinning) -> Result<(), MachineError> {
+    use crate::latches::{
+        Op, A_AUX, A_LEVEL_MASK, A_SPINDLE_RUN, B_SPINDLE_BRAKE, B_SPINDLE_ENABLE,
+    };
+    let wait_ms = m.tuning().spindle_stop_wait_ms;
+    match *s {
+        Spinning::Node { .. } => {
+            m.set_spindle(0, false)?;
+            // the wait is not cut short: the next thing the operator may do is reach for the tool
+            for _ in 0..wait_ms.div_ceil(50) {
+                m.sleep_us(50_000);
+            }
+            Ok(())
+        }
+        Spinning::Latches { a, b } => {
+            let braked = (b | B_SPINDLE_BRAKE) & !B_SPINDLE_ENABLE;
+            m.run_ops(&[
+                Op::Send(braked),
+                Op::WaitUs(u64::from(wait_ms) * 1000),
+                Op::Send(a & !(A_SPINDLE_RUN | A_AUX | A_LEVEL_MASK)),
+                Op::WaitUs(10_000),
+                Op::Send(braked & !B_SPINDLE_BRAKE),
+                Op::WaitUs(10_000),
+            ])
+        }
+    }
+}
+
+/// Starts the spindle again and leaves both latches as they were before the pause. `Ok(false)` when cancelled during the wait for its speed.
+fn start_spindle<T: Transport>(
+    m: &mut Machine<T>,
+    s: &Spinning,
+    hooks: &mut dyn Hooks,
+) -> Result<bool, MachineError> {
+    use crate::latches::{Op, A_AUX, A_LEVEL_MASK, SPINDLE_MIN_RPM, SPINDLE_STEP_RPM};
+    match *s {
+        Spinning::Node { rpm, wait_ms } => {
+            m.set_spindle(rpm, false)?;
+            Ok(wait_cancellable(m, wait_ms, hooks))
+        }
+        Spinning::Latches { a, b } => {
+            let run = a & !(A_LEVEL_MASK | A_AUX);
+            m.run_ops(&[Op::Send(b), Op::WaitUs(100_000), Op::Send(run)])?;
+            let rpm = SPINDLE_MIN_RPM + u32::from(a & A_LEVEL_MASK) * SPINDLE_STEP_RPM;
+            if !wait_cancellable(m, m.tuning().spindle_start_wait(rpm), hooks) {
+                return Ok(false);
+            }
+            // the speed level and, when it was on, the auxiliary output with its settling time
+            m.run_ops(&[Op::Send(a)])?;
+            if a & A_AUX != 0 {
+                m.run_ops(&[Op::WaitUs(500_000)])?;
+            }
+            Ok(true)
+        }
+    }
+}
+
+/// Waits in pieces; false when the job was cancelled meanwhile.
+fn wait_cancellable<T: Transport>(m: &mut Machine<T>, wait_ms: u32, hooks: &mut dyn Hooks) -> bool {
+    let mut left = u64::from(wait_ms) * 1000;
+    while left > 0 {
+        if hooks.cancelled() {
+            return false;
+        }
+        let piece = left.min(50_000);
+        m.sleep_us(piece);
+        left -= piece;
+    }
+    !hooks.cancelled()
 }
 
 /// How a search towards the switches ended.

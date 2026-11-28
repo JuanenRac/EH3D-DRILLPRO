@@ -137,6 +137,11 @@ level_max_lift_mm = 2
 job_log = on
 job_log_max_kb = 1024
 
+# --- The pause (key P on the menu screens, Esc on the classic ones) ----------------------------------------------------------
+# A pause always holds at the end of a hole or path, with the head clear of the board. run: the spindle keeps turning. stop: it is
+# stopped; going on starts it again, waits for its speed and asks a second time before the head moves.
+pause_spindle = run
+
 # --- Sounds (all optional) ------------------------------------------------------------------------------------------------
 # A sound when the job ends by itself, and another when the machine asks for a tool. Each one is either off, the tone the program makes
 # ("default"), or a sound file of your own: write the full path of a WAV file. Nothing is played when the line is missing or says off.
